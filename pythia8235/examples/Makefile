@@ -62,6 +62,9 @@ $(PREFIX_LIB)/libpythia8.a :
 main% : main%.cc $(PREFIX_LIB)/libpythia8.a
 	$(CXX) $< -o $@ -std=c++11 -g $(CXX_COMMON) $(GZIP_INC) $(GZIP_FLAGS)
 
+main_BEeffects_OpenMP: main_BEeffects_OpenMP.cc $(PREFIX_LIB)/libpythia8.a
+	$(CXX) $< -o $@ -std=c++11 -fopenmp -g $(CXX_COMMON) $(GZIP_INC) $(GZIP_FLAGS)
+
 # MixMax.
 main23: $$@.cc $(PREFIX_LIB)/libpythia8.a
 	$(CXX) $< -o $@ -std=c++11 -w $(CXX_COMMON) $(GZIP_INC) $(GZIP_FLAGS)
