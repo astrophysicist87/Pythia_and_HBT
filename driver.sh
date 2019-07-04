@@ -215,7 +215,7 @@ do
 			typeStem="_THERMAL"
 		fi
 
-		zipFilename=$HOME_DIRECTORY/`echo $collisionSystemCentralityStem`"_results"`echo $typeStem`"_woBEeffects.zip"
+		zipFilename=$RESULTS_DIRECTORY/`echo $collisionSystemCentralityStem`"_results"`echo $typeStem`"_woBEeffects.zip"
 
 		zip -r `get_filename $zipFilename` $RESULTS_DIRECTORY
 
