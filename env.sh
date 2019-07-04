@@ -13,6 +13,7 @@ HBT_SV_DIRECTORY=$HOME_DIRECTORY/HBT_event_generator/source_variances
 
 # Main results directory
 RESULTS_DIRECTORY=$HOME_DIRECTORY/RESULTS
+PYTHIA_RESULTS_DIRECTORY=$RESULTS_DIRECTORY/results
 
 #============================
 # Some function definitions

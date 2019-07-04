@@ -7,11 +7,11 @@ runPythia=true
 projectile="p"
 target="p"
 beamEnergy="13000.0"	#GeV
-Nevents="1"
+Nevents="10"
 
 # BE and related specifications
 QRefValue="0.2"			#GeV
-BEeffects='on'
+BEeffects='off'
 BEEnhancementMode='2'	# 0 - use fixed QRef
 						# 1 - use ST interval with Gaussian BE form
 						# 2 - use ST interval with spherical Bessel BE form

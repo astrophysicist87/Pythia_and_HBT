@@ -6,15 +6,6 @@ source env.sh
 # Load default variable values
 source defaults.sh
 
-#=====================================
-#if [ -d "$RESULTS_DIRECTORY" ]; then
-#	rm -rf $RESULTS_DIRECTORY
-#fi
-
-#mkdir $RESULTS_DIRECTORY
-#=====================================
-
-
 #===================
 # Main calculation
 #===================
