@@ -6,6 +6,12 @@ source env.sh
 # Load default variable values
 source defaults.sh
 
+# Update any variables set from the command line
+for var in "$@"
+do
+    eval "$var"
+done
+
 #===================
 # Main calculation
 #===================
