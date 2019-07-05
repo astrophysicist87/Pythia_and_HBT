@@ -2,6 +2,7 @@
 # Flags and options
 #=====================================
 runPythia=true
+useParallel=true
 
 # system specifications
 projectile="p"

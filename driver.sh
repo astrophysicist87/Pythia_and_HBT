@@ -71,9 +71,16 @@ do
 
 
 			# time and run
-			./run_BEeffects.sh $projectile $target $beamEnergy \
-								$Nevents $PYTHIA_RESULTS_DIRECTORY \
-								$lowerLimit $upperLimit $ThermalOnly
+			if $useParallel
+			then
+				./run_BEeffects_OpenMP.sh $projectile $target $beamEnergy \
+									$Nevents $PYTHIA_RESULTS_DIRECTORY \
+									$lowerLimit $upperLimit $ThermalOnly
+			else
+				./run_BEeffects.sh $projectile $target $beamEnergy \
+									$Nevents $PYTHIA_RESULTS_DIRECTORY \
+									$lowerLimit $upperLimit $ThermalOnly
+			fi
 
 			# check and report whether run was successful
 			runSuccess=`echo $?`
