@@ -2,7 +2,7 @@
 
 (
 	rm -rf RESULTS
-	rm compile_all.out driver.out
+	rm compile_all.out driver.out submit.pbs.o*
 
 	clean_directory () {
 		rm $1/*.out $1/*.err $1/*.txt
