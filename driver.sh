@@ -18,6 +18,9 @@ then
 		mkdir $RESULTS_DIRECTORY
 fi
 
+# make sure current results directory exists
+mkdir `get_filename $CURRENT_RESULTS_DIRECTORY`
+
 #===================
 # Main calculation
 #===================
@@ -162,8 +165,8 @@ do
 		check_success 'HBT_event_generator' $runSuccess
 
 		# copy results
-		cp HBT_event_generator.[oe]* \
-			./results/* $RESULTS_DIRECTORY/
+		cp HBT_event_generator.[oe]* ./results
+		cp -r ./results/* $HBT_RESULTS_DIRECTORY/CF_results
 
 		readlink -f ./results/HBT_pipiCF.dat > $HBT_FITCF_DIRECTORY/catalogue.dat
 
@@ -195,7 +198,8 @@ do
 		check_success 'fit_correlation_function' $runSuccess
 
 		# copy results
-		cp fit_correlation_function.[oe]* ./results/* $RESULTS_DIRECTORY/
+		cp fit_correlation_function.[oe]* ./results
+		cp -r ./results $HBT_RESULTS_DIRECTORY/fit_results
 
 		#exit $runSuccess
 	)
@@ -225,7 +229,8 @@ do
 		check_success 'source_variances' $runSuccess
 
 		# copy results
-		cp SV_record.[oe]* ./results/* $RESULTS_DIRECTORY/
+		cp SV_record.[oe]* ./results
+		cp -r ./results $HBT_RESULTS_DIRECTORY/SV_results
 
 		#exit $runSuccess
 	)
@@ -237,17 +242,17 @@ do
 	#if [ "$success" -eq "0" ]
 	#then
 		#add a few more files
-		cp ./parameters.dat $RESULTS_DIRECTORY
+		cp ./parameters.dat $HBT_RESULTS_DIRECTORY
 
 		typeStem=""
-		if [ "$ThermalOnly" -eq 'true' ]
+		if [ "$ThermalOnly" == 'true' ]
 		then
 			typeStem="_THERMAL"
 		fi
 
 		zipFilename=$RESULTS_DIRECTORY/`echo $collisionSystemCentralityStem`"_results"`echo $typeStem`"_woBEeffects.zip"
 
-		zip -r `get_filename $zipFilename` $RESULTS_DIRECTORY
+		zip -r `get_filename $zipFilename` $CURRENT_RESULTS_DIRECTORY
 
 		# Clean-up HBT directories (but not Pythia results directory!!!)
 		#rm -rf $HBT_EVENT_GEN_DIRECTORY/*HBT_event_generator.[oe]* $HBT_EVENT_GEN_DIRECTORY/results\
