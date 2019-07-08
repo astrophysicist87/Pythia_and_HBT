@@ -19,7 +19,7 @@ then
 fi
 
 # make sure current results directory exists
-mkdir `get_filename $CURRENT_RESULTS_DIRECTORY`
+mkdir `get_dirname $CURRENT_RESULTS_DIRECTORY '-' "true"`
 
 #===================
 # Main calculation
@@ -166,6 +166,7 @@ do
 
 		# copy results
 		cp HBT_event_generator.[oe]* ./results
+		mkdir $HBT_RESULTS_DIRECTORY/CF_results
 		cp -r ./results/* $HBT_RESULTS_DIRECTORY/CF_results
 
 		readlink -f ./results/HBT_pipiCF.dat > $HBT_FITCF_DIRECTORY/catalogue.dat
@@ -199,6 +200,7 @@ do
 
 		# copy results
 		cp fit_correlation_function.[oe]* ./results
+		mkdir $HBT_RESULTS_DIRECTORY/fit_results
 		cp -r ./results $HBT_RESULTS_DIRECTORY/fit_results
 
 		#exit $runSuccess
@@ -230,6 +232,7 @@ do
 
 		# copy results
 		cp SV_record.[oe]* ./results
+		mkdir $HBT_RESULTS_DIRECTORY/SV_results
 		cp -r ./results $HBT_RESULTS_DIRECTORY/SV_results
 
 		#exit $runSuccess
@@ -244,13 +247,13 @@ do
 		#add a few more files
 		cp ./parameters.dat $HBT_RESULTS_DIRECTORY
 
-		typeStem=""
-		if [ "$ThermalOnly" == 'true' ]
-		then
-			typeStem="_THERMAL"
-		fi
+		#typeStem=""
+		#if [ "$ThermalOnly" == 'true' ]
+		#then
+		#	typeStem="_THERMAL"
+		#fi
 
-		zipFilename=$RESULTS_DIRECTORY/`echo $collisionSystemCentralityStem`"_results"`echo $typeStem`"_woBEeffects.zip"
+		zipFilename=$CURRENT_RESULTS_DIRECTORY".zip"
 
 		zip -r `get_filename $zipFilename` $CURRENT_RESULTS_DIRECTORY
 
