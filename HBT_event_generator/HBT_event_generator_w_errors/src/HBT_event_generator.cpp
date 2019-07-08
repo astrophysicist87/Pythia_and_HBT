@@ -57,6 +57,8 @@ void HBT_event_generator::initialize_all(
 	q_mode 			= paraRdr->getVal("q_mode");
 	method_mode 	= paraRdr->getVal("method_mode");
 	BE_mode 		= paraRdr->getVal("BE_mode");
+	use_smoothness_approximation
+					= (bool)paraRdr->getVal("use_smoothness_approximation");
 	// - bin parameters
 	bin_epsilon		= paraRdr->getVal("bin_epsilon");
 	// - bin parameters
