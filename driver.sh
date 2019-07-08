@@ -271,7 +271,7 @@ do
 
 		zipFilename=$CURRENT_RESULTS_DIRECTORY".zip"
 
-		zip -r `get_filename $zipFilename` $CURRENT_RESULTS_DIRECTORY
+		zip -r $zipFilename $CURRENT_RESULTS_DIRECTORY
 
 		# Clean-up HBT directories (but not Pythia results directory!!!)
 		#rm -rf $HBT_EVENT_GEN_DIRECTORY/*HBT_event_generator.[oe]* $HBT_EVENT_GEN_DIRECTORY/results\
