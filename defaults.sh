@@ -1,6 +1,7 @@
 #=====================================
 # Flags and options
 #=====================================
+# Options for codes
 runPythia=true
 useParallel=true
 

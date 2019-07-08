@@ -12,6 +12,12 @@ do
     eval "$var"
 done
 
+# make sure main results directory exists
+if [ ! -d "$RESULTS_DIRECTORY" ]
+then
+		mkdir $RESULTS_DIRECTORY
+fi
+
 #===================
 # Main calculation
 #===================
@@ -123,7 +129,7 @@ do
 		echo '     Now in '`pwd`
 
 		# using OpenMP (leave a couple cores free)
-		export OMP_NUM_THREADS=12
+		export OMP_NUM_THREADS=40
 
 		if [ ! -d "./results" ]; then
 			    mkdir results

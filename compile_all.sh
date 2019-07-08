@@ -5,6 +5,8 @@
 source env.sh
 
 default_num_threads=1
+export OMP_NUM_THREADS="${1:-$default_num_threads}"
+
 success=0
 
 #=====================================
@@ -27,7 +29,6 @@ echo '#====================================='
 cd $HBT_EVENT_GEN_DIRECTORY
 echo 'In directory='`pwd`':'
 echo '#====================================='
-export OMP_NUM_THREADS="${1:-$default_num_threads}"
 gmake distclean
 gmake all
 success=$[success+`echo $?`]
