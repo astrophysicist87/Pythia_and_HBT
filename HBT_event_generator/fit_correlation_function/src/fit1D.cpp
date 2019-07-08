@@ -145,133 +145,142 @@ void Correlation_function::find_minimum_chisq_correlationfunction_Q( int iKT, in
                 T[ij][lm] += -qweight[ij]*qweight[lm]*inv_sigma_k_prime_sq;
         }
 
-		// if we made it here, go ahead and fit
+		// if we made it here, go ahead and include in fit
 		++n_usable_bins;
     }
 
-	// if we don't have enough usable bins, don't fit!
-	if ( n_usable_bins <= dim )
-		return;
+	if ( n_usable_bins > dim )
+	{
+		for(int i = 0; i < dim; i++)
+		    for(int j = 0; j < dim; j++)
+		        gsl_matrix_set(T_gsl, i, j, T[i][j]);
 
-    for(int i = 0; i < dim; i++)
-        for(int j = 0; j < dim; j++)
-            gsl_matrix_set(T_gsl, i, j, T[i][j]);
+		// Make LU decomposition of matrix T_gsl
+		gsl_linalg_LU_decomp (T_gsl, perm, &s_gsl);
+		// Invert the matrix m
+		gsl_linalg_LU_invert (T_gsl, perm, T_inverse_gsl);
 
-    // Make LU decomposition of matrix T_gsl
-    gsl_linalg_LU_decomp (T_gsl, perm, &s_gsl);
-    // Invert the matrix m
-    gsl_linalg_LU_invert (T_gsl, perm, T_inverse_gsl);
-
-    double ** T_inverse = new double * [dim];
-    for(int i = 0; i < dim; i++)
-    {
-        T_inverse[i] = new double [dim];
-        for(int j = 0; j < dim; j++)
-            T_inverse[i][j] = gsl_matrix_get(T_inverse_gsl, i, j);
-    }
-    double * results = new double [dim];
-    for(int i = 0; i < dim; i++)
-    {
-        results[i] = 0.0;
-        for(int j = 0; j < dim; j++)
-            results[i] += T_inverse[i][j]*V[j];
-    }
-
-	// compute results
-	lambda_Correl[indexerK(iKT, iKphi, iKL)] = exp(results[0]);
-	R2[indexerK(iKT, iKphi, iKL)] = results[1]*hbarC*hbarC;
-out << "results: " << exp(results[0]) << "   " << results[1]*hbarC*hbarC << endl;
-
-	// compute chi^2
-    double chi_sq = 0.0;
-	for (int i = 0; i < n_Q_bins; i++)
-    {
-		int idx = indexer_Q_K(iKT, iKphi, iKL, i);
-
-        double Q_local = 0.5*(Q_pts[i]+Q_pts[i+1]);
-
-		double correl_local = correlation_function[idx]-1.0;
-		double correl_err_local = correlation_function_error[idx];
-
-		if(correl_local < 1.0e-15) continue;
-
-		bool ignore_central_point = true;
-		if ( 	ignore_central_point
-				and i==(n_Q_bins-1)/2)
-			continue;
-//			correl_err_local = 1.0e10;	//ignore central point
-        double sigma_k_prime = correl_err_local/correl_local;
-
-        chi_sq += pow( ( log(correl_local) - results[0] 
-						+ results[1]*Q_local*Q_local )
-						, 2 )
-                  /sigma_k_prime/sigma_k_prime;
-    }
-
-    double chi_sq_per_dof = chi_sq/(data_length - dim);
-    out << "chi_sq = " << chi_sq << endl;
-    out << "Number d.o.f. = " << data_length - dim << endl;
-    out << "chi_sq/d.o.f. = " << chi_sq_per_dof << endl;
-	out << "Goodness-of-fit parameter Q = "
-		<< gsl_sf_gamma_inc_Q (0.5*(data_length - dim), 0.5*chi_sq) << endl;
-
-	//============================================
-	// compute curvature and covariance matrices
-    double ** curvature_mat = new double * [dim];
-    double ** covariance_mat = new double * [dim];
-    for(int i = 0; i < dim; i++)
-    {
-        curvature_mat[i] = new double [dim];
-        covariance_mat[i] = new double [dim];
-        for(int j = 0; j < dim; j++)
+		double ** T_inverse = new double * [dim];
+		for(int i = 0; i < dim; i++)
 		{
-            curvature_mat[i][j] = 0.0;
-            covariance_mat[i][j] = 0.0;
+		    T_inverse[i] = new double [dim];
+		    for(int j = 0; j < dim; j++)
+		        T_inverse[i][j] = gsl_matrix_get(T_inverse_gsl, i, j);
 		}
-    }
+		double * results = new double [dim];
+		for(int i = 0; i < dim; i++)
+		{
+		    results[i] = 0.0;
+		    for(int j = 0; j < dim; j++)
+		        results[i] += T_inverse[i][j]*V[j];
+		}
 
-	//=============================
-	for (int i = 0; i < n_Q_bins; i++)
-    {
-		int idx = indexer_Q_K(iKT, iKphi, iKL, i);
+		// compute results
+		lambda_Correl[indexerK(iKT, iKphi, iKL)] = exp(results[0]);
+		R2[indexerK(iKT, iKphi, iKL)] = results[1]*hbarC*hbarC;
+		//out << "results: " << exp(results[0]) << "   " << results[1]*hbarC*hbarC << endl;
 
-        double Q_local = 0.5*(Q_pts[i]+Q_pts[i+1]);
+		// compute chi^2
+		double chi_sq = 0.0;
+		for (int i = 0; i < n_Q_bins; i++)
+		{
+			int idx = indexer_Q_K(iKT, iKphi, iKL, i);
 
-		double correl_local = correlation_function[idx]-1.0;
-		double correl_err_local = correlation_function_error[idx];
+		    double Q_local = 0.5*(Q_pts[i]+Q_pts[i+1]);
 
-		if (correl_local < 1.0e-15) continue;
+			double correl_local = correlation_function[idx]-1.0;
+			double correl_err_local = correlation_function_error[idx];
 
-		bool ignore_central_point = true;
-		if ( 	ignore_central_point
-				and i==(n_Q_bins-1)/2)
-			continue;
-		//	correl_err_local = 1.0e10;	//ignore central point
+			if(correl_local < 1.0e-15) continue;
 
-        double sigma_k_prime = correl_err_local/correl_local;
-        double inv_sigma_k_prime_sq = 1./(sigma_k_prime*sigma_k_prime);
+			bool ignore_central_point = true;
+			if ( 	ignore_central_point
+					and i==(n_Q_bins-1)/2)
+				continue;
+	//			correl_err_local = 1.0e10;	//ignore central point
+		    double sigma_k_prime = correl_err_local/correl_local;
 
-		qweight[0] = - 1.0;
-		qweight[1] = Q_local*Q_local;
+		    chi_sq += pow( ( log(correl_local) - results[0] 
+							+ results[1]*Q_local*Q_local )
+							, 2 )
+		              /sigma_k_prime/sigma_k_prime;
+		}
 
-		for(int ij = 0; ij < dim; ij++)
-		for(int lm = 0; lm < dim; lm++)
-            curvature_mat[ij][lm] += qweight[ij]*qweight[lm]
-										* inv_sigma_k_prime_sq;
-    }
+		double chi_sq_per_dof = chi_sq/(data_length - dim);
+		out << "chi_sq = " << chi_sq << endl;
+		out << "Number d.o.f. = " << data_length - dim << endl;
+		out << "chi_sq/d.o.f. = " << chi_sq_per_dof << endl;
+		out << "Goodness-of-fit parameter Q = "
+			<< gsl_sf_gamma_inc_Q (0.5*(data_length - dim), 0.5*chi_sq) << endl;
 
-	//=============================
-	// covariance matrix is inverse of curvaure matrix
-	gsl_matrix_invert( curvature_mat, covariance_mat, dim );
+		//============================================
+		// compute curvature and covariance matrices
+		double ** curvature_mat = new double * [dim];
+		double ** covariance_mat = new double * [dim];
+		for(int i = 0; i < dim; i++)
+		{
+		    curvature_mat[i] = new double [dim];
+		    covariance_mat[i] = new double [dim];
+		    for(int j = 0; j < dim; j++)
+			{
+		        curvature_mat[i][j] = 0.0;
+		        covariance_mat[i][j] = 0.0;
+			}
+		}
 
-	//=============================
-	// determine errors on fit parameters
-	// (i.e., diagonal elements of covariance matrix)
-	lambda_Correl_err[indexerK(iKT, iKphi, iKL)]
-		= lambda_Correl[indexerK(iKT, iKphi, iKL)]*(exp(sqrt(covariance_mat[0][0]))-1);
-	R2_err[indexerK(iKT, iKphi, iKL)] = sqrt(covariance_mat[1][1])*hbarC*hbarC;
+		//=============================
+		for (int i = 0; i < n_Q_bins; i++)
+		{
+			int idx = indexer_Q_K(iKT, iKphi, iKL, i);
 
-out << "results errors: " << lambda_Correl_err[indexerK(iKT, iKphi, iKL)] << "   " << R2_err[indexerK(iKT, iKphi, iKL)] << endl;
+		    double Q_local = 0.5*(Q_pts[i]+Q_pts[i+1]);
+
+			double correl_local = correlation_function[idx]-1.0;
+			double correl_err_local = correlation_function_error[idx];
+
+			if (correl_local < 1.0e-15) continue;
+
+			bool ignore_central_point = true;
+			if ( 	ignore_central_point
+					and i==(n_Q_bins-1)/2)
+				continue;
+			//	correl_err_local = 1.0e10;	//ignore central point
+
+		    double sigma_k_prime = correl_err_local/correl_local;
+		    double inv_sigma_k_prime_sq = 1./(sigma_k_prime*sigma_k_prime);
+
+			qweight[0] = - 1.0;
+			qweight[1] = Q_local*Q_local;
+
+			for(int ij = 0; ij < dim; ij++)
+			for(int lm = 0; lm < dim; lm++)
+		        curvature_mat[ij][lm] += qweight[ij]*qweight[lm]
+											* inv_sigma_k_prime_sq;
+		}
+
+		//=============================
+		// covariance matrix is inverse of curvaure matrix
+		gsl_matrix_invert( curvature_mat, covariance_mat, dim );
+
+		//=============================
+		// determine errors on fit parameters
+		// (i.e., diagonal elements of covariance matrix)
+		lambda_Correl_err[indexerK(iKT, iKphi, iKL)]
+			= lambda_Correl[indexerK(iKT, iKphi, iKL)]*(exp(sqrt(covariance_mat[0][0]))-1);
+		R2_err[indexerK(iKT, iKphi, iKL)] = sqrt(covariance_mat[1][1])*hbarC*hbarC;
+
+		//out << "results errors: " << lambda_Correl_err[indexerK(iKT, iKphi, iKL)] << "   " << R2_err[indexerK(iKT, iKphi, iKL)] << endl;
+	}
+	else	// if we don't have enough usable bins, don't fit!
+	{
+		// store results
+		lambda_Correl[indexerK(iKT, iKphi, iKL)] 		= 0.0;
+		R2[indexerK(iKT, iKphi, iKL)] 					= 0.0;
+
+		// store errors
+		lambda_Correl_err[indexerK(iKT, iKphi, iKL)] 	= 100000.0;
+		R2_err[indexerK(iKT, iKphi, iKL)] 				= 100000.0;
+	}
 
 	//=============================
     // clean up
