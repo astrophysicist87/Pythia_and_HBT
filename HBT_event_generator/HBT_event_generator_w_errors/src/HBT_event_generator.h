@@ -33,6 +33,7 @@ class HBT_event_generator
 
 		double bin_epsilon;
 
+		bool use_smoothness_approximation;
 		int bin_mode, q_mode, method_mode, BE_mode;
 		int total_N_events, number_of_completed_events;
 		

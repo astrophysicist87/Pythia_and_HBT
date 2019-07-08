@@ -78,6 +78,11 @@ method_mode = 2
 BE_mode = 0
 
 #===========
+# whether to use smoothness approximation
+# (shouldn't matter for Pb-Pb collisions)
+use_smoothness_approximation = 0
+
+#===========
 # get particles randomly or from file
 file_mode = 1
 	#=======
