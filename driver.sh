@@ -13,10 +13,10 @@ do
 done
 
 # make sure main results directory exists
-if [ ! -d "$RESULTS_DIRECTORY" ]
+if [ ! -d "$MAIN_RESULTS_DIRECTORY" ]
 then
-	mkdir $RESULTS_DIRECTORY
-	echo 'Created' $RESULTS_DIRECTORY
+	mkdir $MAIN_RESULTS_DIRECTORY
+	echo 'Created' $MAIN_RESULTS_DIRECTORY
 fi
 
 #===================
@@ -31,8 +31,9 @@ do
 
 	# make sure current results directory exists
 	nextCurrentResultsDirectoryName=`get_dirname $CURRENT_RESULTS_DIRECTORY '-' "true"`
-	mkdir $nextCurrentResultsDirectoryName
-	echo 'Created' $nextCurrentResultsDirectoryName
+	CURRENT_RESULTS_DIRECTORY=$nextCurrentResultsDirectoryName
+	mkdir $CURRENT_RESULTS_DIRECTORY
+	echo 'Created' $CURRENT_RESULTS_DIRECTORY
 
 	# make sure HBT results directory exists
 	if [ ! -d "$HBT_RESULTS_DIRECTORY" ]
