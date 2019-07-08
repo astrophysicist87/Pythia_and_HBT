@@ -17,8 +17,8 @@ echo '#====================================='
 cd $PYTHIA_DIRECTORY
 echo 'In directory='`pwd`':'
 echo '#====================================='
-rm main_BEeffects
-make main_BEeffects
+rm main_BEeffects main_BEeffects_OpenMP
+make main_BEeffects main_BEeffects_OpenMP
 success=$[success+`echo $?`]
 
 #=====================================
