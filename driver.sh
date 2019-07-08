@@ -15,11 +15,9 @@ done
 # make sure main results directory exists
 if [ ! -d "$RESULTS_DIRECTORY" ]
 then
-		mkdir $RESULTS_DIRECTORY
+	mkdir $RESULTS_DIRECTORY
+	echo 'Created' $RESULTS_DIRECTORY
 fi
-
-# make sure current results directory exists
-mkdir `get_dirname $CURRENT_RESULTS_DIRECTORY '-' "true"`
 
 #===================
 # Main calculation
@@ -30,6 +28,19 @@ echo 'Processing Nevents =' $Nevents $projectile'+'$target 'collisions at' $beam
 nCC=0
 for centralityCutString in "0-100%"
 do
+
+	# make sure current results directory exists
+	nextCurrentResultsDirectoryName=`get_dirname $CURRENT_RESULTS_DIRECTORY '-' "true"`
+	mkdir $nextCurrentResultsDirectoryName
+	echo 'Created' $nextCurrentResultsDirectoryName
+
+	# make sure HBT results directory exists
+	if [ ! -d "$HBT_RESULTS_DIRECTORY" ]
+	then
+		mkdir $HBT_RESULTS_DIRECTORY
+		echo 'Created' $HBT_RESULTS_DIRECTORY
+	fi
+
 	success=0
 	echo '  -- analyzing centrality class' $centralityCutString
 
