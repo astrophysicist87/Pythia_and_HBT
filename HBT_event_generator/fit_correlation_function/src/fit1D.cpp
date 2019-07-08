@@ -121,6 +121,9 @@ void Correlation_function::find_minimum_chisq_correlationfunction_Q( int iKT, in
 //			correl_err_local = 1.0e10;	//ignore central point
         double sigma_k_prime = correl_err_local/correl_local;
 
+		if ( sigma_k_prime < 1.e-15 )	// too small
+			continue;
+
         double inv_sigma_k_prime_sq = 1./(sigma_k_prime*sigma_k_prime);
         double log_correl_over_sigma_sq = log(correl_local)*inv_sigma_k_prime_sq;
 //cout << "Check: " << Q_local << "   " << correl_local << endl;
@@ -200,6 +203,9 @@ void Correlation_function::find_minimum_chisq_correlationfunction_Q( int iKT, in
 	//			correl_err_local = 1.0e10;	//ignore central point
 		    double sigma_k_prime = correl_err_local/correl_local;
 
+			if ( sigma_k_prime < 1.e-15 )	// too small
+				continue;
+
 		    chi_sq += pow( ( log(correl_local) - results[0] 
 							+ results[1]*Q_local*Q_local )
 							, 2 )
@@ -247,6 +253,10 @@ void Correlation_function::find_minimum_chisq_correlationfunction_Q( int iKT, in
 			//	correl_err_local = 1.0e10;	//ignore central point
 
 		    double sigma_k_prime = correl_err_local/correl_local;
+
+			if ( sigma_k_prime < 1.e-15 )	// too small
+				continue;
+
 		    double inv_sigma_k_prime_sq = 1./(sigma_k_prime*sigma_k_prime);
 
 			qweight[0] = - 1.0;
