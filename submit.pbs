@@ -12,5 +12,5 @@ cd "$PBS_O_WORKDIR" || exit $?
 if [ "$?" -eq "0" ]
 then
 	./driver.sh Nevents=100 ThermalOnly='true' &> driver.out
-	./driver.sh Nevents=100 ThermalOnly='false' &> driver.out
+	./driver.sh Nevents=100 ThermalOnly='false' &>> driver.out
 fi
