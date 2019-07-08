@@ -35,6 +35,10 @@ do
 	mkdir $CURRENT_RESULTS_DIRECTORY
 	echo 'Created' $CURRENT_RESULTS_DIRECTORY
 
+	# set names of sub-directories
+	PYTHIA_RESULTS_DIRECTORY=$CURRENT_RESULTS_DIRECTORY/Pythia_results
+	HBT_RESULTS_DIRECTORY=$CURRENT_RESULTS_DIRECTORY/HBT_results
+
 	# make sure HBT results directory exists
 	if [ ! -d "$HBT_RESULTS_DIRECTORY" ]
 	then
