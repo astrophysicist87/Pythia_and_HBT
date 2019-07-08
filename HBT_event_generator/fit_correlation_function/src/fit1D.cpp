@@ -270,6 +270,18 @@ void Correlation_function::find_minimum_chisq_correlationfunction_Q( int iKT, in
 		R2_err[indexerK(iKT, iKphi, iKL)] = sqrt(covariance_mat[1][1])*hbarC*hbarC;
 
 		//out << "results errors: " << lambda_Correl_err[indexerK(iKT, iKphi, iKL)] << "   " << R2_err[indexerK(iKT, iKphi, iKL)] << endl;
+
+		for(int i = 0; i < dim; i++)
+		{
+			delete [] T_inverse[i];
+			delete [] curvature_mat[i];
+			delete [] covariance_mat[i];
+		}
+		delete [] T_inverse;
+		delete [] curvature_mat;
+		delete [] covariance_mat;
+		delete [] results;
+
 	}
 	else	// if we don't have enough usable bins, don't fit!
 	{
@@ -288,20 +300,11 @@ void Correlation_function::find_minimum_chisq_correlationfunction_Q( int iKT, in
     gsl_matrix_free (T_inverse_gsl);
     gsl_permutation_free (perm);
 
-    delete [] qweight;
-    delete [] V;
-    for(int i = 0; i < dim; i++)
-    {
-        delete [] T[i];
-        delete [] T_inverse[i];
-		delete [] curvature_mat[i];
-		delete [] covariance_mat[i];
-    }
-    delete [] T;
-    delete [] T_inverse;
-	delete [] curvature_mat;
-	delete [] covariance_mat;
-    delete [] results;
+	delete [] qweight;
+	delete [] V;
+	for(int i = 0; i < dim; i++)
+		delete [] T[i];
+	delete [] T;
 
 	return;
 }
