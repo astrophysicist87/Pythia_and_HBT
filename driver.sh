@@ -217,7 +217,7 @@ do
 		# copy results
 		cp fit_correlation_function.[oe]* ./results
 		mkdir $HBT_RESULTS_DIRECTORY/fit_results
-		cp -r ./results $HBT_RESULTS_DIRECTORY/fit_results
+		cp -r ./results/* $HBT_RESULTS_DIRECTORY/fit_results
 
 		#exit $runSuccess
 	)
@@ -249,7 +249,7 @@ do
 		# copy results
 		cp SV_record.[oe]* ./results
 		mkdir $HBT_RESULTS_DIRECTORY/SV_results
-		cp -r ./results $HBT_RESULTS_DIRECTORY/SV_results
+		cp -r ./results/* $HBT_RESULTS_DIRECTORY/SV_results
 
 		#exit $runSuccess
 	)
@@ -261,7 +261,7 @@ do
 	#if [ "$success" -eq "0" ]
 	#then
 		#add a few more files
-		cp ./parameters.dat $HBT_RESULTS_DIRECTORY
+		cp $HBT_DIRECTORY/parameters.dat $HBT_RESULTS_DIRECTORY
 
 		#typeStem=""
 		#if [ "$ThermalOnly" == 'true' ]
