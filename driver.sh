@@ -131,11 +131,22 @@ do
 
 		cp ../parameters.dat .
 
+		#default: assume BE effects are turned off in Pythia
+		chosen_BE_mode=0
+		if [ "$BEeffects" == "on" ]; then
+				# BE_mode value for enhancement mode = 0 or 1
+				chosen_BE_mode=1
+				# handle the special case
+			    if [ "$BEEnhancementMode" == "2" ]; then
+					chosen_BE_mode=2
+				fi
+		fi
+
 		# time and run
 		nohup time ./run_HBT_event_generator.e \
 				centrality_minimum=$lowerLimit \
 				centrality_maximum=$upperLimit \
-				BE_mode=$BEEnhancementMode \
+				BE_mode=$chosen_BE_mode \
 				1> HBT_event_generator.out \
 				2> HBT_event_generator.err
 		# N.B. - centralities now determined in Pythia
