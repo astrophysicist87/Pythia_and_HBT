@@ -11,6 +11,6 @@ cd "$PBS_O_WORKDIR" || exit $?
 
 if [ "$?" -eq "0" ]
 then
-	./driver.sh Nevents=1000000 ThermalOnly='true' &> driver.out
-	./driver.sh Nevents=1000000 ThermalOnly='false' &>> driver.out
+	./driver.sh Nevents=1000000 ThermalOnly='true' SetPartonVertices='on' &>> driver.out
+	./driver.sh Nevents=1000000 ThermalOnly='false' SetPartonVertices='on' &>> driver.out
 fi
