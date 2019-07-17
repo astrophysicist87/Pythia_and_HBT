@@ -6,4 +6,4 @@ cd pythia8235
 
 cd ..
 
-./compile_all.sh
+./compile_all.sh $@

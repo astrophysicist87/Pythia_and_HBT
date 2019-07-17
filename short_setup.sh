@@ -6,4 +6,4 @@ gmake
 
 cd ..
 
-./compile_all.sh
+./compile_all.sh $@
