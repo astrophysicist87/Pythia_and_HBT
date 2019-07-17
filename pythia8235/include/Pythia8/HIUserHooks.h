@@ -50,6 +50,13 @@ const double nanobarn = 1.0e-7;
 
 }
 
+namespace ChristopherPlumbergUnits
+{
+const double femtometer = 1.0e12;
+const double millimeter = 1.0e-12;
+}
+
+
 using namespace HIUnits;
 
 //==========================================================================
