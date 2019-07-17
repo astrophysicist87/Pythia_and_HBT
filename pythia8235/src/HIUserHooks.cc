@@ -608,7 +608,7 @@ inline double el(double s1, double s2, double u1, double u2) {
 SubCollisionModel::SigEst DoubleStrikman::getSig() const {
 
   SigEst s;
-std::cout << "model used was double strikman" << std::endl;
+//std::cout << "model used was double strikman" << std::endl;
   for ( int n = 0; n < NInt; ++n ) {
     double rp1 = gamma();
     double rp2 = gamma();
@@ -928,7 +928,7 @@ getCollisions(vector<Nucleon> & proj, vector<Nucleon> & targ,
 SubCollisionModel::SigEst MultiRadial::getSig() const {
 
   SigEst s;
-std::cout << "model used was multiradial" << std::endl;
+//std::cout << "model used was multiradial" << std::endl;
   double sTpt = 0.0;
   double sT2pt = 0.0;
   //  double sTpt2 = 0.0;
