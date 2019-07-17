@@ -172,6 +172,9 @@ int main(int argc, char *argv[])
 			<< multiplicity_lower_limit << " to "
 			<< multiplicity_upper_limit << endl;
 
+	cout << "Running with number of OpenMP threads = "
+			<< omp_get_max_threads() << endl;
+
 	// Loop over events and OpenMP threads.
 	int iEvent = 0;
 	#pragma omp parallel for
