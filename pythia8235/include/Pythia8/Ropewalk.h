@@ -25,8 +25,8 @@
 
 namespace ChristopherPlumbergUnits
 {
-const double femtometer = 1.0e-12;
-const double millimeter = 1.0e12;
+const double femtometer = 1.0e12;
+const double millimeter = 1.0e-12;
 }
 
 namespace Pythia8 {

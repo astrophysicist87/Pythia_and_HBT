@@ -965,8 +965,8 @@ std::cout << "Transverse position: "
 			<< ei.event[i].yProd() << "   "
 			<< shift.px() << "   "
 			<< shift.py() << "   ";
-    ei.event[i].xProd(ei.event[i].xProd() + millimeter*shift.px());
-    ei.event[i].yProd(ei.event[i].yProd() + millimeter*shift.py());
+    ei.event[i].xProd(ei.event[i].xProd() + ChristopherPlumbergUnits::millimeter*shift.px());
+    ei.event[i].yProd(ei.event[i].yProd() + ChristopherPlumbergUnits::millimeter*shift.py());
 std::cout << ei.event[i].xProd() << "   "
 			<< ei.event[i].yProd() << std::endl;
   }
