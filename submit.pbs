@@ -7,7 +7,7 @@
 
 cd "$PBS_O_WORKDIR" || exit $?
 
-./compile_all.sh 40 &> compile_all.out
+./compile_all.sh 1 &> compile_all.out
 
 if [ "$?" -eq "0" ]
 then
