@@ -261,6 +261,7 @@ do
 	#if [ "$success" -eq "0" ]
 	#then
 		#add a few more files
+		cp $PYTHIA_DIRECTORY/main_BEeffects.cmnd $PYTHIA_RESULTS_DIRECTORY
 		cp $HBT_DIRECTORY/parameters.dat $HBT_RESULTS_DIRECTORY
 
 		#typeStem=""
