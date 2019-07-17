@@ -1,5 +1,9 @@
 #! /usr/bin/env bash
 
+source ../../omp_env.sh
+export OMP_NUM_THREADS=$chosen_OMP_NUM_THREADS
+echo 'OMP_NUM_THREADS =' $OMP_NUM_THREADS
+
 # make sure results directory exists
 DIRECTORY="$5"
 if [ ! -d "$DIRECTORY" ]; then

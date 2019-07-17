@@ -6,6 +6,11 @@ source env.sh
 # Load default variable values
 source defaults.sh
 
+# Load OpenMP info
+source ../../omp_env.sh
+export OMP_NUM_THREADS=$chosen_OMP_NUM_THREADS
+echo 'OMP_NUM_THREADS =' $OMP_NUM_THREADS
+
 # Update any variables set from the command line
 for var in "$@"
 do
