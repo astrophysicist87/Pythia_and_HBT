@@ -7,13 +7,13 @@
 
 cd "$PBS_O_WORKDIR" || exit $?
 
-chosen_OMP_NUM_THREADS=2
+chosen_OMP_NUM_THREADS=40
 echo 'chosen_OMP_NUM_THREADS='$chosen_OMP_NUM_THREADS > omp_env.sh
 
 ./compile_all.sh $chosen_OMP_NUM_THREADS &> compile_all.out
 
 if [ "$?" -eq "0" ]
 then
-	./driver.sh useParallel=true projectile="Pb" target="Pb" beamEnergy="2760.0" Nevents=100 ThermalOnly='true' SetPartonVertices='off' &> driver.out
-	#./driver.sh useParallel=true projectile="Pb" target="Pb" beamEnergy="2760.0" Nevents=100 ThermalOnly='false' SetPartonVertices='off' &>> driver.out
+	./driver.sh useParallel=true projectile="Pb" target="Pb" beamEnergy="2760.0" Nevents=100000 ThermalOnly='true' SetPartonVertices='off' &> driver.out
+	./driver.sh useParallel=true projectile="Pb" target="Pb" beamEnergy="2760.0" Nevents=100000 ThermalOnly='false' SetPartonVertices='off' &>> driver.out
 fi
