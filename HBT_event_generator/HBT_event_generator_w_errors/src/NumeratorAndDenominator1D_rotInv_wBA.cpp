@@ -16,9 +16,6 @@
 
 void HBT_event_generator::Compute_numerator_and_denominator_methodMode2_q_mode_1DrotInv()
 {
-	//bool perform_random_rotation = false;
-	//bool perform_random_shuffle = false;
-
 	constexpr bool do_denominator = true;
 
 	const int q_space_size = n_Q_bins*n_qRP_pts*n_thq_pts;
@@ -132,15 +129,10 @@ void HBT_event_generator::Compute_numerator_and_denominator_methodMode2_q_mode_1
 					const double sintthetaq = sin(ttheta_q_pts[ithq]);
 					const double costhetaq = cos(thetaq);
 					const double sinthetaq = sin(thetaq);
-					const double qRP_min = 0.0;
-					double num_loc = 4.0*(particle_mass*particle_mass + KT*KT + KL*KL) + Q0*Q0;
-					double den_loc = 4.0*(particle_mass*particle_mass + sintthetaq*sintthetaq*(KT*KT + KL*KL)) + Q0*Q0;
-					double qRP_max = abs(Q0)*sqrt(num_loc/den_loc);
-					const double qRP_cen = 0.5*(qRP_max + qRP_min), qRP_hw = 0.5*(qRP_max - qRP_min);
+					const double qRP_cen = 0.5*abs(Q0), qRP_hw = 0.5*abs(Q0);
 
 					for (int iqRP = 0; iqRP < n_qRP_pts; iqRP++)	//using points, not bins!
 					{
-						double loc_alpha = 4.0*(particle_mass*particle_mass + KT*KT + KL*KL) + Q0*Q0;
 
 						double qRP = qRP_cen + qRP_hw * x_pts[iqRP];
 						const double qRPwt = qRP_hw * x_wts[iqRP];
@@ -151,14 +143,10 @@ void HBT_event_generator::Compute_numerator_and_denominator_methodMode2_q_mode_1
 						double qo = qRP * sinthetaq;
 						double ql = qRP * costhetaq;
 
-						const double xi0 = particle_mass*particle_mass + KT*KT + KL*KL + 0.25*(qo*qo+ql*ql);
-						const double xi1 = qo*KT+ql*KL;
-						const double xi3 = Q0*Q0 - qo*qo - ql*ql;
-
 						// Check if a solution even exists;
 						// if not, we're in a (q,K)-bin which
 						// doesn't contribute to this value of Q0!
-						double disc = 4.0*xi1*xi1 + 4.0*xi0*xi3 + xi3*xi3;
+						double disc = Q0*Q0 - qo*qo - ql*ql;
 						if ( disc < 0.0 )
 						{
 							err << "Shouldn't have reached this point!" << endl;
@@ -166,21 +154,11 @@ void HBT_event_generator::Compute_numerator_and_denominator_methodMode2_q_mode_1
 						}
 
 						// Otherwise, set the |root|
-						double qs0 = sqrt( disc / ( 4.0*xi0 + xi3 ) );
+						double qs0 = sqrt( Q0*Q0 - qo*qo - ql*ql );
 						//if (abs(qs0) < 1.e-6)
 						//	continue;
 
-						// weight factor from delta-function identities
-						// to get the normalization right
-						const double weight_num = abs( (4.0*xi0+xi3)*(4.0*xi0+xi3) - 4.0*xi1*xi1 );
-						if ( (4.0*xi0+xi3)*(4.0*xi0+xi3) - 4.0*xi1*xi1 < 0.0 )
-						{
-							err << "Shouldn't have reached this point!" << endl;
-							continue;
-						}
-
-						const double weight_den = 1.e-100+qs0*( (4.0*xi0+xi3)*(4.0*xi0+xi3) + 4.0*xi1*xi1 + weight_num );
-						const double weight_factor = weight_num / weight_den;
+						const double weight_factor = 1.0 / ( 2.0 * qs0 + 1.e-100 );
 						const double integration_weight = qRP * qRPwt * ttheta_q_wts[ithq];
 
 						// Record +/- roots in q_s direction
@@ -306,42 +284,28 @@ void HBT_event_generator::Compute_numerator_and_denominator_methodMode2_q_mode_1
 					const double sintthetaq = sin(ttheta_q_pts[ithq]);
 					const double costhetaq = cos(thetaq);
 					const double sinthetaq = sin(thetaq);
-					const double qRP_min = 0.0;
-					double num_loc = 4.0*(particle_mass*particle_mass + KT*KT + KL*KL) + Q0*Q0;
-					double den_loc = 4.0*(particle_mass*particle_mass + sintthetaq*sintthetaq*(KT*KT + KL*KL)) + Q0*Q0;
-					double qRP_max = abs(Q0)*sqrt(num_loc/den_loc);
-					const double qRP_cen = 0.5*(qRP_max + qRP_min), qRP_hw = 0.5*(qRP_max - qRP_min);
+					const double qRP_cen = 0.5*abs(Q0), qRP_hw = 0.5*abs(Q0);
 
 					for (int iqRP = 0; iqRP < n_qRP_pts; iqRP++)	//using points, not bins!
 					{
 
-						double loc_alpha = 4.0*(particle_mass*particle_mass + KT*KT + KL*KL) + Q0*Q0;
-
-						double costthetaq = cos(ttheta_q_pts[ithq]);
-						double sintthetaq = sin(ttheta_q_pts[ithq]);
-						double qRP_min = 0.0;
-						double num_loc = 4.0*(particle_mass*particle_mass + KT*KT + KL*KL) + Q0*Q0;
-						double den_loc = 4.0*(particle_mass*particle_mass + sintthetaq*sintthetaq*(KT*KT + KL*KL)) + Q0*Q0;
-						double qRP_max = abs(Q0)*sqrt(num_loc/den_loc);
-						double qRP_cen = 0.5*(qRP_max + qRP_min), qRP_hw = 0.5*(qRP_max - qRP_min);
+						//double costthetaq = cos(ttheta_q_pts[ithq]);
+						//double sintthetaq = sin(ttheta_q_pts[ithq]);
+						//double qRP_cen = 0.5*abs(Q0), qRP_hw = 0.5*abs(Q0);
 
 						double qRP = qRP_cen + qRP_hw * x_pts[iqRP];
 						const double qRPwt = qRP_hw * x_wts[iqRP];
-						double thetaq = ttheta_q_pts[ithq] + thetaK;	//shifted w.r.t. K
-						double costhetaq = cos(thetaq);
-						double sinthetaq = sin(thetaq);
+						//double thetaq = ttheta_q_pts[ithq] + thetaK;	//shifted w.r.t. K
+						//double costhetaq = cos(thetaq);
+						//double sinthetaq = sin(thetaq);
 
 						double qo = qRP * sinthetaq;
 						double ql = qRP * costhetaq;
 
-						const double xi0 = particle_mass*particle_mass + KT*KT + KL*KL + 0.25*(qo*qo+ql*ql);
-						const double xi1 = qo*KT+ql*KL;
-						const double xi3 = Q0*Q0 - qo*qo - ql*ql;
-
 						// Check if a solution even exists;
 						// if not, we're in a (q,K)-bin which
 						// doesn't contribute to this value of Q0!
-						double disc = 4.0*xi1*xi1 + 4.0*xi0*xi3 + xi3*xi3;
+						double disc = Q0*Q0 - qo*qo - ql*ql;
 						if ( disc < 0.0 )
 						{
 							err << "Shouldn't have reached this point!" << endl;
@@ -349,15 +313,13 @@ void HBT_event_generator::Compute_numerator_and_denominator_methodMode2_q_mode_1
 						}
 
 						// Otherwise, set the |root|
-						double qs0 = sqrt( disc / ( 4.0*xi0 + xi3 ) );
+						double qs0 = sqrt( Q0*Q0 - qo*qo - ql*ql );
 						//if (abs(qs0) < 1.e-6)
 						//	continue;
 
 						// weight factor from delta-function identities
 						// to get the normalization right
-						const double weight_num = abs( (4.0*xi0+xi3)*(4.0*xi0+xi3) - 4.0*xi1*xi1 );
-						const double weight_den = 1.e-100+qs0*( (4.0*xi0+xi3)*(4.0*xi0+xi3) + 4.0*xi1*xi1 + weight_num );
-						const double weight_factor = weight_num / weight_den;
+						const double weight_factor = 1.0 / ( 2.0 * qs0 + 1.e-100 );
 						const double integration_weight = qRP * qRPwt * ttheta_q_wts[ithq];
 
 						// Record +/- roots in q_s direction
