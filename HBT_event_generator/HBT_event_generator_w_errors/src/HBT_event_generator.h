@@ -198,10 +198,12 @@ class HBT_event_generator
 		void Compute_numerator_and_denominator_momentum_space_only();
 		void Compute_numerator_and_denominator_momentum_space_only_q_mode_3D();
 		void Compute_numerator_and_denominator_momentum_space_only_q_mode_1D();
+		void Compute_numerator_and_denominator_momentum_space_only_q_mode_1DrotInv();
 
 		void Compute_numerator_and_denominator_methodMode0();
 		void Compute_numerator_and_denominator_methodMode0_q_mode_3D();
 		void Compute_numerator_and_denominator_methodMode0_q_mode_1D();
+		void Compute_numerator_and_denominator_methodMode0_q_mode_1DrotInv();
 
 		//void Compute_numerator_and_denominator_methodMode1();
 		//void Compute_numerator_and_denominator_methodMode1_q_mode_3D();
@@ -210,6 +212,7 @@ class HBT_event_generator
 		void Compute_numerator_and_denominator_methodMode2();
 		void Compute_numerator_and_denominator_methodMode2_q_mode_3D();
 		void Compute_numerator_and_denominator_methodMode2_q_mode_1D();
+		void Compute_numerator_and_denominator_methodMode2_q_mode_1DrotInv();
 
 		// Correlation function itself
 		void Compute_correlation_function();

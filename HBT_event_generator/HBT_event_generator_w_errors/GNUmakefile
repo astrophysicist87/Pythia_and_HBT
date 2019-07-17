@@ -44,8 +44,10 @@ SRC		=	main.cpp \
 			$(SRCDIR)/gauss_quadrature.cpp \
 			$(SRCDIR)/NumeratorAndDenominator.cpp \
 			$(SRCDIR)/NumeratorAndDenominator1D.cpp \
+			$(SRCDIR)/NumeratorAndDenominator1D_rotInv.cpp \
 			$(SRCDIR)/NumeratorAndDenominator_wBA.cpp \
 			$(SRCDIR)/NumeratorAndDenominator1D_wBA.cpp \
+			$(SRCDIR)/NumeratorAndDenominator1D_rotInv_wBA.cpp \
 			$(SRCDIR)/HBT_event_generator.cpp
 			#$(SRCDIR)/SingleParticleSpectra.cpp
 

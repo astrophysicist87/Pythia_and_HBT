@@ -960,15 +960,15 @@ EventInfo & Angantyr::shiftEvent(EventInfo & ei) {
   Vec4 bmin = ei.coll->targ->bPos();
   for ( int i = 0, N = ei.event.size(); i < N; ++i ) {
     Vec4 shift = bmin + (bmax - bmin)*(ei.event[i].y() - ymin)/(ymax - ymin);
-std::cout << "Transverse position: "
+/*std::cout << "Transverse position: "
 			<< ei.event[i].xProd() << "   "
 			<< ei.event[i].yProd() << "   "
 			<< shift.px() << "   "
-			<< shift.py() << "   ";
+			<< shift.py() << "   ";*/
     ei.event[i].xProd(ei.event[i].xProd() + ChristopherPlumbergUnits::millimeter*shift.px());
     ei.event[i].yProd(ei.event[i].yProd() + ChristopherPlumbergUnits::millimeter*shift.py());
-std::cout << ei.event[i].xProd() << "   "
-			<< ei.event[i].yProd() << std::endl;
+/*std::cout << ei.event[i].xProd() << "   "
+			<< ei.event[i].yProd() << std::endl;*/
   }
   return ei;
 }
