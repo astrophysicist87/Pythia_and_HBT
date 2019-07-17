@@ -306,8 +306,8 @@ void HBT_event_generator::Compute_numerator_and_denominator_methodMode0_q_mode_1
 					Q0 = 1.e-20;
 
 				// integrals over numerator and denominator
-				double numerator_contribution_from_this_event = 0.0;
-				double denominator_contribution_from_this_event = 0.0;
+				double numerator_this_event = 0.0;
+				double denominator_this_event = 0.0;
 
 				const int index4D = indexer_qmode_1(iKT, iKphi, iKL, iQ);
 
