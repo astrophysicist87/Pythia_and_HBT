@@ -6,6 +6,7 @@ source env.sh
 
 default_num_threads=1
 export OMP_NUM_THREADS="${1:-$default_num_threads}"
+echo 'OMP_NUM_THREADS =' $OMP_NUM_THREADS
 
 success=0
 
