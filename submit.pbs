@@ -11,6 +11,6 @@ cd "$PBS_O_WORKDIR" || exit $?
 
 if [ "$?" -eq "0" ]
 then
-	./driver.sh useParallel=false projectile="Pb" target="Pb" beamEnergy="2760.0" Nevents=100 ThermalOnly='true' SetPartonVertices='off' &>> driver.out
-	./driver.sh useParallel=false projectile="Pb" target="Pb" beamEnergy="2760.0" Nevents=100 ThermalOnly='false' SetPartonVertices='off' &>> driver.out
+	./driver.sh useParallel=true projectile="Pb" target="Pb" beamEnergy="2760.0" Nevents=100 ThermalOnly='true' SetPartonVertices='off' &> driver.out
+	./driver.sh useParallel=true projectile="Pb" target="Pb" beamEnergy="2760.0" Nevents=100 ThermalOnly='false' SetPartonVertices='off' &>> driver.out
 fi
