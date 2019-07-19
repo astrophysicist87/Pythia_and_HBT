@@ -4,6 +4,7 @@
 # Options for codes
 runPythia=true
 useParallel=true
+centralitySelectionInPythia=false
 
 # system specifications
 projectile="p"

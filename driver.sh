@@ -55,11 +55,20 @@ do
 	echo '  -- analyzing centrality class' $centralityCutString
 
 	centralityCut=(`echo $centralityCutString | sed 's/-/ /g' | sed 's/%//g'`)
-	lowerLimit=${centralityCut[0]}
-	upperLimit=${centralityCut[1]}
+	thisCentrality="C"${centralityCut[0]}"_"${centralityCut[1]}
+	HBT_CEN_RESULTS_DIRECTORY=$HBT_RESULTS_DIRECTORY/$thisCentrality
+
+	lowerLimit=0
+	upperLimit=100
+	# default is false, i.e., minimum bias
+	if $centralitySelectionInPythia
+	then
+		lowerLimit=${centralityCut[0]}
+		upperLimit=${centralityCut[1]}
+	fi
 
 	collisionSystemStem=$projectile$target"_"`echo $beamEnergy`"GeV_Nev"$Nevents
-	collisionSystemCentralityStem=$projectile$target"_"`echo $beamEnergy`"GeV_C"$lowerLimit"_"$upperLimit"_Nev"$Nevents
+	#collisionSystemCentralityStem=$projectile$target"_"`echo $beamEnergy`"GeV_C"$lowerLimit"_"$upperLimit"_Nev"$Nevents
 
 	#=====================================
 	# Run Pythia (if desired)
@@ -120,6 +129,16 @@ do
 			#cp $PYTHIA_RESULTS_DIRECTORY/* $RESULTS_DIRECTORY/
 		fi
 
+		# if Pythia was minimum bias (default), do centrality selection in subsequent codes
+		# otherwise, just do whatever events have been produced
+		lowerLimit=${centralityCut[0]}
+		upperLimit=${centralityCut[1]}
+		if $centralitySelectionInPythia
+		then
+			lowerLimit=0
+			upperLimit=100
+		fi
+
 		# Get the filenames which need to be processed
 		recordOfOutputFilenames_Sxp=$PYTHIA_RESULTS_DIRECTORY/`echo $collisionSystemStem`"_S_x_p_filenames.dat"
 		recordOfOutputFilename_mult=$PYTHIA_RESULTS_DIRECTORY/`echo $collisionSystemStem`"_total_N_filename.dat"
@@ -174,12 +193,10 @@ do
 
 		# time and run
 		nohup time ./run_HBT_event_generator.e \
-				centrality_minimum=$lowerLimit \
-				centrality_maximum=$upperLimit \
 				BE_mode=$chosen_BE_mode \
 				1> HBT_event_generator.out \
 				2> HBT_event_generator.err
-		# N.B. - centralities now determined in Pythia
+		# N.B. - centralities determined either here or in Pythia, but not both
 
 		# check and report whether run was successful
 		runSuccess=`echo $?`
@@ -187,8 +204,8 @@ do
 
 		# copy results
 		cp HBT_event_generator.[oe]* ./results
-		mkdir $HBT_RESULTS_DIRECTORY/CF_results
-		cp -r ./results/* $HBT_RESULTS_DIRECTORY/CF_results
+		mkdir $HBT_CEN_RESULTS_DIRECTORY/CF_results
+		cp -r ./results/* $HBT_CEN_RESULTS_DIRECTORY/CF_results
 
 		readlink -f ./results/HBT_pipiCF.dat > $HBT_FITCF_DIRECTORY/catalogue.dat
 
@@ -221,8 +238,8 @@ do
 
 		# copy results
 		cp fit_correlation_function.[oe]* ./results
-		mkdir $HBT_RESULTS_DIRECTORY/fit_results
-		cp -r ./results/* $HBT_RESULTS_DIRECTORY/fit_results
+		mkdir $HBT_CEN_RESULTS_DIRECTORY/fit_results
+		cp -r ./results/* $HBT_CEN_RESULTS_DIRECTORY/fit_results
 
 		#exit $runSuccess
 	)
@@ -253,8 +270,8 @@ do
 
 		# copy results
 		cp SV_record.[oe]* ./results
-		mkdir $HBT_RESULTS_DIRECTORY/SV_results
-		cp -r ./results/* $HBT_RESULTS_DIRECTORY/SV_results
+		mkdir $HBT_CEN_RESULTS_DIRECTORY/SV_results
+		cp -r ./results/* $HBT_CEN_RESULTS_DIRECTORY/SV_results
 
 		#exit $runSuccess
 	)
@@ -267,7 +284,7 @@ do
 	#then
 		#add a few more files
 		cp $PYTHIA_DIRECTORY/main_BEeffects.cmnd $PYTHIA_RESULTS_DIRECTORY
-		cp $HBT_DIRECTORY/parameters.dat $HBT_RESULTS_DIRECTORY
+		cp $HBT_DIRECTORY/parameters.dat $HBT_CEN_RESULTS_DIRECTORY
 
 		#typeStem=""
 		#if [ "$ThermalOnly" == 'true' ]
