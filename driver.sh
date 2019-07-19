@@ -30,15 +30,16 @@ fi
 
 echo 'Processing Nevents =' $Nevents $projectile'+'$target 'collisions at' $beamEnergy 'GeV'
 
+
+# make sure current results directory exists
+nextCurrentResultsDirectoryName=`get_dirname $CURRENT_RESULTS_DIRECTORY '-' "true"`
+CURRENT_RESULTS_DIRECTORY=$nextCurrentResultsDirectoryName
+mkdir $CURRENT_RESULTS_DIRECTORY
+echo 'Created' $CURRENT_RESULTS_DIRECTORY
+
 nCC=0
 for centralityCutString in "0-100%" "0-1%" "0-10%"
 do
-
-	# make sure current results directory exists
-	nextCurrentResultsDirectoryName=`get_dirname $CURRENT_RESULTS_DIRECTORY '-' "true"`
-	CURRENT_RESULTS_DIRECTORY=$nextCurrentResultsDirectoryName
-	mkdir $CURRENT_RESULTS_DIRECTORY
-	echo 'Created' $CURRENT_RESULTS_DIRECTORY
 
 	# set names of sub-directories
 	PYTHIA_RESULTS_DIRECTORY=$CURRENT_RESULTS_DIRECTORY/Pythia_results
@@ -57,6 +58,7 @@ do
 	centralityCut=(`echo $centralityCutString | sed 's/-/ /g' | sed 's/%//g'`)
 	thisCentrality="C"${centralityCut[0]}"_"${centralityCut[1]}
 	HBT_CEN_RESULTS_DIRECTORY=$HBT_RESULTS_DIRECTORY/$thisCentrality
+	mkdir $HBT_CEN_RESULTS_DIRECTORY
 
 	lowerLimit=0
 	upperLimit=100

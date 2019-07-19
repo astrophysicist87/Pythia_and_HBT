@@ -7,7 +7,7 @@ echo 'chosen_OMP_NUM_THREADS='$chosen_OMP_NUM_THREADS > omp_env.sh
 	$chosen_OMP_NUM_THREADS	\
 	&> compile_all.out	\
   && ./driver.sh		\
-	useParallel=true	\
+	useParallel=false	\
 	projectile="p"		\
 	target="p"		\
 	beamEnergy="13000.0"	\
