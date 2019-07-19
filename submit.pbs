@@ -19,3 +19,5 @@ then
 	#./driver.sh useParallel=false projectile="Pb" target="Pb" beamEnergy="2760.0" Nevents=100000 ThermalOnly='true' SetPartonVertices='on' &>> driver.out
 	#./driver.sh useParallel=false projectile="Pb" target="Pb" beamEnergy="2760.0" Nevents=100000 ThermalOnly='false' SetPartonVertices='on' &>> driver.out
 fi
+
+echo 'Finished everything'
