@@ -7,11 +7,11 @@ echo 'chosen_OMP_NUM_THREADS='$chosen_OMP_NUM_THREADS > omp_env.sh
 	$chosen_OMP_NUM_THREADS	\
 	&> compile_all.out	\
   && ./driver.sh		\
-	useParallel=false	\
+	useParallel=true	\
 	projectile="p"		\
 	target="p"		\
 	beamEnergy="13000.0"	\
-	Nevents=1000		\
+	Nevents=10000		\
 	ThermalOnly='true'	\
 	SetPartonVertices='off'	\
 	&> driver.out ) &
