@@ -31,7 +31,7 @@ fi
 echo 'Processing Nevents =' $Nevents $projectile'+'$target 'collisions at' $beamEnergy 'GeV'
 
 nCC=0
-for centralityCutString in "0-100%"
+for centralityCutString in "0-100%" "0-1%" "0-10%"
 do
 
 	# make sure current results directory exists
