@@ -1,6 +1,10 @@
 Fragmentation:setVertices = on
 PartonVertex:setVertex = off
+<<<<<<< HEAD
 HadronLevel:BoseEinstein = off
+=======
+HadronLevel:BoseEinstein = on
+>>>>>>> 591b1244348db8df19b43796c4cbabcd08133462
 BoseEinstein:QRef = 0.2
 ColourReconnection:reconnect =  off
 Ropewalk:RopeHadronization =  off

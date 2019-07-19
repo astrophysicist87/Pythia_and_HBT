@@ -208,7 +208,11 @@ if [ "$ARCH" != "LINUX" ] && [ "$ARCH" != "DARWIN" ]; then
 if [ -z "$CXX" ]; then CXX="g++"; fi
 if [ -z "$CXX_COMMON" ]; then
     CXX_COMMON="${ENABLE_DEBUG}${ENABLE_64BIT}"
+<<<<<<< HEAD
     CXX_COMMON="$CXX_COMMON -pedantic -W -Wall -Wshadow -fPIC -std=c++11 -g"; fi
+=======
+    CXX_COMMON="$CXX_COMMON -pedantic -W -Wall -Wshadow -fPIC -std=c++11"; fi
+>>>>>>> 591b1244348db8df19b43796c4cbabcd08133462
 if [ -z "$CXX_SHARED" ]; then
     if [ "$ARCH" = "LINUX" ];  then CXX_SHARED="-shared"; fi
     if [ "$ARCH" = "DARWIN" ]; then CXX_SHARED="-dynamiclib"; fi; fi
