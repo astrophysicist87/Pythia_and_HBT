@@ -1,10 +1,6 @@
 #! /usr/bin/env bash
 
-<<<<<<< HEAD
 #PBS -l walltime=24:00:00
-=======
-#PBS -l walltime=16:00:00
->>>>>>> 591b1244348db8df19b43796c4cbabcd08133462
 #PBS -l nodes=1:ppn=40
 #PBS -A PAS0254
 #PBS -j oe
@@ -20,11 +16,6 @@ if [ "$?" -eq "0" ]
 then
 	./driver.sh useParallel=false projectile="Pb" target="Pb" beamEnergy="2760.0" Nevents=100000 ThermalOnly='true' SetPartonVertices='off' &> driver.out
 	./driver.sh useParallel=false projectile="Pb" target="Pb" beamEnergy="2760.0" Nevents=100000 ThermalOnly='false' SetPartonVertices='off' &>> driver.out
-<<<<<<< HEAD
 	#./driver.sh useParallel=false projectile="Pb" target="Pb" beamEnergy="2760.0" Nevents=100000 ThermalOnly='true' SetPartonVertices='on' &>> driver.out
 	#./driver.sh useParallel=false projectile="Pb" target="Pb" beamEnergy="2760.0" Nevents=100000 ThermalOnly='false' SetPartonVertices='on' &>> driver.out
-=======
-	./driver.sh useParallel=false projectile="Pb" target="Pb" beamEnergy="2760.0" Nevents=100000 ThermalOnly='true' SetPartonVertices='on' &>> driver.out
-	./driver.sh useParallel=false projectile="Pb" target="Pb" beamEnergy="2760.0" Nevents=100000 ThermalOnly='false' SetPartonVertices='on' &>> driver.out
->>>>>>> 591b1244348db8df19b43796c4cbabcd08133462
 fi

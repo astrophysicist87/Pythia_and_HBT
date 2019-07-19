@@ -13,10 +13,6 @@ fi
 echo 'Running ./main_BEeffects_OpenMP' $@
 
 # time and run
-<<<<<<< HEAD
 nohup time ./main_BEeffects_OpenMP $@\
-=======
-nohup time valgrind ./main_BEeffects_OpenMP $@\
->>>>>>> 591b1244348db8df19b43796c4cbabcd08133462
 			1> $DIRECTORY/main_BEeffects_OpenMP.out\
 			2> $DIRECTORY/main_BEeffects_OpenMP.err
