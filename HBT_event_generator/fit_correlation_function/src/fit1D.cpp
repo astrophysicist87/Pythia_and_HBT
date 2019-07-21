@@ -27,7 +27,9 @@ void Correlation_function::Fit_correlation_function_Q()
 
 		out << "--> Getting HBT radii by Gaussian fit method" << endl;
 
-		/*if ( use_fit_range_errors )
+		///*
+		bool use_fit_range_errors = false;
+		if ( use_fit_range_errors )
 		{
 
 			const double Qmax = -init_Q;	// choose maximum Q value to define maximum fit-range radius
@@ -46,7 +48,7 @@ void Correlation_function::Fit_correlation_function_Q()
 				find_minimum_chisq_correlationfunction_Q_FR( iKT, iKphi, iKL, Qmin, Qmax, nstep );
 			}
 		}
-		else*/
+		else//*/
 		{
 			for (int iKT = 0; iKT < n_KT_bins; ++iKT)
 			for (int iKphi = 0; iKphi < n_Kphi_bins; ++iKphi)
@@ -320,7 +322,7 @@ void Correlation_function::find_minimum_chisq_correlationfunction_Q( int iKT, in
 }
 
 
-/*
+///*
 void Correlation_function::find_minimum_chisq_correlationfunction_Q_FR( int iKT, int iKphi, int iKL, double Qmin, double Qmax, int nstep )
 {
 	// first set the radii themselves
@@ -329,7 +331,7 @@ void Correlation_function::find_minimum_chisq_correlationfunction_Q_FR( int iKT,
 
 	// check how much the fit radii change for different fir ranges and keep maximum deviation from radii from full grid
 	for (int step = 0; step < nstep; step++)
-		find_minimum_chisq_CFerr_Q_FR( iKT, iKphi, iKL, Qmin + step*(Qmax-Qmin)/static_case<double>(nstep-1.0) );
+		find_minimum_chisq_CFerr_Q_FR( iKT, iKphi, iKL, Qmin + step*(Qmax-Qmin)/static_cast<double>(nstep-1.0) );
 
 	return;
 }
@@ -470,6 +472,6 @@ void Correlation_function::find_minimum_chisq_CFerr_Q_FR( int iKT, int iKphi, in
 
 	return;
 }
-*/
+//*/
 
 //End of file

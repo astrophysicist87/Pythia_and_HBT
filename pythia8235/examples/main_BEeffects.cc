@@ -102,6 +102,10 @@ int main(int argc, char *argv[])
 	else
 		cout << "Using all pions!" << endl;
 
+	// Seed RNG different for each thread to avoid redundant events
+	pythia.readString("Random:setSeed = on");
+	pythia.readString("Random:seed = -1");
+
 	// Setup the beams.
 	pythia.readString("Beams:idA = " + particle_IDs[string(argv[1])]);
 	pythia.readString("Beams:idB = " + particle_IDs[string(argv[2])]);

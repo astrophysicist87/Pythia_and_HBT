@@ -1,6 +1,6 @@
 #! /usr/bin/env bash
 
-chosen_OMP_NUM_THREADS=12
+chosen_OMP_NUM_THREADS=2
 echo 'chosen_OMP_NUM_THREADS='$chosen_OMP_NUM_THREADS > omp_env.sh
 
 ( ./compile_all.sh		\
@@ -11,7 +11,7 @@ echo 'chosen_OMP_NUM_THREADS='$chosen_OMP_NUM_THREADS > omp_env.sh
 	projectile="p"		\
 	target="p"		\
 	beamEnergy="13000.0"	\
-	Nevents=10000		\
+	Nevents=10		\
 	ThermalOnly='true'	\
 	SetPartonVertices='off'	\
 	&> driver.out ) &

@@ -222,8 +222,11 @@ int main(int argc, char *argv[])
 		// parameters.
 		pythia.readString("HeavyIon:SigFitNGen = 20");
 
-		// Initialise Pythia.
-		pythia.init();
+		#pragma omp critical
+		{
+			// Initialise Pythia.
+			pythia.init();
+		}
 
 		cout << "Completed initialization of Pythia in thread# = " << iThread << endl;
 
@@ -232,7 +235,12 @@ int main(int argc, char *argv[])
 
 		do
 		{
-			if ( !pythia.next() )
+			bool successful = false;
+			//#pragma omp critical
+			//{
+				successful = pythia.next();
+			//}
+			if ( not successful )
 				continue;
 
 			int event_multiplicity = 0;

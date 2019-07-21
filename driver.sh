@@ -174,7 +174,7 @@ do
 		echo '     Now in '`pwd`
 
 		# using OpenMP (leave a couple cores free)
-		export OMP_NUM_THREADS=40
+		export OMP_NUM_THREADS=$chosen_OMP_NUM_THREADS
 
 		if [ ! -d "./results" ]; then
 			    mkdir results

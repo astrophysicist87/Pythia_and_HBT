@@ -74,6 +74,8 @@ class Correlation_function
 						R2_outside, R2_outlong, R2_sidelong;
 		vector<double> lambda_Correl_err, R2_err, R2_out_err, R2_side_err, R2_long_err,
 						R2_outside_err, R2_outlong_err, R2_sidelong_err;
+		vector<double> lambda_Correl_FRerr, R2_FRerr, R2_out_FRerr, R2_side_FRerr, R2_long_FRerr,
+						R2_outside_FRerr, R2_outlong_FRerr, R2_sidelong_FRerr;
 
 		vector<double> denominator, correlation_function, correlation_function_error;
 		vector<bool> denominator_cell_was_filled;
@@ -138,7 +140,11 @@ class Correlation_function
 		void Fit_correlation_function();
 		void Fit_correlation_function_Q();
 		void find_minimum_chisq_correlationfunction_full( int iKT, int iKphi, int iKL );
+		void find_minimum_chisq_correlationfunction_full_FR( int iKT, int iKphi, int iKL, double qmin, double qmax, int nstep );
+		void find_minimum_chisq_CFerr_full_FR( int iKT, int iKphi, int iKL, double qmax );
 		void find_minimum_chisq_correlationfunction_Q( int iKT, int iKphi, int iKL );
+		void find_minimum_chisq_correlationfunction_Q_FR( int iKT, int iKphi, int iKL, double Qmin, double Qmax, int nstep );
+		void find_minimum_chisq_CFerr_Q_FR( int iKT, int iKphi, int iKL, double Qmax );
 
 };
 
