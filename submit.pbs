@@ -20,4 +20,4 @@ then
 	#./driver.sh useParallel=false projectile="Pb" target="Pb" beamEnergy="2760.0" Nevents=100000 ThermalOnly='false' SetPartonVertices='on' &>> driver.out
 fi
 
-echo 'Finished everything'
+echo 'Finished everything.'
