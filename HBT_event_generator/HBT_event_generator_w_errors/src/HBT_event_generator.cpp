@@ -325,6 +325,9 @@ void HBT_event_generator::Compute_correlation_function()
 							denominator2[idx], denPair2[idxK], denominator_denPair[idx],
 							nev, verbose, err );
 
+					numerator_error[idx] = CF_num_err;
+					denominator_error[idx] = CF_den_err;
+
 					// equivalent version which is stable if CF_num = 0
 					correlation_function_error[idx] =
 						sqrt(
@@ -336,6 +339,9 @@ void HBT_event_generator::Compute_correlation_function()
 				}
 				else
 				{
+					numerator_error[idx] = 0.0;
+					denominator_error[idx] = 0.0;
+
 					correlation_function_error[idx]
 								= 1.0e6;	// maximal uncertainty?
 				}
@@ -385,20 +391,36 @@ void HBT_event_generator::Compute_correlation_function()
 
 			if ( in_center_cell and do_not_get_error_in_center )
 			{
+				numerator_error[idx] = 0.0;
+				denominator_error[idx] = 0.0;
+
 				correlation_function_error[idx]
 							= 0.0;		// no error at origin, by definition,
 										// unless we calculate it
 			}
 			else if ( this_bin_is_safe )
 			{
+				double num_err = 0.0, den_err = 0.0;
+				//correlation_function_error[idx]
+				//	= estimate_ratio_error(
+				//		num, den,
+				//		num2, den2, numden,
+				//		nev, verbose, err );
 				correlation_function_error[idx]
 					= estimate_ratio_error(
 						num, den,
 						num2, den2, numden,
+						num_err, den_err,
 						nev, verbose, err );
+
+				numerator_error[idx] = num_err;
+				denominator_error[idx] = den_err;
 			}
 			else
 			{
+				numerator_error[idx] = 0.0;
+				denominator_error[idx] = 0.0;
+
 				correlation_function_error[idx]
 							= 1.0e6;	// maximal uncertainty?
 			}
@@ -452,10 +474,12 @@ void HBT_event_generator::Output_correlation_function_q_mode_3D( string filename
 		<< left << "q_o" << setw(prec+extrawidth)
 		<< left << "q_s" << setw(prec+extrawidth)
 		<< left << "q_l" << setw(prec+16)
-		<< left << "re(N)" << setw(prec+16)
-		<< left << "im(N)" << setw(prec+16)
-		<< left << "D" << setw(prec+36)
-		<< left << "C" << endl;
+		<< left << "N" << setw(prec+16)
+		<< left << "N(err)" << setw(prec+16)
+		<< left << "D" << setw(prec+16)
+		<< left << "D(err)" << setw(prec+36)
+		<< left << "C"  << setw(prec+36)
+		<< left << "C(err)" << endl;
 
 	ofs << "# " << setfill('-') << setw(150) << " " << endl;
 
@@ -477,13 +501,11 @@ void HBT_event_generator::Output_correlation_function_q_mode_3D( string filename
 			<< 0.5*(qo_pts[iqo]+qo_pts[iqo+1]) << setw(prec+extrawidth)
 			<< 0.5*(qs_pts[iqs]+qs_pts[iqs+1]) << setw(prec+extrawidth)
 			<< 0.5*(ql_pts[iql]+ql_pts[iql+1]) << setw(prec+16)
-			//<< real(numerator[idx] / static_cast<double>(total_N_events)) << setw(prec+16)
-			//<< imag(numerator[idx] / static_cast<double>(total_N_events)) << setw(prec+16)
-			//<< denominator[idx] / static_cast<double>(total_N_events) << setw(prec+36)
 			<< scientific
-			<< real(numerator[idx] / static_cast<double>(total_N_events)) << setw(prec+16)
-			<< imag(numerator[idx] / static_cast<double>(total_N_events)) << setw(prec+16)
-			<< denominator[idx] / static_cast<double>(total_N_events) << setw(prec+36)
+			<< numerator[idx] / static_cast<double>(total_N_events) << setw(prec+16)
+			<< numerator_error[idx] / sqrt(static_cast<double>(total_N_events)) << setw(prec+16)
+			<< denominator[idx] / static_cast<double>(total_N_events) << setw(prec+16)
+			<< denominator_error[idx] / sqrt(static_cast<double>(total_N_events)) << setw(prec+36)
 			<< fixed
 			<< setprecision(16) << correlation_function[idx] << setw(prec+36)
 			<< setprecision(16) << correlation_function_error[idx] << endl;
@@ -513,9 +535,10 @@ void HBT_event_generator::Output_correlation_function_q_mode_1D( string filename
 		<< left << "K_phi" << setw(prec+extrawidth)
 		<< left << "K_L" << setw(prec+extrawidth)
 		<< left << "Q" << setw(prec+extrawidth)
-		<< left << "re(N)" << setw(prec+extrawidth)
-		<< left << "im(N)" << setw(prec+extrawidth)
-		<< left << "D" << setw(prec+3*extrawidth)
+		<< left << "N" << setw(prec+extrawidth)
+		<< left << "N(err)" << setw(prec+extrawidth)
+		<< left << "D" << setw(prec+extrawidth)
+		<< left << "D(err)" << setw(prec+3*extrawidth)
 		<< left << "C" << setw(prec+3*extrawidth)
 		<< left << "C(err)" << endl;
 
@@ -538,11 +561,12 @@ void HBT_event_generator::Output_correlation_function_q_mode_1D( string filename
 			<< 0.5*(KT_pts[iKT]+KT_pts[iKT+1]) << setw(prec+extrawidth)
 			<< 0.5*(Kphi_pts[iKphi]+Kphi_pts[iKphi+1]) << setw(prec+extrawidth)
 			<< 0.5*(KL_pts[iKL]+KL_pts[iKL+1]) << setw(prec+extrawidth)
-			<< Q_local << "   "//setw(prec+24)
-			<< real(numerator[idx] / static_cast<double>(total_N_events)) << "   "//setw(prec+16)
-			<< imag(numerator[idx] / static_cast<double>(total_N_events)) << "   "//setw(prec+16)
-			<< denominator[idx] / static_cast<double>(total_N_events) << "   "//setw(prec+24)
-			<< setprecision(16) << correlation_function[idx] << "   "//setw(prec+24)
+			<< Q_local << "   "
+			<< numerator[idx] / static_cast<double>(total_N_events) << "   "
+			<< numerator_error[idx] / sqrt(static_cast<double>(total_N_events)) << "   "
+			<< denominator[idx] / static_cast<double>(total_N_events) << "   "
+			<< denominator_error[idx] / sqrt(static_cast<double>(total_N_events)) << "   "
+			<< setprecision(16) << correlation_function[idx] << "   "
 			<< setprecision(16) << correlation_function_error[idx] << endl;
 
 		++idx;

@@ -186,7 +186,7 @@ void Correlation_function::Load_correlation_function( string filepath )
 		for (int iql = 0; iql < n_ql_bins; iql++)
 		{
 			infile >> dummy >> dummy >> dummy >> dummy >> dummy >> dummy
-					>> dummy >> dummy >> dummy
+					>> dummy >> dummy >> dummy >> dummy
 					>> correlation_function[idx]
 					>> correlation_function_error[idx];
 
@@ -201,7 +201,7 @@ void Correlation_function::Load_correlation_function( string filepath )
 		for (int iQ = 0; iQ < n_Q_bins; iQ++)
 		{
 			infile >> dummy >> dummy >> dummy >> dummy
-					>> dummy >> dummy >> dummy
+					>> dummy >> dummy >> dummy >> dummy
 					>> correlation_function[idx]
 					>> correlation_function_error[idx];
 			//cout << "CHECK: " << idx << "   " << correlation_function[idx] << "   " << correlation_function_error[idx] << endl;

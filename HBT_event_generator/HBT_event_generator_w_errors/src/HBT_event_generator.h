@@ -84,6 +84,7 @@ class HBT_event_generator
 		// results
 		double n_pair_numerator, n_pair_denominator;
 		vector<double> correlation_function, correlation_function_error;
+		vector<double> numerator_error, denominator_error;
 		static vector<double> numerator, denominator, numerator2, denominator2, numerator_denominator;
 		static vector<double> numPair, numPair2, denPair, denPair2;
 		static vector<double> numerator_numPair, denominator_denPair;
