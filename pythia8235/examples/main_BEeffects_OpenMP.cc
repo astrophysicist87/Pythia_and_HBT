@@ -188,7 +188,8 @@ int main(int argc, char *argv[])
 
 		// Seed RNG different for each thread to avoid redundant events
 		pythia.readString("Random:setSeed = on");
-		pythia.readString("Random:seed = " + to_string(iThread-1));
+		//pythia.readString("Random:seed = " + to_string(iThread-1));
+		pythia.readString("Random:seed = -1");
 
 		//========================================
 		// Read in any standard Pythia options
@@ -327,6 +328,8 @@ int main(int argc, char *argv[])
 
 			#pragma omp critical
 			{
+				need_to_continue = ( iEvent < total_number_of_events );
+
 				// only one thread in this region at a time;
 				// IF need_to_continue has evaluated to false in
 				// a different thread, then DO NOT print and just
@@ -363,8 +366,13 @@ int main(int argc, char *argv[])
 					outMultiplicities << iEvent << "   "
 								<< event_multiplicity << "   "
 								<< pion_multiplicity << endl;
+
+					cout << "CHECK: " << iEvent << "   " << total_number_of_events << "   " << (iEvent < total_number_of_events) << "   " ;
 	
-					need_to_continue = ( ++iEvent < total_number_of_events );
+					//need_to_continue = ( ++iEvent < total_number_of_events );
+					iEvent++;
+
+					cout << iEvent << "   " << (iEvent < total_number_of_events) << endl;
 				}
 			}
 
