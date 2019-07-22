@@ -329,7 +329,7 @@ void Correlation_function::find_minimum_chisq_correlationfunction_Q_FR( int iKT,
 	// this function also sets the ordinary fit errors (perhaps incorrectly)
 	find_minimum_chisq_correlationfunction_full( iKT, iKphi, iKL );
 
-	// check how much the fit radii change for different fir ranges and keep maximum deviation from radii from full grid
+	// check how much the fit radii change for different fit ranges and keep maximum deviation from radii from full grid
 	for (int step = 0; step < nstep; step++)
 		find_minimum_chisq_CFerr_Q_FR( iKT, iKphi, iKL, Qmin + step*(Qmax-Qmin)/static_cast<double>(nstep-1.0) );
 

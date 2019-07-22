@@ -115,6 +115,15 @@ void Correlation_function::initialize_all(
 	R2_outlong_err		= vector<double> (K_space_size);
 	R2_sidelong_err		= vector<double> (K_space_size);
 
+	lambda_Correl_FRerr	= vector<double> (K_space_size);
+	R2_FRerr			= vector<double> (K_space_size);
+	R2_out_FRerr		= vector<double> (K_space_size);
+	R2_side_FRerr		= vector<double> (K_space_size);
+	R2_long_FRerr		= vector<double> (K_space_size);
+	R2_outside_FRerr	= vector<double> (K_space_size);
+	R2_outlong_FRerr	= vector<double> (K_space_size);
+	R2_sidelong_FRerr	= vector<double> (K_space_size);
+
 	// For the correlation function (and related error) itself
 	correlation_function 		= vector<double> (K_space_size*q_space_size);
 	correlation_function_error 	= vector<double> (K_space_size*q_space_size);
@@ -250,10 +259,13 @@ void Correlation_function::Output_HBTradii( string outHBT_filename )
 							R2_out[idx], R2_side[idx], R2_long[idx],
 							R2_outside[idx], R2_outlong[idx], R2_sidelong[idx] );
 				fprintf (  pFile,  "%f      %f      %f      %f      %f      %f      %f\n",
-							lambda_Correl_err[idx],
-							R2_out_err[idx], R2_side_err[idx], R2_long_err[idx],
-							R2_outside_err[idx], R2_outlong_err[idx], R2_sidelong_err[idx] );
-
+							max( lambda_Correl_err[idx], 	lambda_Correl_FRerr[idx] ),
+							max( R2_out_err[idx], 			R2_out_FRerr[idx] ),
+							max( R2_side_err[idx], 			R2_side_FRerr[idx] ),
+							max( R2_long_err[idx], 			R2_long_FRerr[idx] ),
+							max( R2_outside_err[idx], 		R2_outside_FRerr[idx] ),
+							max( R2_outlong_err[idx], 		R2_outlong_FRerr[idx] ),
+							max( R2_sidelong_err[idx], 		R2_sidelong_FRerr[idx] ) );
 
 			++idx;
 		}
@@ -278,7 +290,8 @@ void Correlation_function::Output_HBTradii( string outHBT_filename )
 							0.5*(KL_pts[iKL]+KL_pts[iKL+1]) );
 				fprintf (  pFile,  "%f      %f      %f      %f\n",
 							lambda_Correl[idx], R2[idx],
-							lambda_Correl_err[idx], R2_err[idx] );
+							max( lambda_Correl_err[idx], lambda_Correl_FRerr[idx] ),
+							max( R2_err[idx], R2_FRerr[idx] ) );
 
 			++idx;
 		}
