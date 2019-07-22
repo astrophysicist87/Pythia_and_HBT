@@ -55,6 +55,7 @@ void HBT_event_generator::initialize_all(
 	// - some mode options
 	bin_mode 		= paraRdr->getVal("bin_mode");
 	q_mode 			= paraRdr->getVal("q_mode");
+	scalar_mode 	= paraRdr->getVal("scalar_mode");
 	method_mode 	= paraRdr->getVal("method_mode");
 	BE_mode 		= paraRdr->getVal("BE_mode");
 	use_smoothness_approximation
@@ -595,6 +596,26 @@ void HBT_event_generator::Compute_numerator_and_denominator_methodMode0()
 	return;	
 }
 
+void HBT_event_generator::Compute_numerator_and_denominator_methodMode0_q_mode_1D()
+{
+	switch(scalar_mode)
+	{
+		case 0:
+			Compute_numerator_and_denominator_methodMode0_q_mode_1DLorInv();
+			break;
+		case 1:
+			Compute_numerator_and_denominator_methodMode0_q_mode_1DrotInv();
+			break;
+		default:
+			err << "Compute_numerator_and_denominator_methodMode0(): q_mode = "
+				<< q_mode << " not supported!" << endl;
+			exit(8);
+			break;
+	}
+
+	return;	
+}
+
 /*void HBT_event_generator::Compute_numerator_and_denominator_methodMode1()
 {
 	switch(q_mode)
@@ -637,6 +658,27 @@ void HBT_event_generator::Compute_numerator_and_denominator_methodMode2()
 }
 
 
+void HBT_event_generator::Compute_numerator_and_denominator_methodMode2_q_mode_1D()
+{
+	switch(scalar_mode)
+	{
+		case 0:
+			Compute_numerator_and_denominator_methodMode2_q_mode_1DLorInv();
+			break;
+		case 1:
+			Compute_numerator_and_denominator_methodMode2_q_mode_1DrotInv();
+			break;
+		default:
+			err << "Compute_numerator_and_denominator_methodMode0(): q_mode = "
+				<< q_mode << " not supported!" << endl;
+			exit(8);
+			break;
+	}
+
+	return;	
+}
+
+
 void HBT_event_generator::Compute_numerator_and_denominator_momentum_space_only()
 {
 	switch(q_mode)
@@ -656,6 +698,27 @@ void HBT_event_generator::Compute_numerator_and_denominator_momentum_space_only(
 
 	return;	
 }
+
+void HBT_event_generator::Compute_numerator_and_denominator_momentum_space_only_q_mode_1D()
+{
+	switch(scalar_mode)
+	{
+		case 0:
+			Compute_numerator_and_denominator_momentum_space_only_q_mode_1DLorInv();
+			break;
+		case 1:
+			Compute_numerator_and_denominator_momentum_space_only_q_mode_1DrotInv();
+			break;
+		default:
+			err << "Compute_numerator_and_denominator_methodMode0(): q_mode = "
+				<< q_mode << " not supported!" << endl;
+			exit(8);
+			break;
+	}
+
+	return;	
+}
+
 
 
 void HBT_event_generator::get_random_angles(int n_mixed_events, vector<double> & random_angles)

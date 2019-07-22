@@ -14,7 +14,7 @@
 #include "Stopwatch.h"
 
 
-void HBT_event_generator::Compute_numerator_and_denominator_methodMode2_q_mode_1D()
+void HBT_event_generator::Compute_numerator_and_denominator_methodMode2_q_mode_1DLorInv()
 {
 	//bool perform_random_rotation = false;
 	//bool perform_random_shuffle = false;

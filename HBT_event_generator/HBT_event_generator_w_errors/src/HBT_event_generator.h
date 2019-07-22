@@ -34,7 +34,7 @@ class HBT_event_generator
 		double bin_epsilon;
 
 		bool use_smoothness_approximation;
-		int bin_mode, q_mode, method_mode, BE_mode;
+		int bin_mode, q_mode, scalar_mode, method_mode, BE_mode;
 		int total_N_events, number_of_completed_events;
 		
 		int n_mix_minimum;
@@ -199,11 +199,13 @@ class HBT_event_generator
 		void Compute_numerator_and_denominator_momentum_space_only_q_mode_3D();
 		void Compute_numerator_and_denominator_momentum_space_only_q_mode_1D();
 		void Compute_numerator_and_denominator_momentum_space_only_q_mode_1DrotInv();
+		void Compute_numerator_and_denominator_momentum_space_only_q_mode_1DLorInv();
 
 		void Compute_numerator_and_denominator_methodMode0();
 		void Compute_numerator_and_denominator_methodMode0_q_mode_3D();
 		void Compute_numerator_and_denominator_methodMode0_q_mode_1D();
 		void Compute_numerator_and_denominator_methodMode0_q_mode_1DrotInv();
+		void Compute_numerator_and_denominator_methodMode0_q_mode_1DLorInv();
 
 		//void Compute_numerator_and_denominator_methodMode1();
 		//void Compute_numerator_and_denominator_methodMode1_q_mode_3D();
@@ -213,6 +215,7 @@ class HBT_event_generator
 		void Compute_numerator_and_denominator_methodMode2_q_mode_3D();
 		void Compute_numerator_and_denominator_methodMode2_q_mode_1D();
 		void Compute_numerator_and_denominator_methodMode2_q_mode_1DrotInv();
+		void Compute_numerator_and_denominator_methodMode2_q_mode_1DLorInv();
 
 		// Correlation function itself
 		void Compute_correlation_function();

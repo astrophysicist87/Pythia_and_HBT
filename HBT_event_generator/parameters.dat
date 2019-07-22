@@ -70,6 +70,12 @@ bin_mode = 0
 q_mode = 0
 
 #===========
+# if q_mode == 1, scalar_mode sets type of Q variable
+# 0: Lorentz-invariant
+# 1: rotational-invariant
+scalar_mode = 1
+
+#===========
 # whether to use GEHW method (0), Chun's method (1) or bin-averaging method (2)
 method_mode = 2
 
