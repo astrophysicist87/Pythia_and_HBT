@@ -38,7 +38,7 @@ mkdir $CURRENT_RESULTS_DIRECTORY
 echo 'Created' $CURRENT_RESULTS_DIRECTORY
 
 nCC=0
-for centralityCutString in "0-100%" "0-1%" "0-10%"
+for centralityCutString in "0-100%"
 do
 
 	# set names of sub-directories
