@@ -1,9 +1,9 @@
 #! /usr/bin/env bash
 
-cd pythia8235
+cd src/pythia8235
 
 gmake
 
-cd ..
+cd -
 
 ./compile_all.sh $@

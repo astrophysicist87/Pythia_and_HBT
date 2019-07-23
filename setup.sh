@@ -1,9 +1,9 @@
 #! /usr/bin/env bash
 
-cd pythia8235
+cd src/pythia8235
 
 ./setup_pythia.sh
 
-cd ..
+cd -
 
 ./compile_all.sh $@
