@@ -233,6 +233,7 @@ int main(int argc, char *argv[])
 
 		// break the loop when enough events have been generated
 		bool need_to_continue = true;
+		int this_thread_count = 0;
 
 		do
 		{
@@ -334,7 +335,7 @@ int main(int argc, char *argv[])
 				// IF need_to_continue has evaluated to false in
 				// a different thread, then DO NOT print and just
 				// allow this thread to terminate
-				if ( need_to_continue )
+				if ( need_to_continue and this_thread_count < 10 )
 				{
 					//========================================
 					// output physical particles here
