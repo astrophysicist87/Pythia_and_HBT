@@ -39,7 +39,7 @@ echo 'Processing Nevents =' $Nevents $projectile'+'$target 'collisions at' $beam
 CURRENT_RESULTS_DIRECTORY=$MAIN_RESULTS_DIRECTORY
 
 nCC=0
-for centralityCutString in "0-100%" "0-10%"
+for centralityCutString in "0-100%" "0-20%" "20-50%" "50-100%"
 do
 
 	# set names of sub-directories

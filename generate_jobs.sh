@@ -12,10 +12,10 @@ echo 'chosen_OMP_NUM_THREADS='$chosen_OMP_NUM_THREADS > omp_env.sh
 ########################################
 # set up array of job specifications
 
-declare -a specs=(	'useParallel=true projectile="p" target="p" beamEnergy="13000.0" Nevents=10 ThermalOnly="true" SetPartonVertices="off"'
-					'useParallel=true projectile="p" target="p" beamEnergy="13000.0" Nevents=10 ThermalOnly="false" SetPartonVertices="off"'
-					'useParallel=true projectile="p" target="p" beamEnergy="13000.0" Nevents=10 ThermalOnly="true" SetPartonVertices="on"'
-					'useParallel=true projectile="p" target="p" beamEnergy="13000.0" Nevents=10 ThermalOnly="false" SetPartonVertices="on"'
+declare -a specs=(	'useParallel=true projectile="p" target="p" beamEnergy="13000.0" Nevents=1000000 ThermalOnly="true" SetPartonVertices="off"'
+					'useParallel=true projectile="p" target="p" beamEnergy="13000.0" Nevents=1000000 ThermalOnly="false" SetPartonVertices="off"'
+					'useParallel=true projectile="p" target="p" beamEnergy="13000.0" Nevents=1000000 ThermalOnly="true" SetPartonVertices="on"'
+					'useParallel=true projectile="p" target="p" beamEnergy="13000.0" Nevents=1000000 ThermalOnly="false" SetPartonVertices="on"'
 				)
 
 ########################################
@@ -36,7 +36,7 @@ do
 	job=$[i+1]
 	mkdir $HOME_RESULTS_DIRECTORY/job-${job}
 	cp -r src $HOME_RESULTS_DIRECTORY/job-${job}/
-	echo "./driver.sh ${specs[i]} &> driver.out &" > $HOME_RESULTS_DIRECTORY/job-${job}/submit.sh
+	echo "./driver.sh ${specs[i]} &> driver.out" > $HOME_RESULTS_DIRECTORY/job-${job}/submit.sh
 	chmod 755 $HOME_RESULTS_DIRECTORY/job-${job}/submit.sh	# set correct permissions!
 	cp scripts/driver.sh $HOME_RESULTS_DIRECTORY/job-${job}
 	cp defaults.sh env.sh omp_env.sh $HOME_RESULTS_DIRECTORY/job-${job}

@@ -412,8 +412,8 @@ void HBT_event_generator::Compute_correlation_function()
 					= estimate_ratio_error(
 						num, den,
 						num2, den2, numden,
-						num_err, den_err,
-						nev, verbose, err );
+						nev, num_err, den_err,
+						verbose, err );
 
 				numerator_error[idx] = num_err;
 				denominator_error[idx] = den_err;
