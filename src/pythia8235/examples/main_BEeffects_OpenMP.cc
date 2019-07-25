@@ -368,12 +368,12 @@ int main(int argc, char *argv[])
 								<< event_multiplicity << "   "
 								<< pion_multiplicity << endl;
 
-					cout << "CHECK: " << iEvent << "   " << total_number_of_events << "   " << (iEvent < total_number_of_events) << "   " ;
+					//cout << "CHECK: " << iEvent << "   " << total_number_of_events << "   " << (iEvent < total_number_of_events) << "   " ;
 	
 					//need_to_continue = ( ++iEvent < total_number_of_events );
 					iEvent++;
 
-					cout << iEvent << "   " << (iEvent < total_number_of_events) << endl;
+					//cout << iEvent << "   " << (iEvent < total_number_of_events) << endl;
 				}
 			}
 
