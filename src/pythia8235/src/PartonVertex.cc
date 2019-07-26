@@ -85,8 +85,8 @@ void PartonVertex::vertexMPI( int iBeg, int nAdd, double bNowIn,
     }
 
     // Set production vertices.
-std::cout << "PartonVertex::vertexMPI(): "
-			<< x << "   " << y << "   " << rProton << std::endl;
+//std::cout << "PartonVertex::vertexMPI(): "
+//			<< x << "   " << y << "   " << rProton << std::endl;
     //event[iNow].vProd( x, y, 0., 0.);
     event[iNow].vProd( x * unit_conversion_factor, y * unit_conversion_factor, 0., 0.);
 
@@ -113,9 +113,9 @@ void PartonVertex::vertexFSR( int iNow, Event& event) {
   double pT = max( event[iNow].pT(), pTmin);
   pair<double, double> xy = rndmPtr->gauss2();
   Vec4 vSmear = (widthEmission / pT) * Vec4( xy.first, xy.second, 0., 0.);
-std::cout << "PartonVertex::vertexFSR(): "
-			<< vStart << "   " << widthEmission << "   "
-			<< pT << "   " << vSmear << std::endl;
+//std::cout << "PartonVertex::vertexFSR(): "
+//			<< vStart << "   " << widthEmission << "   "
+//			<< pT << "   " << vSmear << std::endl;
   //event[iNow].vProd( vStart + vSmear);
   event[iNow].vProd( vStart + vSmear * unit_conversion_factor );
 
@@ -141,10 +141,10 @@ void PartonVertex::vertexISR( int iNow, Event& event) {
   double pT = max( event[iNow].pT(), pTmin);
   pair<double, double> xy = rndmPtr->gauss2();
   Vec4 vSmear = (widthEmission / pT) * Vec4( xy.first, xy.second, 0., 0.);
-std::cout << "PartonVertex::vertexISR(): "
-			<< rProton << "   " 
-			<< vStart << "   " << widthEmission << "   "
-			<< pT << "   " << vSmear << std::endl;
+//std::cout << "PartonVertex::vertexISR(): "
+//			<< rProton << "   " 
+//			<< vStart << "   " << widthEmission << "   "
+//			<< pT << "   " << vSmear << std::endl;
   //event[iNow].vProd( vStart + vSmear);
   event[iNow].vProd( vStart + vSmear * unit_conversion_factor );
 

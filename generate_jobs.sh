@@ -12,10 +12,15 @@ echo 'chosen_OMP_NUM_THREADS='$chosen_OMP_NUM_THREADS > omp_env.sh
 ########################################
 # set up array of job specifications
 
-declare -a specs=(	'useParallel=true projectile="p" target="p" beamEnergy="13000.0" Nevents=1000000 ThermalOnly="true" SetPartonVertices="off"'
-					'useParallel=true projectile="p" target="p" beamEnergy="13000.0" Nevents=1000000 ThermalOnly="false" SetPartonVertices="off"'
-					'useParallel=true projectile="p" target="p" beamEnergy="13000.0" Nevents=1000000 ThermalOnly="true" SetPartonVertices="on"'
-					'useParallel=true projectile="p" target="p" beamEnergy="13000.0" Nevents=1000000 ThermalOnly="false" SetPartonVertices="on"'
+#declare -a specs=(	'useParallel=true projectile="p" target="p" beamEnergy="13000.0" Nevents=1000000 ThermalOnly="true" SetPartonVertices="off"'
+#					'useParallel=true projectile="p" target="p" beamEnergy="13000.0" Nevents=1000000 ThermalOnly="false" SetPartonVertices="off"'
+#					'useParallel=true projectile="p" target="p" beamEnergy="13000.0" Nevents=1000000 ThermalOnly="true" SetPartonVertices="on"'
+#					'useParallel=true projectile="p" target="p" beamEnergy="13000.0" Nevents=1000000 ThermalOnly="false" SetPartonVertices="on"'
+#				)
+declare -a specs=(	'useParallel=true projectile="p" target="Pb" beamEnergy="5020.0" Nevents=1000000 ThermalOnly="true" SetPartonVertices="off"'
+					'useParallel=true projectile="p" target="Pb" beamEnergy="5020.0" Nevents=1000000 ThermalOnly="false" SetPartonVertices="off"'
+					'useParallel=true projectile="p" target="Pb" beamEnergy="5020.0" Nevents=1000000 ThermalOnly="true" SetPartonVertices="on"'
+					'useParallel=true projectile="p" target="Pb" beamEnergy="5020.0" Nevents=1000000 ThermalOnly="false" SetPartonVertices="on"'
 				)
 
 ########################################
