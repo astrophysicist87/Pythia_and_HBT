@@ -13,7 +13,7 @@ chosen_OMP_NUM_THREADS='$2
 echo 'echo '\''chosen_OMP_NUM_THREADS='\''$chosen_OMP_NUM_THREADS > omp_env.sh'
 
 echo '
-./compile_all.sh $chosen_OMP_NUM_THREADS &> compile_all.out
+#./compile_all.sh $chosen_OMP_NUM_THREADS &> compile_all.out
 
 if [ "$?" -eq "0" ]
 then'
