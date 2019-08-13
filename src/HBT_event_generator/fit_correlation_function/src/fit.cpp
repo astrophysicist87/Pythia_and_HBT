@@ -24,7 +24,7 @@ void Correlation_function::Fit_correlation_function()
 	out << "--> Getting HBT radii by Gaussian fit method" << endl;
 
 	///*
-	bool use_fit_range_errors = true;
+	bool use_fit_range_errors = false;
 	if ( use_fit_range_errors )
 	{
 

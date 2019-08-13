@@ -164,6 +164,7 @@ int main(int argc, char *argv[])
 			<< 0 << " to " << 1e+9 << endl;
 	
 	vector<int> centrality_limits = { 0, 1000000000 };
+	//vector<int> centrality_limits = { 90, 110 };
 
 	const int multiplicity_lower_limit = centrality_limits[0];
 	const int multiplicity_upper_limit = centrality_limits[1];
@@ -188,8 +189,8 @@ int main(int argc, char *argv[])
 
 		// Seed RNG different for each thread to avoid redundant events
 		pythia.readString("Random:setSeed = on");
-		//pythia.readString("Random:seed = " + to_string(iThread-1));
-		pythia.readString("Random:seed = -1");
+		pythia.readString("Random:seed = " + to_string(iThread-1));
+		//pythia.readString("Random:seed = -1");
 
 		//========================================
 		// Read in any standard Pythia options
@@ -325,6 +326,10 @@ int main(int argc, char *argv[])
 
 			// only save this event if N^{ch} is correct range
 			if ( not event_in_chosen_centrality_class )
+				continue;
+
+			//just for now
+			if ( pion_multiplicity < 50 or pion_multiplicity > 100 )
 				continue;
 
 			#pragma omp critical
