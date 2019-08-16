@@ -21,6 +21,84 @@
 using namespace Pythia8;
 using namespace std;
 
+//==========================================================================
+
+
+class MyImpactParameterGenerator : public ImpactParameterGenerator
+{
+
+	public:
+
+		/// The default constructor takes a general width (in femtometers) as
+		/// argument.
+		MyImpactParameterGenerator()
+			: bMinSave(0.0), bMaxSave(0.0) {}
+
+		/// Virtual destructor.
+		virtual ~MyImpactParameterGenerator() {}
+
+		/// Virtual init method.
+		virtual bool init()
+		{
+			bMinSave = 0.0;
+			bMaxSave = 16.0;
+
+			return true;
+
+		}
+
+		/// Set the bMin and bMax (in femtometers).
+		void bMin(double bMinIn) { bMinSave = bMinIn; }
+		void bMax(double bMaxIn) { bMaxSave = bMaxIn; }
+
+		/// Get bMin and bMax.
+		double bMin() const { return bMinSave; }
+		double bMax() const { return bMaxSave; }
+
+		/// Return a new impact parameter and set the corresponding weight
+		/// provided.
+		virtual Vec4 generate(double & weight) const
+		{
+			double b = bMin() + ( bMax() - bMin() ) * rndPtr->flat();
+			double phi = 2.0*M_PI*rndPtr->flat();
+			weight = M_PI*( bMax()*bMax() - bMin()*bMin() );
+			return Vec4(b*sin(phi), b*cos(phi), 0.0, 0.0);
+		}
+
+	private:
+
+		/// The max and min of the distribution.
+		double bMinSave;
+		double bMaxSave;
+
+};
+
+
+
+class MyHIUserHooks : public HIUserHooks
+{
+
+	public:
+
+		// Constructor creates impact parameter generator.
+		MyHIUserHooks() { myImpactParameterGeneratorPtr = new MyImpactParameterGenerator(); }
+
+		// Destructor deletes impact parameter generator.
+		~MyHIUserHooks() { delete myImpactParameterGeneratorPtr; }
+
+		virtual bool hasImpactParameterGenerator() const { cout << "Evaluated this function" << endl; return true; }
+
+		virtual ImpactParameterGenerator * impactParameterGenerator() const { return myImpactParameterGeneratorPtr; }
+
+	private:
+
+		ImpactParameterGenerator * myImpactParameterGeneratorPtr;
+
+};
+
+//==========================================================================
+
+
 vector<int> get_centrality_limits(
 			const double centrality_class_lower_limit,
 			const double centrality_class_upper_limit,
@@ -36,7 +114,8 @@ int main(int argc, char *argv[])
 	if (argc != 9)
 	{
 		cerr << "Incorrect number of arguments!" << endl;
-		cerr << "Usage: ./main_BEeffects [Projectile nucleus] [Target nucleus] [Beam energy in GeV]"
+		cerr << "Usage: ./main_IPgentr_BEeffects_OpenMP"
+				<< " [Projectile nucleus] [Target nucleus] [Beam energy in GeV]"
 				<< " [Number of events] [Results directory]"
 				<< " [Lower centrality %] [Upper centrality %] [Thermal pions only]" << endl;
 		exit(8);
@@ -178,7 +257,7 @@ int main(int argc, char *argv[])
 
 	vector<Pythia> pythiaVector( omp_get_max_threads() );
 
-	// Loop over OpenMP threads.
+	// Loop serially over OpenMP threads.
 	for (int iThread = 0; iThread < omp_get_max_threads(); iThread++)
 	{
 		// Local copy of pythia object for each thread
@@ -218,19 +297,29 @@ int main(int argc, char *argv[])
 		pythiaVector[iThread].readString("HeavyIon:SigFitErr = "
 							"0.02,0.02,0.1,0.05,0.05,0.0,0.1,0.0");
 		// These parameters are typically suitable for sqrt(S_NN)=5 TeV
+		//pythiaVector[iThread].readString("HeavyIon:SigFitDefPar = "
+		//                "17.24,2.15,0.33,0.0,0.0,0.0,0.0,0.0");
 		pythiaVector[iThread].readString("HeavyIon:SigFitDefPar = "
-		                "17.24,2.15,0.33,0.0,0.0,0.0,0.0,0.0");
+		                "13.91,1.78,0.22,0.0,0.0,0.0,0.0,0.0");
 		// A simple genetic algorithm is run for 20 generations to fit the
 		// parameters.
-		pythiaVector[iThread].readString("HeavyIon:SigFitNGen = 20");
+		//pythiaVector[iThread].readString("HeavyIon:SigFitNGen = 20");
+		pythiaVector[iThread].readString("HeavyIon:SigFitNGen = 0");
 
-		//#pragma omp critical
-		//{
-			// Initialise Pythia.
-			pythiaVector[iThread].init();
+		// Initialize impact parameter selection over finite, user-defined range
+		MyHIUserHooks* myHIUserHooks = new MyHIUserHooks();
+		pythiaVector[iThread].setHIHooks( myHIUserHooks );
+
+		// Initialise Pythia.
+		pythiaVector[iThread].init();
 
 		cout << "Completed initialization of Pythia in thread# = " << iThread << endl;
-		//}
+
+		//vector<double> results_vector = pythiaVector[iThread].settings.pvec("HeavyIon:SigFitDefPar");
+		//for (int i = 0; i < (int)results_vector.size(); i++)
+		//	cout << i << "   " << results_vector[i] << endl;
+
+
 
 	}	//end serial initialization
 
@@ -340,8 +429,8 @@ int main(int argc, char *argv[])
 				continue;
 
 			//just for now
-			if ( pion_multiplicity < 50 or pion_multiplicity > 100 )
-				continue;
+			//if ( pion_multiplicity < 50 or pion_multiplicity > 100 )
+			//	continue;
 
 			#pragma omp critical
 			{
@@ -382,7 +471,25 @@ int main(int argc, char *argv[])
 	
 					outMultiplicities << iEvent << "   "
 								<< event_multiplicity << "   "
-								<< pion_multiplicity << endl;
+								<< pion_multiplicity << "   "
+								<< pythiaVector[iThread].info.hiinfo->b() << "   "
+								<< pythiaVector[iThread].info.hiinfo->nPartProj() << "   "
+								<< pythiaVector[iThread].info.hiinfo->nPartTarg() << "   "
+								<< pythiaVector[iThread].info.hiinfo->nCollTot() << "   "
+								<< pythiaVector[iThread].info.hiinfo->nCollND() << "   "
+								<< pythiaVector[iThread].info.hiinfo->nCollNDTot() << "   "
+								<< pythiaVector[iThread].info.hiinfo->nCollSDP() << "   "
+								<< pythiaVector[iThread].info.hiinfo->nCollSDT() << "   "
+								<< pythiaVector[iThread].info.hiinfo->nCollDD() << "   "
+								<< pythiaVector[iThread].info.hiinfo->nCollCD() << "   "
+								<< pythiaVector[iThread].info.hiinfo->nCollEL() << "   "
+								<< pythiaVector[iThread].info.hiinfo->nAbsProj() << "   "
+								<< pythiaVector[iThread].info.hiinfo->nDiffProj() << "   "
+								<< pythiaVector[iThread].info.hiinfo->nElProj() << "   "
+								<< pythiaVector[iThread].info.hiinfo->nAbsTarg() << "   "
+								<< pythiaVector[iThread].info.hiinfo->nDiffTarg() << "   "
+								<< pythiaVector[iThread].info.hiinfo->nElTarg()
+								<< endl;
 
 					//cout << "CHECK: " << iEvent << "   " << total_number_of_events << "   " << (iEvent < total_number_of_events) << "   " ;
 	
