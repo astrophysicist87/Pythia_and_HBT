@@ -176,8 +176,6 @@ int main(int argc, char *argv[])
 	//						+ "C" + string(argv[4]) + "_" + string(argv[5]) + "_Nev" + string(argv[4]);
 	string systemSpecs = string(argv[1]) + string(argv[2]) + "_" + string(argv[3]) + "GeV_Nev" + string(argv[4]);
 
-	//string path = "./results/";
-	//string path = "/scratch/blixen/plumberg/results/";
 	string path = string(argv[5]) + "/";
 
 	//====================================

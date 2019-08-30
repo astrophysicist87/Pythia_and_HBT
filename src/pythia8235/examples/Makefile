@@ -65,6 +65,9 @@ main% : main%.cc $(PREFIX_LIB)/libpythia8.a
 main_BEeffects_OpenMP: main_BEeffects_OpenMP.cc $(PREFIX_LIB)/libpythia8.a
 	$(CXX) $< -o $@ -std=c++11 -fopenmp -g $(CXX_COMMON) $(GZIP_INC) $(GZIP_FLAGS)
 
+main_BEeffects_arbtryParticle_OpenMP: main_BEeffects_OpenMP.cc $(PREFIX_LIB)/libpythia8.a
+	$(CXX) $< -o $@ -std=c++11 -fopenmp -g $(CXX_COMMON) $(GZIP_INC) $(GZIP_FLAGS)
+
 main_IPgentr_BEeffects_OpenMP: main_IPgentr_BEeffects_OpenMP.cc $(PREFIX_LIB)/libpythia8.a
 	$(CXX) $< -o $@ -std=c++11 -fopenmp -g $(CXX_COMMON) $(GZIP_INC) $(GZIP_FLAGS)
 

@@ -431,15 +431,17 @@ void print_particle_record(
 		Particle & p = particles_to_output[i];
 
 		record_stream
-			<< iEvent << "   " << i
-			<< "   " << p.e()
-			<< "   " << p.px()
-			<< "   " << p.py()
-			<< "   " << p.pz()
-			<< "   " << p.tProd()
-			<< "   " << p.xProd()
-			<< "   " << p.yProd()
-			<< "   " << p.zProd()
+			<< iEvent << "   "
+			<< i << "   "
+			<< p.id() << "   "
+			<< p.e() << "   "
+			<< p.px() << "   "
+			<< p.py() << "   "
+			<< p.pz() << "   "
+			<< p.tProd() << "   "
+			<< p.xProd() << "   "
+			<< p.yProd() << "   "
+			<< p.zProd()
 			<< endl;
 	}
 
