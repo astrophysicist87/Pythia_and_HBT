@@ -56,8 +56,14 @@ inline void complete_particle(ParticleRecord & p)
 
 
 // function to read in a file containing some number of events
-void read_in_file(string filename, vector<EventRecord> & eventsInFile, ParameterReader * paraRdr)
+void read_in_file(string filename, vector<EventRecord> & eventsInFile, ParameterReader * paraRdr, bool OSCARformat = false)
 {
+	if ( OSCARformat )
+	{
+		read_in_file_OSCAR(filename, eventsInFile, paraRdr);
+		return;
+	}
+
 	ifstream infile(filename.c_str());
 
 	int count = 0;
@@ -111,13 +117,16 @@ void read_in_file(string filename, vector<EventRecord> & eventsInFile, Parameter
 		//cout << "Check event size: " << __LINE__ << "   " << event.particles.size() << endl;
 
 		ParticleRecord particle;
-		int eventID, particleID;
+		int eventID;
+		// particle's index in event, particle's Monte-Carlo index [e.g., pion(+) == 211]
+		int particleID, particleMCID;
 		double E, px, py, pz;
 		double t, x, y, z;
 
 		//cout << "\t - splitting up input line..." << endl;
 		if ( !( iss >> eventID
 					>> particleID
+					>> particleMCID
 					>> E >> px >> py >> pz
 					>> t >> x >> y >> z
 			 ) ) { /*cout << "no success reading in!" << endl;*/ break; }
@@ -290,6 +299,116 @@ void read_in_file(string filename, vector<EventRecord> & eventsInFile, Parameter
 
 	return;
 }
+
+
+
+void read_in_file(string filename, vector<EventRecord> & eventsInFile, ParameterReader * paraRdr)
+{
+	// open file
+	ifstream infile(filename.c_str());
+
+	// set the particle we want to do HBT on
+	int chosen_MCID = paraRdr->getVal("chosen_MCID");
+
+	// this vector contains events to include (for specific centrality class)
+	int nextEventIndex = 0;
+	int nextEventID = ensemble_multiplicites[nextEventIndex].eventID;
+	int n_events_read_from_this_file = 0;
+
+	do
+	{
+		int eventID = -1, nParticles = -1;
+		int particleCount = 0;
+
+		// read in first line: contains event index and number of particles stored from this event
+		infile >> eventID >> nParticles;
+
+		// if this event not in chosen centrality class,
+		// skip all the particles in it automatically
+		if ( not eventID == nextEventID )
+		{
+			string line;
+			for ( int iParticle = 0; iParticle < nParticles; ++iParticle )
+				getline(infile, line);
+		}
+		else
+		{
+			//set next event to include
+			// (negative means we're done reading in selected events)
+			++nextEventIndex;
+			nextEventID = ( nextEventIndex == ensemble_multiplicites.size() ) ?
+							-1 : ensemble_multiplicites[nextEventIndex].eventID;
+		}
+
+		// break if done with this centrality class
+		if ( nextEventID < 0 )
+			break;
+
+		// to hold relevant particles for this event
+		EventRecord event;
+
+		int MCID;
+		double E, px, py, pz;
+		double t, x, y, z;
+
+		// loop over all particles and keep the ones which we're doing HBT on
+		for ( int iParticle = 0; iParticle < nParticles; ++iParticle )
+		{
+			infile  //>> eventID		// these are now redundant
+					//>> particleID		// and unnecessary
+					>> MCID
+					>> E >> px >> py >> pz
+					>> t >> x >> y >> z;
+
+			// skip the particles we don't care about
+			if ( not MCID == chosen_MCID )
+				continue;
+
+			// if we care, create a particle entry
+			ParticleRecord particle;
+
+			//cout << "\t - setting particle info..." << endl;
+			double m = paraRdr->getVal("mass");
+			particle.eventID 	= eventID;
+			//particle.particleID = particleID;  // deprecated and not used anywhere
+			//particle.E 			= E;
+			particle.E 			= sqrt( m*m + px*px + py*py + pz*pz );
+			particle.px 		= px;
+			particle.py 		= py;
+			particle.pz 		= pz;
+			particle.t 			= t / MmPerFm;
+			particle.x 			= x / MmPerFm;
+			particle.y 			= y / MmPerFm;
+			particle.z 			= z / MmPerFm;
+
+			//cout << "\t - completing particle information..." << endl;
+			complete_particle(particle);
+
+			// save particle
+			event.particles.push_back(particle);
+
+			particleCount++;
+		}
+
+		// this event completed;
+		// store results in events vector
+		eventsInFile.push_back(event);
+		++n_events_read_from_this_file;
+	}
+
+	infile.close();
+
+	// discard number of events read in
+	if ( n_events_read_from_this_file > 0 )
+		ensemble_multiplicites.erase( ensemble_multiplicites.begin(),
+									ensemble_multiplicites.begin()
+									+ n_events_read_from_this_file );
+
+	return;
+}
+
+
+
 
 void get_all_events(vector<string> & all_file_names, vector<EventRecord> & allEvents, ParameterReader * paraRdr)
 {

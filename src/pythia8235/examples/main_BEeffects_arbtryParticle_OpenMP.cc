@@ -597,13 +597,19 @@ void print_particle_record(
 		int iEvent, vector<Particle> & particles_to_output,
 		ofstream & record_stream )
 {
+	// output this event header
+	record_stream
+		<< iEvent << "   "
+		<< (int)particles_to_output.size()
+		<< endl;
+
 	for (int i = 0; i < (int)particles_to_output.size(); ++i)
 	{
 		Particle & p = particles_to_output[i];
 
 		record_stream
-			<< iEvent << "   "
-			<< i << "   "
+			//<< iEvent << "   "	// deprecated
+			//<< i << "   "			// deprecated
 			<< p.id() << "   "
 			<< p.e() << "   "
 			<< p.px() << "   "
