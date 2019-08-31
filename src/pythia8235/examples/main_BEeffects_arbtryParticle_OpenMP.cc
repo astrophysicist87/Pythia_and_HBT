@@ -23,7 +23,6 @@ using namespace std;
 
 //==========================================================================
 
-
 class MyImpactParameterGenerator : public ImpactParameterGenerator
 {
 
@@ -112,12 +111,12 @@ void print_particle_record(
 int main(int argc, char *argv[])
 {
 	// Check number of command-line arguments.
-	if (argc != 9)
+	if (argc != 8)
 	{
 		cerr << "Incorrect number of arguments!" << endl;
 		cerr << "Usage: ./main_BEeffects_OpenMP [Projectile nucleus] [Target nucleus] [Beam energy in GeV]"
 				<< " [Number of events] [Results directory]"
-				<< " [Lower centrality %] [Upper centrality %] [Thermal pions only]" << endl;
+				<< " [Lower centrality %] [Upper centrality %]" << endl;
 		exit(8);
 	}
 
@@ -139,11 +138,21 @@ int main(int argc, char *argv[])
 			{ "U"  , "1000922380" }
 		  };
 
-	// thermal pions or resonance decays included
-	bool thermal_only = false;
-	if ( string(argv[8]) == "true" )
-		thermal_only = true;
+	// particles to consider for HBT effects
+	/*std::unordered_map<int, int> HBT_particle_IDs
+		= { 
+			{  211 , 0 },	// pion(+)
+			{ -211 , 1 },	// pion(-)
+			{  321 , 2 },	// Kaon(+)
+			{ -321 , 3 }	// Kaon(-)
+		  };*/
+	std::unordered_map<int, int> HBT_particle_IDs
+		= { 
+			{  211 , 0 }	// pion(+)
+		  };
 
+	// thermal particles only or resonance decays included
+	bool thermal_only = false;
 	bool track_unshifted_particles = true;
 	//if ( string(argv[-1]) == "false" )
 	//	track_unshifted_particles = false;
@@ -154,9 +163,9 @@ int main(int argc, char *argv[])
 	//	cout << "Not using momentum space modifications!" << endl;
 
 	if ( thermal_only )
-		cout << "Using thermal pions only!" << endl;
+		cout << "Using thermal particles only!" << endl;
 	else
-		cout << "Using all pions!" << endl;
+		cout << "Using all particles!" << endl;
 
 	cout << "Set " << "Beams:idA = " + particle_IDs[string(argv[1])]
 		<< " and " << "Beams:idB = " + particle_IDs[string(argv[2])]
@@ -229,7 +238,7 @@ int main(int argc, char *argv[])
 	}
 
 
-	int count = 0;
+	//int count = 0;
 
 	// Estimate centrality class limits
 	//const int n_events_to_use = 10000;
@@ -285,10 +294,10 @@ int main(int argc, char *argv[])
 		// conservation, etc. for debugging purposes
 		//pythia.readString("Check:event = off");
 
-		// if true, consider BE effects only for directly produced pions
+		// if true, consider BE effects only for directly (i.e., thermall) produced particles
 		bool momentum_space_modifications = pythiaVector[iThread].settings.flag("HadronLevel:BoseEinstein");
 		if ( thermal_only and momentum_space_modifications )
-			pythiaVector[iThread].readString("BoseEinstein:widthSep = 1.0");
+			pythiaVector[iThread].readString("BoseEinstein:widthSep = 1.0");	// allows to shift only "thermal" particles
 
 		// Setup the beams.
 		pythiaVector[iThread].readString("Beams:idA = " + particle_IDs[string(argv[1])]);
@@ -320,6 +329,33 @@ int main(int argc, char *argv[])
 
 	}	//end serial initialization
 
+
+
+	// With all threads initialized,
+	// set particle information for
+	// HBT particles and output to files
+	for (const auto & itPID : HBT_particle_IDs)
+	{
+		int PID = itPID.first;		// 211,-211,321,...
+		int Pindex = itPID.second;	// 0,1,2,...
+
+		ofstream out(path + "HBT_particle_" + to_string( Pindex ) + ".dat");
+		out << "name = " << pythiaVector[0].particleData.name( PID )
+			<< "\t\t# Particle name" << endl
+			<< "monval = " << PID
+			<< "\t\t# Monte-Carlo number" << endl
+			<< "mass = " << pythiaVector[0].particleData.m0( PID )
+			<< "\t\t# mass" << endl
+			<< "charge = " << pythiaVector[0].particleData.charge( PID )
+			<< "\t\t# charge" << endl
+			<< "spinType = " << pythiaVector[0].particleData.spinType( PID )
+			<< "\t\t# spin type" << endl
+			<< "chargeType = " << pythiaVector[0].particleData.chargeType( PID )
+			<< "\t\t# charge type" << endl;
+		out.close();
+	}
+
+
 	// Loop over events and OpenMP threads.
 	int iEvent = 0;
 	#pragma omp parallel for
@@ -335,18 +371,17 @@ int main(int argc, char *argv[])
 
 		do
 		{
-			bool successful = false;
-			//#pragma omp critical
-			//{
-				successful = pythiaVector[iThread].next();
-			//}
-			if ( not successful )
+			// Generate next Pythia event in this thread.
+			if ( not pythiaVector[iThread].next() )
 				continue;
 
 			int event_multiplicity = 0;
-			int pion_multiplicity = 0;
+
+			// vector to hold number of each HBT particle species
+			vector<int> HBT_particle_multiplicities(HBT_particle_IDs.size(), 0);
 
 			vector<Particle> particles_to_output, unshifted_particles_to_output;
+			vector<int> particle_is_thermal_or_decay;
 
 			for (int i = 0; i < pythiaVector[iThread].event.size(); ++i)
 			{
@@ -356,9 +391,10 @@ int main(int argc, char *argv[])
 					//count all final hadrons in multiplicity
 					event_multiplicity++;
 
-			 		if ( p.id() == 211 )	// i.e., is pi^+
+			 		//if ( p.id() == 211 )						// i.e., is pion(+)
+			 		if ( HBT_particle_IDs.count( p.id() ) > 0 )	// i.e., is pion(+) or another HBT particle in the HBT_particle_IDs map
 					{
-						// i.e., only do it once
+						/*// i.e., only do it once
 						if ( count < 1 )
 						{
 							ofstream out(path + "HBT_particle.dat");
@@ -376,23 +412,19 @@ int main(int argc, char *argv[])
 								<< "\t\t# charge type" << endl;
 							out.close();
 							++count;
-						}
+						}*/
 
 						const int pmother1 = p.mother1();
 						const int pmother2 = p.mother2();
 
-						// if only looking at thermal (i.e., non-decay) pions
-						if ( thermal_only )
-						{
+						bool particle_is_decay = ( 	momentum_space_modifications
+													and p.status() != 99 )	// particle is decay not affected by modifications
+												or ( ( not momentum_space_modifications )
+													and p.status() >= 90 );	// particle is just a normal decay product
 
-							bool pion_to_skip = ( 	momentum_space_modifications
-														and p.status() != 99 )	// pion is decay not affected by modifications
-													or ( ( not momentum_space_modifications )
-														and p.status() >= 90 );	// pion is just a normal decay product
-					
-							if ( pion_to_skip )
-								continue;
-						}
+						// if only looking at thermal (i.e., non-decay) particles
+						if ( thermal_only and particle_is_decay )
+							continue;
 
 						//=================================
 						// if also recording unshifted particles
@@ -411,7 +443,13 @@ int main(int argc, char *argv[])
 						// save the final (shifted) particles, no matter what
 						particles_to_output.push_back( p );
 
-						pion_multiplicity++;
+						// Save whether the particle is thermal or decay
+						// push back 0 for thermal
+						// push back 1 for decay
+						particle_is_thermal_or_decay.push_back( static_cast<int>( particle_is_decay ) );
+
+						//pion_multiplicity++;
+						HBT_particle_multiplicities[ HBT_particle_IDs[ p.id() ] ]++;
 
 					}
 				}
@@ -442,7 +480,7 @@ int main(int argc, char *argv[])
 					//========================================
 					// output physical particles here
 					if ( printing_particle_records )
-						print_particle_record( iEvent, particles_to_output, outmain );
+						print_particle_record( iEvent, particles_to_output, particle_is_thermal_or_decay, outmain );
 	
 					//========================================
 					// output unshifted particles here in case
@@ -450,7 +488,7 @@ int main(int argc, char *argv[])
 					if ( momentum_space_modifications
 							and track_unshifted_particles
 							and printing_particle_records )
-						print_particle_record( iEvent, unshifted_particles_to_output, outmain_noShift );
+						print_particle_record( iEvent, unshifted_particles_to_output, particle_is_thermal_or_decay, outmain_noShift );
 	
 					// If too many events for single file, set-up new file here
 					if ( (iEvent + 1) % max_events_per_file == 0
@@ -471,10 +509,18 @@ int main(int argc, char *argv[])
 	
 					bool verbose = false;
 
+					//outMultiplicities
+					//			<< iEvent << "   "
+					//			<< event_multiplicity << "   "
+					//			<< pion_multiplicity;
 					outMultiplicities
 								<< iEvent << "   "
-								<< event_multiplicity << "   "
-								<< pion_multiplicity;
+								<< event_multiplicity;
+
+					// output particle multiplicities (order hardcoded for now)
+					for ( int iHBTParticle = 0; iHBTParticle < (int)HBT_particle_IDs.size(); ++iHBTParticle )
+						outMultiplicities
+								<< "   " << HBT_particle_multiplicities[ iHBTParticle ];
 
 					if ( verbose )
 						outMultiplicities
@@ -594,32 +640,62 @@ vector<int> get_centrality_limits(
 
 
 void print_particle_record(
-		int iEvent, vector<Particle> & particles_to_output,
+		int iEvent,
+		vector<Particle> & particles_to_output,
+		vector<int> & particle_is_thermal_or_decay,
 		ofstream & record_stream )
 {
-	// output this event header
-	record_stream
-		<< iEvent << "   "
-		<< (int)particles_to_output.size()
-		<< endl;
 
-	for (int i = 0; i < (int)particles_to_output.size(); ++i)
+	bool OSCARformat = false;
+
+	if ( OSCARformat )
 	{
-		Particle & p = particles_to_output[i];
-
+		// output this event header
 		record_stream
-			//<< iEvent << "   "	// deprecated
-			//<< i << "   "			// deprecated
-			<< p.id() << "   "
-			<< p.e() << "   "
-			<< p.px() << "   "
-			<< p.py() << "   "
-			<< p.pz() << "   "
-			<< p.tProd() << "   "
-			<< p.xProd() << "   "
-			<< p.yProd() << "   "
-			<< p.zProd()
+			<< iEvent << "   "
+			<< (int)particles_to_output.size()
 			<< endl;
+
+		for (int i = 0; i < (int)particles_to_output.size(); ++i)
+		{
+			Particle & p = particles_to_output[i];
+
+			int thermal_or_decay = particle_is_thermal_or_decay[i];
+
+			record_stream
+				//<< iEvent << "   "				// deprecated
+				//<< i << "   "						// deprecated
+				<< p.id() << "   "					// Monte-Carlo ID (need not all be same particle species!)
+				<< thermal_or_decay << "   "		// 0 for thermal particle; 1 for resonance decay particle 
+				<< p.e() << "   "
+				<< p.px() << "   "
+				<< p.py() << "   "
+				<< p.pz() << "   "
+				<< p.tProd() << "   "
+				<< p.xProd() << "   "
+				<< p.yProd() << "   "
+				<< p.zProd()
+				<< endl;
+		}
+	}
+	else
+	{
+		for (int i = 0; i < (int)particles_to_output.size(); ++i)
+		{
+			Particle & p = particles_to_output[i];
+
+			record_stream
+				<< iEvent << "   " << i
+				<< "   " << p.e()
+				<< "   " << p.px()
+				<< "   " << p.py()
+				<< "   " << p.pz()
+				<< "   " << p.tProd()
+				<< "   " << p.xProd()
+				<< "   " << p.yProd()
+				<< "   " << p.zProd()
+				<< endl;
+		}
 	}
 
 	return;

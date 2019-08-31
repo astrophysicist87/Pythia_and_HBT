@@ -302,7 +302,7 @@ void read_in_file(string filename, vector<EventRecord> & eventsInFile, Parameter
 
 
 
-void read_in_file(string filename, vector<EventRecord> & eventsInFile, ParameterReader * paraRdr)
+void read_in_file_OSCAR(string filename, vector<EventRecord> & eventsInFile, ParameterReader * paraRdr)
 {
 	// open file
 	ifstream infile(filename.c_str());
@@ -321,7 +321,9 @@ void read_in_file(string filename, vector<EventRecord> & eventsInFile, Parameter
 		int particleCount = 0;
 
 		// read in first line: contains event index and number of particles stored from this event
-		infile >> eventID >> nParticles;
+		infile >> eventID;
+		if ( infile.eof() ) break;
+		infile >> nParticles;
 
 		// if this event not in chosen centrality class,
 		// skip all the particles in it automatically
@@ -394,11 +396,11 @@ void read_in_file(string filename, vector<EventRecord> & eventsInFile, Parameter
 		// store results in events vector
 		eventsInFile.push_back(event);
 		++n_events_read_from_this_file;
-	}
+	} while ( not infile.eof() );
 
 	infile.close();
 
-	// discard number of events read in
+	// discard number of events read in from this file
 	if ( n_events_read_from_this_file > 0 )
 		ensemble_multiplicites.erase( ensemble_multiplicites.begin(),
 									ensemble_multiplicites.begin()
