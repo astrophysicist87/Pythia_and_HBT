@@ -286,7 +286,7 @@ int main(int argc, char *argv[])
 
 		// Seed RNG different for each thread to avoid redundant events
 		pythiaVector[iThread].readString("Random:setSeed = on");
-		//pythiaVector[iThread].readString("Random:seed = " + to_string(iThread-1));
+		//pythiaVector[iThread].readString("Random:seed = " + to_string(iThread+1));
 		pythiaVector[iThread].readString("Random:seed = -1");
 
 		//========================================

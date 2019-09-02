@@ -276,8 +276,8 @@ int main(int argc, char *argv[])
 
 		// Seed RNG different for each thread to avoid redundant events
 		pythiaVector[iThread].readString("Random:setSeed = on");
-		//pythiaVector[iThread].readString("Random:seed = " + to_string(iThread-1));
-		pythiaVector[iThread].readString("Random:seed = -1");
+		pythiaVector[iThread].readString("Random:seed = " + to_string(iThread+1));
+		//pythiaVector[iThread].readString("Random:seed = -1");
 
 		//========================================
 		// Read in any standard Pythia options
@@ -428,8 +428,8 @@ int main(int argc, char *argv[])
 				continue;
 
 			//just for now
-			//if ( pion_multiplicity < 50 or pion_multiplicity > 100 )
-			//	continue;
+			if ( pion_multiplicity < 50 or pion_multiplicity > 100 )
+				continue;
 
 			#pragma omp critical
 			{
