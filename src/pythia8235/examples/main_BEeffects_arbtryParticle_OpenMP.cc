@@ -105,7 +105,9 @@ vector<int> get_centrality_limits(
 			const int n_events_to_use, Pythia & pythia );
 
 void print_particle_record(
-		int iEvent, vector<Particle> & particles_to_output,
+		int iEvent,
+		vector<Particle> & particles_to_output,
+		vector<int> & particle_is_thermal_or_decay,
 		ofstream & record_stream );
 
 int main(int argc, char *argv[])
@@ -114,7 +116,7 @@ int main(int argc, char *argv[])
 	if (argc != 8)
 	{
 		cerr << "Incorrect number of arguments!" << endl;
-		cerr << "Usage: ./main_BEeffects_OpenMP [Projectile nucleus] [Target nucleus] [Beam energy in GeV]"
+		cerr << "Usage: ./main_BEeffects_arbtryParticle_OpenMP [Projectile nucleus] [Target nucleus] [Beam energy in GeV]"
 				<< " [Number of events] [Results directory]"
 				<< " [Lower centrality %] [Upper centrality %]" << endl;
 		exit(8);
@@ -231,7 +233,7 @@ int main(int argc, char *argv[])
 	outmult_filenames.close();
 
 
-	bool printing_particle_records = false;
+	bool printing_particle_records = true;
 	if ( not printing_particle_records )
 	{
 		outmain << "Not printing particle records!" << endl;
@@ -283,8 +285,8 @@ int main(int argc, char *argv[])
 
 		// Seed RNG different for each thread to avoid redundant events
 		pythiaVector[iThread].readString("Random:setSeed = on");
-		pythiaVector[iThread].readString("Random:seed = " + to_string(iThread-1));
-		//pythia.readString("Random:seed = -1");
+		//pythiaVector[iThread].readString("Random:seed = " + to_string(iThread-1));
+		pythiaVector[iThread].readString("Random:seed = -1");
 
 		//========================================
 		// Read in any standard Pythia options
@@ -319,8 +321,8 @@ int main(int argc, char *argv[])
 		pythiaVector[iThread].readString("HeavyIon:SigFitNGen = 20");
 
 		// Initialize impact parameter selection over finite, user-defined range
-		MyHIUserHooks* myHIUserHooks = new MyHIUserHooks();
-		pythiaVector[iThread].setHIHooks( myHIUserHooks );
+		//MyHIUserHooks* myHIUserHooks = new MyHIUserHooks();
+		//pythiaVector[iThread].setHIHooks( myHIUserHooks );
 
 		// Initialise Pythia.
 		pythiaVector[iThread].init();
@@ -646,7 +648,7 @@ void print_particle_record(
 		ofstream & record_stream )
 {
 
-	bool OSCARformat = false;
+	bool OSCARformat = true;
 
 	if ( OSCARformat )
 	{

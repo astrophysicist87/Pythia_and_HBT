@@ -224,7 +224,7 @@ int main(int argc, char *argv[])
 	outmult_filenames.close();
 
 
-	bool printing_particle_records = false;
+	bool printing_particle_records = true;
 	if ( not printing_particle_records )
 	{
 		outmain << "Not printing particle records!" << endl;
@@ -276,8 +276,8 @@ int main(int argc, char *argv[])
 
 		// Seed RNG different for each thread to avoid redundant events
 		pythiaVector[iThread].readString("Random:setSeed = on");
-		pythiaVector[iThread].readString("Random:seed = " + to_string(iThread-1));
-		//pythia.readString("Random:seed = -1");
+		//pythiaVector[iThread].readString("Random:seed = " + to_string(iThread-1));
+		pythiaVector[iThread].readString("Random:seed = -1");
 
 		//========================================
 		// Read in any standard Pythia options
@@ -312,8 +312,8 @@ int main(int argc, char *argv[])
 		pythiaVector[iThread].readString("HeavyIon:SigFitNGen = 20");
 
 		// Initialize impact parameter selection over finite, user-defined range
-		MyHIUserHooks* myHIUserHooks = new MyHIUserHooks();
-		pythiaVector[iThread].setHIHooks( myHIUserHooks );
+		//MyHIUserHooks* myHIUserHooks = new MyHIUserHooks();
+		//pythiaVector[iThread].setHIHooks( myHIUserHooks );
 
 		// Initialise Pythia.
 		pythiaVector[iThread].init();
@@ -600,10 +600,10 @@ void print_particle_record(
 		ofstream & record_stream )
 {
 	// output this event header
-	record_stream
-		<< iEvent << "   "
-		<< (int)particles_to_output.size()
-		<< endl;
+	//record_stream
+	//	<< iEvent << "   "
+	//	<< (int)particles_to_output.size()
+	//	<< endl;
 
 	for (int i = 0; i < (int)particles_to_output.size(); ++i)
 	{
@@ -612,7 +612,7 @@ void print_particle_record(
 		record_stream
 			<< iEvent << "   "
 			<< i << "   "
-			<< p.id() << "   "
+			//<< p.id() << "   "
 			<< p.e() << "   "
 			<< p.px() << "   "
 			<< p.py() << "   "

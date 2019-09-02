@@ -121,5 +121,13 @@ fit_mode = 0
 max_accepted_tau = 100000000000.0
 
 
+# pion(+)
+chosen_MCID = 211
+
+# include thermal particles (0 - false, 1 - true)
+include_thermal = 1
+
+# include decay particles (0 - false, 1 - true)
+include_decays = 1
 
 # End of file

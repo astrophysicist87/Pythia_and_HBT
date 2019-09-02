@@ -23,6 +23,8 @@ const double MmPerFm = ( CONVERT_MM_TO_FM ) ? 1.e-12 : 1.0;	//mm-to-fm conversio
 
 vector<EventMultiplicity> ensemble_multiplicites;
 
+void read_in_file_OSCAR(string filename, vector<EventRecord> & eventsInFile, ParameterReader * paraRdr);
+
 // function to read in catalogue of event files and return number of files to read
 int read_file_catalogue(string catalogue_name, vector<string> & allLines)
 {
@@ -56,7 +58,7 @@ inline void complete_particle(ParticleRecord & p)
 
 
 // function to read in a file containing some number of events
-void read_in_file(string filename, vector<EventRecord> & eventsInFile, ParameterReader * paraRdr, bool OSCARformat = false)
+void read_in_file(string filename, vector<EventRecord> & eventsInFile, ParameterReader * paraRdr, bool OSCARformat = true)
 {
 	if ( OSCARformat )
 	{
@@ -297,6 +299,36 @@ void read_in_file(string filename, vector<EventRecord> & eventsInFile, Parameter
 
 	//if (1) exit(8);
 
+	// debugging
+	bool verbose = false;
+	if (verbose)
+	{
+		cout << "=============================================================================================" << endl;
+		for (int iEvent = 0; iEvent < (int)eventsInFile.size(); ++iEvent)
+		{
+			cout << "DEBUG: " << iEvent << endl;
+
+			EventRecord event = eventsInFile[iEvent];
+			for (int iParticle = 0; iParticle < (int)event.particles.size(); ++iParticle)
+			{
+				ParticleRecord particle = event.particles[iParticle];
+				cout << "DEBUG: "
+						<< particle.eventID << "   "
+						<< particle.particleID << "   "
+						<< particle.E << "   "
+						<< particle.px << "   "
+						<< particle.py << "   "
+						<< particle.pz << "   "
+						<< particle.t << "   "
+						<< particle.x << "   "
+						<< particle.y << "   "
+						<< particle.z << endl;
+			}
+		}
+		cout << "=============================================================================================" << endl;
+	}
+
+
 	return;
 }
 
@@ -308,7 +340,9 @@ void read_in_file_OSCAR(string filename, vector<EventRecord> & eventsInFile, Par
 	ifstream infile(filename.c_str());
 
 	// set the particle we want to do HBT on
-	int chosen_MCID = paraRdr->getVal("chosen_MCID");
+	int chosen_MCID 		= paraRdr->getVal("chosen_MCID");
+	bool include_thermal 	= (bool)paraRdr->getVal("include_thermal");
+	bool include_decays 	= (bool)paraRdr->getVal("include_decays");
 
 	// this vector contains events to include (for specific centrality class)
 	int nextEventIndex = 0;
@@ -322,8 +356,10 @@ void read_in_file_OSCAR(string filename, vector<EventRecord> & eventsInFile, Par
 
 		// read in first line: contains event index and number of particles stored from this event
 		infile >> eventID;
+		//cout << "Reading in eventID = " << eventID;
 		if ( infile.eof() ) break;
 		infile >> nParticles;
+		//cout << " containing " << nParticles << " particles." << endl;
 
 		// if this event not in chosen centrality class,
 		// skip all the particles in it automatically
@@ -342,29 +378,31 @@ void read_in_file_OSCAR(string filename, vector<EventRecord> & eventsInFile, Par
 							-1 : ensemble_multiplicites[nextEventIndex].eventID;
 		}
 
-		// break if done with this centrality class
-		if ( nextEventID < 0 )
-			break;
-
 		// to hold relevant particles for this event
 		EventRecord event;
 
-		int MCID;
+		int MCID, thermal_or_decay;
 		double E, px, py, pz;
 		double t, x, y, z;
 
-		// loop over all particles and keep the ones which we're doing HBT on
+		// loop over all particles
 		for ( int iParticle = 0; iParticle < nParticles; ++iParticle )
 		{
 			infile  //>> eventID		// these are now redundant
 					//>> particleID		// and unnecessary
-					>> MCID
+					>> MCID >> thermal_or_decay
 					>> E >> px >> py >> pz
 					>> t >> x >> y >> z;
 
 			// skip the particles we don't care about
-			if ( not MCID == chosen_MCID )
+			if ( 	( not MCID == chosen_MCID )								// isn't the particle we're doing HBT on
+					or ( not include_thermal and thermal_or_decay == 0 )	// or is thermal when we're excluding thermal
+					or ( not include_decays  and thermal_or_decay == 1 )	// or is a decay when we're excluding decays
+				)
+			{
+				//cout << "Skipping particle we don't care about." << endl;
 				continue;
+			}
 
 			// if we care, create a particle entry
 			ParticleRecord particle;
@@ -372,7 +410,7 @@ void read_in_file_OSCAR(string filename, vector<EventRecord> & eventsInFile, Par
 			//cout << "\t - setting particle info..." << endl;
 			double m = paraRdr->getVal("mass");
 			particle.eventID 	= eventID;
-			//particle.particleID = particleID;  // deprecated and not used anywhere
+			particle.particleID = iParticle;
 			//particle.E 			= E;
 			particle.E 			= sqrt( m*m + px*px + py*py + pz*pz );
 			particle.px 		= px;
@@ -394,8 +432,19 @@ void read_in_file_OSCAR(string filename, vector<EventRecord> & eventsInFile, Par
 
 		// this event completed;
 		// store results in events vector
-		eventsInFile.push_back(event);
+		if ( particleCount > 0 )
+			eventsInFile.push_back(event);
+
 		++n_events_read_from_this_file;
+
+		// break if done with this centrality class
+		if ( nextEventID < 0 )
+		{
+			//cout << "nextEventID < 0!  Exiting..." << endl;
+			//cout << nextEventIndex << "   " << nextEventID << endl;
+			break;
+		}
+
 	} while ( not infile.eof() );
 
 	infile.close();
@@ -405,6 +454,35 @@ void read_in_file_OSCAR(string filename, vector<EventRecord> & eventsInFile, Par
 		ensemble_multiplicites.erase( ensemble_multiplicites.begin(),
 									ensemble_multiplicites.begin()
 									+ n_events_read_from_this_file );
+
+	// debugging
+	bool verbose = false;
+	if (verbose)
+	{
+		cout << "=============================================================================================" << endl;
+		for (int iEvent = 0; iEvent < (int)eventsInFile.size(); ++iEvent)
+		{
+			cout << "DEBUG: " << iEvent << endl;
+
+			EventRecord event = eventsInFile[iEvent];
+			for (int iParticle = 0; iParticle < (int)event.particles.size(); ++iParticle)
+			{
+				ParticleRecord particle = event.particles[iParticle];
+				cout << "DEBUG: "
+						<< particle.eventID << "   "
+						<< particle.particleID << "   "
+						<< particle.E << "   "
+						<< particle.px << "   "
+						<< particle.py << "   "
+						<< particle.pz << "   "
+						<< particle.t << "   "
+						<< particle.x << "   "
+						<< particle.y << "   "
+						<< particle.z << endl;
+			}
+		}
+		cout << "=============================================================================================" << endl;
+	}
 
 	return;
 }
