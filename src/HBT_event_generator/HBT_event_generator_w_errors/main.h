@@ -300,7 +300,7 @@ void read_in_file(string filename, vector<EventRecord> & eventsInFile, Parameter
 	//if (1) exit(8);
 
 	// debugging
-	bool verbose = false;
+	bool verbose = true;
 	if (verbose)
 	{
 		cout << "=============================================================================================" << endl;
@@ -395,12 +395,12 @@ void read_in_file_OSCAR(string filename, vector<EventRecord> & eventsInFile, Par
 					>> t >> x >> y >> z;
 
 			// skip the particles we don't care about
-			if ( 	( not MCID == chosen_MCID )								// isn't the particle we're doing HBT on
+			if ( 	( not ( MCID == chosen_MCID ) )							// isn't the particle we're doing HBT on
 					or ( not include_thermal and thermal_or_decay == 0 )	// or is thermal when we're excluding thermal
 					or ( not include_decays  and thermal_or_decay == 1 )	// or is a decay when we're excluding decays
 				)
 			{
-				//cout << "Skipping particle we don't care about." << endl;
+				//cout << "Skipping particle we don't care about: " << MCID << "   " << chosen_MCID << endl;
 				continue;
 			}
 
@@ -456,7 +456,7 @@ void read_in_file_OSCAR(string filename, vector<EventRecord> & eventsInFile, Par
 									+ n_events_read_from_this_file );
 
 	// debugging
-	bool verbose = false;
+	bool verbose = true;
 	if (verbose)
 	{
 		cout << "=============================================================================================" << endl;
