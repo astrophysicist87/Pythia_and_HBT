@@ -58,7 +58,7 @@ inline void complete_particle(ParticleRecord & p)
 
 
 // function to read in a file containing some number of events
-void read_in_file(string filename, vector<EventRecord> & eventsInFile, ParameterReader * paraRdr, bool OSCARformat = true)
+void read_in_file(string filename, vector<EventRecord> & eventsInFile, ParameterReader * paraRdr, bool OSCARformat = false)
 {
 	if ( OSCARformat )
 	{
@@ -128,7 +128,7 @@ void read_in_file(string filename, vector<EventRecord> & eventsInFile, Parameter
 		//cout << "\t - splitting up input line..." << endl;
 		if ( !( iss >> eventID
 					>> particleID
-					>> particleMCID
+					//>> particleMCID
 					>> E >> px >> py >> pz
 					>> t >> x >> y >> z
 			 ) ) { /*cout << "no success reading in!" << endl;*/ break; }

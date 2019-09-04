@@ -55,12 +55,12 @@ int main(int argc, char *argv[])
 	string path = "./results/";	// make sure this directory exists
 	string chosen_particle_name = "pi";
 	ostringstream out_filename_stream, err_filename_stream;
-	out_filename_stream << path << "HBT_"
+	out_filename_stream << path << "BF_"
 						<< chosen_particle_name << chosen_particle_name
-						<< "CF.out";
-	err_filename_stream << path << "HBT_"
+						<< ".out";
+	err_filename_stream << path << "BF_"
 						<< chosen_particle_name << chosen_particle_name
-						<< "CF.err";
+						<< ".err";
 	ofstream outmain(out_filename_stream.str().c_str());
 	ofstream errmain(err_filename_stream.str().c_str());
 	
@@ -128,11 +128,11 @@ int main(int argc, char *argv[])
 
 	// Create BalanceFunction object here
 	BalanceFunction
-		balance_function( 211, -211,
+		balance_function( 211, 211,
 							paraRdr, allEvents,
 							outmain, errmain );
 
-
+	/*
 	// Loop over the rest of the files
 	for (iFile = 1; iFile < all_file_names.size(); ++iFile)
 	{
@@ -146,15 +146,17 @@ int main(int argc, char *argv[])
 		// - for each file, update numerator and denominator
 		//balance_function.Update_distributions( allEvents );
 
-	}
+	}*/
 
 	// Compute correlation function itself (after
 	// all events have been read in)
 	//balance_function.Compute_balance_function();
+	balance_function.Compute_1p_spectra(0);
 
 
 	// Output results
 	//balance_function.Output_balance_function( "./results/HBT_pipiCF.dat" );
+	balance_function.Output_1p_spectra( 0, "./results/pi_1p_spectra.dat" );
 
 
 	// Print out run-time

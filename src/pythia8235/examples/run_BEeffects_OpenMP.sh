@@ -2,7 +2,7 @@
 
 source ../../../omp_env.sh
 export OMP_NUM_THREADS=$chosen_OMP_NUM_THREADS
-export OMP_NUM_THREADS=1
+#export OMP_NUM_THREADS=1
 echo 'OMP_NUM_THREADS =' $OMP_NUM_THREADS
 
 # make sure results directory exists

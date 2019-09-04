@@ -13,30 +13,26 @@
 
 
 
-void BalanceFunction::Compute_spectra()
+void BalanceFunction::Compute_1p_spectra(int particle_index)
 {
-	Compute_dN_pTdpTdpphidpY();
+	Compute_dN_pTdpTdpphidpY(particle_index);
 
-	/*Compute_dN_2pipTdpTdpY();
-	Compute_dN_pTdpTdpphi();
-	Compute_dN_dpphidpY();
+	Compute_dN_dpphidpY(particle_index);
 
-	Compute_dN_2pipTdpT();
-	Compute_dN_dpphi();
-	Compute_dN_2pidpY();*/
-
-	Compute_dN_dpphidpY();
-
-	Compute_N();
+	Compute_N(particle_index);
 
 	return;
 }
 
 
 
-void BalanceFunction::Compute_dN_pTdpTdpphidpY()
+void BalanceFunction::Compute_dN_pTdpTdpphidpY(int particle_index)
 {
-	double Na = 0.0, Nb = 0.0;
+	for (int ipT = 0; ipT < n_pT_bins; ++ipT)
+	for (int ipphi = 0; ipphi < n_pphi_bins; ++ipphi)
+	for (int ipY = 0; ipY < n_pY_bins; ++ipY)
+		dN_pTdpTdpphidpY[particle_index][indexer(ipT, ipphi, ipY)] = 0.0;
+
 
 	// Sum over all events
 	int NEvents = allEvents.size();
@@ -60,8 +56,8 @@ void BalanceFunction::Compute_dN_pTdpTdpphidpY()
 						continue;
 					}
 
-			dN_pTdpTdpphidpY[indexer(ipT, ipphi, ipY)] += 1.0;
-			Na += 1.0;
+			dN_pTdpTdpphidpY[particle_index][indexer(ipT, ipphi, ipY)] += 1.0;
+			N[particle_index] += 1.0;
 		}
 	}
 
@@ -72,8 +68,8 @@ void BalanceFunction::Compute_dN_pTdpTdpphidpY()
 	{
 		double pT_bin_center = 0.5*(pT_pts[ipT]+pT_pts[ipT+1]);
 
-		dN_pTdpTdpphidpY[indexer(ipT, ipphi, ipY)]
-				/= ( pT_bin_center * norm
+		dN_pTdpTdpphidpY[particle_index][indexer(ipT, ipphi, ipY)]
+				/= ( pT_bin_center * NEvents
 						* pT_bin_width * pphi_bin_width * pY_bin_width );
 	}
 
@@ -82,24 +78,22 @@ void BalanceFunction::Compute_dN_pTdpTdpphidpY()
 
 
 
-void BalanceFunction::Compute_dN_dpphidpY()
+void BalanceFunction::Compute_dN_dpphidpY(int particle_index)
 {
-	//vector<double> dN_dpphidpY(n_pT_bins*n_pY_bins);
-
 	int idx2D = 0;
 	for (int ipphi = 0; ipphi < n_pphi_bins; ++ipphi)
 	for (int ipY = 0; ipY < n_pY_bins; ++ipY)
 	{
-		dN_dpphidpY[idx2D] = 0.0;
+		dN_dpphidpY[particle_index][idx2D] = 0.0;
 
 		for (int ipT = 0; ipT < n_pT_bins; ++ipT)
 		{
 			double pT_bin_center = 0.5*(pT_pts[ipT]+pT_pts[ipT+1]);
-			dN_dpphidpY[idx2D] += pT_bin_center
-									* dN_pTdpTdpphidpY[indexer(ipT, ipphi, ipY)];
+			dN_dpphidpY[particle_index][idx2D] += pT_bin_center
+									* dN_pTdpTdpphidpY[particle_index][indexer(ipT, ipphi, ipY)];
 		}
 
-		dN_dpphidpY[idx2D++] *= pT_bin_width;
+		dN_dpphidpY[particle_index][idx2D++] *= pT_bin_width;
 	}
 
 	return;
@@ -108,9 +102,9 @@ void BalanceFunction::Compute_dN_dpphidpY()
 
 
 
-void BalanceFunction::Compute_N()
+void BalanceFunction::Compute_N(int particle_index)
 {
-	double N = 0.0;
+	double N0 = 0.0;
 	int NEvents = allEvents.size();
 
 	int idx3D = 0;
@@ -119,12 +113,13 @@ void BalanceFunction::Compute_N()
 	for (int ipY = 0; ipY < n_pY_bins; ++ipY)
 	{
 		double pT_bin_center = 0.5*(pT_pts[ipT]+pT_pts[ipT+1]);
-		N += pT_bin_center * dN_pTdpTdpphidpY[idx3D++]
+		N0 += pT_bin_center * dN_pTdpTdpphidpY[particle_index][idx3D++]
 				* pT_bin_width * pphi_bin_width * pY_bin_width;
 	}
 
-	out << "Event-averaged multiplicity <N> = " << N << endl;
-	out << "Total multiplicity N = " << NEvents*N << endl;
+	out << "Event-averaged multiplicity <N0> = " << N0 << endl;
+	out << "Total multiplicity N0 = " << NEvents*N0 << endl;
+	out << "Check: N = " << N[particle_index] << endl;
 
 	return;
 }
