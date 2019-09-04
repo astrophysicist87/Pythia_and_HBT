@@ -152,11 +152,19 @@ void BalanceFunction::initialize_all(
 		get_all_events(all_file_names[iFile], allEvents, paraRdr);	//N.B. - everything now initialized
 
 
+		// keep running total
+		total_N_events += allEvents.size();
+
+
 		// - for each file, update spectra
 		Get_spectra();
 
 	}
 
+	// everything else done automatically here
+	Get_balance_function();
+
+	return;
 }
 
 
@@ -177,6 +185,7 @@ void BalanceFunction::Get_spectra()
 
 	return;
 }
+
 
 
 

@@ -33,6 +33,7 @@ SRC		=	main.cpp \
 			$(SRCDIR)/ParameterReader.cpp \
 			$(SRCDIR)/gauss_quadrature.cpp \
 			$(SRCDIR)/BalanceFunction.cpp \
+			$(SRCDIR)/Core.cpp \
 			$(SRCDIR)/SingleParticleSpectra.cpp \
 			$(SRCDIR)/SingleParticleDistributions.cpp \
 			$(SRCDIR)/TwoParticleSpectra.cpp \

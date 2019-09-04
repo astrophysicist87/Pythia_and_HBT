@@ -75,20 +75,11 @@ int main(int argc, char *argv[])
 	get_events_in_centrality_class( ensemble_info, ensemble );
 
 
-	// Create BalanceFunction object here
+	// Create BalanceFunction object here (all calculations done automatically)
 	BalanceFunction
 		balance_function( 211, 211,
 				paraRdr, all_file_names,
 				ensemble, outmain, errmain );
-
-	// After reading in all relevant events from
-	// files, compute normalized distributions.
-	balance_function.Compute_rho1(0);
-	balance_function.Compute_rho2(0, 0);
-
-	balance_function.Check_normalizations(0, 0, 0);
-
-	//balance_function.Compute_balance_function();
 
 	// Output results
 	balance_function.Output_1p_spectra( 0, "./results/pi_1p_spectra.dat" );

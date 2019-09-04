@@ -182,7 +182,7 @@ class BalanceFunction
 		void Check_normalizations(int particle_index, int ip1, int ip2);
 
 		// For subsequent chunks of events
-		void Get_spectra( );
+		void Get_spectra();
 
 		// functions in FileReader.cpp
 		void complete_particle(ParticleRecord & p);
@@ -190,6 +190,8 @@ class BalanceFunction
 		void get_all_events(string file_name, vector<EventRecord> & allEvents, ParameterReader * paraRdr, bool verbose = false);
 
 		// Correlation function itself
+		void Get_balance_function();
+		void Compute_event_averages(int particle_index, int ip1, int ip2);
 		//void Compute_balance_function();
 
 		// Input/output
