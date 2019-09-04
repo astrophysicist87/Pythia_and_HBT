@@ -29,13 +29,15 @@ endif
 
 SRC		=	main.cpp \
 			$(SRCDIR)/Arsenal.cpp \
+			$(SRCDIR)/EventMultiplicity.cpp \
 			$(SRCDIR)/ParameterReader.cpp \
 			$(SRCDIR)/gauss_quadrature.cpp \
 			$(SRCDIR)/BalanceFunction.cpp \
 			$(SRCDIR)/SingleParticleSpectra.cpp \
 			$(SRCDIR)/SingleParticleDistributions.cpp \
 			$(SRCDIR)/TwoParticleSpectra.cpp \
-			$(SRCDIR)/TwoParticleDistributions.cpp
+			$(SRCDIR)/TwoParticleDistributions.cpp \
+			$(SRCDIR)/FileReader.cpp
 
 INC		= 	main.h \
 			$(SRCDIR)/EventRecord.h \
@@ -44,7 +46,7 @@ INC		= 	main.h \
 			$(SRCDIR)/Arsenal.h \
 			$(SRCDIR)/ParameterReader.h \
 			$(SRCDIR)/gauss_quadrature.h \
-			$(SRCDIR)/ensemble.h \
+			$(SRCDIR)/EventMultiplicity.h \
 			$(SRCDIR)/random_events.h \
 			$(SRCDIR)/estimate_error.h \
 			$(SRCDIR)/BalanceFunction.h
@@ -99,7 +101,7 @@ $(SRCDIR)/Arsenal.cpp: $(SRCDIR)/Arsenal.h
 $(SRCDIR)/ParameterReader.cpp: $(SRCDIR)/ParameterReader.h $(SRCDIR)/Arsenal.h
 $(SRCDIR)/BalanceFunction.cpp: $(SRCDIR)/BalanceFunction.h $(SRCDIR)/Arsenal.h \
 									$(SRCDIR)/Stopwatch.h $(SRCDIR)/EventRecord.h \
-									$(SRCDIR)/ParticleRecord.h $(SRCDIR)/ensemble.h
+									$(SRCDIR)/ParticleRecord.h $(SRCDIR)/EventMultiplicity.h
 ./main.cpp: $(SRCDIR)/Stopwatch.h $(SRCDIR)/ParameterReader.h main.h $(SRCDIR)/EventRecord.h \
-			$(SRCDIR)/ParticleRecord.h $(SRCDIR)/ensemble.h
+			$(SRCDIR)/ParticleRecord.h $(SRCDIR)/EventMultiplicity.h
 

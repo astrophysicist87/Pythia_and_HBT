@@ -26,10 +26,12 @@ void BalanceFunction::initialize_all(
 	const vector<EventRecord> & allEvents_in )
 {
 	// set particles to study
+	particle_MCID1 = particle_MCID1_in;
+	particle_MCID2 = particle_MCID2_in;
 	particle_species_map
 		= {
-			{ particle_MCID1_in, 0 },
-			{ particle_MCID2_in, 1 }
+			{ particle_MCID1, 0 },
+			{ particle_MCID2, 1 }
 		  };
 
 	// Load parameters
@@ -115,15 +117,63 @@ void BalanceFunction::initialize_all(
 	N2 = vector<vector<double> >( 1, vector<double>( 1, 0.0 ) );
 
 
-
+	// Initialize all spectra here
+	Get_spectra();
 
 
 	return;
 }
 
+
+void BalanceFunction::initialize_all(
+	int particle_MCID1_in,
+	int particle_MCID2_in,
+	ParameterReader * paraRdr_in,
+	const vector<string> & allEvents_filenames_in,
+	const vector<EventMultiplicity> & ensemble_in )
+{
+	int iFile = 0;
+	all_file_names = allEvents_filenames_in;
+	ensemble = ensemble_in;
+
+	// use this to pass into initialization routine
+	vector<EventRecord> allEvents_in;
+	get_all_events(all_file_names[iFile], allEvents_in, paraRdr_in);
+
+	// only call this once
+	initialize_all( particle_MCID1_in, particle_MCID2_in,
+					paraRdr_in, allEvents_in );
+
+	// Loop over the rest of the files
+	for (iFile = 1; iFile < all_file_names.size(); ++iFile)
+	{
+
+		// Read in the next file
+		get_all_events(all_file_names[iFile], allEvents, paraRdr);	//N.B. - everything now initialized
+
+
+		// - for each file, update spectra
+		Get_spectra();
+
+	}
+
+}
+
+
 BalanceFunction::~BalanceFunction()
 {
 	//clear everything
+
+	return;
+}
+
+
+
+void BalanceFunction::Get_spectra()
+{
+	Compute_1p_spectra(0);
+
+	Compute_2p_spectra(0, 0);
 
 	return;
 }

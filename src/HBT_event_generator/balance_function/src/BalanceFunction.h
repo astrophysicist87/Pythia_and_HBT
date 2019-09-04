@@ -18,10 +18,16 @@
 #include "ParticleRecord.h"
 #include "gauss_quadrature.h"
 
+#include "EventMultiplicity.h"
+
 using namespace std;
 
 constexpr complex<double> i(0.0, 1.0);
-constexpr double hbarC = 0.19733;	//GeV*fm
+constexpr double hbarC = 0.19733;								//GeV*fm
+
+constexpr bool CONVERT_MM_TO_FM = true;							// needs to be true if running on Pythia output, false for Vishnu output
+constexpr double MmPerFm = ( CONVERT_MM_TO_FM ) ? 1.e-12 : 1.0;	//mm-to-fm conversion
+
 
 class BalanceFunction
 {
@@ -30,10 +36,13 @@ class BalanceFunction
 
 		int total_N_events, number_of_completed_events;
 
+		int particle_MCID1, particle_MCID2;
+
 		std::unordered_map<int, int> particle_species_map;
 
 		vector<string> all_file_names;
 		vector<EventRecord> allEvents;
+		vector<EventMultiplicity> ensemble;
 
 		int n_pT_pts, n_pphi_pts, n_pY_pts;
 		int n_pT_bins, n_pphi_bins, n_pY_bins;
@@ -81,9 +90,28 @@ class BalanceFunction
 													paraRdr_in, allEvents_in ); };
 
 
+		BalanceFunction( int particle_MCID1_in, int particle_MCID2_in,
+								ParameterReader * paraRdr_in,
+								const vector<string> & allEvents_filenames_in,
+								const vector<EventMultiplicity> & ensemble_in,
+								ostream & out_stream = std::cout,
+								ostream & err_stream = std::cerr )
+								:
+								out(out_stream),
+								err(err_stream)
+								{ initialize_all( particle_MCID1_in, particle_MCID2_in,
+													paraRdr_in, allEvents_filenames_in,
+													ensemble_in ); };
+
+
 		void initialize_all( int particle_MCID1_in, int particle_MCID2_in,
 								ParameterReader * paraRdr_in,
-								const vector<EventRecord> & allEvents_in);
+								const vector<EventRecord> & allEvents_in );
+
+		void initialize_all( int particle_MCID1_in, int particle_MCID2_in,
+								ParameterReader * paraRdr_in,
+								const vector<string> & allEvents_filenames_in,
+								const vector<EventMultiplicity> & ensemble_in );
 
 		~BalanceFunction();
 
@@ -153,12 +181,13 @@ class BalanceFunction
 		
 		void Check_normalizations(int particle_index, int ip1, int ip2);
 
-
-
-
-
 		// For subsequent chunks of events
-		//void Update_distributions( const vector<EventRecord> & allEvents_in );
+		void Get_spectra( );
+
+		// functions in FileReader.cpp
+		void complete_particle(ParticleRecord & p);
+		void read_in_file(string filename, vector<EventRecord> & eventsInFile, ParameterReader * paraRdr);
+		void get_all_events(string file_name, vector<EventRecord> & allEvents, ParameterReader * paraRdr, bool verbose = false);
 
 		// Correlation function itself
 		//void Compute_balance_function();

@@ -22,9 +22,9 @@ int main(int argc, char *argv[])
 {
 	// Display intro
 	cout << endl
-			<< "              HBT event generator              " << endl
+			<< "              Balance Function              " << endl
 			<< endl
-			<< "  Ver 1.0   ----- Christopher Plumberg, 10/2018" << endl;
+			<< "  Ver 1.0   ----- Christopher Plumberg, 9/2019" << endl;
 	cout << endl << "**********************************************************" << endl;
 	display_logo(2); // Hail to the king~
 	cout << endl << "**********************************************************" << endl << endl;
@@ -53,14 +53,9 @@ int main(int argc, char *argv[])
 	
 	// Set-up output files
 	string path = "./results/";	// make sure this directory exists
-	string chosen_particle_name = "pi";
 	ostringstream out_filename_stream, err_filename_stream;
-	out_filename_stream << path << "BF_"
-						<< chosen_particle_name << chosen_particle_name
-						<< ".out";
-	err_filename_stream << path << "BF_"
-						<< chosen_particle_name << chosen_particle_name
-						<< ".err";
+	out_filename_stream << path << "BF.out";
+	err_filename_stream << path << "BF.err";
 	ofstream outmain(out_filename_stream.str().c_str());
 	ofstream errmain(err_filename_stream.str().c_str());
 	
@@ -75,95 +70,30 @@ int main(int argc, char *argv[])
 	vector<string> ensemble_info;
 	read_file_catalogue("./ensemble_catalogue.dat", ensemble_info);
 
-	// allows to give files appropriate names
-	string collision_system_info = ensemble_info[0];
-	string target_name, projectile_name, beam_energy;
-	int Nevents;
-	double centrality_minimum, centrality_maximum;
-	istringstream iss(collision_system_info);
-	iss >> target_name
-		>> projectile_name
-		>> beam_energy
-		>> centrality_minimum
-		>> centrality_maximum
-		>> Nevents;
-
-
-	cout << "run_HBT_event_generator(): "
-			<< "Using centrality class: "
-			<< centrality_minimum << "-"
-			<< centrality_maximum << "%!" << endl;
-
-
-	// select only those events falling into specificed centrality range
-	string multiplicity_filename = ensemble_info[1];
-	cout << "Reading in " << multiplicity_filename << endl;
-	get_events_in_centrality_class(
-				multiplicity_filename, ensemble_multiplicites,
-				centrality_minimum, centrality_maximum );
-
-	cout << "run_HBT_event_generator(): "
-			<< "Using " << ensemble_multiplicites.size()
-			<< " events in centrality class "
-			<< centrality_minimum << "-"
-			<< centrality_maximum << "%!" << endl;
-
-	cout << "Check events in this centrality class: " << endl;
-	for (int iEvent = 0; iEvent < ensemble_multiplicites.size(); ++iEvent)
-		cout << ensemble_multiplicites[iEvent].eventID << "   "
-				<< ensemble_multiplicites[iEvent].total_multiplicity << "   "
-				<< ensemble_multiplicites[iEvent].particle_multiplicity << endl;
-
-
-	// Vector to hold all event information
-	vector<EventRecord> allEvents;
-
-
-	// Read in the first file
-	int iFile = 0;
-	cout << "Processing " << all_file_names[iFile] << "..." << endl;
-
-	get_all_events(all_file_names[iFile], allEvents, paraRdr);
+	// ensemble_info contains chosen centrality class information, etc.
+	vector<EventMultiplicity> ensemble;
+	get_events_in_centrality_class( ensemble_info, ensemble );
 
 
 	// Create BalanceFunction object here
 	BalanceFunction
 		balance_function( 211, 211,
-							paraRdr, allEvents,
-							outmain, errmain );
+				paraRdr, all_file_names,
+				ensemble, outmain, errmain );
 
-	/*
-	// Loop over the rest of the files
-	for (iFile = 1; iFile < all_file_names.size(); ++iFile)
-	{
-
-		cout << "Processing " << all_file_names[iFile] << "..." << endl;
-
-		// Read in the next file
-		get_all_events(all_file_names[iFile], allEvents, paraRdr);
-
-
-		// - for each file, update numerator and denominator
-		//balance_function.Update_distributions( allEvents );
-
-	}*/
-
-	// Compute correlation function itself (after
-	// all events have been read in)
-	//balance_function.Compute_balance_function();
-	balance_function.Compute_1p_spectra(0);
-
-	balance_function.Compute_2p_spectra(0, 0);
-
+	// After reading in all relevant events from
+	// files, compute normalized distributions.
 	balance_function.Compute_rho1(0);
-
 	balance_function.Compute_rho2(0, 0);
 
 	balance_function.Check_normalizations(0, 0, 0);
 
+	//balance_function.Compute_balance_function();
+
 	// Output results
-	//balance_function.Output_balance_function( "./results/HBT_pipiCF.dat" );
 	balance_function.Output_1p_spectra( 0, "./results/pi_1p_spectra.dat" );
+	balance_function.Output_2p_spectra( 0, 0, "./results/pi_2p_spectra.dat" );
+	//balance_function.Output_balance_function( "./results/BF_pipiCF.dat" );
 
 
 	// Print out run-time

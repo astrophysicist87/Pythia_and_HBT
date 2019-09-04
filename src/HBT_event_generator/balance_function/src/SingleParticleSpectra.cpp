@@ -28,15 +28,10 @@ void BalanceFunction::Compute_1p_spectra(int particle_index)
 
 void BalanceFunction::Compute_dN_pTdpTdpphidpY(int particle_index)
 {
-	for (int ipT = 0; ipT < n_pT_bins; ++ipT)
-	for (int ipphi = 0; ipphi < n_pphi_bins; ++ipphi)
-	for (int ipY = 0; ipY < n_pY_bins; ++ipY)
-		dN_pTdpTdpphidpY[particle_index][indexer(ipT, ipphi, ipY)] = 0.0;
-
+	cout << "Starting here with allEvents.size() = " << allEvents.size() << " and particle_index = " << particle_index << endl;
 
 	// Sum over all events
-	int NEvents = allEvents.size();
-	for (int iEvent = 0; iEvent < NEvents; ++iEvent)
+	for (int iEvent = 0; iEvent < allEvents.size(); ++iEvent)
 	{
 		EventRecord event = allEvents[iEvent];
 		
@@ -69,11 +64,9 @@ void BalanceFunction::Compute_dN_pTdpTdpphidpY(int particle_index)
 		double pT_bin_center = 0.5*(pT_pts[ipT]+pT_pts[ipT+1]);
 
 		dN_pTdpTdpphidpY[particle_index][indexer(ipT, ipphi, ipY)]
-				/= ( pT_bin_center * NEvents
+				/= ( pT_bin_center
 						* pT_bin_width * pphi_bin_width * pY_bin_width );
 	}
-
-	N[particle_index] /= NEvents;
 
 	return;
 }
@@ -86,8 +79,6 @@ void BalanceFunction::Compute_dN_dpphidpY(int particle_index)
 	for (int ipphi = 0; ipphi < n_pphi_bins; ++ipphi)
 	for (int ipY = 0; ipY < n_pY_bins; ++ipY)
 	{
-		dN_dpphidpY[particle_index][idx2D] = 0.0;
-
 		for (int ipT = 0; ipT < n_pT_bins; ++ipT)
 		{
 			double pT_bin_center = 0.5*(pT_pts[ipT]+pT_pts[ipT+1]);
@@ -107,7 +98,6 @@ void BalanceFunction::Compute_dN_dpphidpY(int particle_index)
 void BalanceFunction::Compute_N(int particle_index)
 {
 	double N0 = 0.0;
-	int NEvents = allEvents.size();
 
 	int idx3D = 0;
 	for (int ipT = 0; ipT < n_pT_bins; ++ipT)
@@ -119,9 +109,8 @@ void BalanceFunction::Compute_N(int particle_index)
 				* pT_bin_width * pphi_bin_width * pY_bin_width;
 	}
 
-	out << "Event-averaged multiplicity <N0> = " << N0 << endl;
-	//out << "Total multiplicity N0 = " << NEvents*N0 << endl;
-	out << "Check: <N> = " << N[particle_index] << endl;
+	out << "Total multiplicity N0 = " << N0 << endl;
+	out << "Check: N = " << N[particle_index] << endl;
 
 	return;
 }
