@@ -20,19 +20,22 @@ using namespace std;
 
 
 void BalanceFunction::initialize_all(
-	int particle_MCID1_in,
-	int particle_MCID2_in,
+	int reference_MCID_in,
+	int associate_MCID_in,
 	ParameterReader * paraRdr_in,
 	const vector<EventRecord> & allEvents_in )
 {
 	// set particles to study
-	particle_MCID1 = particle_MCID1_in;
-	particle_MCID2 = particle_MCID2_in;
-	particle_species_map
+	reference_MCID 	= reference_MCID_in;
+	associate_MCID 	= associate_MCID_in;
+	MCID_indices
 		= {
-			{ particle_MCID1, 0 },
-			{ particle_MCID2, 1 }
+			{ reference_MCID, 0 },
+			{ associate_MCID, 1 }
 		  };
+	reference_ID 	= 0;
+	associate_ID 	= 1;
+	particle_MCIDs	= { reference_MCID, associate_MCID };
 
 	// Load parameters
 	paraRdr			= paraRdr_in;
@@ -74,47 +77,47 @@ void BalanceFunction::initialize_all(
 	cout << "CHECK: " << total_N_events << "   " << pT_bin_width << "   " << pphi_bin_width << "   " << pY_bin_width << endl;
 
 	dN_pTdpTdpphidpY
-		= vector<vector<double> >( 1,
+		= vector<vector<double> >( 2,
 			vector<double>( n_pT_bins*n_pphi_bins*n_pY_bins, 0.0 ) );
 	dN_dpphidpY
-		= vector<vector<double> >( 1,
+		= vector<vector<double> >( 2,
 			vector<double>( n_pphi_bins*n_pY_bins, 0.0 ) );
 	N = vector<double>(1, 0.0);
 
 
 
 	rho1_pT_pphi_pY
-		= vector<vector<double> >( 1,
+		= vector<vector<double> >( 2,
 			vector<double>( n_pT_bins*n_pphi_bins*n_pY_bins, 0.0 ) );
 	rho1_pphi_pY
-		= vector<vector<double> >( 1,
+		= vector<vector<double> >( 2,
 			vector<double>( n_pT_bins*n_pphi_bins*n_pY_bins, 0.0 ) );
 
 	dN2_p1Tdp1Tdp1phidp1Y_p2Tdp2Tdp2phidp2Y
-		= vector<vector<vector<double> > >( 1,
-			vector<vector<double> >( 1,
+		= vector<vector<vector<double> > >( 2,
+			vector<vector<double> >( 2,
 			vector<double>( n_pT_bins*n_pphi_bins*n_pY_bins
 							*n_pT_bins*n_pphi_bins*n_pY_bins, 0.0 ) ) );
 
 	dN2_dp1phidp1Y_dp2phidp2Y
-		= vector<vector<vector<double> > >( 1,
-			vector<vector<double> >( 1,
+		= vector<vector<vector<double> > >( 2,
+			vector<vector<double> >( 2,
 			vector<double>( n_pphi_bins*n_pY_bins
 							*n_pphi_bins*n_pY_bins, 0.0 ) ) );
 
 	rho2_p1Tp1phip1Y_p2Tp2phip2Y
-		= vector<vector<vector<double> > >( 1,
-			vector<vector<double> >( 1,
+		= vector<vector<vector<double> > >( 2,
+			vector<vector<double> >( 2,
 			vector<double>( n_pT_bins*n_pphi_bins*n_pY_bins
 							*n_pT_bins*n_pphi_bins*n_pY_bins, 0.0 ) ) );
 
 	rho2_p1phip1Y_p2phip2Y
-		= vector<vector<vector<double> > >( 1,
-			vector<vector<double> >( 1,
+		= vector<vector<vector<double> > >( 2,
+			vector<vector<double> >( 2,
 			vector<double>( n_pphi_bins*n_pY_bins
 							*n_pphi_bins*n_pY_bins, 0.0 ) ) );
 
-	N2 = vector<vector<double> >( 1, vector<double>( 1, 0.0 ) );
+	N2 = vector<vector<double> >( 2, vector<double>( 2, 0.0 ) );
 
 
 	// Initialize all spectra here
@@ -126,8 +129,8 @@ void BalanceFunction::initialize_all(
 
 
 void BalanceFunction::initialize_all(
-	int particle_MCID1_in,
-	int particle_MCID2_in,
+	int reference_MCID_in,
+	int associate_MCID_in,
 	ParameterReader * paraRdr_in,
 	const vector<string> & allEvents_filenames_in,
 	const vector<EventMultiplicity> & ensemble_in )
@@ -141,7 +144,7 @@ void BalanceFunction::initialize_all(
 	get_all_events(all_file_names[iFile], allEvents_in, paraRdr_in);
 
 	// only call this once
-	initialize_all( particle_MCID1_in, particle_MCID2_in,
+	initialize_all( reference_MCID_in, associate_MCID_in,
 					paraRdr_in, allEvents_in );
 
 	// Loop over the rest of the files
@@ -179,9 +182,9 @@ BalanceFunction::~BalanceFunction()
 
 void BalanceFunction::Get_spectra()
 {
-	Compute_1p_spectra(0);
+	Compute_1p_spectra(reference_MCID);
 
-	Compute_2p_spectra(0, 0);
+	Compute_2p_spectra(reference_MCID, associate_MCID);
 
 	return;
 }

@@ -74,10 +74,12 @@ int main(int argc, char *argv[])
 	vector<EventMultiplicity> ensemble;
 	get_events_in_centrality_class( ensemble_info, ensemble );
 
+	const int pion = 211;
+	const int kaon = 321;
 
 	// Create BalanceFunction object here (all calculations done automatically)
 	BalanceFunction
-		balance_function( 211, 211,
+		balance_function( pion, pion,
 				paraRdr, all_file_names,
 				ensemble, outmain, errmain );
 

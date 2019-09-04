@@ -1,5 +1,5 @@
-#ifndef HBTEG_H
-#define HBTEG_H
+#ifndef BALANCEFUNCTION_H
+#define BALANCEFUNCTION_H
 
 #include <omp.h>
 #include <iostream>
@@ -10,14 +10,13 @@
 #include <stdlib.h>
 #include <cstdlib>
 #include <complex>
-#include <unordered_map>
+//#include <unordered_map>
 
 #include "ParameterReader.h"
 #include "Arsenal.h"
 #include "EventRecord.h"
 #include "ParticleRecord.h"
 #include "gauss_quadrature.h"
-
 #include "EventMultiplicity.h"
 
 using namespace std;
@@ -36,9 +35,10 @@ class BalanceFunction
 
 		int total_N_events, number_of_completed_events;
 
-		int particle_MCID1, particle_MCID2;
+		int reference_MCID, associate_MCID;
 
-		std::unordered_map<int, int> particle_species_map;
+		std::unordered_map<int, int> MCID_indices;
+		vector<int> particle_MCIDs;
 
 		vector<string> all_file_names;
 		vector<EventRecord> allEvents;
@@ -78,7 +78,7 @@ class BalanceFunction
 	public:
 
 		// Constructors, destructors, and initializers
-		BalanceFunction( int particle_MCID1_in, int particle_MCID2_in,
+		BalanceFunction( int reference_MCID_in, int associate_MCID_in,
 								ParameterReader * paraRdr_in,
 								const vector<EventRecord> & allEvents_in,
 								ostream & out_stream = std::cout,
@@ -86,11 +86,11 @@ class BalanceFunction
 								:
 								out(out_stream),
 								err(err_stream)
-								{ initialize_all( particle_MCID1_in, particle_MCID2_in,
+								{ initialize_all( reference_MCID_in, associate_MCID_in,
 													paraRdr_in, allEvents_in ); };
 
 
-		BalanceFunction( int particle_MCID1_in, int particle_MCID2_in,
+		BalanceFunction( int reference_MCID_in, int associate_MCID_in,
 								ParameterReader * paraRdr_in,
 								const vector<string> & allEvents_filenames_in,
 								const vector<EventMultiplicity> & ensemble_in,
@@ -99,16 +99,16 @@ class BalanceFunction
 								:
 								out(out_stream),
 								err(err_stream)
-								{ initialize_all( particle_MCID1_in, particle_MCID2_in,
+								{ initialize_all( reference_MCID_in, associate_MCID_in,
 													paraRdr_in, allEvents_filenames_in,
 													ensemble_in ); };
 
 
-		void initialize_all( int particle_MCID1_in, int particle_MCID2_in,
+		void initialize_all( int reference_MCID_in, int associate_MCID_in,
 								ParameterReader * paraRdr_in,
 								const vector<EventRecord> & allEvents_in );
 
-		void initialize_all( int particle_MCID1_in, int particle_MCID2_in,
+		void initialize_all( int reference_MCID_in, int associate_MCID_in,
 								ParameterReader * paraRdr_in,
 								const vector<string> & allEvents_filenames_in,
 								const vector<EventMultiplicity> & ensemble_in );

@@ -6,7 +6,7 @@
 typedef struct
 {
 	int eventID;		//which event did this particle come from
-	//int pdgID;			//particle type for accessing info (e.g., mass)
+	int MCID, aMCID;	//PDG particle number (and absolute value thereof)
 	int particleID; 	//to distinguish it from other particles in the same event
 
 	//vector<double> x;	//where was this particle produced?
