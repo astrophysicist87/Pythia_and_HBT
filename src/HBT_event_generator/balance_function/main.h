@@ -177,7 +177,7 @@ void read_in_file(string filename, vector<EventRecord> & eventsInFile, Parameter
 									+ n_events_read_from_this_file );
 
 	// debugging
-	bool verbose = true;
+	bool verbose = false;
 	if (verbose)
 	{
 		cout << "=============================================================================================" << endl;

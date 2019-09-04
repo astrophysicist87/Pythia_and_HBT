@@ -32,7 +32,10 @@ SRC		=	main.cpp \
 			$(SRCDIR)/ParameterReader.cpp \
 			$(SRCDIR)/gauss_quadrature.cpp \
 			$(SRCDIR)/BalanceFunction.cpp \
-			$(SRCDIR)/SingleParticleSpectra.cpp
+			$(SRCDIR)/SingleParticleSpectra.cpp \
+			$(SRCDIR)/SingleParticleDistributions.cpp \
+			$(SRCDIR)/TwoParticleSpectra.cpp \
+			$(SRCDIR)/TwoParticleDistributions.cpp
 
 INC		= 	main.h \
 			$(SRCDIR)/EventRecord.h \

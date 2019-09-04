@@ -153,6 +153,13 @@ int main(int argc, char *argv[])
 	//balance_function.Compute_balance_function();
 	balance_function.Compute_1p_spectra(0);
 
+	balance_function.Compute_2p_spectra(0, 0);
+
+	balance_function.Compute_rho1(0);
+
+	balance_function.Compute_rho2(0, 0);
+
+	balance_function.Check_normalizations(0, 0, 0);
 
 	// Output results
 	//balance_function.Output_balance_function( "./results/HBT_pipiCF.dat" );

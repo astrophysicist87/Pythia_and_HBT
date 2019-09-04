@@ -73,6 +73,8 @@ void BalanceFunction::Compute_dN_pTdpTdpphidpY(int particle_index)
 						* pT_bin_width * pphi_bin_width * pY_bin_width );
 	}
 
+	N[particle_index] /= NEvents;
+
 	return;
 }
 
@@ -118,8 +120,8 @@ void BalanceFunction::Compute_N(int particle_index)
 	}
 
 	out << "Event-averaged multiplicity <N0> = " << N0 << endl;
-	out << "Total multiplicity N0 = " << NEvents*N0 << endl;
-	out << "Check: N = " << N[particle_index] << endl;
+	//out << "Total multiplicity N0 = " << NEvents*N0 << endl;
+	out << "Check: <N> = " << N[particle_index] << endl;
 
 	return;
 }
