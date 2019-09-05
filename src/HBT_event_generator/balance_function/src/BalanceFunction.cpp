@@ -33,6 +33,7 @@ void BalanceFunction::initialize_all(
 			{ reference_MCID, 0 },
 			{ associate_MCID, 1 }
 		  };
+	cout << "Have " << reference_MCID << " and " << associate_MCID << endl;
 	reference_ID 	= 0;
 	associate_ID 	= 1;
 	particle_MCIDs	= { reference_MCID, associate_MCID };
@@ -62,6 +63,12 @@ void BalanceFunction::initialize_all(
 	n_pphi_bins 	= n_pphi_pts - 1;
 	n_pY_bins 		= n_pY_pts - 1;
 
+	n_Delta_pphi_bins
+					= 2*n_pphi_bins-1;
+	n_Delta_pY_bins	= 2*n_pY_bins-1;
+	Delta_pphi_min	= pphi_min;
+	Delta_pY_min		= pY_min;
+
 	pT_pts 			= vector<double> (n_pT_pts);
 	pphi_pts 		= vector<double> (n_pphi_pts);
 	pY_pts 			= vector<double> (n_pY_pts);
@@ -73,6 +80,9 @@ void BalanceFunction::initialize_all(
 	pT_bin_width = pT_pts[1] - pT_pts[0];
 	pphi_bin_width = pphi_pts[1] - pphi_pts[0];
 	pY_bin_width = pY_pts[1] - pY_pts[0];
+
+	Delta_pphi_binwidth = pphi_bin_width;
+	Delta_pY_binwidth = pY_bin_width;
 
 	cout << "CHECK: " << total_N_events << "   " << pT_bin_width << "   " << pphi_bin_width << "   " << pY_bin_width << endl;
 
@@ -120,6 +130,15 @@ void BalanceFunction::initialize_all(
 	N2 = vector<vector<double> >( 2, vector<double>( 2, 0.0 ) );
 
 
+	differential3D_bf
+		= vector<double>( n_pT_bins*n_pphi_bins*n_pY_bins
+							*n_pT_bins*n_pphi_bins*n_pY_bins, 0.0 );
+	differential2D_bf
+		= vector<double>( n_pphi_bins*n_pY_bins*n_pphi_bins*n_pY_bins, 0.0 );
+	integrated_bf
+		= vector<double>( n_Delta_pphi_bins*n_Delta_pY_bins, 0.0 );
+
+
 	// Initialize all spectra here
 	Get_spectra();
 
@@ -141,7 +160,7 @@ void BalanceFunction::initialize_all(
 
 	// use this to pass into initialization routine
 	vector<EventRecord> allEvents_in;
-	get_all_events(all_file_names[iFile], allEvents_in, paraRdr_in);
+	get_all_events(all_file_names[iFile], allEvents_in, paraRdr_in, true);
 
 	// only call this once
 	initialize_all( reference_MCID_in, associate_MCID_in,
@@ -152,7 +171,7 @@ void BalanceFunction::initialize_all(
 	{
 
 		// Read in the next file
-		get_all_events(all_file_names[iFile], allEvents, paraRdr);	//N.B. - everything now initialized
+		get_all_events(all_file_names[iFile], allEvents, paraRdr, true);	//N.B. - everything now initialized
 
 
 		// keep running total
@@ -165,7 +184,7 @@ void BalanceFunction::initialize_all(
 	}
 
 	// everything else done automatically here
-	Get_balance_function();
+	Get_balance_functions();
 
 	return;
 }
@@ -192,84 +211,95 @@ void BalanceFunction::Get_spectra()
 
 
 
-void BalanceFunction::Check_normalizations(int particle_index, int ip1, int ip2)
+void BalanceFunction::Check_normalizations()
 {
-	//====================================
-	// Check rho1 normalizations
-	double normalization = 0.0;
-	int idx3D = 0;
-	for (int ipT = 0; ipT < n_pT_bins; ++ipT)
-	for (int ipphi = 0; ipphi < n_pphi_bins; ++ipphi)
-	for (int ipY = 0; ipY < n_pY_bins; ++ipY)
+	for (int iRefID = 0; iRefID < 2; iRefID++)
 	{
-		double pT_bin_center = 0.5*(pT_pts[ipT]+pT_pts[ipT+1]);
-		double pphi_bin_center = 0.5*(pphi_pts[ipphi]+pphi_pts[ipphi+1]);
-		double pY_bin_center = 0.5*(pY_pts[ipY]+pY_pts[ipY+1]);
-		normalization += pT_bin_center * rho1_pT_pphi_pY[particle_index][idx3D++]
-							* pT_bin_width * pphi_bin_width * pY_bin_width;
-	}
-	out << "rho1_pT_pphi_pY normalization = "
-		<< normalization << endl;
+		//====================================
+		// Check rho1 normalizations
+		double normalization = 0.0;
+		int idx3D = 0;
+		for (int ipT = 0; ipT < n_pT_bins; ++ipT)
+		for (int ipphi = 0; ipphi < n_pphi_bins; ++ipphi)
+		for (int ipY = 0; ipY < n_pY_bins; ++ipY)
+		{
+			double pT_bin_center = 0.5*(pT_pts[ipT]+pT_pts[ipT+1]);
+			double pphi_bin_center = 0.5*(pphi_pts[ipphi]+pphi_pts[ipphi+1]);
+			double pY_bin_center = 0.5*(pY_pts[ipY]+pY_pts[ipY+1]);
+			normalization += pT_bin_center * rho1_pT_pphi_pY[iRefID][idx3D++]
+								* pT_bin_width * pphi_bin_width * pY_bin_width;
+		}
+		out << "rho1_pT_pphi_pY["
+			<< iRefID << "] normalization = "
+			<< setw(10) << normalization << endl;
 
-	//===================
-	normalization = 0.0;
-	int idx2D = 0;
-	for (int ipphi = 0; ipphi < n_pphi_bins; ++ipphi)
-	for (int ipY = 0; ipY < n_pY_bins; ++ipY)
-	{
-		double pphi_bin_center = 0.5*(pphi_pts[ipphi]+pphi_pts[ipphi+1]);
-		double pY_bin_center = 0.5*(pY_pts[ipY]+pY_pts[ipY+1]);
-		normalization += rho1_pphi_pY[particle_index][idx2D++]
-							* pphi_bin_width * pY_bin_width;
-	}
-	out << "rho1_pphi_pY normalization = "
-		<< normalization << endl;
-	//====================================
+		//===================
+		normalization = 0.0;
+		int idx2D = 0;
+		for (int ipphi = 0; ipphi < n_pphi_bins; ++ipphi)
+		for (int ipY = 0; ipY < n_pY_bins; ++ipY)
+		{
+			double pphi_bin_center = 0.5*(pphi_pts[ipphi]+pphi_pts[ipphi+1]);
+			double pY_bin_center = 0.5*(pY_pts[ipY]+pY_pts[ipY+1]);
+			normalization += rho1_pphi_pY[iRefID][idx2D++]
+								* pphi_bin_width * pY_bin_width;
+		}
+		out << "rho1_pphi_pY["
+			<< iRefID << "] normalization = "
+			<< setw(10) << normalization << endl;
+		//====================================
 
-	//====================================
-	// Check rho2 normalizations
-	normalization = 0.0;
-	int idx6D = 0;
-	for (int ip1T   = 0; ip1T   < n_pT_bins;   ++ip1T)
-	for (int ip1phi = 0; ip1phi < n_pphi_bins; ++ip1phi)
-	for (int ip1Y   = 0; ip1Y   < n_pY_bins;   ++ip1Y)
-	for (int ip2T   = 0; ip2T   < n_pT_bins;   ++ip2T)
-	for (int ip2phi = 0; ip2phi < n_pphi_bins; ++ip2phi)
-	for (int ip2Y   = 0; ip2Y   < n_pY_bins;   ++ip2Y)
-	{
-		double p1T_bin_center = 0.5*(pT_pts[ip1T]+pT_pts[ip1T+1]);
-		double p1phi_bin_center = 0.5*(pphi_pts[ip1phi]+pphi_pts[ip1phi+1]);
-		double p1Y_bin_center = 0.5*(pY_pts[ip1Y]+pY_pts[ip1Y+1]);
-		double p2T_bin_center = 0.5*(pT_pts[ip2T]+pT_pts[ip2T+1]);
-		double p2phi_bin_center = 0.5*(pphi_pts[ip2phi]+pphi_pts[ip2phi+1]);
-		double p2Y_bin_center = 0.5*(pY_pts[ip2Y]+pY_pts[ip2Y+1]);
-		normalization += p1T_bin_center * p2T_bin_center
-							* rho2_p1Tp1phip1Y_p2Tp2phip2Y[ip1][ip2][idx6D++]
-							* pT_bin_width * pphi_bin_width * pY_bin_width
-							* pT_bin_width * pphi_bin_width * pY_bin_width;
-	}
-	out << "rho2_p1Tp1phip1Y_p2Tp2phip2Y normalization = "
-		<< normalization << endl;
+		for (int iAssocID = 0; iAssocID < 2; iAssocID++)
+		{
 
-	//===================
-	normalization = 0.0;
-	int idx4D = 0;
-	for (int ip1phi = 0; ip1phi < n_pphi_bins; ++ip1phi)
-	for (int ip1Y   = 0; ip1Y   < n_pY_bins;   ++ip1Y)
-	for (int ip2phi = 0; ip2phi < n_pphi_bins; ++ip2phi)
-	for (int ip2Y   = 0; ip2Y   < n_pY_bins;   ++ip2Y)
-	{
-		double p1phi_bin_center = 0.5*(pphi_pts[ip1phi]+pphi_pts[ip1phi+1]);
-		double p1Y_bin_center = 0.5*(pY_pts[ip1Y]+pY_pts[ip1Y+1]);
-		double p2phi_bin_center = 0.5*(pphi_pts[ip2phi]+pphi_pts[ip2phi+1]);
-		double p2Y_bin_center = 0.5*(pY_pts[ip2Y]+pY_pts[ip2Y+1]);
-		normalization += rho2_p1phip1Y_p2phip2Y[ip1][ip2][idx4D++]
-							* pphi_bin_width * pY_bin_width
-							* pphi_bin_width * pY_bin_width;
+			//====================================
+			// Check rho2 normalizations
+			normalization = 0.0;
+			int idx6D = 0;
+			for (int ip1T   = 0; ip1T   < n_pT_bins;   ++ip1T)
+			for (int ip1phi = 0; ip1phi < n_pphi_bins; ++ip1phi)
+			for (int ip1Y   = 0; ip1Y   < n_pY_bins;   ++ip1Y)
+			for (int ip2T   = 0; ip2T   < n_pT_bins;   ++ip2T)
+			for (int ip2phi = 0; ip2phi < n_pphi_bins; ++ip2phi)
+			for (int ip2Y   = 0; ip2Y   < n_pY_bins;   ++ip2Y)
+			{
+				double p1T_bin_center = 0.5*(pT_pts[ip1T]+pT_pts[ip1T+1]);
+				double p1phi_bin_center = 0.5*(pphi_pts[ip1phi]+pphi_pts[ip1phi+1]);
+				double p1Y_bin_center = 0.5*(pY_pts[ip1Y]+pY_pts[ip1Y+1]);
+				double p2T_bin_center = 0.5*(pT_pts[ip2T]+pT_pts[ip2T+1]);
+				double p2phi_bin_center = 0.5*(pphi_pts[ip2phi]+pphi_pts[ip2phi+1]);
+				double p2Y_bin_center = 0.5*(pY_pts[ip2Y]+pY_pts[ip2Y+1]);
+				normalization += p1T_bin_center * p2T_bin_center
+									* rho2_p1Tp1phip1Y_p2Tp2phip2Y[iRefID][iAssocID][idx6D++]
+									* pT_bin_width * pphi_bin_width * pY_bin_width
+									* pT_bin_width * pphi_bin_width * pY_bin_width;
+			}
+			out << "rho2_p1Tp1phip1Y_p2Tp2phip2Y["
+				<< iRefID << "][" << iAssocID << "] normalization = "
+				<< setw(10) << normalization << endl;
+
+			//===================
+			normalization = 0.0;
+			int idx4D = 0;
+			for (int ip1phi = 0; ip1phi < n_pphi_bins; ++ip1phi)
+			for (int ip1Y   = 0; ip1Y   < n_pY_bins;   ++ip1Y)
+			for (int ip2phi = 0; ip2phi < n_pphi_bins; ++ip2phi)
+			for (int ip2Y   = 0; ip2Y   < n_pY_bins;   ++ip2Y)
+			{
+				double p1phi_bin_center = 0.5*(pphi_pts[ip1phi]+pphi_pts[ip1phi+1]);
+				double p1Y_bin_center = 0.5*(pY_pts[ip1Y]+pY_pts[ip1Y+1]);
+				double p2phi_bin_center = 0.5*(pphi_pts[ip2phi]+pphi_pts[ip2phi+1]);
+				double p2Y_bin_center = 0.5*(pY_pts[ip2Y]+pY_pts[ip2Y+1]);
+				normalization += rho2_p1phip1Y_p2phip2Y[iRefID][iAssocID][idx4D++]
+									* pphi_bin_width * pY_bin_width
+									* pphi_bin_width * pY_bin_width;
+			}
+			out << "rho2_p1phip1Y_p2phip2Y["
+				<< iRefID << "][" << iAssocID << "] normalization = "
+				<< setw(10) << normalization << endl;
+			//====================================
+		}
 	}
-	out << "rho2_p1phip1Y_p2phip2Y normalization = "
-		<< normalization << endl;
-	//====================================
 
 	return;
 }

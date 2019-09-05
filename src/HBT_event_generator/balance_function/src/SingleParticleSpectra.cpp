@@ -28,7 +28,7 @@ void BalanceFunction::Compute_1p_spectra(int aRefMCID)
 
 void BalanceFunction::Compute_dN_pTdpTdpphidpY(int aRefMCID)
 {
-	cout << "Starting here with allEvents.size() = " << allEvents.size() << " and particle_index = " << particle_index << endl;
+	cout << "Starting here with allEvents.size() = " << allEvents.size() << " and aRefMCID = " << aRefMCID << endl;
 
 	// Sum over all events
 	for (int iEvent = 0; iEvent < allEvents.size(); ++iEvent)
@@ -64,13 +64,14 @@ void BalanceFunction::Compute_dN_pTdpTdpphidpY(int aRefMCID)
 	}
 
 	// Normalize bin counts
+	for (int iRefID = 0; iRefID < 2; iRefID++)
 	for (int ipT = 0; ipT < n_pT_bins; ++ipT)
 	for (int ipphi = 0; ipphi < n_pphi_bins; ++ipphi)
 	for (int ipY = 0; ipY < n_pY_bins; ++ipY)
 	{
 		double pT_bin_center = 0.5*(pT_pts[ipT]+pT_pts[ipT+1]);
 
-		dN_pTdpTdpphidpY[refID][indexer(ipT, ipphi, ipY)]
+		dN_pTdpTdpphidpY[iRefID][indexer(ipT, ipphi, ipY)]
 				/= ( pT_bin_center
 						* pT_bin_width * pphi_bin_width * pY_bin_width );
 	}

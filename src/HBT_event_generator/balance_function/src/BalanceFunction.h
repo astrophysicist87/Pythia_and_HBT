@@ -10,7 +10,7 @@
 #include <stdlib.h>
 #include <cstdlib>
 #include <complex>
-//#include <unordered_map>
+#include <unordered_map>
 
 #include "ParameterReader.h"
 #include "Arsenal.h"
@@ -36,6 +36,7 @@ class BalanceFunction
 		int total_N_events, number_of_completed_events;
 
 		int reference_MCID, associate_MCID;
+		int reference_ID, associate_ID;
 
 		std::unordered_map<int, int> MCID_indices;
 		vector<int> particle_MCIDs;
@@ -46,10 +47,13 @@ class BalanceFunction
 
 		int n_pT_pts, n_pphi_pts, n_pY_pts;
 		int n_pT_bins, n_pphi_bins, n_pY_bins;
+		int n_Delta_pphi_bins, n_Delta_pY_bins;
 		
 		double pT_min, pT_max;
 		double pphi_min, pphi_max;
 		double pY_min, pY_max;
+		double Delta_pphi_min, Delta_pY_min;
+		double Delta_pphi_binwidth, Delta_pY_binwidth;
 
 		double pT_bin_width, pphi_bin_width, pY_bin_width;
 
@@ -67,6 +71,11 @@ class BalanceFunction
 			rho2_p1phip1Y_p2phip2Y;
 		vector<vector<double> > N2;
 
+
+		vector<double> differential3D_bf;	// contains full 3D-dependence on p1 and p2
+		vector<double> differential2D_bf;	// contains full 2D-dependence on p1 and p2
+											// after pT-integrations
+		vector<double> integrated_bf;		// function only of Delta y and Delta phi
 
 		
 		// miscellaneous
@@ -157,29 +166,29 @@ class BalanceFunction
 		////////////////////
 
 		// Single-particle spectra
-		void Compute_1p_spectra(int particle_index);
-		void Compute_dN_pTdpTdpphidpY(int particle_index);
-		void Compute_dN_dpphidpY(int particle_index);
-		void Compute_N(int particle_index);
+		void Compute_1p_spectra(int aRefMCID);
+		void Compute_dN_pTdpTdpphidpY(int aRefMCID);
+		void Compute_dN_dpphidpY();
+		void Compute_N();
 
 		
 		// Single-particle distributions
-		void Compute_rho1(int particle_index);
-		void Compute_rho1_pT_pphi_pY(int particle_index);
-		void Compute_rho1_pphi_pY(int particle_index);
+		void Compute_rho1();
+		void Compute_rho1_pT_pphi_pY();
+		void Compute_rho1_pphi_pY();
 
 		// Two-particle spectra
-		void Compute_2p_spectra(int ip1, int ip2);
-		void Compute_dN2_p1Tdp1Tdp1phidp1Y_p2Tdp2Tdp2phidp2Y(int ip1, int ip2);
-		void Compute_dN2_dp1phidp1Y_dp2phidp2Y(int ip1, int ip2);
-		void Compute_N2(int ip1, int ip2);
+		void Compute_2p_spectra(int aRefMCID, int aAssocMCID);
+		void Compute_dN2_p1Tdp1Tdp1phidp1Y_p2Tdp2Tdp2phidp2Y(int aRefMCID, int aAssocMCID);
+		void Compute_dN2_dp1phidp1Y_dp2phidp2Y();
+		void Compute_N2();
 
 		// Two-particle distributions
-		void Compute_rho2(int ip1, int ip2);
-		void Compute_rho2_p1Tp1phip1Y_p2Tp2phip2Y(int ip1, int ip2);
-		void Compute_rho2_p1phip1Y_p2phip2Y(int ip1, int ip2);
+		void Compute_rho2();
+		void Compute_rho2_p1Tp1phip1Y_p2Tp2phip2Y();
+		void Compute_rho2_p1phip1Y_p2phip2Y();
 		
-		void Check_normalizations(int particle_index, int ip1, int ip2);
+		void Check_normalizations();
 
 		// For subsequent chunks of events
 		void Get_spectra();
@@ -190,9 +199,12 @@ class BalanceFunction
 		void get_all_events(string file_name, vector<EventRecord> & allEvents, ParameterReader * paraRdr, bool verbose = false);
 
 		// Correlation function itself
-		void Get_balance_function();
-		void Compute_event_averages(int particle_index, int ip1, int ip2);
-		//void Compute_balance_function();
+		void Get_balance_functions();
+		void Compute_event_averages();
+		void Compute_balance_functions();
+		void Compute_differential3D_balance_function();
+		void Compute_differential2D_balance_function();
+		void Compute_integrated_balance_function();
 
 		// Input/output
 		//void Output_balance_function( string filename );
