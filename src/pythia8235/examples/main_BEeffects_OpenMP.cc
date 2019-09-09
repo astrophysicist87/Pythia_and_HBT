@@ -275,9 +275,12 @@ int main(int argc, char *argv[])
 		pythiaVector[iThread].readString("Print:quiet = off");
 
 		// Seed RNG different for each thread to avoid redundant events
+		// (but use default seed if only one thread is running)
 		pythiaVector[iThread].readString("Random:setSeed = on");
-		pythiaVector[iThread].readString("Random:seed = " + to_string(iThread+1));
-		//pythiaVector[iThread].readString("Random:seed = -1");
+		if ( omp_get_max_threads() > 1 )
+			pythiaVector[iThread].readString("Random:seed = " + to_string(iThread+1));
+		else
+			pythiaVector[iThread].readString("Random:seed = -1");
 
 		//========================================
 		// Read in any standard Pythia options
@@ -299,6 +302,10 @@ int main(int argc, char *argv[])
 		pythiaVector[iThread].readString("SoftQCD:all = on");
 		//pythiaVector[iThread].readString("HardQCD:all = on");
 		pythiaVector[iThread].readString("Beams:frameType = 1");
+
+		// Turn off decays if desired.
+		pythiaVector[iThread].readString("ParticleDecays:limitTau0 = on");
+		pythiaVector[iThread].readString("ParticleDecays:tau0Max = 0.0");
 
 		// Initialize the Angantyr model to fit the total and semi-inclusive
 		// cross sections in Pythia within some tolerance.
@@ -337,12 +344,14 @@ int main(int argc, char *argv[])
 
 		do
 		{
-			bool successful = false;
+			/*bool successful = false;
 			//#pragma omp critical
 			//{
 				successful = pythiaVector[iThread].next();
 			//}
 			if ( not successful )
+				continue;*/
+			if (!pythiaVector[iThread].next())
 				continue;
 
 			int event_multiplicity = 0;
@@ -396,6 +405,12 @@ int main(int argc, char *argv[])
 								continue;
 						}
 
+/*if (p.tProd() > 0.001)
+{
+	//ofstream out(path + "event_" + to_string() + "_record.dat");
+	pythiaVector[iThread].event.list(true, true);
+}*/
+
 						//=================================
 						// if also recording unshifted particles
 						if ( momentum_space_modifications
@@ -428,8 +443,8 @@ int main(int argc, char *argv[])
 				continue;
 
 			//just for now
-			if ( pion_multiplicity < 50 or pion_multiplicity > 100 )
-				continue;
+			//if ( pion_multiplicity < 50 or pion_multiplicity > 100 )
+			//	continue;
 
 			#pragma omp critical
 			{
@@ -610,6 +625,8 @@ void print_particle_record(
 		Particle & p = particles_to_output[i];
 
 		record_stream
+			<< setprecision(16)
+			<< setw(20)
 			<< iEvent << "   "
 			<< i << "   "
 			//<< p.id() << "   "

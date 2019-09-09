@@ -5,6 +5,10 @@
 runPythia=true
 useParallel=true
 centralitySelectionInPythia=false
+runHBTEG=true
+runFitCF=true
+runSV=true
+#runBF=false
 
 # system specifications
 projectile="p"

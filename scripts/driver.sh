@@ -169,6 +169,8 @@ do
 	#=====================================
 	# Run HBT_event_generator
 	#HBTegSuccess=$(
+	if $runHBTEG
+	then
 	(
 
 		cd $HBT_EVENT_GEN_DIRECTORY
@@ -214,10 +216,13 @@ do
 
 		#exit $runSuccess
 	)
+	fi
 
 	#=====================================
 	# Run fit_correlation_function
 	#fitCFSuccess=$(
+	if $runFitCF
+	then
 	(
 
 		cd $HBT_FITCF_DIRECTORY
@@ -246,10 +251,13 @@ do
 
 		#exit $runSuccess
 	)
+	fi
 
 	#=====================================
 	# Run SV.e
 	#SVSuccess=$(
+	if $runSV
+	then
 	(
 
 		cd $HBT_SV_DIRECTORY
@@ -278,6 +286,7 @@ do
 
 		#exit $runSuccess
 	)
+	fi
 
 	# only store results and clean up if run was successful
 	#success=$[PythiaSuccess + HBTegSuccess + fitCFSuccess]

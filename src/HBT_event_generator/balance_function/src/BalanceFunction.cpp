@@ -49,25 +49,19 @@ void BalanceFunction::initialize_all(
 
 	//Define various grid sizes
 	// - pair momenta points at which to evaluate correlation function
-	n_pT_pts 		= 11;
-	pT_min 			= 0.0;
-	pT_max 			= 1.0;
-	n_pphi_pts 		= 11;
+	n_pT_pts 		= 2;
+	pT_min 			= 0.2;
+	pT_max 			= 2.0;
+	n_pphi_pts 		= 21;
 	pphi_min 		= -M_PI;
 	pphi_max 		= M_PI;
-	n_pY_pts 		= 11;
+	n_pY_pts 		= 21;
 	pY_min 			= -5.0;
 	pY_max 			= 5.0;
 
 	n_pT_bins 		= n_pT_pts - 1;
 	n_pphi_bins 	= n_pphi_pts - 1;
 	n_pY_bins 		= n_pY_pts - 1;
-
-	n_Delta_pphi_bins
-					= 2*n_pphi_bins-1;
-	n_Delta_pY_bins	= 2*n_pY_bins-1;
-	Delta_pphi_min	= pphi_min;
-	Delta_pY_min		= pY_min;
 
 	pT_pts 			= vector<double> (n_pT_pts);
 	pphi_pts 		= vector<double> (n_pphi_pts);
@@ -81,10 +75,38 @@ void BalanceFunction::initialize_all(
 	pphi_bin_width = pphi_pts[1] - pphi_pts[0];
 	pY_bin_width = pY_pts[1] - pY_pts[0];
 
-	Delta_pphi_binwidth = pphi_bin_width;
-	Delta_pY_binwidth = pY_bin_width;
+	// set Delta pY and Delta pphi grids
+	//n_Delta_pphi_pts
+	//				= 2*n_pphi_bins;
+	n_Delta_pphi_pts
+					= n_pphi_pts;
+	//n_Delta_pY_pts	= 2*n_pY_bins;
+	n_Delta_pY_pts	= 20;
+	//n_Delta_pphi_bins
+	//				= n_Delta_pphi_pts - 1;
+	n_Delta_pphi_bins
+					= n_pphi_bins;
+	n_Delta_pY_bins	= n_Delta_pY_pts - 1;
+	Delta_pphi_min	= pphi_min;
+	//Delta_pY_min	= 2.0*pY_min + 0.5*pY_bin_width;
+	Delta_pY_min	= -9.5;
+	Delta_pphi_max	= pphi_max;
+	//Delta_pY_max	= 2.0*pY_max - 0.5*pY_bin_width;
+	Delta_pY_max	= 9.5;
 
-	cout << "CHECK: " << total_N_events << "   " << pT_bin_width << "   " << pphi_bin_width << "   " << pY_bin_width << endl;
+	Delta_pphi_pts	= vector<double> (n_Delta_pphi_pts);
+	Delta_pY_pts	= vector<double> (n_Delta_pY_pts);
+
+	//linspace(Delta_pphi_pts, Delta_pphi_min, Delta_pphi_max);
+	Delta_pphi_pts = pphi_pts;
+	linspace(Delta_pY_pts, Delta_pY_min, Delta_pY_max);
+
+	Delta_pphi_binwidth = Delta_pphi_pts[1] - Delta_pphi_pts[0];
+	Delta_pY_binwidth = Delta_pY_pts[1] - Delta_pY_pts[0];
+
+	cout << "CHECK: " << total_N_events << "   " << pT_bin_width << "   "
+			<< pphi_bin_width << "   " << pY_bin_width << "   "
+			<< Delta_pphi_binwidth << "   " << Delta_pY_binwidth << endl;
 
 	dN_pTdpTdpphidpY
 		= vector<vector<double> >( 2,
@@ -137,6 +159,10 @@ void BalanceFunction::initialize_all(
 		= vector<double>( n_pphi_bins*n_pY_bins*n_pphi_bins*n_pY_bins, 0.0 );
 	integrated_bf
 		= vector<double>( n_Delta_pphi_bins*n_Delta_pY_bins, 0.0 );
+	integrated_bf_Dely
+		= vector<double>( n_Delta_pY_bins, 0.0 );
+	integrated_bf_Delphi
+		= vector<double>( n_Delta_pphi_bins, 0.0 );
 
 
 	// Initialize all spectra here
@@ -367,6 +393,62 @@ void BalanceFunction::Output_2p_spectra( int ip1, int ip2, string filename )
 
 	return;
 }
+
+
+
+void BalanceFunction::Output_integrated_BF( string filename )
+{
+
+	ofstream ofs( filename.c_str() );
+
+	for (int iDelta_pphi = 0; iDelta_pphi < n_Delta_pphi_bins; iDelta_pphi++)
+	for (int iDelta_pY = 0; iDelta_pY < n_Delta_pY_bins; iDelta_pY++)
+	{
+		const double Delta_pphi_loc = 0.5*(Delta_pphi_pts[iDelta_pphi]+Delta_pphi_pts[iDelta_pphi+1]);
+		const double Delta_pY_loc = 0.5*(Delta_pY_pts[iDelta_pY]+Delta_pY_pts[iDelta_pY+1]);
+
+		ofs << Delta_pphi_loc << "   "
+			<< Delta_pY_loc << "   "
+			<< integrated_bf[iDelta_pphi * n_Delta_pY_bins + iDelta_pY] << endl;
+	}
+
+	ofs.close();
+
+	return;
+}
+
+void BalanceFunction::Output_integrated_BF_Dely( string filename )
+{
+
+	ofstream ofs( filename.c_str() );
+
+	for (int iDelta_pY = 0; iDelta_pY < n_Delta_pY_bins; iDelta_pY++)
+	{
+		const double Delta_pY_loc = 0.5*(Delta_pY_pts[iDelta_pY]+Delta_pY_pts[iDelta_pY+1]);
+		ofs << Delta_pY_loc << "   " << integrated_bf_Dely[iDelta_pY] << endl;
+	}
+
+	ofs.close();
+
+	return;
+}
+
+void BalanceFunction::Output_integrated_BF_Delphi( string filename )
+{
+
+	ofstream ofs( filename.c_str() );
+
+	for (int iDelta_pphi = 0; iDelta_pphi < n_Delta_pphi_bins; iDelta_pphi++)
+	{
+		const double Delta_pphi_loc = 0.5*(Delta_pphi_pts[iDelta_pphi]+Delta_pphi_pts[iDelta_pphi+1]);
+		ofs << Delta_pphi_loc << "   " << integrated_bf_Delphi[iDelta_pphi] << endl;
+	}
+
+	ofs.close();
+
+	return;
+}
+
 
 
 //End of file

@@ -84,8 +84,11 @@ int main(int argc, char *argv[])
 				ensemble, outmain, errmain );
 
 	// Output results
-	balance_function.Output_1p_spectra( 0, "./results/pi_1p_spectra.dat" );
-	balance_function.Output_2p_spectra( 0, 0, "./results/pi_2p_spectra.dat" );
+	//balance_function.Output_1p_spectra( 0, "./results/pi_1p_spectra.dat" );
+	//balance_function.Output_2p_spectra( 0, 0, "./results/pi_2p_spectra.dat" );
+	balance_function.Output_integrated_BF( "./results/integrated_BF_Dely_Delphi.dat" );
+	balance_function.Output_integrated_BF_Dely( "./results/integrated_BF_Dely.dat" );
+	balance_function.Output_integrated_BF_Delphi( "./results/integrated_BF_Delphi.dat" );
 	//balance_function.Output_balance_function( "./results/BF_pipiCF.dat" );
 
 

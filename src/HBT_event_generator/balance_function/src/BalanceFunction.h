@@ -47,17 +47,20 @@ class BalanceFunction
 
 		int n_pT_pts, n_pphi_pts, n_pY_pts;
 		int n_pT_bins, n_pphi_bins, n_pY_bins;
+		int n_Delta_pphi_pts, n_Delta_pY_pts;
 		int n_Delta_pphi_bins, n_Delta_pY_bins;
 		
 		double pT_min, pT_max;
 		double pphi_min, pphi_max;
 		double pY_min, pY_max;
 		double Delta_pphi_min, Delta_pY_min;
+		double Delta_pphi_max, Delta_pY_max;
 		double Delta_pphi_binwidth, Delta_pY_binwidth;
 
 		double pT_bin_width, pphi_bin_width, pY_bin_width;
 
 		vector<double> pT_pts, pphi_pts, pY_pts;
+		vector<double> Delta_pphi_pts, Delta_pY_pts;
 
 		vector<vector<double> >
 			dN_pTdpTdpphidpY, dN_dpphidpY,
@@ -72,10 +75,12 @@ class BalanceFunction
 		vector<vector<double> > N2;
 
 
-		vector<double> differential3D_bf;	// contains full 3D-dependence on p1 and p2
-		vector<double> differential2D_bf;	// contains full 2D-dependence on p1 and p2
-											// after pT-integrations
-		vector<double> integrated_bf;		// function only of Delta y and Delta phi
+		vector<double> differential3D_bf;		// contains full 3D-dependence on p1 and p2
+		vector<double> differential2D_bf;		// contains full 2D-dependence on p1 and p2
+												// after pT-integrations
+		vector<double> integrated_bf;			// function only of Delta y and Delta phi
+		vector<double> integrated_bf_Dely;		// function only of Delta y
+		vector<double> integrated_bf_Delphi;	// function only of Delta phi
 
 		
 		// miscellaneous
@@ -126,6 +131,14 @@ class BalanceFunction
 
 		////////////////////
 		// Library functions
+		////////////////////
+		inline double place_in_range( double x_in, double xmin, double xmax )
+		{
+			double x = x_in;
+			while (x < xmin) x+=(xmax-xmin);
+			while (x > xmax) x-=(xmax-xmin);
+			return (x);
+		}
 		////////////////////
 		inline int indexer(int ipphi, int ipY)
 		{
@@ -210,6 +223,9 @@ class BalanceFunction
 		//void Output_balance_function( string filename );
 		void Output_1p_spectra( int particle_index, string filename );
 		void Output_2p_spectra( int ip1, int ip2, string filename );
+		void Output_integrated_BF( string filename );
+		void Output_integrated_BF_Dely( string filename );
+		void Output_integrated_BF_Delphi( string filename );
 
 };
 

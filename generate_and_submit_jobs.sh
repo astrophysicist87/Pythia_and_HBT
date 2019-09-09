@@ -1,9 +1,9 @@
 #! /usr/bin/env bash
 
 (
-	./generate_jobs.sh 12 RESULTS_pp_N50_100_wCollectivity
+	./generate_jobs.sh 1 RESULTS_pp_SV_noDecay
 
-	./submit_jobs.sh RESULTS_pp_N50_100_wCollectivity
+	./submit_jobs.sh RESULTS_pp_SV_noDecay
 ) &> /dev/null &
 
 # End of file

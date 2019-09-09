@@ -110,11 +110,17 @@ void read_in_file(string filename, vector<EventRecord> & eventsInFile, Parameter
 
 			const double current_tau2 = tconv*tconv - xconv*xconv - yconv*yconv - zconv*zconv;
 
+			const double upper = 10.0;
+
 			// if this particle is out of range, go to next particle
 			if ( max_accepted_tau*max_accepted_tau < current_tau2
-					or tconv*tconv - zconv*zconv > 10.0*10.0
-					or xconv*xconv > 10.0*10.0
-					or xconv*xconv > 10.0*10.0 )	//just some rough upper limits
+					or tconv*tconv - zconv*zconv > upper*upper
+					or xconv*xconv + yconv*yconv > upper*upper
+					or tconv*tconv > upper*upper
+					or xconv*xconv > upper*upper
+					or yconv*yconv > upper*upper
+					or zconv*zconv > upper*upper
+				)	//just some rough upper limits
 				continue;
 		}
 
