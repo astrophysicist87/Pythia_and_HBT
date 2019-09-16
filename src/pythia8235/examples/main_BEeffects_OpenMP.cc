@@ -224,7 +224,7 @@ int main(int argc, char *argv[])
 	outmult_filenames.close();
 
 
-	bool printing_particle_records = false;
+	bool printing_particle_records = true;
 	if ( not printing_particle_records )
 	{
 		outmain << "Not printing particle records!" << endl;
@@ -304,7 +304,7 @@ int main(int argc, char *argv[])
 		pythiaVector[iThread].readString("Beams:frameType = 1");
 
 		// Turn off decays if desired.
-		pythiaVector[iThread].readString("ParticleDecays:limitTau0 = on");
+		/*pythiaVector[iThread].readString("ParticleDecays:limitTau0 = on");
 		pythiaVector[iThread].readString("ParticleDecays:tau0Max = 0.0");
 		pythiaVector[iThread].readString("ParticleDecays:limitTau = on");
 		pythiaVector[iThread].readString("ParticleDecays:tauMax = 0.0");
@@ -312,7 +312,7 @@ int main(int argc, char *argv[])
 		pythiaVector[iThread].readString("ParticleDecays:rMax = 0.0");
 		pythiaVector[iThread].readString("ParticleDecays:limitCylinder = on");
 		pythiaVector[iThread].readString("ParticleDecays:xyMax = 0.0");
-		pythiaVector[iThread].readString("ParticleDecays:zMax = 0.0");
+		pythiaVector[iThread].readString("ParticleDecays:zMax = 0.0");*/
 
 		// Initialize the Angantyr model to fit the total and semi-inclusive
 		// cross sections in Pythia within some tolerance.
@@ -351,13 +351,7 @@ int main(int argc, char *argv[])
 
 		do
 		{
-			/*bool successful = false;
-			//#pragma omp critical
-			//{
-				successful = pythiaVector[iThread].next();
-			//}
-			if ( not successful )
-				continue;*/
+			// Generate next event
 			if (!pythiaVector[iThread].next())
 				continue;
 
@@ -412,10 +406,10 @@ int main(int argc, char *argv[])
 								continue;
 						}
 
-if (p.tProd() > 0.000001)
+/*if (p.tProd() > 0.000001)
 {
 	pythiaVector[iThread].event.list(true, true);
-}
+}*/
 
 						//=================================
 						// if also recording unshifted particles
@@ -631,8 +625,8 @@ void print_particle_record(
 		Particle & p = particles_to_output[i];
 
 		record_stream
-			<< setprecision(16)
-			<< setw(20)
+			//<< setprecision(16)
+			//<< setw(20)
 			<< iEvent << "   "
 			<< i << "   "
 			//<< p.id() << "   "

@@ -33,29 +33,3 @@ UseRopeHadronization='off'
 IncludeStringShoving='off'
 IncludeFlavourRopesMechanism='off'
 #=====================================
-
-output_settings () {
-
-echo 'runPythia='$runPythia
-echo 'useParallel='$useParallel
-echo 'centralitySelectionInPythia='$centralitySelectionInPythia
-echo
-echo 'projectile='$projectile
-echo 'target='$target
-echo 'beamEnergy='$beamEnergy
-echo 'Nevents='$Nevents
-echo 'centralityClass='$centralityClass
-echo
-echo 'QRefValue='$QRefValue
-echo 'BEeffects='$BEeffects
-echo 'BEEnhancementMode='$BEEnhancementMode
-echo 'SetFragmentationVertices='$SetFragmentationVertices
-echo 'SetPartonVertices='$SetPartonVertices
-echo 'ThermalOnly='$ThermalOnly
-echo
-echo 'UseColorReconnection='$UseColorReconnection
-echo 'UseRopeHadronization='$UseRopeHadronization
-echo 'IncludeStringShoving='$IncludeStringShoving
-echo 'IncludeFlavourRopesMechanism='$IncludeFlavourRopesMechanism
-
-}

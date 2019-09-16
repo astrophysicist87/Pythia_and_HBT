@@ -37,9 +37,40 @@ check_success () {
 
 clean_directory () {
 	rm $1/*.out $1/*.err $1/*.txt
-	rm $1/*catalogue.dat
-	rm $1/parameters.dat
+	#rm $1/*catalogue.dat
+	#rm $1/parameters.dat
 	rm -rf $1/results
+}
+
+
+output_settings () {
+
+echo 'runPythia='$runPythia
+echo 'useParallel='$useParallel
+echo 'centralitySelectionInPythia='$centralitySelectionInPythia
+echo 'runHBTEG='$runHBTEG
+echo 'runFitCF='$runFitCF
+echo 'runSV='$runSV
+#echo 'runBF='$runBF
+echo
+echo 'projectile='$projectile
+echo 'target='$target
+echo 'beamEnergy='$beamEnergy
+echo 'Nevents='$Nevents
+echo 'centralityClass='$centralityClass
+echo
+echo 'QRefValue='$QRefValue
+echo 'BEeffects='$BEeffects
+echo 'BEEnhancementMode='$BEEnhancementMode
+echo 'SetFragmentationVertices='$SetFragmentationVertices
+echo 'SetPartonVertices='$SetPartonVertices
+echo 'ThermalOnly='$ThermalOnly
+echo
+echo 'UseColorReconnection='$UseColorReconnection
+echo 'UseRopeHadronization='$UseRopeHadronization
+echo 'IncludeStringShoving='$IncludeStringShoving
+echo 'IncludeFlavourRopesMechanism='$IncludeFlavourRopesMechanism
+
 }
 
 
