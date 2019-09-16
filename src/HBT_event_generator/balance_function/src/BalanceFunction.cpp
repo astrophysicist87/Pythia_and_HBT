@@ -327,6 +327,41 @@ void BalanceFunction::Check_normalizations()
 		}
 	}
 
+
+	//=========================================
+	// Check balance function normalizations
+	//=========================================
+	out << "=== Checking balance function normalizations ===" << endl;
+	{
+		double normalization = 0.0, normalization_pT = 0.0;
+		int idx6D = 0;
+		for (int ip1T   = 0; ip1T   < n_pT_bins;   ++ip1T)
+		for (int ip1phi = 0; ip1phi < n_pphi_bins; ++ip1phi)
+		for (int ip1Y   = 0; ip1Y   < n_pY_bins;   ++ip1Y)
+		for (int ip2T   = 0; ip2T   < n_pT_bins;   ++ip2T)
+		for (int ip2phi = 0; ip2phi < n_pphi_bins; ++ip2phi)
+		for (int ip2Y   = 0; ip2Y   < n_pY_bins;   ++ip2Y)
+		{
+			double p1T_bin_center = 0.5*(pT_pts[ip1T]+pT_pts[ip1T+1]);
+			double p2T_bin_center = 0.5*(pT_pts[ip2T]+pT_pts[ip2T+1]);
+
+			normalization
+				+= pT_bin_width * pphi_bin_width * pY_bin_width
+					* pT_bin_width * pphi_bin_width * pY_bin_width
+					* differential3D_bf[idx6D];
+			normalization_pT
+				+= pT_bin_width * pphi_bin_width * pY_bin_width
+					* pT_bin_width * pphi_bin_width * pY_bin_width
+					* p1T_bin_center * p2T_bin_center * differential3D_bf[idx6D++];
+		}
+
+		out << "normalization = " << setw(10) << normalization << endl;
+		out << "normalization_pT = " << setw(10) << normalization_pT << endl;
+
+	}
+
+	
+
 	return;
 }
 

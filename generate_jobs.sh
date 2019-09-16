@@ -30,7 +30,7 @@ echo 'chosen_OMP_NUM_THREADS='$chosen_OMP_NUM_THREADS > omp_env.sh
 #				   'useParallel=true projectile="p" target="p" beamEnergy="5020.0" Nevents=500000 ThermalOnly="true" SetPartonVertices="off" UseRopeHadronization="on" IncludeStringShoving="on" IncludeFlavourRopesMechanism="on"'
 #				   'useParallel=true projectile="p" target="p" beamEnergy="5020.0" Nevents=500000 ThermalOnly="true" SetPartonVertices="off" UseColorReconnection="on" UseRopeHadronization="on" IncludeStringShoving="on" IncludeFlavourRopesMechanism="on"'
 #				)
-declare -a specs=( 'useParallel=true projectile="p" target="p" beamEnergy="13000.0" Nevents=1000000 ThermalOnly="true" runHBTEG=false runFitCF=false' )
+declare -a specs=( 'useParallel=true projectile="p" target="p" beamEnergy="13000.0" Nevents=1000 ThermalOnly="true"' )
 
 ########################################
 # total number of jobs
@@ -53,6 +53,7 @@ do
 	echo "./driver.sh ${specs[i]} &> driver.out" > $HOME_RESULTS_DIRECTORY/job-${job}/submit.sh
 	chmod 755 $HOME_RESULTS_DIRECTORY/job-${job}/submit.sh	# set correct permissions!
 	cp scripts/driver.sh $HOME_RESULTS_DIRECTORY/job-${job}
+	cp scripts/rerun.sh $HOME_RESULTS_DIRECTORY/job-${job}
 	cp defaults.sh env.sh omp_env.sh $HOME_RESULTS_DIRECTORY/job-${job}
 done
 

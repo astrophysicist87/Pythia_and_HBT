@@ -34,8 +34,8 @@ n_Kphi_pts = 2
 
 # KL grid
 n_KL_pts = 2
-KLmin = -10.0
-KLmax = 10.0
+KLmin = -1.0
+KLmax = 1.0
 
 #===========
 # relative momenta (3D)

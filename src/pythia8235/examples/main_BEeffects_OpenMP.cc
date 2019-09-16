@@ -224,7 +224,7 @@ int main(int argc, char *argv[])
 	outmult_filenames.close();
 
 
-	bool printing_particle_records = true;
+	bool printing_particle_records = false;
 	if ( not printing_particle_records )
 	{
 		outmain << "Not printing particle records!" << endl;
@@ -306,6 +306,13 @@ int main(int argc, char *argv[])
 		// Turn off decays if desired.
 		pythiaVector[iThread].readString("ParticleDecays:limitTau0 = on");
 		pythiaVector[iThread].readString("ParticleDecays:tau0Max = 0.0");
+		pythiaVector[iThread].readString("ParticleDecays:limitTau = on");
+		pythiaVector[iThread].readString("ParticleDecays:tauMax = 0.0");
+		pythiaVector[iThread].readString("ParticleDecays:limitRadius = on");
+		pythiaVector[iThread].readString("ParticleDecays:rMax = 0.0");
+		pythiaVector[iThread].readString("ParticleDecays:limitCylinder = on");
+		pythiaVector[iThread].readString("ParticleDecays:xyMax = 0.0");
+		pythiaVector[iThread].readString("ParticleDecays:zMax = 0.0");
 
 		// Initialize the Angantyr model to fit the total and semi-inclusive
 		// cross sections in Pythia within some tolerance.
@@ -405,11 +412,10 @@ int main(int argc, char *argv[])
 								continue;
 						}
 
-/*if (p.tProd() > 0.001)
+if (p.tProd() > 0.000001)
 {
-	//ofstream out(path + "event_" + to_string() + "_record.dat");
 	pythiaVector[iThread].event.list(true, true);
-}*/
+}
 
 						//=================================
 						// if also recording unshifted particles

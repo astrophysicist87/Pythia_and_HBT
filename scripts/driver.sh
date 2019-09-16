@@ -17,6 +17,9 @@ do
     eval "$var"
 done
 
+# Save the settings this job was run with (for future defaults)
+output_settings > settings.sh
+
 # make sure main results directory exists
 if [ ! -d "$MAIN_RESULTS_DIRECTORY" ]
 then
@@ -38,28 +41,26 @@ echo 'Processing Nevents =' $Nevents $projectile'+'$target 'collisions at' $beam
 #echo 'Created' $CURRENT_RESULTS_DIRECTORY
 CURRENT_RESULTS_DIRECTORY=$MAIN_RESULTS_DIRECTORY
 
+#=====================================
+# Clean all working directories
+clean_directory $PYTHIA_DIRECTORY
+clean_directory $HBT_DIRECTORY
+clean_directory $HBT_EVENT_GEN_DIRECTORY
+clean_directory $HBT_FITCF_DIRECTORY
+clean_directory $HBT_SV_DIRECTORY
+#=====================================
+
 nCC=0
-for centralityCutString in "0-100%"
+#for centralityCutString in "0-100%"
+for centralityCutString in $centralityClass
 do
-
-	# set names of sub-directories
-	PYTHIA_RESULTS_DIRECTORY=$CURRENT_RESULTS_DIRECTORY/Pythia_results
-	HBT_RESULTS_DIRECTORY=$CURRENT_RESULTS_DIRECTORY/HBT_results
-
-	# make sure HBT results directory exists
-	if [ ! -d "$HBT_RESULTS_DIRECTORY" ]
-	then
-		mkdir $HBT_RESULTS_DIRECTORY
-		echo 'Created' $HBT_RESULTS_DIRECTORY
-	fi
-
+	#========================================
+	# process centrality class information
 	success=0
 	echo '  -- analyzing centrality class' $centralityCutString
 
 	centralityCut=(`echo $centralityCutString | sed 's/-/ /g' | sed 's/%//g'`)
 	thisCentrality="C"${centralityCut[0]}"_"${centralityCut[1]}
-	HBT_CEN_RESULTS_DIRECTORY=$HBT_RESULTS_DIRECTORY/$thisCentrality
-	mkdir $HBT_CEN_RESULTS_DIRECTORY
 
 	lowerLimit=0
 	upperLimit=100
@@ -69,6 +70,27 @@ do
 		lowerLimit=${centralityCut[0]}
 		upperLimit=${centralityCut[1]}
 	fi
+	#========================================
+
+
+	#========================================
+	# set names of sub-directories
+	PYTHIA_RESULTS_DIRECTORY=$CURRENT_RESULTS_DIRECTORY/Pythia_results
+	HBT_RESULTS_DIRECTORY=$CURRENT_RESULTS_DIRECTORY/HBT_results
+	HBT_CEN_RESULTS_DIRECTORY=$HBT_RESULTS_DIRECTORY/$thisCentrality
+
+	# make sure HBT results directory exists
+	if [ ! -d "$HBT_RESULTS_DIRECTORY" ]
+	then
+		mkdir $HBT_RESULTS_DIRECTORY
+		echo 'Created' $HBT_RESULTS_DIRECTORY
+	fi
+	if [ -d "$HBT_CEN_RESULTS_DIRECTORY" ]
+	then
+		rm -rf $HBT_CEN_RESULTS_DIRECTORY
+	fi
+	mkdir $HBT_CEN_RESULTS_DIRECTORY
+	#========================================
 
 	collisionSystemStem=$projectile$target"_"`echo $beamEnergy`"GeV_Nev"$Nevents
 	#collisionSystemCentralityStem=$projectile$target"_"`echo $beamEnergy`"GeV_C"$lowerLimit"_"$upperLimit"_Nev"$Nevents
@@ -87,7 +109,7 @@ do
 			# make sure results directory exists
 			if [ ! -d "$PYTHIA_RESULTS_DIRECTORY" ]
 			then
-					mkdir $PYTHIA_RESULTS_DIRECTORY
+				mkdir $PYTHIA_RESULTS_DIRECTORY
 			fi
 
 			# set some options for Pythia to run on

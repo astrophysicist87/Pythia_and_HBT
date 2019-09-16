@@ -18,10 +18,9 @@ void BalanceFunction::Get_balance_functions()
 	Compute_rho1();
 	Compute_rho2();
 
-	Check_normalizations();
-
 	Compute_balance_functions();
 
+	Check_normalizations();
 }
 
 void BalanceFunction::Compute_event_averages()
@@ -154,6 +153,8 @@ void BalanceFunction::Compute_differential2D_balance_function()
 
 void BalanceFunction::Compute_integrated_balance_function()
 {
+	vector<double> normalization(integrated_bf.size(), 0.0);
+
 	// just sum available cells?
 	bool naive = true;
 	if ( naive )
@@ -180,6 +181,8 @@ void BalanceFunction::Compute_integrated_balance_function()
 			// otherwise, just lump into appropriate cell
 			integrated_bf[ iDelta_pphi * n_Delta_pY_bins + iDelta_pY ]
 				+= bin_volume * differential2D_bf[indexer(ip1phi, ip1Y, ip2phi, ip2Y)];
+			normalization[ iDelta_pphi * n_Delta_pY_bins + iDelta_pY ]
+				+= bin_volume;
 		}
 	}
 	/*else	// or try interpolating?
@@ -205,6 +208,12 @@ void BalanceFunction::Compute_integrated_balance_function()
 			}
 		}
 	}*/
+
+	// normalize integrated balance function
+	for (int iDelta_pphi = 0; iDelta_pphi < n_Delta_pphi_bins; iDelta_pphi++)
+	for (int iDelta_pY = 0; iDelta_pY < n_Delta_pY_bins; iDelta_pY++)
+		integrated_bf[ iDelta_pphi * n_Delta_pY_bins + iDelta_pY ]
+			/= normalization[ iDelta_pphi * n_Delta_pY_bins + iDelta_pY ] + 1.e-100;
 
 	// now get BF's vs. Delta_pY and Delta_pphi
 	for (int iDelta_pphi = 0; iDelta_pphi < n_Delta_pphi_bins; iDelta_pphi++)
