@@ -3,7 +3,8 @@
 #=====================================
 # Options for codes
 runPythia=true
-useParallel=true
+#useParallel=true
+useArbitraryParticle=false
 centralitySelectionInPythia=false
 runHBTEG=true
 runFitCF=true

@@ -141,18 +141,22 @@ int main(int argc, char *argv[])
 		  };
 
 	// particles to consider for HBT effects
-	/*std::unordered_map<int, int> HBT_particle_IDs
+	std::unordered_map<int, int> HBT_particle_IDs
 		= { 
 			{  211 , 0 },	// pion(+)
 			{ -211 , 1 },	// pion(-)
 			{  321 , 2 },	// Kaon(+)
 			{ -321 , 3 }	// Kaon(-)
-		  };*/
-	std::unordered_map<int, int> HBT_particle_IDs
+		  };
+	/*std::unordered_map<int, int> HBT_particle_IDs
 		= { 
 			{  211 , 0 },	// pion(+)
 			{ -211 , 1 }	// pion(-)
-		  };
+		  };*/
+	/*std::unordered_map<int, int> HBT_particle_IDs
+		= { 
+			{  211 , 0 }	// pion(+)
+		  };*/
 
 	// thermal particles only or resonance decays included
 	bool thermal_only = false;
@@ -273,6 +277,8 @@ int main(int argc, char *argv[])
 	cout << "Running with number of OpenMP threads = "
 			<< omp_get_max_threads() << endl;
 
+	string fittedHI_SigFitDefPar = "";
+
 	vector<Pythia> pythiaVector( omp_get_max_threads() );
 
 	// Loop over OpenMP threads.
@@ -285,9 +291,14 @@ int main(int argc, char *argv[])
 		pythiaVector[iThread].readString("Print:quiet = off");
 
 		// Seed RNG different for each thread to avoid redundant events
-		pythiaVector[iThread].readString("Random:setSeed = on");
-		//pythiaVector[iThread].readString("Random:seed = " + to_string(iThread+1));
-		pythiaVector[iThread].readString("Random:seed = -1");
+ 		if ( omp_get_max_threads() > 1 )
+		{
+			pythiaVector[iThread].readString("Random:setSeed = on");
+ 			pythiaVector[iThread].readString("Random:seed = " + to_string(iThread+1));
+		}
+ 		//else
+ 		//	pythiaVector[iThread].readString("Random:seed = -1");
+
 
 		//========================================
 		// Read in any standard Pythia options
@@ -310,23 +321,57 @@ int main(int argc, char *argv[])
 		//pythiaVector[iThread].readString("HardQCD:all = on");
 		pythiaVector[iThread].readString("Beams:frameType = 1");
 
-		// Initialize the Angantyr model to fit the total and semi-inclusive
-		// cross sections in Pythia within some tolerance.
-		pythiaVector[iThread].readString("HeavyIon:SigFitErr = "
-							"0.02,0.02,0.1,0.05,0.05,0.0,0.1,0.0");
-		// These parameters are typically suitable for sqrt(S_NN)=5 TeV
-		pythiaVector[iThread].readString("HeavyIon:SigFitDefPar = "
-		                "17.24,2.15,0.33,0.0,0.0,0.0,0.0,0.0");
-		// A simple genetic algorithm is run for 20 generations to fit the
-		// parameters.
-		pythiaVector[iThread].readString("HeavyIon:SigFitNGen = 20");
+		if ( iThread == 0 )
+		{
+			// Initialize the Angantyr model to fit the total and semi-inclusive
+			// cross sections in Pythia within some tolerance.
+			pythiaVector[iThread].readString("HeavyIon:SigFitErr = "
+								"0.02,0.02,0.1,0.05,0.05,0.0,0.1,0.0");
+			// These parameters are typically suitable for sqrt(S_NN)=5 TeV
+			pythiaVector[iThread].readString("HeavyIon:SigFitDefPar = "
+				            "17.24,2.15,0.33,0.0,0.0,0.0,0.0,0.0");
+			// A simple genetic algorithm is run for 20 generations to fit the
+			// parameters.
+			pythiaVector[iThread].readString("HeavyIon:SigFitNGen = 20");
+		}
+		else
+		{
+			// use results of previous fit
+			pythiaVector[iThread].readString("HeavyIon:SigFitNGen = 0");
+			pythiaVector[iThread].readString("HeavyIon:SigFitErr = "
+								"0.02,0.02,0.1,0.05,0.05,0.0,0.1,0.0");
+			pythiaVector[iThread].readString("HeavyIon:SigFitDefPar = " + fittedHI_SigFitDefPar );
+		}
 
 		// Initialize impact parameter selection over finite, user-defined range
-		//MyHIUserHooks* myHIUserHooks = new MyHIUserHooks();
-		//pythiaVector[iThread].setHIHooks( myHIUserHooks );
+		MyHIUserHooks* myHIUserHooks = new MyHIUserHooks();
+		pythiaVector[iThread].setHIHooks( myHIUserHooks );
 
 		// Initialise Pythia.
 		pythiaVector[iThread].init();
+
+		vector<double> print_this = pythiaVector[iThread].settings.pvec("HeavyIon:SigFitDefPar");
+		for (int iprint = 0; iprint < (int)print_this.size(); iprint++)
+			cout << "CHECK: " << print_this[iprint] << endl;
+
+		// Update fittedHI_SigFitDefPar if on first iteration.
+		if ( iThread == 0 )
+		{
+			vector<double> result_fittedHI_SigFitDefPar
+							= pythiaVector[iThread].settings.pvec("HeavyIon:SigFitDefPar");
+
+			fittedHI_SigFitDefPar
+				 = to_string( result_fittedHI_SigFitDefPar[0] );
+
+			for (int iResult = 1; iResult < (int)result_fittedHI_SigFitDefPar.size(); iResult++)
+				fittedHI_SigFitDefPar
+					= fittedHI_SigFitDefPar + ","
+						+ to_string( result_fittedHI_SigFitDefPar[iResult] );
+			cout << "Using these settings for subsequent threads:" << endl;
+			cout << "HeavyIon:SigFitNGen = 0" << endl;
+			cout << "HeavyIon:SigFitDefPar = " + fittedHI_SigFitDefPar << endl;
+
+		}
 
 		cout << "Completed initialization of Pythia in thread# = " << iThread << endl;
 
@@ -378,7 +423,8 @@ int main(int argc, char *argv[])
 			if ( not pythiaVector[iThread].next() )
 				continue;
 
-			int event_multiplicity = 0;
+			int event_multiplicity = 0, charged_multiplicity = 0,
+				hadron_multiplicity = 0, charged_hadron_multiplicity = 0;
 
 			// vector to hold number of each HBT particle species
 			vector<int> HBT_particle_multiplicities(HBT_particle_IDs.size(), 0);
@@ -389,71 +435,61 @@ int main(int argc, char *argv[])
 			for (int i = 0; i < pythiaVector[iThread].event.size(); ++i)
 			{
 				Particle & p = pythiaVector[iThread].event[i];
-				if ( p.isFinal() and p.isHadron() )
+				if ( p.isFinal() )
 				{
-					//count all final hadrons in multiplicity
 					event_multiplicity++;
+					if ( p.isCharged() )
+						charged_multiplicity++;
 
-			 		//if ( p.id() == 211 )						// i.e., is pion(+)
-			 		if ( HBT_particle_IDs.count( p.id() ) > 0 )	// i.e., is pion(+) or another HBT particle in the HBT_particle_IDs map
+					if ( p.isHadron() )
 					{
-						/*// i.e., only do it once
-						if ( count < 1 )
+						//count all final hadrons in multiplicity
+						hadron_multiplicity++;
+						if ( p.isCharged() )
+							charged_hadron_multiplicity++;
+
+				 		if ( HBT_particle_IDs.count( p.id() ) > 0 )	// i.e., is pion(+) or another HBT particle in the HBT_particle_IDs map
 						{
-							ofstream out(path + "HBT_particle.dat");
-							out << "name = " << pythiaVector[iThread].event[i].name()
-								<< "\t\t# Particle name" << endl
-								<< "monval = " << pythiaVector[iThread].event[i].id()
-								<< "\t\t# Monte-Carlo number" << endl
-								<< "mass = " << pythiaVector[iThread].event[i].m()
-								<< "\t\t# mass" << endl
-								<< "charge = " << pythiaVector[iThread].event[i].charge()
-								<< "\t\t# charge" << endl
-								<< "spinType = " << pythiaVector[iThread].event[i].spinType()
-								<< "\t\t# spin type" << endl
-								<< "chargeType = " << pythiaVector[iThread].event[i].chargeType()
-								<< "\t\t# charge type" << endl;
-							out.close();
-							++count;
-						}*/
 
-						const int pmother1 = p.mother1();
-						const int pmother2 = p.mother2();
+							const int pmother1 = p.mother1();
+							const int pmother2 = p.mother2();
 
-						bool particle_is_decay = ( 	momentum_space_modifications
-													and p.status() != 99 )	// particle is decay not affected by modifications
-												or ( ( not momentum_space_modifications )
-													and p.status() >= 90 );	// particle is just a normal decay product
+							bool particle_is_decay = ( 	momentum_space_modifications
+														and p.status() != 99 )	// particle is decay not affected by modifications
+													or ( ( not momentum_space_modifications )
+														and p.status() >= 90 );	// particle is just a normal decay product
 
-						// if only looking at thermal (i.e., non-decay) particles
-						if ( thermal_only and particle_is_decay )
-							continue;
+							// if only looking at thermal (i.e., non-decay) particles
+							if ( thermal_only and particle_is_decay )
+								continue;
 
-						//=================================
-						// if also recording unshifted particles
-						if ( momentum_space_modifications
-								and track_unshifted_particles )
-						{
-							if ( pmother1 == pmother2 )
-								unshifted_particles_to_output.push_back( pythiaVector[iThread].event[pmother1] );
-							else
+							//=================================
+							// if also recording unshifted particles
+							if ( momentum_space_modifications
+									and track_unshifted_particles )
 							{
-								cerr << "Encountered a problem!  Exiting..." << endl;
-								exit(8);
+								if ( pmother1 == pmother2 )
+									unshifted_particles_to_output.push_back( pythiaVector[iThread].event[pmother1] );
+								else
+								{
+									cerr << "Encountered a problem!  Exiting..." << endl;
+									exit(8);
+								}
 							}
+
+							// save the final (shifted) particles, no matter what
+							particles_to_output.push_back( p );
+
+							// Save whether the particle is thermal or decay
+							// push back 0 for thermal
+							// push back 1 for decay
+							particle_is_thermal_or_decay.push_back( static_cast<int>( particle_is_decay ) );
+
+							// Increment this particle count by 1
+							//pion_multiplicity++;
+							HBT_particle_multiplicities[ HBT_particle_IDs[ p.id() ] ]++;
+
 						}
-
-						// save the final (shifted) particles, no matter what
-						particles_to_output.push_back( p );
-
-						// Save whether the particle is thermal or decay
-						// push back 0 for thermal
-						// push back 1 for decay
-						particle_is_thermal_or_decay.push_back( static_cast<int>( particle_is_decay ) );
-
-						//pion_multiplicity++;
-						HBT_particle_multiplicities[ HBT_particle_IDs[ p.id() ] ]++;
-
 					}
 				}
 			}
@@ -510,7 +546,7 @@ int main(int argc, char *argv[])
 	
 					}
 	
-					bool verbose = false;
+					bool verbose = true;
 
 					//outMultiplicities
 					//			<< iEvent << "   "
@@ -518,7 +554,10 @@ int main(int argc, char *argv[])
 					//			<< pion_multiplicity;
 					outMultiplicities
 								<< iEvent << "   "
-								<< event_multiplicity;
+								<< event_multiplicity << "   "
+								<< charged_multiplicity << "   "
+								<< hadron_multiplicity << "   "
+								<< charged_hadron_multiplicity;
 
 					// output particle multiplicities (order hardcoded for now)
 					for ( int iHBTParticle = 0; iHBTParticle < (int)HBT_particle_IDs.size(); ++iHBTParticle )

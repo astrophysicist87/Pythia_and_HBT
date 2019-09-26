@@ -135,13 +135,15 @@ do
 
 
 			# time and run
-			if $useParallel
+			#if $useParallel
+			if $useArbitraryParticle
 			then
-				./run_BEeffects_OpenMP.sh $projectile $target $beamEnergy \
+				./run_BEeffects_arbtryParticle_OpenMP.sh \
+									$projectile $target $beamEnergy \
 									$Nevents $PYTHIA_RESULTS_DIRECTORY \
-									$lowerLimit $upperLimit $ThermalOnly
+									$lowerLimit $upperLimit
 			else
-				./run_BEeffects.sh $projectile $target $beamEnergy \
+				./run_BEeffects_OpenMP.sh $projectile $target $beamEnergy \
 									$Nevents $PYTHIA_RESULTS_DIRECTORY \
 									$lowerLimit $upperLimit $ThermalOnly
 			fi

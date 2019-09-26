@@ -495,6 +495,21 @@ bool SubCollisionModel::evolve() {
       for ( int j = 1; j < dim; ++j ) cout << "," << pop[0][j];
       for ( int j = dim; j < 8; ++j ) cout << ",0.0";
       cout << endl;
+/*vector<double> chris_test = getParm();
+cout << "Extra test: " << endl;
+      cout << "HeavyIon Info: To avoid refitting, use the following settings "
+           << "for next run:\n  HeavyIon:SigFitNGen = 0\n  "
+           << "HeavyIon:SigFitDefPar = "
+           << chris_test[0];
+      for ( int j = 1; j < dim; ++j ) cout << "," << chris_test[j];
+      for ( int j = dim; j < 8; ++j ) cout << ",0.0";
+      cout << endl;*/
+
+	// Overwrite with fitted parameters
+	vector<double> fitted_results_to_store = pop[0];
+	for ( int j = dim; j < 8; ++j ) fitted_results_to_store.push_back(0.0);
+	settingsPtr->pvec("HeavyIon:SigFitDefPar", fitted_results_to_store);
+
     }
   }
 
