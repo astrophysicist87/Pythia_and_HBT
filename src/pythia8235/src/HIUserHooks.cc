@@ -1146,10 +1146,12 @@ void HIInfo::addAttempt(double T, double bin, double bweight) {
   weightSumSave += weightSave;
   ++NSave;
   double w = 2.0*T*bweight;
+  sigmaTotThisEventSave = 2.0*T*bweight;		//Chris Plumberg
   double delta = w - sigmaTotSave;
   sigmaTotSave += delta/double(NSave);
   sigErr2TotSave += (delta*(w - sigmaTotSave) - sigErr2TotSave)/double(NSave);
-  w = (2*T - T*T)*bweight;
+  w = (2.0*T - T*T)*bweight;
+  sigmaNDThisEventSave = (2.0*T - T*T)*bweight;	//Chris Plumberg
   delta = w - sigmaNDSave;
   sigmaNDSave += delta/double(NSave);
   sigErr2NDSave += (delta*(w - sigmaNDSave) - sigErr2NDSave)/double(NSave);

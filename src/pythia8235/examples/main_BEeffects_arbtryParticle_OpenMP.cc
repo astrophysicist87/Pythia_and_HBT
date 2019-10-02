@@ -39,7 +39,7 @@ class MyImpactParameterGenerator : public ImpactParameterGenerator
 		virtual bool init()
 		{
 			bMinSave = 0.0;
-			bMaxSave = 20.0;
+			bMaxSave = 0.001;
 
 			return true;
 
@@ -141,22 +141,23 @@ int main(int argc, char *argv[])
 		  };
 
 	// particles to consider for HBT effects
-	std::unordered_map<int, int> HBT_particle_IDs
+	/*std::unordered_map<int, int> HBT_particle_IDs
 		= { 
 			{  211 , 0 },	// pion(+)
 			{ -211 , 1 },	// pion(-)
 			{  321 , 2 },	// Kaon(+)
 			{ -321 , 3 }	// Kaon(-)
-		  };
+		  };*/
 	/*std::unordered_map<int, int> HBT_particle_IDs
 		= { 
 			{  211 , 0 },	// pion(+)
 			{ -211 , 1 }	// pion(-)
 		  };*/
-	/*std::unordered_map<int, int> HBT_particle_IDs
+	std::unordered_map<int, int> HBT_particle_IDs
 		= { 
-			{  211 , 0 }	// pion(+)
-		  };*/
+			{  211 , 0 },	// pion(+)
+			{  321 , 2 }	// Kaon(+)
+		  };
 
 	// thermal particles only or resonance decays included
 	bool thermal_only = false;
@@ -321,6 +322,9 @@ int main(int argc, char *argv[])
 		//pythiaVector[iThread].readString("HardQCD:all = on");
 		pythiaVector[iThread].readString("Beams:frameType = 1");
 
+		// SubCollision model to use
+		//pythiaVector[iThread].readString("Angantyr:CollisionModel = 0");
+
 		if ( iThread == 0 )
 		{
 			// Initialize the Angantyr model to fit the total and semi-inclusive
@@ -350,9 +354,9 @@ int main(int argc, char *argv[])
 		// Initialise Pythia.
 		pythiaVector[iThread].init();
 
-		vector<double> print_this = pythiaVector[iThread].settings.pvec("HeavyIon:SigFitDefPar");
-		for (int iprint = 0; iprint < (int)print_this.size(); iprint++)
-			cout << "CHECK: " << print_this[iprint] << endl;
+		//vector<double> print_this = pythiaVector[iThread].settings.pvec("HeavyIon:SigFitDefPar");
+		//for (int iprint = 0; iprint < (int)print_this.size(); iprint++)
+		//	cout << "CHECK: " << print_this[iprint] << endl;
 
 		// Update fittedHI_SigFitDefPar if on first iteration.
 		if ( iThread == 0 )
@@ -505,6 +509,9 @@ int main(int argc, char *argv[])
 			//just for now
 			//if ( pion_multiplicity < 50 or pion_multiplicity > 100 )
 			//	continue;
+			// just pick something to guarantee large multiplicity
+			if ( event_multiplicity < 70000 )
+				continue;
 
 			#pragma omp critical
 			{
@@ -546,7 +553,7 @@ int main(int argc, char *argv[])
 	
 					}
 	
-					bool verbose = true;
+					bool verbose = false;
 
 					//outMultiplicities
 					//			<< iEvent << "   "
@@ -568,10 +575,10 @@ int main(int argc, char *argv[])
 						outMultiplicities
 								<< "   "
 								<< pythiaVector[iThread].info.hiinfo->b() << "   "
-								<< pythiaVector[iThread].info.hiinfo->nPartProj() << "   "
-								<< pythiaVector[iThread].info.hiinfo->nPartTarg() << "   "
+								/*<< pythiaVector[iThread].info.hiinfo->nPartProj() << "   "
+								<< pythiaVector[iThread].info.hiinfo->nPartTarg() << "   "*/
 								<< pythiaVector[iThread].info.hiinfo->nCollTot() << "   "
-								<< pythiaVector[iThread].info.hiinfo->nCollND() << "   "
+								/*<< pythiaVector[iThread].info.hiinfo->nCollND() << "   "
 								<< pythiaVector[iThread].info.hiinfo->nCollNDTot() << "   "
 								<< pythiaVector[iThread].info.hiinfo->nCollSDP() << "   "
 								<< pythiaVector[iThread].info.hiinfo->nCollSDT() << "   "
@@ -583,7 +590,22 @@ int main(int argc, char *argv[])
 								<< pythiaVector[iThread].info.hiinfo->nElProj() << "   "
 								<< pythiaVector[iThread].info.hiinfo->nAbsTarg() << "   "
 								<< pythiaVector[iThread].info.hiinfo->nDiffTarg() << "   "
-								<< pythiaVector[iThread].info.hiinfo->nElTarg();
+								<< pythiaVector[iThread].info.hiinfo->nElTarg() << "   "*/
+								<< pythiaVector[iThread].info.nMPI() << "   "
+								<< pythiaVector[iThread].info.hiinfo->sigmaTotThisEvent() << "   "
+								<< pythiaVector[iThread].info.hiinfo->sigmaNDThisEvent() << "   "
+								<< pythiaVector[iThread].info.hiinfo->sigmaTot() << "   "
+								<< pythiaVector[iThread].info.hiinfo->sigmaTotErr() << "   "
+								<< pythiaVector[iThread].info.hiinfo->sigmaND() << "   "
+								<< pythiaVector[iThread].info.hiinfo->sigmaNDErr();
+								//<< pythiaVector[iThread].info.hiinfo->sigTot() << "   "
+								//<< pythiaVector[iThread].info.hiinfo->sigEl() << "   "
+								//<< pythiaVector[iThread].info.hiinfo->sigCDE() << "   "
+								//<< pythiaVector[iThread].info.hiinfo->sigSDE() << "   "
+								//<< pythiaVector[iThread].info.hiinfo->sigSDEP() << "   "
+								//<< pythiaVector[iThread].info.hiinfo->sigSDET() << "   "
+								//<< pythiaVector[iThread].info.hiinfo->sigDDE() << "   "
+								//<< pythiaVector[iThread].info.hiinfo->sigND();
 
 					outMultiplicities
 								<< endl;

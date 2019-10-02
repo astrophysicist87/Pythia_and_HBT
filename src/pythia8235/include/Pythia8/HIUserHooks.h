@@ -840,6 +840,7 @@ public:
     : idProjSave(0), idTargSave(0), bSave(0.0), NSave(0), NAccSave(0),
       sigmaTotSave(0.0), sigmaNDSave(0.0), sigErr2TotSave(0.0),
       sigErr2NDSave(0.0), weightSave(0.0), weightSumSave(0.0),
+      sigmaTotThisEventSave(0.0), sigmaNDThisEventSave(0.0),	//Chris Plumberg
       nCollSave(10, 0), nProjSave(10, 0), nTargSave(10, 0), nFailSave(0),
       subColsPtr(NULL) {}
 
@@ -946,6 +947,14 @@ public:
   /// The sum of weights of the produced events.
   double weightSum() const { return weightSumSave; }
 
+	// Begin Chris Plumberg
+  /// The total cross section for this collision.
+  double sigmaTotThisEvent() const { return sigmaTotThisEventSave/millibarn; }
+
+  /// The total non-diffractive cross section for this collision.
+  double sigmaNDThisEvent() const { return sigmaNDThisEventSave/millibarn; }
+	// End Chris Plumberg
+
   /// The number of failed nuclon excitations in the current event.
   int nFail() const {
     return nFailSave;
@@ -998,6 +1007,12 @@ private:
   long NSave, NAccSave;
   double sigmaTotSave, sigmaNDSave, sigErr2TotSave, sigErr2NDSave;
   double weightSave, weightSumSave;
+
+  /// ------------------------------------
+  /// Start addition by Chris Plumberg
+  double sigmaTotThisEventSave, sigmaNDThisEventSave;
+  /// End addition by Chris Plumberg
+  /// ------------------------------------
 
   /// Number of collisions and paricipants. See accessor functions for
   /// indices.
