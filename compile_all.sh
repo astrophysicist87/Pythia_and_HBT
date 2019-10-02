@@ -9,9 +9,9 @@ export OMP_NUM_THREADS="${1:-$default_num_threads}"
 echo 'OMP_NUM_THREADS =' $OMP_NUM_THREADS
 
 # Alternate way to set number of OpenMP threads
-source omp_env.sh
-export OMP_NUM_THREADS=$chosen_OMP_NUM_THREADS
-echo 'OMP_NUM_THREADS =' $OMP_NUM_THREADS
+#source omp_env.sh
+#export OMP_NUM_THREADS=$chosen_OMP_NUM_THREADS
+#echo 'OMP_NUM_THREADS =' $OMP_NUM_THREADS
 
 success=0
 
