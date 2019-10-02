@@ -122,7 +122,7 @@ max_accepted_tau = 100000000000.0
 
 
 # pion(+)
-chosen_MCID = 211
+chosen_MCID = 321
 
 # include thermal particles (0 - false, 1 - true)
 include_thermal = 1

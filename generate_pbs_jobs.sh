@@ -14,10 +14,7 @@ echo 'chosen_OMP_NUM_THREADS='$chosen_OMP_NUM_THREADS > omp_env.sh
 ########################################
 # set up array of job specifications
 
-declare -a specs=(	'useParallel=true projectile="Pb" target="Pb" beamEnergy="2760.0" Nevents=100000 ThermalOnly="true" SetPartonVertices="off"'
-					'useParallel=true projectile="Pb" target="Pb" beamEnergy="2760.0" Nevents=100000 ThermalOnly="false" SetPartonVertices="off"'
-					'useParallel=true projectile="Pb" target="Pb" beamEnergy="2760.0" Nevents=100000 ThermalOnly="true" SetPartonVertices="on"'
-					'useParallel=true projectile="Pb" target="Pb" beamEnergy="2760.0" Nevents=100000 ThermalOnly="false" SetPartonVertices="on"'
+declare -a specs=(	'useArbitraryParticle=true projectile="Pb" target="Pb" beamEnergy="5020.0" Nevents=100000'
 				)
 
 ########################################
@@ -40,7 +37,7 @@ do
 	cp -r src $HOME_RESULTS_DIRECTORY/job-${job}/
 	
 	executableString="./driver.sh ${specs[i]} &> driver.out"
-	generate_pbs '18:00:00' $chosen_OMP_NUM_THREADS $executableString > $HOME_RESULTS_DIRECTORY/job-${job}/submit.pbs
+	generate_pbs '24:00:00' $chosen_OMP_NUM_THREADS $executableString > $HOME_RESULTS_DIRECTORY/job-${job}/submit.pbs
 	
 	cp scripts/driver.sh $HOME_RESULTS_DIRECTORY/job-${job}
 	cp defaults.sh env.sh omp_env.sh $HOME_RESULTS_DIRECTORY/job-${job}
