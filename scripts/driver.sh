@@ -102,6 +102,7 @@ do
 
 		cd $PYTHIA_DIRECTORY
 		echo '     Now in '`pwd`
+		echo '<<<=== Entering here... ===>>>'
 
 		if $runPythia && [ "$nCC" -eq "0" ]
 		then
@@ -155,6 +156,8 @@ do
 			# copy results
 			#cp $PYTHIA_RESULTS_DIRECTORY/* $RESULTS_DIRECTORY/
 		fi
+
+		echo '<<<=== Made it here? ===>>>'
 
 		# if Pythia was minimum bias (default), do centrality selection in subsequent codes
 		# otherwise, just do whatever events have been produced
