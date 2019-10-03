@@ -177,9 +177,12 @@ do
 			readlink -f $PYTHIA_RESULTS_DIRECTORY/$line >> $HBT_SV_DIRECTORY/catalogue.dat
 		done
 		# Set particle catalogue
-		readlink -f $PYTHIA_RESULTS_DIRECTORY/HBT_particle.dat > $HBT_EVENT_GEN_DIRECTORY/particle_catalogue.dat
-		readlink -f $PYTHIA_RESULTS_DIRECTORY/HBT_particle.dat > $HBT_FITCF_DIRECTORY/particle_catalogue.dat
-		readlink -f $PYTHIA_RESULTS_DIRECTORY/HBT_particle.dat > $HBT_SV_DIRECTORY/particle_catalogue.dat
+		#readlink -f $PYTHIA_RESULTS_DIRECTORY/HBT_particle*.dat > $HBT_EVENT_GEN_DIRECTORY/particle_catalogue.dat
+		#readlink -f $PYTHIA_RESULTS_DIRECTORY/HBT_particle*.dat > $HBT_FITCF_DIRECTORY/particle_catalogue.dat
+		#readlink -f $PYTHIA_RESULTS_DIRECTORY/HBT_particle*.dat > $HBT_SV_DIRECTORY/particle_catalogue.dat
+		readlink -f $PYTHIA_RESULTS_DIRECTORY/HBT_particle_0.dat > $HBT_EVENT_GEN_DIRECTORY/particle_catalogue.dat
+		readlink -f $PYTHIA_RESULTS_DIRECTORY/HBT_particle_0.dat > $HBT_FITCF_DIRECTORY/particle_catalogue.dat
+		readlink -f $PYTHIA_RESULTS_DIRECTORY/HBT_particle_0.dat > $HBT_SV_DIRECTORY/particle_catalogue.dat
 		# Set ensemble catalogue
 		#echo $projectile $target $beamEnergy 0 100 $Nevents > $HBT_EVENT_GEN_DIRECTORY/ensemble_catalogue.dat
 		echo $projectile $target $beamEnergy $lowerLimit $upperLimit $Nevents > $HBT_EVENT_GEN_DIRECTORY/ensemble_catalogue.dat

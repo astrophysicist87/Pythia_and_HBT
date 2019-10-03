@@ -155,7 +155,7 @@ int main(int argc, char *argv[])
 		  };*/
 	std::unordered_map<int, int> HBT_particle_IDs
 		= { 
-			{  321 , 0 }	// Kaon(+)
+			{  211 , 0 }	// pion(+)
 		  };
 
 	// thermal particles only or resonance decays included
