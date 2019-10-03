@@ -46,7 +46,7 @@ clean_directory () {
 output_settings () {
 
 echo 'runPythia='$runPythia
-echo 'useParallel='$useParallel
+#echo 'useParallel='$useParallel
 echo 'centralitySelectionInPythia='$centralitySelectionInPythia
 echo 'runHBTEG='$runHBTEG
 echo 'runFitCF='$runFitCF

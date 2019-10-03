@@ -165,6 +165,7 @@ do
 			lowerLimit=0
 			upperLimit=100
 		fi
+		echo '<<<=== Centrality selection: '$lowerLimit 'to' $upperLimit'% ===>>>'
 
 		# Get the filenames which need to be processed
 		recordOfOutputFilenames_Sxp=$PYTHIA_RESULTS_DIRECTORY/`echo $collisionSystemStem`"_S_x_p_filenames.dat"
