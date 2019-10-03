@@ -180,6 +180,7 @@ void HBT_event_generator::Compute_numerator_and_denominator_methodMode2_q_mode_3
 			double KT = sqrt(Kx*Kx+Ky*Ky);
 			double Kphi = atan2(Ky, Kx);
 			double cKphi = cos(Kphi), sKphi = sin(Kphi);
+			double KL = Kz;
 
 			// If pair survived cuts, get indices
 			int KT_idx 	= floor((KT - KT_min)/KT_bin_width);
