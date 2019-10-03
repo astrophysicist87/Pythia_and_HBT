@@ -150,7 +150,8 @@ void HBT_event_generator::Compute_numerator_and_denominator_methodMode2_q_mode_3
 				//							* py_bin_width
 				//							* pz_bin_width );
 
-				private_num[index6D] += overall_factor * num_term;
+				private_num[index6D] += overall_factor * num_term
+										/ ( K0*K0 - 0.25*q0*q0 );	// this factor is 1/(E1 E2)
 				//						/ num_pairs_this_event;
 
 			}
@@ -242,8 +243,11 @@ void HBT_event_generator::Compute_numerator_and_denominator_methodMode2_q_mode_3
 
 				int index6D = indexer(KT_idx, Kphi_idx, KL_idx, iqo, iqs, iql);
 
+				double q0 = get_q0(particle_mass, qo, qs, ql, KT, KL);
+
 				//private_den[index6D]++;
-				private_den[index6D] += overall_factor;
+				private_den[index6D] += overall_factor
+										/ ( K0*K0 - 0.25*q0*q0 );	// this factor is 1/(E1 E2)
 
 			}
 		}

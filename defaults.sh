@@ -14,12 +14,13 @@ runSV=true
 # system specifications
 projectile="p"
 target="p"
-beamEnergy="13000.0"	#GeV
+beamEnergy="13000.0"	# GeV
 Nevents="10"
+chosenHBTparticle="211"	# pion(+)
 centralityClass="0-100%"
 
 # BE and related specifications
-QRefValue="0.2"			#GeV
+QRefValue="0.2"			# GeV
 BEeffects='off'
 BEEnhancementMode='2'	# 0 - use fixed QRef
 						# 1 - use ST interval with Gaussian BE form

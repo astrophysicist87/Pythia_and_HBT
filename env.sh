@@ -57,6 +57,7 @@ echo 'projectile='$projectile
 echo 'target='$target
 echo 'beamEnergy='$beamEnergy
 echo 'Nevents='$Nevents
+echo 'chosenHBTparticle='$chosenHBTparticle
 echo 'centralityClass='$centralityClass
 echo
 echo 'QRefValue='$QRefValue

@@ -102,7 +102,7 @@ do
 
 		cd $PYTHIA_DIRECTORY
 		echo '     Now in '`pwd`
-		echo '<<<=== Entering here... ===>>>'
+		#echo '<<<=== Entering here... ===>>>'
 
 		if $runPythia && [ "$nCC" -eq "0" ]
 		then
@@ -141,7 +141,8 @@ do
 			then
 				./run_BEeffects_arbtryParticle_OpenMP.sh \
 									$projectile $target $beamEnergy \
-									$Nevents $PYTHIA_RESULTS_DIRECTORY \
+									$Nevents $chosenHBTparticle \
+									$PYTHIA_RESULTS_DIRECTORY \
 									$lowerLimit $upperLimit
 			else
 				./run_BEeffects_OpenMP.sh $projectile $target $beamEnergy \
@@ -157,7 +158,7 @@ do
 			#cp $PYTHIA_RESULTS_DIRECTORY/* $RESULTS_DIRECTORY/
 		fi
 
-		echo '<<<=== Made it here? ===>>>'
+		#echo '<<<=== Made it here? ===>>>'
 
 		# if Pythia was minimum bias (default), do centrality selection in subsequent codes
 		# otherwise, just do whatever events have been produced
@@ -168,7 +169,7 @@ do
 			lowerLimit=0
 			upperLimit=100
 		fi
-		echo '<<<=== Centrality selection: '$lowerLimit 'to' $upperLimit'% ===>>>'
+		#echo '<<<=== Centrality selection: '$lowerLimit 'to' $upperLimit'% ===>>>'
 
 		# Get the filenames which need to be processed
 		recordOfOutputFilenames_Sxp=$PYTHIA_RESULTS_DIRECTORY/`echo $collisionSystemStem`"_S_x_p_filenames.dat"
@@ -230,6 +231,7 @@ do
 		# time and run
 		nohup time ./run_HBT_event_generator.e \
 				BE_mode=$chosen_BE_mode \
+				chosen_MCID=$chosenHBTparticle \
 				1> HBT_event_generator.out \
 				2> HBT_event_generator.err
 		# N.B. - centralities determined either here or in Pythia, but not both
@@ -303,6 +305,7 @@ do
 
 		# time and run
 		nohup time ./SV.e \
+				chosen_MCID=$chosenHBTparticle \
 				1> SV_record.out \
 				2> SV_record.err
 

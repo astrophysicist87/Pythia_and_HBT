@@ -113,11 +113,13 @@ void print_particle_record(
 int main(int argc, char *argv[])
 {
 	// Check number of command-line arguments.
-	if (argc != 8)
+	if (argc != 9)
 	{
 		cerr << "Incorrect number of arguments!" << endl;
-		cerr << "Usage: ./main_BEeffects_arbtryParticle_OpenMP [Projectile nucleus] [Target nucleus] [Beam energy in GeV]"
-				<< " [Number of events] [Results directory]"
+		cerr << "Usage: ./main_BEeffects_arbtryParticle_OpenMP"
+				<< " [Projectile nucleus] [Target nucleus]"
+				<< " [Beam energy in GeV] [Number of events]"
+				<< " [HBT particle ID] [Results directory]"
 				<< " [Lower centrality %] [Upper centrality %]" << endl;
 		exit(8);
 	}
@@ -140,7 +142,7 @@ int main(int argc, char *argv[])
 			{ "U"  , "1000922380" }
 		  };
 
-	// particles to consider for HBT effects
+	// particle(s) to consider for HBT effects
 	/*std::unordered_map<int, int> HBT_particle_IDs
 		= { 
 			{  211 , 0 },	// pion(+)
@@ -148,21 +150,12 @@ int main(int argc, char *argv[])
 			{  321 , 2 },	// Kaon(+)
 			{ -321 , 3 }	// Kaon(-)
 		  };*/
-	/*std::unordered_map<int, int> HBT_particle_IDs
-		= { 
-			{  211 , 0 },	// pion(+)
-			{ -211 , 1 }	// pion(-)
-		  };*/
-	std::unordered_map<int, int> HBT_particle_IDs
-		= { 
-			{  211 , 0 }	// pion(+)
-		  };
+	std::unordered_map<int, int> HBT_particle_IDs;
+	HBT_particle_IDs.insert ( { { atoi(argv[5]), 0 } } );
 
 	// thermal particles only or resonance decays included
 	bool thermal_only = false;
-	bool track_unshifted_particles = true;
-	//if ( string(argv[-1]) == "false" )
-	//	track_unshifted_particles = false;
+	bool track_unshifted_particles = false;
 
 	//if ( momentum_space_modifications )
 	//	cout << "Using momentum space modifications!" << endl;
@@ -192,7 +185,7 @@ int main(int argc, char *argv[])
 	//						+ "C" + string(argv[4]) + "_" + string(argv[5]) + "_Nev" + string(argv[4]);
 	string systemSpecs = string(argv[1]) + string(argv[2]) + "_" + string(argv[3]) + "GeV_Nev" + string(argv[4]);
 
-	string path = string(argv[5]) + "/";
+	string path = string(argv[6]) + "/";
 
 	//====================================
 	// files to hold actual output
@@ -249,8 +242,8 @@ int main(int argc, char *argv[])
 
 	// Estimate centrality class limits
 	//const int n_events_to_use = 10000;
-	const double centrality_class_lower_limit = atof( argv[6] );
-	const double centrality_class_upper_limit = atof( argv[7] );
+	const double centrality_class_lower_limit = atof( argv[7] );
+	const double centrality_class_upper_limit = atof( argv[8] );
 
 	cout << "Read in these centrality limits: "
 			<< centrality_class_lower_limit << " to "
@@ -560,10 +553,10 @@ int main(int argc, char *argv[])
 					//			<< pion_multiplicity;
 					outMultiplicities
 								<< iEvent << "   "
-								<< event_multiplicity << "   "
+								<< event_multiplicity /*<< "   "
 								<< charged_multiplicity << "   "
 								<< hadron_multiplicity << "   "
-								<< charged_hadron_multiplicity;
+								<< charged_hadron_multiplicity*/;
 
 					// output particle multiplicities (order hardcoded for now)
 					for ( int iHBTParticle = 0; iHBTParticle < (int)HBT_particle_IDs.size(); ++iHBTParticle )

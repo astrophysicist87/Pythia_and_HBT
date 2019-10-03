@@ -30,7 +30,7 @@ echo 'chosen_OMP_NUM_THREADS='$chosen_OMP_NUM_THREADS > omp_env.sh
 #				   'useParallel=true projectile="p" target="p" beamEnergy="5020.0" Nevents=500000 ThermalOnly="true" SetPartonVertices="off" UseRopeHadronization="on" IncludeStringShoving="on" IncludeFlavourRopesMechanism="on"'
 #				   'useParallel=true projectile="p" target="p" beamEnergy="5020.0" Nevents=500000 ThermalOnly="true" SetPartonVertices="off" UseColorReconnection="on" UseRopeHadronization="on" IncludeStringShoving="on" IncludeFlavourRopesMechanism="on"'
 #				)
-declare -a specs=( 'useArbitraryParticle=true projectile="Pb" target="Pb" beamEnergy="5020.0" Nevents=100000' )
+declare -a specs=( 'useArbitraryParticle=true projectile="Pb" target="Pb" beamEnergy="5020.0" chosenHBTparticle="321" Nevents=100000' )
 
 ########################################
 # total number of jobs

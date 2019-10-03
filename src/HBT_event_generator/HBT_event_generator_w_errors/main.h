@@ -58,8 +58,9 @@ inline void complete_particle(ParticleRecord & p)
 
 
 // function to read in a file containing some number of events
-void read_in_file(string filename, vector<EventRecord> & eventsInFile, ParameterReader * paraRdr, bool OSCARformat = false)
+void read_in_file(string filename, vector<EventRecord> & eventsInFile, ParameterReader * paraRdr)
 {
+	bool OSCARformat = static_cast<bool>( paraRdr->getVal( "use_OSCAR_format" ) );
 	if ( OSCARformat )
 	{
 		read_in_file_OSCAR(filename, eventsInFile, paraRdr);
@@ -456,7 +457,7 @@ void read_in_file_OSCAR(string filename, vector<EventRecord> & eventsInFile, Par
 									+ n_events_read_from_this_file );
 
 	// debugging
-	bool verbose = true;
+	bool verbose = false;
 	if (verbose)
 	{
 		cout << "=============================================================================================" << endl;
