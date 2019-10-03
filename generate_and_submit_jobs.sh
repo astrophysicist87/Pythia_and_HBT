@@ -1,9 +1,9 @@
 #! /usr/bin/env bash
 
 (
-	./generate_jobs.sh 1 RESULTS_PbPb_5020GeV
+	./generate_jobs.sh 12 RESULTS_PbPb_5020GeV_kaons
 
-	./submit_jobs.sh RESULTS_PbPb_5020GeV
+	./submit_jobs.sh RESULTS_PbPb_5020GeV_kaons
 ) &> /dev/null &
 
 # End of file

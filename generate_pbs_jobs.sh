@@ -14,7 +14,7 @@ echo 'chosen_OMP_NUM_THREADS='$chosen_OMP_NUM_THREADS > omp_env.sh
 ########################################
 # set up array of job specifications
 
-declare -a specs=(	'useArbitraryParticle=true projectile="Pb" target="Pb" beamEnergy="5020.0" Nevents=100000'
+declare -a specs=(	'useArbitraryParticle=true projectile="Pb" target="Pb" beamEnergy="5020.0" chosenHBTparticle="211" Nevents=100000'
 				)
 
 ########################################
