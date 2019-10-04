@@ -143,7 +143,8 @@ do
 									$projectile $target $beamEnergy \
 									$Nevents $chosenHBTparticle \
 									$PYTHIA_RESULTS_DIRECTORY \
-									$lowerLimit $upperLimit
+									$lowerLimit $upperLimit \
+									$bMin $bMax
 			else
 				./run_BEeffects_OpenMP.sh $projectile $target $beamEnergy \
 									$Nevents $PYTHIA_RESULTS_DIRECTORY \

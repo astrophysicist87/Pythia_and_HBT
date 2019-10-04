@@ -23,6 +23,9 @@ using namespace std;
 
 //==========================================================================
 
+constexpr double bMinDefault = 0.0;
+constexpr double bMaxDefault = 20.0;
+
 class MyImpactParameterGenerator : public ImpactParameterGenerator
 {
 
@@ -30,7 +33,11 @@ class MyImpactParameterGenerator : public ImpactParameterGenerator
 
 		/// The default constructor.
 		MyImpactParameterGenerator()
-			: bMinSave(0.0), bMaxSave(0.0) {}
+			: bMinSave(bMinDefault), bMaxSave(bMaxDefault) {}
+
+		/// A different constructor.
+		MyImpactParameterGenerator(double bMinIn, double bMaxIn)
+			: bMinSave(bMinIn), bMaxSave(bMaxIn) {}
 
 		/// Virtual destructor.
 		virtual ~MyImpactParameterGenerator() {}
@@ -38,8 +45,8 @@ class MyImpactParameterGenerator : public ImpactParameterGenerator
 		/// Virtual init method.
 		virtual bool init()
 		{
-			bMinSave = 0.0;
-			bMaxSave = 0.001;
+			//bMinSave = 10.0;
+			//bMaxSave = 10.001;
 
 			return true;
 
@@ -78,8 +85,9 @@ class MyHIUserHooks : public HIUserHooks
 
 	public:
 
-		// Constructor creates impact parameter generator.
+		// Constructors create impact parameter generator.
 		MyHIUserHooks() { myImpactParameterGeneratorPtr = new MyImpactParameterGenerator(); }
+		MyHIUserHooks(double bMinIn, double bMaxIn) { myImpactParameterGeneratorPtr = new MyImpactParameterGenerator(bMinIn, bMaxIn); }
 
 		// Destructor deletes impact parameter generator.
 		~MyHIUserHooks() { delete myImpactParameterGeneratorPtr; }
@@ -113,14 +121,23 @@ void print_particle_record(
 int main(int argc, char *argv[])
 {
 	// Check number of command-line arguments.
-	if (argc != 9)
+	if (argc != 9 and argc != 11)
 	{
 		cerr << "Incorrect number of arguments!" << endl;
-		cerr << "Usage: ./main_BEeffects_arbtryParticle_OpenMP"
+		cerr << "Usage: " << endl
+				<< "    ./main_BEeffects_arbtryParticle_OpenMP"
 				<< " [Projectile nucleus] [Target nucleus]"
 				<< " [Beam energy in GeV] [Number of events]"
 				<< " [HBT particle ID] [Results directory]"
-				<< " [Lower centrality %] [Upper centrality %]" << endl;
+				<< " [Lower centrality %] [Upper centrality %]" << endl
+				<< "  <<< OR >>> " << endl
+				<< "    ./main_BEeffects_arbtryParticle_OpenMP"
+				<< " [Projectile nucleus] [Target nucleus]"
+				<< " [Beam energy in GeV] [Number of events]"
+				<< " [HBT particle ID] [Results directory]"
+				<< " [Lower centrality %] [Upper centrality %]" 
+				<< " [Minimum b] [Maximum b]" << endl;
+				
 		exit(8);
 	}
 
@@ -319,6 +336,8 @@ int main(int argc, char *argv[])
 
 		if ( iThread == 0 )
 		{
+			// just for the moment
+
 			// Initialize the Angantyr model to fit the total and semi-inclusive
 			// cross sections in Pythia within some tolerance.
 			pythiaVector[iThread].readString("HeavyIon:SigFitErr = "
@@ -329,6 +348,12 @@ int main(int argc, char *argv[])
 			// A simple genetic algorithm is run for 20 generations to fit the
 			// parameters.
 			pythiaVector[iThread].readString("HeavyIon:SigFitNGen = 20");
+
+			/*pythiaVector[iThread].readString("HeavyIon:SigFitDefPar = "
+							"13.91,1.78,0.22,0.0,0.0,0.0,0.0,0.0" );
+			pythiaVector[iThread].readString("HeavyIon:SigFitErr = "
+								"0.02,0.02,0.1,0.05,0.05,0.0,0.1,0.0");
+			pythiaVector[iThread].readString("HeavyIon:SigFitNGen = 0");*/
 		}
 		else
 		{
@@ -340,7 +365,11 @@ int main(int argc, char *argv[])
 		}
 
 		// Initialize impact parameter selection over finite, user-defined range
-		MyHIUserHooks* myHIUserHooks = new MyHIUserHooks();
+		MyHIUserHooks* myHIUserHooks;
+		if ( argc == 11 )
+			myHIUserHooks = new MyHIUserHooks( atof(argv[9]), atof(argv[10]) );
+		else
+			myHIUserHooks = new MyHIUserHooks();
 		pythiaVector[iThread].setHIHooks( myHIUserHooks );
 
 		// Initialise Pythia.
@@ -502,8 +531,8 @@ int main(int argc, char *argv[])
 			//if ( pion_multiplicity < 50 or pion_multiplicity > 100 )
 			//	continue;
 			// just pick something to guarantee large multiplicity
-			if ( event_multiplicity < 70000 )
-				continue;
+			//if ( event_multiplicity < 70000 )
+			//	continue;
 
 			#pragma omp critical
 			{
@@ -545,7 +574,7 @@ int main(int argc, char *argv[])
 	
 					}
 	
-					bool verbose = false;
+					bool verbose = true;
 
 					//outMultiplicities
 					//			<< iEvent << "   "
@@ -566,10 +595,10 @@ int main(int argc, char *argv[])
 					if ( verbose )
 						outMultiplicities
 								<< "   "
-								<< pythiaVector[iThread].info.hiinfo->b() << "   "
+								<< pythiaVector[iThread].info.hiinfo->b();// << "   "
 								/*<< pythiaVector[iThread].info.hiinfo->nPartProj() << "   "
 								<< pythiaVector[iThread].info.hiinfo->nPartTarg() << "   "*/
-								<< pythiaVector[iThread].info.hiinfo->nCollTot() << "   "
+								//<< pythiaVector[iThread].info.hiinfo->nCollTot() << "   "
 								/*<< pythiaVector[iThread].info.hiinfo->nCollND() << "   "
 								<< pythiaVector[iThread].info.hiinfo->nCollNDTot() << "   "
 								<< pythiaVector[iThread].info.hiinfo->nCollSDP() << "   "
@@ -583,13 +612,13 @@ int main(int argc, char *argv[])
 								<< pythiaVector[iThread].info.hiinfo->nAbsTarg() << "   "
 								<< pythiaVector[iThread].info.hiinfo->nDiffTarg() << "   "
 								<< pythiaVector[iThread].info.hiinfo->nElTarg() << "   "*/
-								<< pythiaVector[iThread].info.nMPI() << "   "
-								<< pythiaVector[iThread].info.hiinfo->sigmaTotThisEvent() << "   "
-								<< pythiaVector[iThread].info.hiinfo->sigmaNDThisEvent() << "   "
-								<< pythiaVector[iThread].info.hiinfo->sigmaTot() << "   "
-								<< pythiaVector[iThread].info.hiinfo->sigmaTotErr() << "   "
-								<< pythiaVector[iThread].info.hiinfo->sigmaND() << "   "
-								<< pythiaVector[iThread].info.hiinfo->sigmaNDErr();
+								//<< pythiaVector[iThread].info.nMPI() << "   "
+								//<< pythiaVector[iThread].info.hiinfo->sigmaTotThisEvent() << "   "
+								//<< pythiaVector[iThread].info.hiinfo->sigmaNDThisEvent() << "   "
+								//<< pythiaVector[iThread].info.hiinfo->sigmaTot() << "   "
+								//<< pythiaVector[iThread].info.hiinfo->sigmaTotErr() << "   "
+								//<< pythiaVector[iThread].info.hiinfo->sigmaND() << "   "
+								//<< pythiaVector[iThread].info.hiinfo->sigmaNDErr();
 								//<< pythiaVector[iThread].info.hiinfo->sigTot() << "   "
 								//<< pythiaVector[iThread].info.hiinfo->sigEl() << "   "
 								//<< pythiaVector[iThread].info.hiinfo->sigCDE() << "   "

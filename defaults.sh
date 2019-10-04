@@ -18,6 +18,8 @@ beamEnergy="13000.0"	# GeV
 Nevents="10"
 chosenHBTparticle="211"	# pion(+)
 centralityClass="0-100%"
+bMin="0.0"
+bMax="20.0"
 
 # BE and related specifications
 QRefValue="0.2"			# GeV

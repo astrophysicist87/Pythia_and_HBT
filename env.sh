@@ -59,6 +59,8 @@ echo 'beamEnergy='$beamEnergy
 echo 'Nevents='$Nevents
 echo 'chosenHBTparticle='$chosenHBTparticle
 echo 'centralityClass='$centralityClass
+echo 'bMin='$bMin
+echo 'bMax='$bMax
 echo
 echo 'QRefValue='$QRefValue
 echo 'BEeffects='$BEeffects
