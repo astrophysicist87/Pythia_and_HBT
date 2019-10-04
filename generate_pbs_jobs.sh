@@ -60,7 +60,7 @@ do
 	cp -r src $HOME_RESULTS_DIRECTORY/job-${job}/
 	
 	executableString="./driver.sh ${specs[i]} &> driver.out"
-	generate_pbs '24:00:00' $chosen_OMP_NUM_THREADS $executableString > $HOME_RESULTS_DIRECTORY/job-${job}/submit.pbs
+	generate_pbs '00:15:00' $chosen_OMP_NUM_THREADS $executableString > $HOME_RESULTS_DIRECTORY/job-${job}/submit.pbs
 	
 	cp scripts/driver.sh $HOME_RESULTS_DIRECTORY/job-${job}
 	cp scripts/rerun.sh $HOME_RESULTS_DIRECTORY/job-${job}
