@@ -760,6 +760,8 @@ void print_particle_record(
 				<< p.xProd() << "   "
 				<< p.yProd() << "   "
 				<< p.zProd()
+				<< "   " << p.vProd().mCalc()
+				<< "   " << p.vProd().rap()
 				<< endl;
 		}
 	}
@@ -779,6 +781,8 @@ void print_particle_record(
 				<< "   " << p.xProd()
 				<< "   " << p.yProd()
 				<< "   " << p.zProd()
+				//<< "   " << p.vProd().mCalc()
+				//<< "   " << p.vProd().rap()
 				<< endl;
 		}
 	}
