@@ -36,4 +36,5 @@ UseColorReconnection='off'
 UseRopeHadronization='off'
 IncludeStringShoving='off'
 IncludeFlavourRopesMechanism='off'
+StoreBjorkenCoordinates='false'
 #=====================================

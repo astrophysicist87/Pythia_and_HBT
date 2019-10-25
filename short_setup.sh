@@ -1,6 +1,6 @@
 #! /usr/bin/env bash
 
-cd src/pythia8235
+cd src/pythia8243
 
 gmake
 

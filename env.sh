@@ -4,7 +4,8 @@
 HOME_DIRECTORY=`pwd`
 SOURCE_DIRECTORY=$HOME_DIRECTORY/src
 # Pythia
-PYTHIA_DIRECTORY=$SOURCE_DIRECTORY/pythia8235/examples
+versionNumber=8244
+PYTHIA_DIRECTORY=$SOURCE_DIRECTORY/pythia${versionNumber}/examples
 # HBT event generator
 HBT_DIRECTORY=$SOURCE_DIRECTORY/HBT_event_generator
 # HBT event generator
@@ -17,6 +18,9 @@ HBT_SV_DIRECTORY=$HBT_DIRECTORY/source_variances
 # Main results directory
 MAIN_RESULTS_DIRECTORY=$HOME_DIRECTORY/results
 #CURRENT_RESULTS_DIRECTORY=$MAIN_RESULTS_DIRECTORY/results
+
+# convenient boolean conversion table
+declare -A boolVal=( ["true"]="1" ["false"]="0")
 
 #============================
 # Some function definitions
@@ -73,6 +77,7 @@ echo 'UseColorReconnection='$UseColorReconnection
 echo 'UseRopeHadronization='$UseRopeHadronization
 echo 'IncludeStringShoving='$IncludeStringShoving
 echo 'IncludeFlavourRopesMechanism='$IncludeFlavourRopesMechanism
+echo 'StoreBjorkenCoordinates='$StoreBjorkenCoordinates
 
 }
 

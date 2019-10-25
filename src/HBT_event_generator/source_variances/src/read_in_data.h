@@ -49,9 +49,176 @@ inline void complete_particle(ParticleRecord & p)
 }
 
 
+void read_in_file_OSCAR(string filename, vector<EventRecord> & eventsInFile, ParameterReader * paraRdr)
+{
+	// open file
+	ifstream infile(filename.c_str());
+
+	// set the particle we want to do HBT on
+	int chosen_MCID 		= paraRdr->getVal("chosen_MCID");
+	int include_Bjorken 	= paraRdr->getVal("store_Bjorken_coordinates");
+	bool include_thermal 	= (bool)paraRdr->getVal("include_thermal");
+	bool include_decays 	= (bool)paraRdr->getVal("include_decays");
+
+	// this vector contains events to include (for specific centrality class)
+	int nextEventIndex = 0;
+	int nextEventID = ensemble_multiplicites[nextEventIndex].eventID;
+	int n_events_read_from_this_file = 0;
+
+	do
+	{
+		int eventID = -1, nParticles = -1;
+		int particleCount = 0;
+
+		// read in first line: contains event index and number of particles stored from this event
+		infile >> eventID;
+		//cout << "Reading in eventID = " << eventID;
+		if ( infile.eof() ) break;
+		infile >> nParticles;
+		//cout << " containing " << nParticles << " particles." << endl;
+
+		// if this event not in chosen centrality class,
+		// skip all the particles in it automatically
+		if ( not eventID == nextEventID )
+		{
+			string line;
+			for ( int iParticle = 0; iParticle < nParticles; ++iParticle )
+				getline(infile, line);
+		}
+		else
+		{
+			//set next event to include
+			// (negative means we're done reading in selected events)
+			++nextEventIndex;
+			nextEventID = ( nextEventIndex == ensemble_multiplicites.size() ) ?
+							-1 : ensemble_multiplicites[nextEventIndex].eventID;
+		}
+
+		// to hold relevant particles for this event
+		EventRecord event;
+
+		int MCID, thermal_or_decay;
+		double E, px, py, pz;
+		double t, x, y, z;
+		string dummy;
+
+		// loop over all particles
+		for ( int iParticle = 0; iParticle < nParticles; ++iParticle )
+		{
+			infile  //>> eventID		// these are now redundant
+					//>> particleID		// and unnecessary
+					>> MCID >> thermal_or_decay
+					>> E >> px >> py >> pz;
+			if ( include_Bjorken )
+				infile >> dummy >> dummy;	//m and y
+			infile  >> t >> x >> y >> z;
+			if ( include_Bjorken )
+				infile >> dummy >> dummy;	// tau and eta
+
+			// skip the particles we don't care about
+			if ( 	( not ( MCID == chosen_MCID ) )							// isn't the particle we're doing HBT on
+					or ( not include_thermal and thermal_or_decay == 0 )	// or is thermal when we're excluding thermal
+					or ( not include_decays  and thermal_or_decay == 1 )	// or is a decay when we're excluding decays
+				)
+			{
+				//cout << "Skipping particle we don't care about: " << MCID << "   " << chosen_MCID << endl;
+				continue;
+			}
+
+			// if we care, create a particle entry
+			ParticleRecord particle;
+
+			//cout << "\t - setting particle info..." << endl;
+			double m = paraRdr->getVal("mass");
+			particle.eventID 	= eventID;
+			particle.particleID = iParticle;
+			//particle.E 			= E;
+			particle.E 			= sqrt( m*m + px*px + py*py + pz*pz );
+			particle.px 		= px;
+			particle.py 		= py;
+			particle.pz 		= pz;
+			particle.t 			= t / MmPerFm;
+			particle.x 			= x / MmPerFm;
+			particle.y 			= y / MmPerFm;
+			particle.z 			= z / MmPerFm;
+
+			//cout << "\t - completing particle information..." << endl;
+			complete_particle(particle);
+
+			// save particle
+			event.particles.push_back(particle);
+
+			particleCount++;
+		}
+
+		// this event completed;
+		// store results in events vector
+		if ( particleCount > 0 )
+			eventsInFile.push_back(event);
+
+		++n_events_read_from_this_file;
+
+		// break if done with this centrality class
+		if ( nextEventID < 0 )
+		{
+			//cout << "nextEventID < 0!  Exiting..." << endl;
+			//cout << nextEventIndex << "   " << nextEventID << endl;
+			break;
+		}
+
+	} while ( not infile.eof() );
+
+	infile.close();
+
+	// discard number of events read in from this file
+	if ( n_events_read_from_this_file > 0 )
+		ensemble_multiplicites.erase( ensemble_multiplicites.begin(),
+									ensemble_multiplicites.begin()
+									+ n_events_read_from_this_file );
+
+	// debugging
+	bool verbose = false;
+	if (verbose)
+	{
+		cout << "=============================================================================================" << endl;
+		for (int iEvent = 0; iEvent < (int)eventsInFile.size(); ++iEvent)
+		{
+			cout << "DEBUG: " << iEvent << endl;
+
+			EventRecord event = eventsInFile[iEvent];
+			for (int iParticle = 0; iParticle < (int)event.particles.size(); ++iParticle)
+			{
+				ParticleRecord particle = event.particles[iParticle];
+				cout << "DEBUG: "
+						<< particle.eventID << "   "
+						<< particle.particleID << "   "
+						<< particle.E << "   "
+						<< particle.px << "   "
+						<< particle.py << "   "
+						<< particle.pz << "   "
+						<< particle.t << "   "
+						<< particle.x << "   "
+						<< particle.y << "   "
+						<< particle.z << endl;
+			}
+		}
+		cout << "=============================================================================================" << endl;
+	}
+
+	return;
+}
+
+
 // function to read in a file containing some number of events
 void read_in_file(string filename, vector<EventRecord> & eventsInFile, ParameterReader * paraRdr)
 {
+	bool OSCARformat = static_cast<bool>( paraRdr->getVal( "use_OSCAR_format" ) );
+	if ( OSCARformat )
+	{
+		read_in_file_OSCAR(filename, eventsInFile, paraRdr);
+		return;
+	}
+
 	bool check_particle_range = false;
 
 	ifstream infile(filename.c_str());
@@ -292,6 +459,9 @@ void read_in_file(string filename, vector<EventRecord> & eventsInFile, Parameter
 
 	return;
 }
+
+
+
 
 void get_all_events(vector<string> & all_file_names, vector<EventRecord> & allEvents, ParameterReader * paraRdr)
 {

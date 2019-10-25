@@ -1,6 +1,8 @@
 #===========
 # width of binning delta (GeV)
 bin_epsilon = 0.01
+use_pz_bin_asymmetry = 1
+pz_bin_factor = 100.0
 
 #===========
 # pair momenta
@@ -14,7 +16,7 @@ KT_grid_mode = 0
 	#     (for integrating correlation function)
 
 # KT points
-n_KT_pts = 6
+n_KT_pts = 21
 KTmin = 0.0
 KTmax = 1.0
 
@@ -28,7 +30,7 @@ Kphi_grid_mode = 0
 	#     (for integrating correlation function)
 
 # Kphi points
-n_Kphi_pts = 2
+n_Kphi_pts = 24
 #Kphimax, Kphimin
 #determined automatically
 
@@ -77,7 +79,7 @@ scalar_mode = 0
 
 #===========
 # whether to use GEHW method (0), Chun's method (1) or bin-averaging method (2)
-method_mode = 2
+method_mode = 0
 
 #===========
 # whether or not BE effects are pre-included from Pythia
@@ -122,7 +124,7 @@ max_accepted_tau = 100000000000.0
 
 
 # HBT particle ID 
-chosen_MCID = 321
+chosen_MCID = 211
 
 # include thermal particles (0 - false, 1 - true)
 include_thermal = 1
@@ -130,8 +132,13 @@ include_thermal = 1
 # include decay particles (0 - false, 1 - true)
 include_decays = 1
 
+#===========
+# Output specifications
 # output format (0 - false, 1 - true)
 use_OSCAR_format = 1
+
+# store Bjorken coordinates (0 - false, 1 - true)
+store_Bjorken_coordinates = 0
 
 
 

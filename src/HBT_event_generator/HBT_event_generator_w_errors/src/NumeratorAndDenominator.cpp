@@ -19,7 +19,9 @@ void HBT_event_generator::Compute_numerator_and_denominator_methodMode0_q_mode_3
 	//int number_of_completed_events = 0;
 	//err << "  * Computing numerator and denominator of correlation function with errors" << endl;
 
-	constexpr bool oneDim_slices = true;
+	constexpr bool average_over_Kphi = true;
+
+	constexpr bool oneDim_slices = false;
 
 	constexpr bool impose_pair_rapidity_cuts = false;
 	const double KYmin = -0.1, KYmax = 0.1;
@@ -311,49 +313,102 @@ void HBT_event_generator::Compute_numerator_and_denominator_methodMode0_q_mode_3
 			const int iqlC = (n_ql_pts - 1) / 2;
 
 			int idx = 0;
-			for (int iKT = 0; iKT < n_KT_bins; iKT++)
-			for (int iKphi = 0; iKphi < n_Kphi_bins; iKphi++)
-			for (int iKL = 0; iKL < n_KL_bins; iKL++)
-			for (int iqo = 0; iqo < n_qo_bins; iqo++)
-			for (int iqs = 0; iqs < n_qs_bins; iqs++)
-			for (int iql = 0; iql < n_ql_bins; iql++)
+			if ( average_over_Kphi )
 			{
-				double abs_sum1 = abs(sum1[idx]);
-				double numerator_contribution_from_this_event
-						= abs_sum1*abs_sum1 - sum2[idx];
-				double denominator_contribution_from_this_event
-						= sum3[idx]*sum4[idx] - sum5[idx];
-//cout << "den check: " << denominator_contribution_from_this_event
-//		 << "   " << sum3[idx] << "   " << sum4[idx] << "   " << sum5[idx] << endl;
+				for (int iKT = 0; iKT < n_KT_bins; iKT++)
+				for (int iKphi = 0; iKphi < n_Kphi_bins; iKphi++)
+				for (int iKL = 0; iKL < n_KL_bins; iKL++)
+				for (int iqo = 0; iqo < n_qo_bins; iqo++)
+				for (int iqs = 0; iqs < n_qs_bins; iqs++)
+				for (int iql = 0; iql < n_ql_bins; iql++)
+				{
+					double abs_sum1 = abs(sum1[idx]);
+					double numerator_contribution_from_this_event
+							= abs_sum1*abs_sum1 - sum2[idx];
+					double denominator_contribution_from_this_event
+							= sum3[idx]*sum4[idx] - sum5[idx];
 
-				// first moments
-				numerator[idx]
-					+= numerator_contribution_from_this_event;
-				denominator[idx]
-					+= denominator_contribution_from_this_event;
+					int num_bin_count_from_this_event
+							= private_ABC[idx];
 
-				// second moments
-				numerator2[idx]
-					+= numerator_contribution_from_this_event
-						* numerator_contribution_from_this_event;
-				denominator2[idx]
-					+= denominator_contribution_from_this_event
-						* denominator_contribution_from_this_event;
-				numerator_denominator[idx]
-					+= numerator_contribution_from_this_event
-						* denominator_contribution_from_this_event;
+					int den_bin_count_from_this_event
+							= private_DBC[idx];
 
-				// track number of events where bin count was non-vanishing
-				//numerator_bin_count[idx] += int(private_ABC[idx] > 0);
-				//denominator_bin_count[idx] += int(private_DBC[idx] > 0);
-				// track total bin counts
-				numerator_bin_count[idx] += private_ABC[idx];
-				denominator_bin_count[idx] += private_DBC[idx];
+					for (int iKphiAVG = 0; iKphiAVG < n_Kphi_bins; iKphiAVG++)
+					{
+						int idxAVG = indexer(iKT, iKphiAVG, iKL, iqo, iqs, iql);
 
-				++idx;
+						// first moments
+						numerator[idxAVG]
+							+= numerator_contribution_from_this_event;
+						denominator[idxAVG]
+							+= denominator_contribution_from_this_event;
+
+						// second moments
+						numerator2[idxAVG]
+							+= numerator_contribution_from_this_event
+								* numerator_contribution_from_this_event;
+						denominator2[idxAVG]
+							+= denominator_contribution_from_this_event
+								* denominator_contribution_from_this_event;
+						numerator_denominator[idxAVG]
+							+= numerator_contribution_from_this_event
+								* denominator_contribution_from_this_event;
+
+						// track total bin counts
+						numerator_bin_count[idxAVG] += num_bin_count_from_this_event;
+						denominator_bin_count[idxAVG] += den_bin_count_from_this_event;
+					}
+
+					++idx;
+				}
+			}
+			else
+			{
+				for (int iKT = 0; iKT < n_KT_bins; iKT++)
+				for (int iKphi = 0; iKphi < n_Kphi_bins; iKphi++)
+				for (int iKL = 0; iKL < n_KL_bins; iKL++)
+				for (int iqo = 0; iqo < n_qo_bins; iqo++)
+				for (int iqs = 0; iqs < n_qs_bins; iqs++)
+				for (int iql = 0; iql < n_ql_bins; iql++)
+				{
+					double abs_sum1 = abs(sum1[idx]);
+					double numerator_contribution_from_this_event
+							= abs_sum1*abs_sum1 - sum2[idx];
+					double denominator_contribution_from_this_event
+							= sum3[idx]*sum4[idx] - sum5[idx];
+	//cout << "den check: " << denominator_contribution_from_this_event
+	//		 << "   " << sum3[idx] << "   " << sum4[idx] << "   " << sum5[idx] << endl;
+
+					// first moments
+					numerator[idx]
+						+= numerator_contribution_from_this_event;
+					denominator[idx]
+						+= denominator_contribution_from_this_event;
+
+					// second moments
+					numerator2[idx]
+						+= numerator_contribution_from_this_event
+							* numerator_contribution_from_this_event;
+					denominator2[idx]
+						+= denominator_contribution_from_this_event
+							* denominator_contribution_from_this_event;
+					numerator_denominator[idx]
+						+= numerator_contribution_from_this_event
+							* denominator_contribution_from_this_event;
+
+					// track number of events where bin count was non-vanishing
+					//numerator_bin_count[idx] += int(private_ABC[idx] > 0);
+					//denominator_bin_count[idx] += int(private_DBC[idx] > 0);
+					// track total bin counts
+					numerator_bin_count[idx] += private_ABC[idx];
+					denominator_bin_count[idx] += private_DBC[idx];
+
+					++idx;
+				}
 			}
 
-			//err << "\t - finished " << ++number_of_completed_events << " of " << total_N_events << endl;
+			err << "\t - finished " << ++number_of_completed_events << " of " << total_N_events << endl;
 			//print_progressbar( static_cast<double>(++number_of_completed_events)
 			//						/ static_cast<double>(total_N_events), err );
 		}

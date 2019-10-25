@@ -1,9 +1,13 @@
 #! /usr/bin/env bash
 
 (
-	./generate_jobs.sh 1 RESULTS_AuAu_200GeV
+	# info for this run
+	NTHREADS=1
+	DIRECTORY=RESULTS_pp_13TeV_v8244/
 
-	./submit_jobs.sh RESULTS_AuAu_200GeV
+	./generate_jobs.sh $NTHREADS $DIRECTORY
+
+	./submit_jobs.sh $DIRECTORY
 ) &> /dev/null &
 
 # End of file

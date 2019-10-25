@@ -11,11 +11,11 @@
 		rm -rf $1/results
 	}
 
-	clean_directory pythia8235/examples
+	clean_directory src/pythia8243/examples
 
-	clean_directory HBT_event_generator/HBT_event_generator_w_errors
+	clean_directory src/HBT_event_generator/HBT_event_generator_w_errors
 
-	clean_directory HBT_event_generator/fit_correlation_function
+	clean_directory src/HBT_event_generator/fit_correlation_function
 
-	clean_directory HBT_event_generator/source_variances
+	clean_directory src/HBT_event_generator/source_variances
 ) 2> /dev/null

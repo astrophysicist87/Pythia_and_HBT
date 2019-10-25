@@ -12,27 +12,18 @@ echo 'chosen_OMP_NUM_THREADS='$chosen_OMP_NUM_THREADS > omp_env.sh
 ########################################
 # set up array of job specifications
 
-#declare -a specs=(	'useParallel=true projectile="p" target="p" beamEnergy="13000.0" Nevents=1000000 ThermalOnly="true" SetPartonVertices="off"'
-#					'useParallel=true projectile="p" target="p" beamEnergy="13000.0" Nevents=1000000 ThermalOnly="false" SetPartonVertices="off"'
-#					'useParallel=true projectile="p" target="p" beamEnergy="13000.0" Nevents=1000000 ThermalOnly="true" SetPartonVertices="on"'
-#					'useParallel=true projectile="p" target="p" beamEnergy="13000.0" Nevents=1000000 ThermalOnly="false" SetPartonVertices="on"'
-#				)
-#declare -a specs=(	'useParallel=true projectile="p" target="Pb" beamEnergy="5020.0" Nevents=1000000 ThermalOnly="true" SetPartonVertices="off"'
-#					'useParallel=true projectile="p" target="Pb" beamEnergy="5020.0" Nevents=1000000 ThermalOnly="false" SetPartonVertices="off"'
-#					'useParallel=true projectile="p" target="Pb" beamEnergy="5020.0" Nevents=1000000 ThermalOnly="true" SetPartonVertices="on"'
-#					'useParallel=true projectile="p" target="Pb" beamEnergy="5020.0" Nevents=1000000 ThermalOnly="false" SetPartonVertices="on"'
-#				)
-#declare -a specs=(      'useParallel=true projectile="Pb" target="Pb" beamEnergy="5020.0" Nevents=1000000 ThermalOnly="true" SetPartonVertices="off"'
-#						#'useParallel=true projectile="Pb" target="Pb" beamEnergy="5020.0" Nevents=500000 ThermalOnly="true" SetPartonVertices="off"'
-#                                )
-#declare -a specs=( 'useParallel=true projectile="p" target="p" beamEnergy="5020.0" Nevents=500000 ThermalOnly="true" SetPartonVertices="off"'
-#				   'useParallel=true projectile="p" target="p" beamEnergy="5020.0" Nevents=500000 ThermalOnly="true" SetPartonVertices="off" UseColorReconnection="on"'
-#				   'useParallel=true projectile="p" target="p" beamEnergy="5020.0" Nevents=500000 ThermalOnly="true" SetPartonVertices="off" UseRopeHadronization="on" IncludeStringShoving="on" IncludeFlavourRopesMechanism="on"'
-#				   'useParallel=true projectile="p" target="p" beamEnergy="5020.0" Nevents=500000 ThermalOnly="true" SetPartonVertices="off" UseColorReconnection="on" UseRopeHadronization="on" IncludeStringShoving="on" IncludeFlavourRopesMechanism="on"'
-#				)
 declare -a specs=(
-		'useArbitraryParticle=true projectile="Au" target="Au" beamEnergy="200.0" chosenHBTparticle="211" Nevents=1 runHBTEG=false runFitCF=false bMin=7.0 bMax=7.001'
-	)
+		'useArbitraryParticle=true projectile="p" target="p" beamEnergy="13000.0" chosenHBTparticle="211" Nevents=1000000 runHBTEG=false runFitCF=false'
+		#'useArbitraryParticle=true projectile="Pb" target="Pb" beamEnergy="2760.0" chosenHBTparticle="211" Nevents=1000 bMin=0.0 bMax=0.001'
+		#'useArbitraryParticle=true projectile="Pb" target="Pb" beamEnergy="2760.0" chosenHBTparticle="321" Nevents=100000 bMin=0.0 bMax=0.001'
+		#'useArbitraryParticle=true projectile="Pb" target="Pb" beamEnergy="5020.0" Nevents=100 bMin=0.0 bMax=1.0 runHBTEG=false runFitCF=false runSV=false'
+		#'useArbitraryParticle=true projectile="Pb" target="Pb" beamEnergy="5020.0" Nevents=100 bMin=1.0 bMax=2.0 runHBTEG=false runFitCF=false runSV=false'
+		#'useArbitraryParticle=true projectile="Pb" target="Pb" beamEnergy="5020.0" Nevents=100 bMin=2.0 bMax=3.0 runHBTEG=false runFitCF=false runSV=false'
+		#'useArbitraryParticle=true projectile="Pb" target="Pb" beamEnergy="5020.0" Nevents=100 bMin=3.0 bMax=4.0 runHBTEG=false runFitCF=false runSV=false'
+		#'useArbitraryParticle=true projectile="Pb" target="Pb" beamEnergy="5020.0" Nevents=100 bMin=4.0 bMax=5.0 runHBTEG=false runFitCF=false runSV=false'
+		#'useArbitraryParticle=true projectile="Pb" target="Pb" beamEnergy="5020.0" Nevents=100 bMin=5.0 bMax=6.0 runHBTEG=false runFitCF=false runSV=false'
+		#'useArbitraryParticle=true projectile="Pb" target="Pb" beamEnergy="5020.0" Nevents=100 bMin=6.0 bMax=7.0 runHBTEG=false runFitCF=false runSV=false'
+)
 
 ########################################
 # total number of jobs

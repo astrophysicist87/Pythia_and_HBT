@@ -31,7 +31,8 @@ class HBT_event_generator
 		string particle_name;
 		double particle_mass;
 
-		double bin_epsilon;
+		bool use_pz_bin_asymmetry;
+		double bin_epsilon, pz_bin_factor;
 
 		bool use_smoothness_approximation;
 		int bin_mode, q_mode, scalar_mode, method_mode, BE_mode;

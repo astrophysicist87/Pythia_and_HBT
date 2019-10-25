@@ -43,6 +43,9 @@ int main(int argc, char *argv[])
 	paraRdr->readFromArguments(argc, argv);
 	paraRdr->echo();
 
+	// Check OpenMP
+	cout << "Check OpenMP: omp_get_max_threads() = " << omp_get_max_threads() << endl;
+
 	// Start timing
 	Stopwatch sw;
 	sw.Start();

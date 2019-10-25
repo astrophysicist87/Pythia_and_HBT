@@ -62,6 +62,11 @@ void HBT_event_generator::initialize_all(
 					= (bool)paraRdr->getVal("use_smoothness_approximation");
 	// - bin parameters
 	bin_epsilon		= paraRdr->getVal("bin_epsilon");
+	use_pz_bin_asymmetry
+					= (bool)paraRdr->getVal("use_pz_bin_asymmetry");
+	pz_bin_factor	= ( use_pz_bin_asymmetry ) ?
+						paraRdr->getVal("pz_bin_factor")
+						: 1.0;
 	// - bin parameters
 	n_mix_minimum	= paraRdr->getVal("n_mix_minimum");
 	//Define various grid sizes
@@ -159,7 +164,7 @@ void HBT_event_generator::initialize_all(
 
 	px_bin_width 	= bin_epsilon;
 	py_bin_width 	= bin_epsilon;
-	pz_bin_width 	= bin_epsilon;
+	pz_bin_width 	= pz_bin_factor*bin_epsilon;
 
 	// need to know these for binning particle pairs efficiently
 	KT_bin_width 	= KT_pts[1]-KT_pts[0];
