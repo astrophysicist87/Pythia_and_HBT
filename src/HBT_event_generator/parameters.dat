@@ -16,7 +16,7 @@ KT_grid_mode = 0
 	#     (for integrating correlation function)
 
 # KT points
-n_KT_pts = 21
+n_KT_pts = 6
 KTmin = 0.0
 KTmax = 1.0
 
@@ -30,7 +30,7 @@ Kphi_grid_mode = 0
 	#     (for integrating correlation function)
 
 # Kphi points
-n_Kphi_pts = 24
+n_Kphi_pts = 2
 #Kphimax, Kphimin
 #determined automatically
 
@@ -130,7 +130,7 @@ chosen_MCID = 211
 include_thermal = 1
 
 # include decay particles (0 - false, 1 - true)
-include_decays = 1
+include_decays = 0
 
 #===========
 # Output specifications

@@ -77,7 +77,7 @@ echo 'UseColorReconnection='$UseColorReconnection
 echo 'UseRopeHadronization='$UseRopeHadronization
 echo 'IncludeStringShoving='$IncludeStringShoving
 echo 'IncludeFlavourRopesMechanism='$IncludeFlavourRopesMechanism
-echo 'StoreBjorkenCoordinates='$StoreBjorkenCoordinates
+echo 'storeBjorkenCoordinates='$storeBjorkenCoordinates
 
 }
 

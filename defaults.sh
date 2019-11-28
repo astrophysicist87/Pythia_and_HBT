@@ -29,12 +29,12 @@ BEEnhancementMode='2'	# 0 - use fixed QRef
 						# 2 - use ST interval with spherical Bessel BE form
 SetFragmentationVertices='on'
 SetPartonVertices='off'
-ThermalOnly='true'
+ThermalOnly='false'
 
 # other flags
 UseColorReconnection='off'
 UseRopeHadronization='off'
 IncludeStringShoving='off'
 IncludeFlavourRopesMechanism='off'
-StoreBjorkenCoordinates='false'
+storeBjorkenCoordinates='false'
 #=====================================

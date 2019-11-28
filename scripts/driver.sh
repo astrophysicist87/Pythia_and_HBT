@@ -142,7 +142,7 @@ do
 									$Nevents $chosenHBTparticle \
 									$PYTHIA_RESULTS_DIRECTORY \
 									$lowerLimit $upperLimit \
-									$bMin $bMax $StoreBjorkenCoordinates
+									$bMin $bMax $storeBjorkenCoordinates
 			else
 				./run_BEeffects_OpenMP.sh $projectile $target $beamEnergy \
 									$Nevents $PYTHIA_RESULTS_DIRECTORY \
@@ -231,7 +231,7 @@ do
 		nohup time ./run_HBT_event_generator.e \
 				BE_mode=$chosen_BE_mode \
 				chosen_MCID=$chosenHBTparticle \
-				store_Bjorken_coordinates="${boolVal[$StoreBjorkenCoordinates]}" \
+				store_Bjorken_coordinates="${boolVal[$storeBjorkenCoordinates]}" \
 				1> HBT_event_generator.out \
 				2> HBT_event_generator.err
 		# N.B. - centralities determined either here or in Pythia, but not both
@@ -306,7 +306,7 @@ do
 		# time and run
 		nohup time ./SV.e \
 				chosen_MCID=$chosenHBTparticle \
-				store_Bjorken_coordinates="${boolVal[$StoreBjorkenCoordinates]}" \
+				store_Bjorken_coordinates="${boolVal[$storeBjorkenCoordinates]}" \
 				1> SV_record.out \
 				2> SV_record.err
 
