@@ -91,17 +91,16 @@ Include effects or not for identical <ei>eta</ei> and <ei>eta'</ei>.
 </flag>
 
 <!--CJP(begin)-->
-<parm name="BoseEinstein:enhanceMode" default="0" min="0" max="2"> 
+<parm name="BoseEinstein:enhanceMode" default="0" min="0" max="1"> 
 A parameter to specify how the Bose-Einstein effects are modeled;
 a value of "0" corresponds to the default method with a constant
 choice of QRef which sets the scale for the effects, whereas a
-value of "1" results in a value of QRef which is determined
-automatically from each pair of hadrons on the basis of the
-Lorentz-invariant interval between their production vertices in
-space-time.  A value of "2" is similar to "1", except that the
-functional form used for <ei>f_2(Q)</ei> is not a Gaussian form but
-an azimuthally averaged plane wave (involving a spherical Bessel
-function of the first kind).
+value of "1" results in a shift determined using for the functional
+form <ei>f_2(Q)</ei> an azimuthally averaged plane wave (involving
+a spherical Bessel function of the first kind) instead of a Gaussian
+form, together with the event-by-event fluctuating pair distribution
+in momentum space.
+
 </parm>
 <!--CJP(end)-->
 

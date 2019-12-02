@@ -97,8 +97,8 @@ private:
 
   // Calculate shift and (unnormalized) compensation for pair.
   void shiftPair_fixedQRef(int i1, int i2, int iHad);
-  void shiftPair_STint_GaussBE(int i1, int i2, int iHad);
-  void shiftPair_STint_SphBesselBE(int i1, int i2, int iHad);
+  void shiftPairs( vector< pair< double, pair <int,int> > > & sortedPairs,
+					vector<double> & pairShifts);
   ///===CJP(end)===
 
 };

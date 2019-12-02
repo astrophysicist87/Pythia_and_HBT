@@ -958,6 +958,8 @@ EventInfo & Angantyr::shiftEvent(EventInfo & ei, bool verbose) {
   if ( HIHooksPtr && HIHooksPtr->canShiftEvent() )
     return HIHooksPtr->shiftEvent(ei);
 
+verbose = false;
+
   double ymax = ei.event[1].y();
   Vec4 bmax = ei.coll->proj->bPos();
   double ymin = ei.event[2].y();
@@ -965,19 +967,19 @@ EventInfo & Angantyr::shiftEvent(EventInfo & ei, bool verbose) {
   for ( int i = 0, N = ei.event.size(); i < N; ++i ) {
     Vec4 shift = bmin + (bmax - bmin)*(ei.event[i].y() - ymin)/(ymax - ymin);
 	///===CJP(begin)===
-	/*if ( verbose )
+	if ( verbose )
 	std::cout << "Transverse position: "
 			<< scientific
 			<< setprecision(8)
 			<< ei.event[i].xProd() << "   "
 			<< ei.event[i].yProd() << "   "
 			<< shift.px() << "   "
-			<< shift.py() << "   ";*/
+			<< shift.py() << "   ";
     ei.event[i].xProd(ei.event[i].xProd() + FM2MM * shift.px());
     ei.event[i].yProd(ei.event[i].yProd() + FM2MM * shift.py());
-	/*if ( verbose )
+	if ( verbose )
 	std::cout << ei.event[i].xProd() << "   "
-			<< ei.event[i].yProd() << std::endl;*/
+			<< ei.event[i].yProd() << std::endl;
 	///===CJP(end)===
   }
   return ei;
