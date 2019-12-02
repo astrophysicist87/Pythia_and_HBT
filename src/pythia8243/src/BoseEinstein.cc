@@ -513,8 +513,8 @@ for (int iPair = 0; iPair < (int)sortedPairs.size()-1; ++iPair)
     eSumOriginal  += hadronBE[i].p.e();
     hadronBE[i].p += hadronBE[i].pShift;
 /*cout 	<< setprecision(8)
-		<< "Original shift: " << i << "   " << hadronBE[i].pShift;
-    hadronBE[i].p.e( sqrt( hadronBE[i].p.pAbs2() + hadronBE[i].m2 ) );*/
+		<< "Original shift: " << i << "   " << hadronBE[i].pShift;*/
+    hadronBE[i].p.e( sqrt( hadronBE[i].p.pAbs2() + hadronBE[i].m2 ) );
     eSumShifted   += hadronBE[i].p.e();
     eDiffByComp   += dot3( hadronBE[i].pComp, hadronBE[i].p)
                      / hadronBE[i].p.e();
@@ -832,8 +832,8 @@ void BoseEinstein::shiftPairs( vector< pair< double, pair <int,int> > > & sorted
 		hadronBE[i1].pShift += pDiff;
 		hadronBE[i2].pShift -= pDiff;
 
-		hadronBE[i1].pComp += pDiff;
-		hadronBE[i2].pComp -= pDiff;
+		//hadronBE[i1].pComp += pDiff;
+		//hadronBE[i2].pComp -= pDiff;
 
 	}
 
