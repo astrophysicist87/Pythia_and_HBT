@@ -434,8 +434,7 @@ for (int iPair = 0; iPair < (int)sortedPairs.size()-1; ++iPair)
 			const double arg = ( hadronBE[iPair1].p - hadronBE[iPair2].p )
 								* ( hadronBE[iPair1].x - hadronBE[iPair2].x )
 								* MM2FM / HBARC;
-			//if ( abs(arg) > 16.0 * M_PI or Q0 > 2.5 )
-			if ( arg > 16.0 * M_PI or Q0 > 2.5 )
+			if ( abs(arg) > 16.0 * M_PI )
 				Qnew = Q0;
 
 			pairShifts.push_back( Qnew - Q0 );
@@ -561,6 +560,7 @@ cout 	<< setprecision(8)
   }
 
 
+/*
   // Error if no convergence, and then return without doing BE shift.
   // However, not grave enough to kill event, so return true.
   if ( abs(eSumShifted - eSumOriginal) > COMPRELERR * eSumOriginal ) {
@@ -569,6 +569,7 @@ cout 	<< setprecision(8)
 if (true) exit(8);
     return true;
   }
+*/
 
 
   // Store new particle copies with shifted momenta.
