@@ -74,8 +74,9 @@ private:
   static const double STEPSIZE, Q2MIN, COMPRELERR, COMPFACMAX;
 
   // Initialization data, read from Settings.
-  bool   doPion, doKaon, doEta;
+  bool   doPion, doKaon, doEta, useInv;
   ///===CJP(begin)===
+  int dim;
   double lambda, QRef, RRef;
   ///===CJP(end)===
 
@@ -95,6 +96,12 @@ private:
   int enhanceMode;
   int number_of_pairs, number_of_shifted_pairs, number_of_too_close_pairs, number_of_too_separated_pairs;
 
+  // Some functions to get source sizes
+  void set_QRef(int iSpecies);
+  double get_1D_source_size(int iSpecies, bool useInvariant);
+  void get_3D_source_size(int iSpecies, double & xSize, double & ySize, double & zSize);
+  void get_4D_source_size(int iSpecies, double & xSize, double & ySize, double & zSize, double & tSize);
+
   // Get list of pairs sorted by increasing Q2inv.
   bool getSortedPairs( vector< pair< double, pair <int,int> > > & sortedPairs, int iSpecies );
 
@@ -103,6 +110,12 @@ private:
   void shiftPairs_mode1( vector< pair< double, pair <int,int> > > & sortedPairs,
 						 vector<double> & pairShifts,
 						 vector<double> & pairCompensationShifts, int iTab);
+//  void shiftPairs_mode2( vector< pair< double, pair <int,int> > > & sortedPairs,
+//						 vector<double> & pairShifts,
+//						 vector<double> & pairCompensationShifts, int iTab);
+
+  // Miscellaneous functions
+  double compute_integral(double a_in, double b_in, double c, double d);
   ///===CJP(end)===
 
 };

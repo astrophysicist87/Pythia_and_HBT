@@ -37,50 +37,6 @@ const double x_wts_7[7] = { 0.1294849661688696933,
 							0.2797053914892766679,
 							0.1294849661688696933 };
 
-/*const double x_pts_51[51] = {-0.9989099908489035, -0.9942612604367526, -0.9859159917359030, 
-							-0.9739033680193239, -0.9582678486139082, -0.9390675440029624, 
-							-0.9163738623097802, -0.8902712180295273, -0.8608567111822924, 
-							-0.8282397638230648, -0.7925417120993812, -0.7538953544853755, 
-							-0.7124444575770366, -0.6683432211753701, -0.6217557046007233, 
-							-0.5728552163513038, -0.5218236693661858, -0.4688509042860411, 
-							-0.4141339832263039, -0.3578764566884095, -0.3002876063353319, 
-							-0.2415816664477987, -0.1819770269570775, -0.1216954210188888, 
-							-0.0609611001505787, 0.0, 0.0609611001505787, 0.1216954210188888, 
-							0.1819770269570775, 0.2415816664477987, 0.3002876063353319, 
-							0.3578764566884095, 0.4141339832263039, 0.4688509042860411, 
-							0.521823669366186, 0.572855216351304, 0.621755704600723, 
-							0.668343221175370, 0.712444457577037, 0.753895354485376, 
-							0.792541712099381, 0.828239763823065, 0.860856711182292, 
-							0.890271218029527, 0.916373862309780, 0.939067544002962, 
-							0.958267848613908, 0.973903368019324, 0.985915991735903, 
-							0.994261260436753, 0.998909990848903};
-const double x_wts_51[51] = {0.002796807171089895576, 0.006500337783252600292, 
-							0.010185191297821729939, 0.01383263400647782230, 
-							0.01742871472340105226, 0.02095998840170321058, 
-							0.02441330057378143427, 0.02777579859416247720, 
-							0.03103497129016000845, 0.03417869320418833624, 
-							0.03719526892326029284, 0.04007347628549645319, 
-							0.04280260799788008665, 0.04537251140765006875, 
-							0.04777362624062310200, 0.04999702015005740978, 
-							0.05203442193669708756, 0.05387825231304556143, 
-							0.05552165209573869302, 0.05695850772025866210, 
-							0.05818347398259214060, 0.05919199392296154378, 
-							0.05998031577750325209, 0.06054550693473779514, 
-							0.06088546484485634388, 0.0609989248412058802, 
-							0.06088546484485634388, 0.06054550693473779514, 
-							0.05998031577750325209, 0.05919199392296154378, 
-							0.05818347398259214060, 0.05695850772025866210, 
-							0.05552165209573869302, 0.05387825231304556143, 
-							0.05203442193669708756, 0.04999702015005740978, 
-							0.04777362624062310200, 0.04537251140765006875, 
-							0.04280260799788008665, 0.04007347628549645319, 
-							0.03719526892326029284, 0.03417869320418833624, 
-							0.03103497129016000845, 0.02777579859416247720, 
-							0.02441330057378143427, 0.02095998840170321058, 
-							0.01742871472340105226, 0.01383263400647782230, 
-							0.010185191297821729939, 0.006500337783252600292, 
-							0.002796807171089895576};*/
-
 // Enumeration of id codes and table for particle species considered.
 const int    BoseEinstein::IDHADRON[9] = { 211, -211, 111, 321, -321,
                                            130,  310, 221, 331 };
@@ -113,10 +69,12 @@ bool BoseEinstein::init(Info* infoPtrIn, Settings& settings,
   doPion   = settings.flag("BoseEinstein:Pion");
   doKaon   = settings.flag("BoseEinstein:Kaon");
   doEta    = settings.flag("BoseEinstein:Eta");
+  //useInv   = settings.flag("BoseEinstein:useInvariantSourceSize");
 
   // Shape of Bose-Einstein enhancement/suppression.
   lambda   = settings.parm("BoseEinstein:lambda");
   QRef     = settings.parm("BoseEinstein:QRef");
+  //dim      = settings.parm("BoseEinstein:sourceDimension");
   enhanceMode
            = settings.parm("BoseEinstein:enhanceMode");
 
@@ -142,6 +100,111 @@ bool BoseEinstein::init(Info* infoPtrIn, Settings& settings,
   // Done.
   return true;
 
+}
+
+void BoseEinstein::set_QRef(int iSpecies)
+{
+	if ( QRef > 0.0 )
+	{
+		// do nothing
+		return;
+	}
+	else
+	{
+		switch (dim)
+		{
+			case 1:
+				QRef = get_1D_source_size(iSpecies, useInv);
+				break;
+			/*case 3:
+				QRef = get_3D_source_size(iSpecies);
+				break;
+			case 4:
+				QRef = get_4D_source_size(iSpecies);
+				break;*/
+			default:
+				infoPtr->errorMsg("Warning in BoseEinstein::set_QRef: "
+      "choice of QRef makes no sense, defaulting to 1D source size");
+				QRef = get_1D_source_size(iSpecies, useInv);
+				break;
+		}
+	}
+}
+
+double BoseEinstein::get_1D_source_size(int iSpecies, bool useInvariant)
+{
+	double result = 0.0;
+	double count = 0.0;
+
+	if (useInvariant)
+		for (int i1 = nStored[iSpecies]; i1 < nStored[iSpecies+1]; ++i1)
+		//for (int i2 = i1 + 1; i2 < nStored[iSpecies+1]; ++i2)
+		{
+			//Vec4 xDiff = hadronBE[i1].x - hadronBE[i2].x;
+			Vec4 x = hadronBE[i1].x;
+			result += x*x;
+			count += 1.0;
+		}
+	else
+		for (int i1 = nStored[iSpecies]; i1 < nStored[iSpecies+1]; ++i1)
+		//for (int i2 = i1 + 1; i2 < nStored[iSpecies+1]; ++i2)
+		{
+			//Vec4 xDiff = hadronBE[i1].x - hadronBE[i2].x;
+			Vec4 x = hadronBE[i1].x;
+			result += x.pAbs2();
+			count += 1.0;
+		}
+
+	// return RMS source size
+	return (sqrt(result / (count+1.e-100)));
+}
+
+void BoseEinstein::get_3D_source_size(int iSpecies, double & xSize, double & ySize, double & zSize)
+{
+	xSize = 0.0, ySize = 0.0, zSize = 0.0;
+	double count = 0.0;
+
+	for (int i1 = nStored[iSpecies]; i1 < nStored[iSpecies+1]; ++i1)
+	//for (int i2 = i1 + 1; i2 < nStored[iSpecies+1]; ++i2)
+	{
+		//Vec4 xDiff = hadronBE[i1].x - hadronBE[i2].x;
+		Vec4 x = hadronBE[i1].x;
+		xSize += x.px()*x.px();
+		ySize += x.py()*x.py();
+		zSize += x.pz()*x.pz();
+		count += 1.0;
+	}
+
+	xSize = sqrt(xSize / (count+1.e-100));
+	ySize = sqrt(ySize / (count+1.e-100));
+	zSize = sqrt(zSize / (count+1.e-100));
+
+	return;
+}
+
+void BoseEinstein::get_4D_source_size(int iSpecies, double & xSize, double & ySize, double & zSize, double & tSize)
+{
+	xSize = 0.0, ySize = 0.0, zSize = 0.0, tSize = 0.0;
+	double count = 0.0;
+
+	for (int i1 = nStored[iSpecies]; i1 < nStored[iSpecies+1]; ++i1)
+	//for (int i2 = i1 + 1; i2 < nStored[iSpecies+1]; ++i2)
+	{
+		//Vec4 xDiff = hadronBE[i1].x - hadronBE[i2].x;
+		Vec4 x = hadronBE[i1].x;
+		xSize += x.px()*x.px();
+		ySize += x.py()*x.py();
+		zSize += x.pz()*x.pz();
+		tSize += x.e()*x.e();
+		count += 1.0;
+	}
+
+	xSize = sqrt(xSize / (count+1.e-100));
+	ySize = sqrt(ySize / (count+1.e-100));
+	zSize = sqrt(zSize / (count+1.e-100));
+	tSize = sqrt(tSize / (count+1.e-100));
+
+	return;
 }
 
 //--------------------------------------------------------------------------
@@ -182,6 +245,7 @@ bool BoseEinstein::shiftEvent( Event& event) {
 	switch ( enhanceMode )
 	{
 		case 0: // the original and the default
+			set_QRef(iSpecies);
 			for (int i1 = nStored[iSpecies]; i1 < nStored[iSpecies+1] - 1; ++i1)
 			for (int i2 = i1 + 1; i2 < nStored[iSpecies+1]; ++i2)
 			  shiftPair_fixedQRef( i1, i2, iTab );
@@ -218,13 +282,17 @@ bool BoseEinstein::shiftEvent( Event& event) {
 //cout << "(particle#=" << i << "): pShift = " << hadronBE[i].pShift;
     eSumOriginal  += hadronBE[i].p.e();
     hadronBE[i].p += hadronBE[i].pShift;
-/*cout 	<< setprecision(8)
-		<< "Original p and pShift: " << i << endl << "p=" << hadronBE[i].p << "pShift=" << hadronBE[i].pShift;*/
+cout 	<< setprecision(8)
+		<< "Original p and pShift: " << i << endl << "p=" << hadronBE[i].p << "pShift=" << hadronBE[i].pShift;
     hadronBE[i].p.e( sqrt( hadronBE[i].p.pAbs2() + hadronBE[i].m2 ) );
     eSumShifted   += hadronBE[i].p.e();
     eDiffByComp   += dot3( hadronBE[i].pComp, hadronBE[i].p)
                      / hadronBE[i].p.e();
-/*cout 	<< setprecision(8)
+/*cout << "eDiffByComp at this step = " << eDiffByComp << endl;
+cout << "pComp at this step = " << hadronBE[i].pComp;
+cout << "p at this step = " << hadronBE[i].p;
+cout << "e at this step = " << hadronBE[i].p.e() << endl;
+cout 	<< setprecision(8)
 		<< "Getting ready to balance energy budget (particle#=" << i << "): "
 		<< eSumOriginal << "   " << eSumShifted << "   " << eDiffByComp << "   "
 		<< COMPRELERR * eSumOriginal << "   " << COMPFACMAX * abs(eDiffByComp) << endl;*/
@@ -256,9 +324,9 @@ cout 	<< setprecision(8)
     eDiffByComp      = 0.;
     for (int i = 0; i < nStored[9]; ++i) {
       hadronBE[i].p += compFac * hadronBE[i].pComp;
- /*     hadronBE[i].pShift += compFac * hadronBE[i].pComp;
+      hadronBE[i].pShift += compFac * hadronBE[i].pComp;
 cout 	<< setprecision(8)
-		<< "Net shift at this point: " << i << "   " << hadronBE[i].pShift;*/
+		<< "Net shift at this point: " << i << "   " << hadronBE[i].pShift;
       hadronBE[i].p.e( sqrt( hadronBE[i].p.pAbs2() + hadronBE[i].m2 ) );
       eSumShifted   += hadronBE[i].p.e();
       eDiffByComp   += dot3( hadronBE[i].pComp, hadronBE[i].p)
@@ -272,6 +340,7 @@ cout 	<< setprecision(8)
   if ( abs(eSumShifted - eSumOriginal) > COMPRELERR * eSumOriginal ) {
     infoPtr->errorMsg("Warning in BoseEinstein::shiftEvent: "
       "no consistent BE shift topology found, so skip BE");
+cout << setprecision(16) << "This event did not pass! Check: " << abs(eSumShifted - eSumOriginal) << " < " << COMPRELERR * eSumOriginal << endl;
     return true;
   }
 else cout << setprecision(16) << "This event passes! Check: " << abs(eSumShifted - eSumOriginal) << " < " << COMPRELERR * eSumOriginal << endl;
@@ -466,23 +535,42 @@ void BoseEinstein::shiftPairs_mode1(  vector< pair< double, pair <int,int> > > &
 		double running_den_sum = 0.0;
 		double running_num_sum = 0.0;
 
-		// Loop over all pairs (except final fake "pairs")
+		// Loop over all pairs (except final fake "pair")
 		for (int iPair = 0; iPair < (int)sortedPairs.size()-1; ++iPair)
 		{
 			const double QVal = sortedPairs[iPair].first;
 			const double sqrt_Q2_plus_4m2 = sqrt(QVal*QVal + m2Pair[iTab]);
 			antiderivative.push_back( 0.5*QVal*sqrt_Q2_plus_4m2 - 0.5*m2Pair[iTab]*log( QVal + sqrt_Q2_plus_4m2 ) );
-			const int iPair1 = sortedPairs[iPair].second.first;
-			const int iPair2 = sortedPairs[iPair].second.second;
-			Vec4 xDiff = ( hadronBE[iPair1].x - hadronBE[iPair2].x ) * MM2FM / HBARC;
 
 			den_cdf.push_back( std::make_pair(QVal, running_den_sum) );
 			num_cdf.push_back( std::make_pair(QVal, running_num_sum) );
 
+cout << "CHECK: " << running_den_sum << "   " << running_num_sum << endl;
+
 			// Note coordinate separation in GeV^{-1}.
 			running_den_sum += 1.0;
-			const double arg = ( hadronBE[iPair1].p - hadronBE[iPair2].p ) * xDiff;
-			running_num_sum += 1.0 + sphericalbesselj0( arg );
+			// uncomment these lines to return to old version
+			if ( iPair == 0 )
+				running_num_sum += 2.0;
+			else
+			{
+				const int iPair1 = sortedPairs[iPair].second.first;
+				const int iPair2 = sortedPairs[iPair].second.second;
+cout << "Check: iPair = " << iPair << "   " << iPair1 << "   " << iPair2 << endl;
+				Vec4 xDiff = ( hadronBE[iPair1].x - hadronBE[iPair2].x ) * MM2FM / HBARC;
+				const double arg = ( hadronBE[iPair1].p - hadronBE[iPair2].p ) * xDiff;
+				running_num_sum += 1.0 + sphericalbesselj0( arg );
+			}
+			// new version
+			/*running_num_sum = 0.0;
+			for (int jPair = 0; jPair <= iPair; ++jPair)
+			{
+				const int jPair1 = sortedPairs[jPair].second.first;
+				const int jPair2 = sortedPairs[jPair].second.second;
+				Vec4 yDiffPRF = ( hadronBE[jPair1].x - hadronBE[jPair2].x ) * MM2FM / HBARC;
+				yDiffPRF.bstback( 0.5*(hadronBE[jPair1].p + hadronBE[jPair2].p) );
+				running_num_sum += 1.0 + sphericalbesselj0( QVal * yDiffPRF.pAbs() );
+			}*/
 		}
 
 
@@ -490,6 +578,18 @@ void BoseEinstein::shiftPairs_mode1(  vector< pair< double, pair <int,int> > > &
 		// (QVal shifted by some positive number, running sums are unchanged)
 		den_cdf.push_back( std::make_pair( den_cdf.back().first+1.0, den_cdf.back().second ) );
 		num_cdf.push_back( std::make_pair( num_cdf.back().first+1.0, num_cdf.back().second ) );
+		// overwrite last element
+		/*running_num_sum = 0.0;
+		for (int jPair = 0; jPair < (int)sortedPairs.size()-1; ++jPair)
+		{
+			const double QVal = num_cdf.back().first;
+			const int jPair1 = sortedPairs[jPair].second.first;
+			const int jPair2 = sortedPairs[jPair].second.second;
+			Vec4 yDiffPRF = ( hadronBE[jPair1].x - hadronBE[jPair2].x ) * MM2FM / HBARC;
+			yDiffPRF.bstback( 0.5*(hadronBE[jPair1].p + hadronBE[jPair2].p) );
+			running_num_sum += 1.0 + sphericalbesselj0( QVal * yDiffPRF.pAbs() );
+		}
+		num_cdf.back().second = running_num_sum;*/
 
 		// Estimate PDFs using linear interpolation of CDFs
 		// and evaluate running integral
@@ -574,7 +674,8 @@ void BoseEinstein::shiftPairs_mode1(  vector< pair< double, pair <int,int> > > &
 			{
 				const double sqrt_Q2_plus_4m2 = sqrt(Qnew*Qnew + m2Pair[iTab]);
 				const double deriv = Qnew*Qnew / sqrt_Q2_plus_4m2;
-				Nnew = 0.5*Qnew*sqrt_Q2_plus_4m2 - 0.5*m2Pair[iTab]*log( Qnew + sqrt_Q2_plus_4m2 );			
+				Nnew = 0.5*Qnew*sqrt_Q2_plus_4m2 - 0.5*m2Pair[iTab]*log( Qnew + sqrt_Q2_plus_4m2 );
+//cout << "NR method: " << Qnew << "   " << Nnew << "   " << deriv << "   " << c0 << endl;	
 				Qnew -= (Nnew - c0) / deriv;
 
 				ntries++;
@@ -693,6 +794,259 @@ void BoseEinstein::shiftPairs_mode1(  vector< pair< double, pair <int,int> > > &
 
 	return;
 }
+
+double BoseEinstein::compute_integral(double a_in, double b_in, double c, double d)
+{
+	// Computes integral given by Integrate[Q^2 ( 0 + j0[c Q] ) / Sqrt[Q^2 + d], {Q, a, b}]
+	double result = 0.0;
+	const double period = 2.0*M_PI/c;
+	double a = a_in, b = b_in;
+
+	while ( b - a > period )
+	{
+		double a0 = a, a1 = a0 + period;
+		double hw = 0.5*period, cen = 0.5*(a0+a1);
+		for (int i = 0; i < npts; ++i)
+		{
+			double Qloc = cen + hw * x_pts_7[i];
+			result += hw * x_wts_7[i] * Qloc * sin(c*Qloc) / ( c*sqrt(Qloc*Qloc + d) );
+		}
+		a += period;
+	}
+	
+	// finally, do this
+	{
+		double a0 = a, a1 = b;
+		double hw = 0.5*period, cen = 0.5*(a0+a1);
+		for (int i = 0; i < npts; ++i)
+		{
+			double Qloc = cen + hw * x_pts_7[i];
+			result += hw * x_wts_7[i] * Qloc * sin(c*Qloc) / ( c*sqrt(Qloc*Qloc + d) );
+		}
+	}
+
+	// don't recalculate this after denominator!
+	/*
+	// from the constant part
+	const double sq_a = sqrt(d + a*a);
+	const double sq_b = sqrt(d + b*b);
+	const double constantTerm = 0.5*( b*sq_b - a*sq_a
+									+ d*log( (a + sq_a) / (b + sq_b) ) );
+
+	result += constantTerm;*/
+
+	return ( result );
+}
+
+
+/*
+//---------------------------------------------------------------------------
+// Calculate shift and (unnormalized) compensation for pair using space-time
+// interval and and mode 2 of evaluating BE enhancement.
+void BoseEinstein::shiftPairs_mode2(  vector< pair< double, pair <int,int> > > & sortedPairs,
+								vector<double> & pairShifts,
+								vector<double> & pairCompensationShifts, int iTab)
+{
+		// ----------------------------------------------
+		// Construct PDF from CDF for CF denominator only
+		// as function of Q, using sortedPairs
+		// Set CDF first
+		vector< pair< double, double > > den_cdf;
+		// Do phase space integral analytically
+		vector<double> antiderivative;
+
+		// -----------------------------------------------
+		// Loop over all pairs (except final fake "pairs")
+		// Initialize at Q=0
+		double running_den_sum = 0.0;
+		for (int iPair = 0; iPair < (int)sortedPairs.size()-1; ++iPair)
+		{
+			const double QVal = sortedPairs[iPair].first;
+			den_cdf.push_back( std::make_pair(QVal, running_den_sum) );
+			running_den_sum += 1.0;
+		}
+
+		// ---------------------------------------------------------------------------
+		// Add the final fake "pair" to CDF ensure last real pair is handled correctly
+		// (QVal shifted by some positive number, running sums are unchanged)
+		den_cdf.push_back( std::make_pair( den_cdf.back().first+1.0, den_cdf.back().second ) );
+
+
+		// -----------------------------------------------------------
+		// Estimate denominator PDF using linear interpolation
+		// of denominator CDF and evaluate running integral
+		// with extra factor for numerator
+		running_den_sum = 0.0;
+		running_num_sum = 0.0;
+		vector<double> running_den_integral(1, running_den_sum);
+		vector<double> running_num_integral(1, running_num_sum);
+
+		// ----------------------------
+		// Skip final fake "pair" again
+		for (int iPair = 0; iPair < (int)sortedPairs.size()-1; ++iPair)
+		{
+			const int iPair1 = sortedPairs[iPair].second.first;		// first hadron
+			const int iPair2 = sortedPairs[iPair].second.second;	// second hadron
+			double leftQVal = sortedPairs[iPair].first;
+			double rightQVal = sortedPairs[iPair+1].first;
+			// PDF ~ slope of CDF
+			const double den_pdf = (den_cdf[iPair+1].second - den_cdf[iPair].second) / (rightQVal - leftQVal);
+
+			Vec4 xDiffPRF = ( hadronBE[iPair1].x - hadronBE[iPair2].x ) * MM2FM / HBARC;
+			xDiffPRF.bstback( 0.5*(hadronBE[iPair1].p + hadronBE[iPair2].p) );
+
+			// Update running integrals
+			const double increment = den_pdf * ( antiderivative[iPair+1] - antiderivative[iPair] );
+			running_den_sum += increment;
+			running_num_sum += increment + den_pdf * compute_integral(leftQVal, rightQVal, xDiffPRF.pAbs(), m2Pair[iTab]);
+
+			// Store 
+			running_den_integral.push_back( running_den_sum );
+			running_num_integral.push_back( running_num_sum );
+		}
+
+		// ------------------------------------------
+		// Store one more entry for fake final "pair"
+		running_den_integral.push_back( running_den_sum );
+		running_num_integral.push_back( running_num_sum );
+
+		// ------------------------------------------------------------------
+		// Finally, get shifts for each pair (except for first and last ones)
+		// First "pair" is just the Q=0 point
+		// Last "pair" is just a repeat to ensure PDF = 0 for Q > Qmax
+		for (int iPair = 1; iPair < (int)sortedPairs.size()-1; ++iPair)
+		{
+			int thisPair = iPair;
+			const double thisPairDen = running_den_integral[thisPair];		// > 0
+			double leftPairNum = running_num_integral[thisPair];
+			double rightPairNum = running_num_integral[thisPair+1];
+
+			// shift left and right numerator entries until they contain
+			// denominator value; then invert using linear interpolation
+			while ( leftPairNum > thisPairDen )					// most likely
+			{
+				// shift to the left
+				leftPairNum = running_num_integral[--thisPair];
+				rightPairNum = running_num_integral[thisPair+1];
+			}
+			while ( rightPairNum < thisPairDen )				// also possible
+			{
+				// shift to the right
+				leftPairNum = running_num_integral[++thisPair];
+				rightPairNum = running_num_integral[thisPair+1];
+			}
+
+			if ( thisPair < 0 )
+				break;
+
+			// should now have leftPairNum < thisPairDen < rightPairNum
+			// --> get shift Q from linear interpolation (Qnew === Q + deltaQ)
+			const double Q0 = sortedPairs[iPair].first;	// original Q
+			const int iPair1 = sortedPairs[iPair].second.first;		// first hadron
+			const int iPair2 = sortedPairs[iPair].second.second;	// second hadron
+			const double leftQ = sortedPairs[thisPair].first;
+			const double rightQ = sortedPairs[thisPair+1].first;
+			double Qnew = leftQ + (thisPairDen-leftPairNum)*(rightQ-leftQ)/(rightPairNum-leftPairNum);
+
+			// linear interpolation not good enough; need to solve numerically with Newton-Raphson
+			// use Qnew as initial guess
+			// need num_pdf in this interval
+			const double num_pdf = (num_cdf[thisPair+1].second - num_cdf[thisPair].second) / (rightQ - leftQ);
+			const double Numi = num_pdf * antiderivative[thisPair];
+			// Solve antiderivative(Qnew) == c0
+			const double c0 = (thisPairDen - leftPairNum + Numi) / num_pdf;	// DOUBLE CHECK THIS AND PREVIOUS STEPS
+
+			constexpr double ACCURACY = 1.e-6;
+			constexpr int MAXTRIES = 10;
+			double Nnew = rightPairNum;
+			int ntries = 0;
+			Qnew = rightQ;
+			while ( abs( Nnew - c0 ) > ACCURACY and ntries < MAXTRIES )
+			{
+				const double sqrt_Q2_plus_4m2 = sqrt(Qnew*Qnew + m2Pair[iTab]);
+				const double deriv = Qnew*Qnew / sqrt_Q2_plus_4m2;
+				Nnew = 0.5*Qnew*sqrt_Q2_plus_4m2 - 0.5*m2Pair[iTab]*log( Qnew + sqrt_Q2_plus_4m2 );			
+				Qnew -= (Nnew - c0) / deriv;
+
+				ntries++;
+			}
+
+			const double arg = ( hadronBE[iPair1].p - hadronBE[iPair2].p )
+								* ( hadronBE[iPair1].x - hadronBE[iPair2].x )
+								* MM2FM / HBARC;
+			// Do this for shifts and compensation shifts together
+			if ( abs(arg) > 16.0 * M_PI )
+			{
+				pairShifts.push_back( 0.0 );
+				pairCompensationShifts.push_back( Qnew - Q0 );
+			}
+			else
+			{
+				pairShifts.push_back( Qnew - Q0 );
+				pairCompensationShifts.push_back( 0.0 );
+			}
+
+		}
+
+	// Finally, discard fake pairs at beginning and end of sortedPairs
+	sortedPairs.erase ( sortedPairs.begin() );
+	sortedPairs.erase ( sortedPairs.end() );
+
+	int pairIndex = 0;
+	for (const auto & iPair : sortedPairs)
+	{
+		const int i1 	   = iPair.second.first;
+		const int i2 	   = iPair.second.second;
+		const double Qold  = iPair.first;
+		double Qnew  = Qold + pairShifts[pairIndex];
+		const double Q2old = Qold*Qold;
+		double Q2new = Qnew*Qnew;
+
+		// Calculate corresponding three-momentum shift.
+		double Q2Diff    = Q2new - Q2old;
+		double p2DiffAbs = (hadronBE[i1].p - hadronBE[i2].p).pAbs2();
+		double p2AbsDiff = hadronBE[i1].p.pAbs2() - hadronBE[i2].p.pAbs2();
+		double eSum      = hadronBE[i1].p.e() + hadronBE[i2].p.e();
+		double eDiff     = hadronBE[i1].p.e() - hadronBE[i2].p.e();
+		double sumQ2E    = Q2Diff + eSum * eSum;
+		double rootA     = eSum * eDiff * p2AbsDiff - p2DiffAbs * sumQ2E;
+		double rootB     = p2DiffAbs * sumQ2E - p2AbsDiff * p2AbsDiff;
+		double factor    = 0.5 * ( rootA + sqrtpos(rootA * rootA
+							+ Q2Diff * (sumQ2E - eDiff * eDiff) * rootB) ) / rootB;
+
+		// Add shifts to sum. (Energy component dummy.)
+		Vec4   pDiff     = factor * (hadronBE[i1].p - hadronBE[i2].p);
+		hadronBE[i1].pShift += pDiff;
+		hadronBE[i2].pShift -= pDiff;
+
+		// Now get compensation shifts
+		Qnew  = Qold + pairCompensationShifts[pairIndex];
+		Q2new = Qnew*Qnew;
+
+		// Calculate corresponding three-momentum shift.
+		Q2Diff    = Q2new - Q2old;
+		p2DiffAbs = (hadronBE[i1].p - hadronBE[i2].p).pAbs2();
+		p2AbsDiff = hadronBE[i1].p.pAbs2() - hadronBE[i2].p.pAbs2();
+		eSum      = hadronBE[i1].p.e() + hadronBE[i2].p.e();
+		eDiff     = hadronBE[i1].p.e() - hadronBE[i2].p.e();
+		sumQ2E    = Q2Diff + eSum * eSum;
+		rootA     = eSum * eDiff * p2AbsDiff - p2DiffAbs * sumQ2E;
+		rootB     = p2DiffAbs * sumQ2E - p2AbsDiff * p2AbsDiff;
+		factor    = 0.5 * ( rootA + sqrtpos(rootA * rootA
+						+ Q2Diff * (sumQ2E - eDiff * eDiff) * rootB) ) / rootB;
+
+		// Add shifts to sum. (Energy component dummy.)
+		pDiff     = factor * (hadronBE[i1].p - hadronBE[i2].p);
+		hadronBE[i1].pComp += pDiff;
+		hadronBE[i2].pComp -= pDiff;
+
+		pairIndex++;
+
+	}
+
+	return;
+}*/
+
 
 //==========================================================================
 
