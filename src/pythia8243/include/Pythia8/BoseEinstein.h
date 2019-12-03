@@ -95,11 +95,14 @@ private:
   int enhanceMode;
   int number_of_pairs, number_of_shifted_pairs, number_of_too_close_pairs, number_of_too_separated_pairs;
 
+  // Get list of pairs sorted by increasing Q2inv.
+  bool getSortedPairs( vector< pair< double, pair <int,int> > > & sortedPairs, int iSpecies );
+
   // Calculate shift and (unnormalized) compensation for pair.
   void shiftPair_fixedQRef(int i1, int i2, int iHad);
-  void shiftPairs( vector< pair< double, pair <int,int> > > & sortedPairs,
-					vector<double> & pairShifts,
-					vector<double> & pairCompensationShifts);
+  void shiftPairs_mode1( vector< pair< double, pair <int,int> > > & sortedPairs,
+						 vector<double> & pairShifts,
+						 vector<double> & pairCompensationShifts, int iTab);
   ///===CJP(end)===
 
 };
