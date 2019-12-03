@@ -188,7 +188,7 @@ for (int i1 = nStored[iSpecies]; i1 < nStored[iSpecies+1] - 1; ++i1)
 	// ======================================================
 	// This block to estimate pair shift using pair density
 	vector< pair< double, pair <int,int> > > sortedPairs;
-	vector<double> pairShifts;
+	vector<double> pairShifts, pairCompensationShifts;
 	if ( enhanceMode == 1 )
 	{
 		// then need to loop over sorted vector of PAIRS
@@ -265,7 +265,7 @@ for (int iPair = 0; iPair < (int)sortedPairs.size(); ++iPair)
 			//running_num_sum += 1.0 + sphericalbesselj0( QVal * xDiff.pAbs() );
 			const double arg = ( hadronBE[iPair1].p - hadronBE[iPair2].p ) * xDiff;
 			running_num_sum += 1.0 + /*static_cast<double>(arg <= 16.0 * M_PI) * */sphericalbesselj0( arg );
-cout << "Check QVal, etc.: " << QVal << "   " << arg << endl;
+//cout << "Check QVal, etc.: " << QVal << "   " << arg << endl;
 		//<< "dp = " << hadronBE[iPair1].p - hadronBE[iPair2].p
 		//<< "dx = " << xDiff;
 		}
@@ -429,15 +429,39 @@ for (int iPair = 0; iPair < (int)sortedPairs.size()-1; ++iPair)
 				ntries++;
 			}
 
-			/*if (idNow==211)*/ cout << "(idNow=" << idNow << ") deltaQ = " << Qnew - Q0 << "; " << Q0 << "   " << Qnew << " (ntries=" << ntries << ")" << endl;
+			///*if (idNow==211)*/ cout << "(idNow=" << idNow << ") deltaQ = " << Qnew - Q0 << "; " << Q0 << "   " << Qnew << " (ntries=" << ntries << ")" << endl;
 
 			const double arg = ( hadronBE[iPair1].p - hadronBE[iPair2].p )
 								* ( hadronBE[iPair1].x - hadronBE[iPair2].x )
 								* MM2FM / HBARC;
-			if ( abs(arg) > 16.0 * M_PI )
-				Qnew = Q0;
+			// Do this for shifts and compensation shifts together
+			if ( abs(arg) > 4.0 * M_PI )
+			{
+				pairShifts.push_back( 0.0 );
+				//pairCompensationShifts.push_back( Qnew - Q0 );
+				pairCompensationShifts.push_back( 0.0 );
+			}
+			else if ( abs(arg) > 2.0 * M_PI )
+			{
+				pairShifts.push_back( 0.0 );
+				pairCompensationShifts.push_back( Qnew - Q0 );
+			}
+			else
+			{
+				pairShifts.push_back( Qnew - Q0 );
+				pairCompensationShifts.push_back( 0.0 );
+			}
+			/*if ( abs(arg) > 8.0 * M_PI )
+			{
+				pairShifts.push_back( 0.0 );
+				pairCompensationShifts.push_back( Qnew - Q0 );
+			}
+			else
+			{
+				pairShifts.push_back( Qnew - Q0 );
+				pairCompensationShifts.push_back( 0.0 );
+			}*/
 
-			pairShifts.push_back( Qnew - Q0 );
 
 //if (true) exit(8);
 
@@ -486,7 +510,7 @@ for (int iPair = 0; iPair < (int)sortedPairs.size()-1; ++iPair)
 			sortedPairs.erase ( sortedPairs.begin() );
 			sortedPairs.erase ( sortedPairs.end() );
 //cout << "Check sizes again: " << sortedPairs.size() << "   " << pairShifts.size() << endl;
-			shiftPairs(sortedPairs, pairShifts);
+			shiftPairs(sortedPairs, pairShifts, pairCompensationShifts);
 			break;
 		/*case 2:	// use a new cos(q*x) enhancement based on space-time interval between production points
 			for (int i1 = nStored[iSpecies]; i1 < nStored[iSpecies+1] - 1; ++i1)
@@ -511,16 +535,16 @@ for (int iPair = 0; iPair < (int)sortedPairs.size()-1; ++iPair)
 //cout << "(particle#=" << i << "): pShift = " << hadronBE[i].pShift;
     eSumOriginal  += hadronBE[i].p.e();
     hadronBE[i].p += hadronBE[i].pShift;
-/*cout 	<< setprecision(8)
-		<< "Original shift: " << i << "   " << hadronBE[i].pShift;*/
+cout 	<< setprecision(8)
+		<< "Original p and pShift: " << i << endl << "p=" << hadronBE[i].p << "pShift=" << hadronBE[i].pShift;
     hadronBE[i].p.e( sqrt( hadronBE[i].p.pAbs2() + hadronBE[i].m2 ) );
     eSumShifted   += hadronBE[i].p.e();
     eDiffByComp   += dot3( hadronBE[i].pComp, hadronBE[i].p)
                      / hadronBE[i].p.e();
-cout 	<< setprecision(8)
+/*cout 	<< setprecision(8)
 		<< "Getting ready to balance energy budget (particle#=" << i << "): "
 		<< eSumOriginal << "   " << eSumShifted << "   " << eDiffByComp << "   "
-		<< COMPRELERR * eSumOriginal << "   " << COMPFACMAX * abs(eDiffByComp) << endl;
+		<< COMPRELERR * eSumOriginal << "   " << COMPFACMAX * abs(eDiffByComp) << endl;*/
 
   }
 
@@ -550,8 +574,8 @@ cout 	<< setprecision(8)
     for (int i = 0; i < nStored[9]; ++i) {
       hadronBE[i].p += compFac * hadronBE[i].pComp;
       hadronBE[i].pShift += compFac * hadronBE[i].pComp;
-/*cout 	<< setprecision(8)
-		<< "Net shift at this point: " << i << "   " << hadronBE[i].pShift;*/
+cout 	<< setprecision(8)
+		<< "Net shift at this point: " << i << "   " << hadronBE[i].pShift;
       hadronBE[i].p.e( sqrt( hadronBE[i].p.pAbs2() + hadronBE[i].m2 ) );
       eSumShifted   += hadronBE[i].p.e();
       eDiffByComp   += dot3( hadronBE[i].pComp, hadronBE[i].p)
@@ -560,7 +584,7 @@ cout 	<< setprecision(8)
   }
 
 
-/*
+///*
   // Error if no convergence, and then return without doing BE shift.
   // However, not grave enough to kill event, so return true.
   if ( abs(eSumShifted - eSumOriginal) > COMPRELERR * eSumOriginal ) {
@@ -569,7 +593,8 @@ cout 	<< setprecision(8)
 if (true) exit(8);
     return true;
   }
-*/
+else cout << setprecision(16) << "This event passes! Check: " << abs(eSumShifted - eSumOriginal) << " < " << COMPRELERR * eSumOriginal << endl;
+//*/
 
 
   // Store new particle copies with shifted momenta.
@@ -715,8 +740,9 @@ void BoseEinstein::shiftPair_fixedQRef( int i1, int i2, int iTab) {
 //---------------------------------------------------------------------------
 // Calculate shift and (unnormalized) compensation for pair using space-time
 // interval and Gaussian form.
-void BoseEinstein::shiftPairs( vector< pair< double, pair <int,int> > > & sortedPairs,
-								vector<double> & pairShifts)
+void BoseEinstein::shiftPairs(  vector< pair< double, pair <int,int> > > & sortedPairs,
+								vector<double> & pairShifts,
+								vector<double> & pairCompensationShifts)
 {
 
 	/*
@@ -812,9 +838,9 @@ void BoseEinstein::shiftPairs( vector< pair< double, pair <int,int> > > & sorted
 		const int i1 	   = iPair.second.first;
 		const int i2 	   = iPair.second.second;
 		const double Qold  = iPair.first;
-		const double Qnew  = Qold + pairShifts[pairIndex++];
+		double Qnew  = Qold + pairShifts[pairIndex];
 		const double Q2old = Qold*Qold;
-		const double Q2new = Qnew*Qnew;
+		double Q2new = Qnew*Qnew;
 
 		// Calculate corresponding three-momentum shift.
 		double Q2Diff    = Q2new - Q2old;
@@ -833,8 +859,28 @@ void BoseEinstein::shiftPairs( vector< pair< double, pair <int,int> > > & sorted
 		hadronBE[i1].pShift += pDiff;
 		hadronBE[i2].pShift -= pDiff;
 
-		//hadronBE[i1].pComp += pDiff;
-		//hadronBE[i2].pComp -= pDiff;
+		// Now get compensation shifts
+		Qnew  = Qold + pairCompensationShifts[pairIndex];
+		Q2new = Qnew*Qnew;
+
+		// Calculate corresponding three-momentum shift.
+		Q2Diff    = Q2new - Q2old;
+		p2DiffAbs = (hadronBE[i1].p - hadronBE[i2].p).pAbs2();
+		p2AbsDiff = hadronBE[i1].p.pAbs2() - hadronBE[i2].p.pAbs2();
+		eSum      = hadronBE[i1].p.e() + hadronBE[i2].p.e();
+		eDiff     = hadronBE[i1].p.e() - hadronBE[i2].p.e();
+		sumQ2E    = Q2Diff + eSum * eSum;
+		rootA     = eSum * eDiff * p2AbsDiff - p2DiffAbs * sumQ2E;
+		rootB     = p2DiffAbs * sumQ2E - p2AbsDiff * p2AbsDiff;
+		factor    = 0.5 * ( rootA + sqrtpos(rootA * rootA
+						+ Q2Diff * (sumQ2E - eDiff * eDiff) * rootB) ) / rootB;
+
+		// Add shifts to sum. (Energy component dummy.)
+		pDiff     = factor * (hadronBE[i1].p - hadronBE[i2].p);
+		hadronBE[i1].pComp += pDiff;
+		hadronBE[i2].pComp -= pDiff;
+
+		pairIndex++;
 
 	}
 
