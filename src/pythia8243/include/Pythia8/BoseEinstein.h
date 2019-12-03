@@ -74,7 +74,7 @@ private:
   static const double STEPSIZE, Q2MIN, COMPRELERR, COMPFACMAX;
 
   // Initialization data, read from Settings.
-  bool   doPion, doKaon, doEta, useInv;
+  bool   doPion, doKaon, doEta, useInv, useDist;
   ///===CJP(begin)===
   int dim;
   double lambda, QRef, RRef;

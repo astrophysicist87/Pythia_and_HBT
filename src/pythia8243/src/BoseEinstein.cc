@@ -69,12 +69,13 @@ bool BoseEinstein::init(Info* infoPtrIn, Settings& settings,
   doPion   = settings.flag("BoseEinstein:Pion");
   doKaon   = settings.flag("BoseEinstein:Kaon");
   doEta    = settings.flag("BoseEinstein:Eta");
-  //useInv   = settings.flag("BoseEinstein:useInvariantSourceSize");
+  useInv   = settings.flag("BoseEinstein:useInvariantSourceSize");
+  useDist  = settings.flag("BoseEinstein:useDistribution");
 
   // Shape of Bose-Einstein enhancement/suppression.
   lambda   = settings.parm("BoseEinstein:lambda");
   QRef     = settings.parm("BoseEinstein:QRef");
-  //dim      = settings.parm("BoseEinstein:sourceDimension");
+  dim      = settings.parm("BoseEinstein:sourceDimension");
   enhanceMode
            = settings.parm("BoseEinstein:enhanceMode");
 
@@ -104,12 +105,7 @@ bool BoseEinstein::init(Info* infoPtrIn, Settings& settings,
 
 void BoseEinstein::set_QRef(int iSpecies)
 {
-	if ( QRef > 0.0 )
-	{
-		// do nothing
-		return;
-	}
-	else
+	if ( useDist )
 	{
 		switch (dim)
 		{
@@ -129,6 +125,7 @@ void BoseEinstein::set_QRef(int iSpecies)
 				break;
 		}
 	}
+	// if not, do nothing
 }
 
 double BoseEinstein::get_1D_source_size(int iSpecies, bool useInvariant)
@@ -545,8 +542,6 @@ void BoseEinstein::shiftPairs_mode1(  vector< pair< double, pair <int,int> > > &
 			den_cdf.push_back( std::make_pair(QVal, running_den_sum) );
 			num_cdf.push_back( std::make_pair(QVal, running_num_sum) );
 
-cout << "CHECK: " << running_den_sum << "   " << running_num_sum << endl;
-
 			// Note coordinate separation in GeV^{-1}.
 			running_den_sum += 1.0;
 			// uncomment these lines to return to old version
@@ -556,21 +551,11 @@ cout << "CHECK: " << running_den_sum << "   " << running_num_sum << endl;
 			{
 				const int iPair1 = sortedPairs[iPair].second.first;
 				const int iPair2 = sortedPairs[iPair].second.second;
-cout << "Check: iPair = " << iPair << "   " << iPair1 << "   " << iPair2 << endl;
+
 				Vec4 xDiff = ( hadronBE[iPair1].x - hadronBE[iPair2].x ) * MM2FM / HBARC;
 				const double arg = ( hadronBE[iPair1].p - hadronBE[iPair2].p ) * xDiff;
 				running_num_sum += 1.0 + sphericalbesselj0( arg );
 			}
-			// new version
-			/*running_num_sum = 0.0;
-			for (int jPair = 0; jPair <= iPair; ++jPair)
-			{
-				const int jPair1 = sortedPairs[jPair].second.first;
-				const int jPair2 = sortedPairs[jPair].second.second;
-				Vec4 yDiffPRF = ( hadronBE[jPair1].x - hadronBE[jPair2].x ) * MM2FM / HBARC;
-				yDiffPRF.bstback( 0.5*(hadronBE[jPair1].p + hadronBE[jPair2].p) );
-				running_num_sum += 1.0 + sphericalbesselj0( QVal * yDiffPRF.pAbs() );
-			}*/
 		}
 
 
@@ -578,18 +563,6 @@ cout << "Check: iPair = " << iPair << "   " << iPair1 << "   " << iPair2 << endl
 		// (QVal shifted by some positive number, running sums are unchanged)
 		den_cdf.push_back( std::make_pair( den_cdf.back().first+1.0, den_cdf.back().second ) );
 		num_cdf.push_back( std::make_pair( num_cdf.back().first+1.0, num_cdf.back().second ) );
-		// overwrite last element
-		/*running_num_sum = 0.0;
-		for (int jPair = 0; jPair < (int)sortedPairs.size()-1; ++jPair)
-		{
-			const double QVal = num_cdf.back().first;
-			const int jPair1 = sortedPairs[jPair].second.first;
-			const int jPair2 = sortedPairs[jPair].second.second;
-			Vec4 yDiffPRF = ( hadronBE[jPair1].x - hadronBE[jPair2].x ) * MM2FM / HBARC;
-			yDiffPRF.bstback( 0.5*(hadronBE[jPair1].p + hadronBE[jPair2].p) );
-			running_num_sum += 1.0 + sphericalbesselj0( QVal * yDiffPRF.pAbs() );
-		}
-		num_cdf.back().second = running_num_sum;*/
 
 		// Estimate PDFs using linear interpolation of CDFs
 		// and evaluate running integral
@@ -675,7 +648,7 @@ cout << "Check: iPair = " << iPair << "   " << iPair1 << "   " << iPair2 << endl
 				const double sqrt_Q2_plus_4m2 = sqrt(Qnew*Qnew + m2Pair[iTab]);
 				const double deriv = Qnew*Qnew / sqrt_Q2_plus_4m2;
 				Nnew = 0.5*Qnew*sqrt_Q2_plus_4m2 - 0.5*m2Pair[iTab]*log( Qnew + sqrt_Q2_plus_4m2 );
-//cout << "NR method: " << Qnew << "   " << Nnew << "   " << deriv << "   " << c0 << endl;	
+				//cout << "NR method: " << Qnew << "   " << Nnew << "   " << deriv << "   " << c0 << endl;	
 				Qnew -= (Nnew - c0) / deriv;
 
 				ntries++;
