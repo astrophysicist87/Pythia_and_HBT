@@ -90,7 +90,7 @@ Include effects or not for identical <ei>K^+</ei>, <ei>K^-</ei>,
 Include effects or not for identical <ei>eta</ei> and <ei>eta'</ei>. 
 </flag>
 
-<flag name="BoseEinstein:useInvariantSourceSize" default="on"> 
+<!--<flag name="BoseEinstein:useInvariantSourceSize" default="on"> 
 Whether or not to use invariant source size in estimating pair
 distribution.  "On" gives the root mean square invariant relative
 separation between all pairs of particles, while "Off" simply gives
@@ -102,7 +102,7 @@ the root mean square of the spatial separation.  Only used if the
 Whether or not to use relative distance distribution to estimate
 pair distribution.  "Off" means use user-defined QRef; "On" means
 use the distribution.
-</flag>
+</flag>-->
 
 <!--CJP(begin)-->
 <parm name="BoseEinstein:enhanceMode" default="0" min="0" max="1"> 
@@ -118,9 +118,9 @@ in momentum space.
 </parm>
 <!--CJP(end)-->
 
-<parm name="BoseEinstein:sourceDimension" default="1" min="1" max="1"> 
+<!--<parm name="BoseEinstein:sourceDimension" default="1" min="1" max="1"> 
 Determines the dimension of source assumed in fixing the pair distribution.
-</parm> 
+</parm>-->
  
 <parm name="BoseEinstein:lambda" default="1." min="0." max="2."> 
 The strength parameter for Bose-Einstein effects. On physical grounds 
@@ -134,8 +134,6 @@ Bose-Einstein effects are significant.  Can be thought of as
 the inverse of an effective distance in normal space, 
 <ei>R = hbar / QRef</ei>, with <ei>R</ei> as used in the above equation. 
 That is, <ei>f_2(Q) = (1 + lambda * exp(-(Q/QRef)^2)) * (...)</ei>.
-A negative value of QRef means to use the RMS relative distance
-distribution to define the Bose-Einstein enhancement strength.
 </parm> 
  
 <parm name="BoseEinstein:widthSep" default="0.02" min="0.001" max="1."> 

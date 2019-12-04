@@ -7,6 +7,8 @@
 
 #include "Pythia8/BoseEinstein.h"
 
+#include <ostream>
+
 namespace Pythia8 {
 
 //==========================================================================
@@ -69,13 +71,13 @@ bool BoseEinstein::init(Info* infoPtrIn, Settings& settings,
   doPion   = settings.flag("BoseEinstein:Pion");
   doKaon   = settings.flag("BoseEinstein:Kaon");
   doEta    = settings.flag("BoseEinstein:Eta");
-  useInv   = settings.flag("BoseEinstein:useInvariantSourceSize");
-  useDist  = settings.flag("BoseEinstein:useDistribution");
+  //useInv   = settings.flag("BoseEinstein:useInvariantSourceSize");
+  //useDist  = settings.flag("BoseEinstein:useDistribution");
 
   // Shape of Bose-Einstein enhancement/suppression.
   lambda   = settings.parm("BoseEinstein:lambda");
   QRef     = settings.parm("BoseEinstein:QRef");
-  dim      = settings.parm("BoseEinstein:sourceDimension");
+  //dim      = settings.parm("BoseEinstein:sourceDimension");
   enhanceMode
            = settings.parm("BoseEinstein:enhanceMode");
 
@@ -389,6 +391,12 @@ bool BoseEinstein::getSortedPairs( vector< pair< double, pair <int,int> > > & so
 	// add fake last "pair" (new QVal is 10% larger than last one, just for definiteness)
 	sortedPairs.push_back( std::make_pair( 1.1*sortedPairs.back().first, std::make_pair(-1, -1) ) );
 
+cout << "<<<==========================================================>>>" << endl;
+cout << "CHECK sortedPairs (size = " << sortedPairs.size() << "): " << endl;
+	for (const auto & iPair : sortedPairs)
+		cout << iPair.first << "   " << iPair.second.first << "   " << iPair.second.second << endl;
+cout << "<<<==========================================================>>>" << endl;
+
 	return true;
 }
 
@@ -542,9 +550,10 @@ void BoseEinstein::shiftPairs_mode1(  vector< pair< double, pair <int,int> > > &
 			den_cdf.push_back( std::make_pair(QVal, running_den_sum) );
 			num_cdf.push_back( std::make_pair(QVal, running_num_sum) );
 
+cout << "CHECK: " << running_den_sum << "   " << running_num_sum << endl;
+
 			// Note coordinate separation in GeV^{-1}.
 			running_den_sum += 1.0;
-			// uncomment these lines to return to old version
 			if ( iPair == 0 )
 				running_num_sum += 2.0;
 			else
@@ -563,6 +572,7 @@ void BoseEinstein::shiftPairs_mode1(  vector< pair< double, pair <int,int> > > &
 		// (QVal shifted by some positive number, running sums are unchanged)
 		den_cdf.push_back( std::make_pair( den_cdf.back().first+1.0, den_cdf.back().second ) );
 		num_cdf.push_back( std::make_pair( num_cdf.back().first+1.0, num_cdf.back().second ) );
+
 
 		// Estimate PDFs using linear interpolation of CDFs
 		// and evaluate running integral
@@ -593,41 +603,71 @@ void BoseEinstein::shiftPairs_mode1(  vector< pair< double, pair <int,int> > > &
 		running_den_integral.push_back( running_den_sum );
 		running_num_integral.push_back( running_num_sum );
 
+cout << "Element checks: " << endl;
+for (int iPair = 0; iPair < (int)sortedPairs.size()-1; ++iPair)
+	cout << sortedPairs[iPair].first << "   "
+			<< sortedPairs[iPair].second.first << "   "
+			<< sortedPairs[iPair].second.second << "   "
+			<< den_cdf[iPair].first << "   "
+			<< den_cdf[iPair].second << "   "
+			<< num_cdf[iPair].first << "   "
+			<< num_cdf[iPair].second << "   "
+			<< antiderivative[iPair] << "   "
+			<< running_den_integral[iPair] << "   "
+			<< running_num_integral[iPair] << endl;
+
 		// Finally, get shifts for each pair (except for first and last ones)
 		// First "pair" is just the Q=0 point
 		// Last "pair" is just a repeat to ensure PDF = 0 for Q > Qmax
 		for (int iPair = 1; iPair < (int)sortedPairs.size()-1; ++iPair)
 		{
 			int thisPair = iPair;
-			const double thisPairDen = running_den_integral[thisPair];		// > 0
-			double leftPairNum = running_num_integral[thisPair];
-			double rightPairNum = running_num_integral[thisPair+1];
+			const double thisPairDen = running_den_integral.at(thisPair);		// > 0
+			double leftPairNum = running_num_integral.at(thisPair);
+			double rightPairNum = running_num_integral.at(thisPair+1);
 
+			if ( thisPairDen > running_num_integral.back() )
+			{
+				cout << "WARNING: no solution for this pair (iPair = " << iPair << ")!  Skipping..." << endl;
+				break;
+			}
+
+//cout << "Do shifting if necessary: " << thisPairDen << "   " << leftPairNum << "   " << rightPairNum << endl;
 			// shift left and right numerator entries until they contain
 			// denominator value; then invert using linear interpolation
 			while ( leftPairNum > thisPairDen )					// most likely
 			{
 				// shift to the left
-				leftPairNum = running_num_integral[--thisPair];
-				rightPairNum = running_num_integral[thisPair+1];
+				leftPairNum = running_num_integral.at(--thisPair);
+				rightPairNum = running_num_integral.at(thisPair+1);
 			}
 			while ( rightPairNum < thisPairDen )				// also possible
 			{
 				// shift to the right
-				leftPairNum = running_num_integral[++thisPair];
-				rightPairNum = running_num_integral[thisPair+1];
+				leftPairNum = running_num_integral.at(++thisPair);
+				rightPairNum = running_num_integral.at(thisPair+1);
 			}
+//cout << "Finished shifting" << endl;
 
+			// check if needed pair interval is included (skip shift of this pair if not)
 			if ( thisPair < 0 /*or thisPair >= (int)running_den_integral.size()-1*/ )
+			{
+				cout << "WARNING: thisPair = " << thisPair << " was out of range!" << endl;
 				break;
+			}
 
 			// should now have leftPairNum < thisPairDen < rightPairNum
 			// --> get shift Q from linear interpolation (Qnew === Q + deltaQ)
 			const double Q0 = sortedPairs[iPair].first;	// original Q
 			const int iPair1 = sortedPairs[iPair].second.first;		// first hadron
 			const int iPair2 = sortedPairs[iPair].second.second;	// second hadron
-			const double leftQ = sortedPairs[thisPair].first;
-			const double rightQ = sortedPairs[thisPair+1].first;
+/*cout << "Q0=" << Q0 << "; (thisPair, iPair) = (" << thisPair << ", " << iPair << ") of "
+		<< "(" << sortedPairs.size() << ", " << num_cdf.size() << ", "
+		<< den_cdf.size() << ", " << antiderivative.size() << ")" << endl;//std::flush;
+cout << "\t" << thisPairDen << "   " << leftPairNum << "   " << rightPairNum << endl;*/
+			const double leftQ = sortedPairs.at(thisPair).first;
+			const double rightQ = sortedPairs.at(thisPair+1).first;
+//cout << "   " << leftQ << "   " << rightQ << endl;
 			double Qnew = leftQ + (thisPairDen-leftPairNum)*(rightQ-leftQ)/(rightPairNum-leftPairNum);
 
 			// linear interpolation not good enough; need to solve numerically with Newton-Raphson
