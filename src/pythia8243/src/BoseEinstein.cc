@@ -71,13 +71,13 @@ bool BoseEinstein::init(Info* infoPtrIn, Settings& settings,
   doPion   = settings.flag("BoseEinstein:Pion");
   doKaon   = settings.flag("BoseEinstein:Kaon");
   doEta    = settings.flag("BoseEinstein:Eta");
-  //useInv   = settings.flag("BoseEinstein:useInvariantSourceSize");
-  //useDist  = settings.flag("BoseEinstein:useDistribution");
+  useInv   = settings.flag("BoseEinstein:useInvariantSourceSize");
+  useDist  = settings.flag("BoseEinstein:useDistribution");
 
   // Shape of Bose-Einstein enhancement/suppression.
   lambda   = settings.parm("BoseEinstein:lambda");
   QRef     = settings.parm("BoseEinstein:QRef");
-  //dim      = settings.parm("BoseEinstein:sourceDimension");
+  dim      = settings.parm("BoseEinstein:sourceDimension");
   enhanceMode
            = settings.parm("BoseEinstein:enhanceMode");
 
@@ -394,7 +394,11 @@ bool BoseEinstein::getSortedPairs( vector< pair< double, pair <int,int> > > & so
 cout << "<<<==========================================================>>>" << endl;
 cout << "CHECK sortedPairs (size = " << sortedPairs.size() << "): " << endl;
 	for (const auto & iPair : sortedPairs)
-		cout << iPair.first << "   " << iPair.second.first << "   " << iPair.second.second << endl;
+		cout << iPair.first << "   "
+				<< iPair.second.first << "   "
+				<< iPair.second.second << "   "
+				<< ((iPair.second.first < 0) ? -1 : hadronBE[iPair.second.first].iPos) << "   "
+				<< ((iPair.second.second < 0) ? -1 : hadronBE[iPair.second.second].iPos) << endl;
 cout << "<<<==========================================================>>>" << endl;
 
 	return true;
@@ -572,6 +576,7 @@ cout << "CHECK: " << running_den_sum << "   " << running_num_sum << endl;
 		// (QVal shifted by some positive number, running sums are unchanged)
 		den_cdf.push_back( std::make_pair( den_cdf.back().first+1.0, den_cdf.back().second ) );
 		num_cdf.push_back( std::make_pair( num_cdf.back().first+1.0, num_cdf.back().second ) );
+		antiderivative.push_back( antiderivative.back() );	// not used, just needed to keep array same size
 
 
 		// Estimate PDFs using linear interpolation of CDFs
@@ -591,8 +596,8 @@ cout << "CHECK: " << running_den_sum << "   " << running_num_sum << endl;
 			const double num_pdf = (num_cdf[iPair+1].second - num_cdf[iPair].second) / (rightQVal - leftQVal);
 
 			// Update running integrals
-			running_den_sum += den_pdf * ( antiderivative[iPair+1] - antiderivative[iPair] );
-			running_num_sum += num_pdf * ( antiderivative[iPair+1] - antiderivative[iPair] );
+			running_den_sum += den_pdf * ( antiderivative.at(iPair+1) - antiderivative.at(iPair) );
+			running_num_sum += num_pdf * ( antiderivative.at(iPair+1) - antiderivative.at(iPair) );
 
 			// Store 
 			running_den_integral.push_back( running_den_sum );
@@ -603,7 +608,7 @@ cout << "CHECK: " << running_den_sum << "   " << running_num_sum << endl;
 		running_den_integral.push_back( running_den_sum );
 		running_num_integral.push_back( running_num_sum );
 
-cout << "Element checks: " << endl;
+/*cout << "Element checks: " << endl;
 for (int iPair = 0; iPair < (int)sortedPairs.size()-1; ++iPair)
 	cout << sortedPairs[iPair].first << "   "
 			<< sortedPairs[iPair].second.first << "   "
@@ -614,7 +619,7 @@ for (int iPair = 0; iPair < (int)sortedPairs.size()-1; ++iPair)
 			<< num_cdf[iPair].second << "   "
 			<< antiderivative[iPair] << "   "
 			<< running_den_integral[iPair] << "   "
-			<< running_num_integral[iPair] << endl;
+			<< running_num_integral[iPair] << endl;*/
 
 		// Finally, get shifts for each pair (except for first and last ones)
 		// First "pair" is just the Q=0 point
