@@ -4,7 +4,7 @@
 HOME_DIRECTORY=`pwd`
 SOURCE_DIRECTORY=$HOME_DIRECTORY/src
 # Pythia
-versionNumber=8244
+versionNumber=8243
 PYTHIA_DIRECTORY=$SOURCE_DIRECTORY/pythia${versionNumber}/examples
 # HBT event generator
 HBT_DIRECTORY=$SOURCE_DIRECTORY/HBT_event_generator

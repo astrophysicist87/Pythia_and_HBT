@@ -90,7 +90,7 @@ Include effects or not for identical <ei>K^+</ei>, <ei>K^-</ei>,
 Include effects or not for identical <ei>eta</ei> and <ei>eta'</ei>. 
 </flag>
 
-<flag name="BoseEinstein:useInvariantSourceSize" default="on"> 
+<flag name="BoseEinstein:useInvariantSourceSize" default="off"> 
 Whether or not to use invariant source size in estimating pair
 distribution.  "On" gives the root mean square invariant relative
 separation between all pairs of particles, while "Off" simply gives
@@ -102,6 +102,16 @@ the root mean square of the spatial separation.  Only used if the
 Whether or not to use relative distance distribution to estimate
 pair distribution.  "Off" means use user-defined QRef; "On" means
 use the distribution.
+</flag>
+
+<flag name="BoseEinstein:useRelativeDistance" default="off"> 
+Whether to use relative distances or absolute distances to estimate
+source size.
+</flag>
+
+<flag name="BoseEinstein:useRestFrame" default="off"> 
+Whether to evaluate distances in rest frame of particle or pair vs.
+lab frame.
 </flag>
 
 <!--CJP(begin)-->

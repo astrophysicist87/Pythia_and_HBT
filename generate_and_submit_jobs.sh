@@ -3,7 +3,7 @@
 (
 	# info for this run
 	NTHREADS=12
-	DIRECTORY=RESULTS_pp_13TeV_v8244_N32000/
+	DIRECTORY=RESULTS_pp_13TeV_v8243/
 
 	./generate_jobs.sh $NTHREADS $DIRECTORY
 

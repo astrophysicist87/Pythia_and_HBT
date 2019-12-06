@@ -65,21 +65,22 @@ bool BoseEinstein::init(Info* infoPtrIn, Settings& settings,
   ParticleData& particleData) {
 
   // Save pointer.
-  infoPtr         = infoPtrIn;
+  infoPtr               = infoPtrIn;
 
   // Main flags.
-  doPion   = settings.flag("BoseEinstein:Pion");
-  doKaon   = settings.flag("BoseEinstein:Kaon");
-  doEta    = settings.flag("BoseEinstein:Eta");
-  useInv   = settings.flag("BoseEinstein:useInvariantSourceSize");
-  useDist  = settings.flag("BoseEinstein:useDistribution");
+  doPion 				= settings.flag("BoseEinstein:Pion");
+  doKaon 				= settings.flag("BoseEinstein:Kaon");
+  doEta 				= settings.flag("BoseEinstein:Eta");
+  useInvariantSize 		= settings.flag("BoseEinstein:useInvariantSourceSize");
+  useDistribution 		= settings.flag("BoseEinstein:useDistribution");
+  useRelativeDistance 	= settings.flag("BoseEinstein:useRelativeDistance");
+  useRestFrame 			= settings.flag("BoseEinstein:useRestFrame");
 
   // Shape of Bose-Einstein enhancement/suppression.
-  lambda   = settings.parm("BoseEinstein:lambda");
-  QRef     = settings.parm("BoseEinstein:QRef");
-  dim      = settings.parm("BoseEinstein:sourceDimension");
-  enhanceMode
-           = settings.parm("BoseEinstein:enhanceMode");
+  lambda 				= settings.parm("BoseEinstein:lambda");
+  QRef 					= settings.parm("BoseEinstein:QRef");
+  sourceDimension 		= settings.parm("BoseEinstein:sourceDimension");
+  enhanceMode 			= settings.parm("BoseEinstein:enhanceMode");
 
   // Masses of particles with Bose-Einstein implemented.
   for (int iSpecies = 0; iSpecies < 9; ++iSpecies)
@@ -107,104 +108,89 @@ bool BoseEinstein::init(Info* infoPtrIn, Settings& settings,
 
 void BoseEinstein::set_QRef(int iSpecies)
 {
-	if ( useDist )
+	if ( useDistribution )
 	{
-		switch (dim)
+		cout << "Attempting to fix QRef from source distribution...";
+		switch ( sourceDimension )
 		{
 			case 1:
-				QRef = get_1D_source_size(iSpecies, useInv);
+				QRef = get_1D_source_size(iSpecies);
 				break;
-			/*case 3:
-				QRef = get_3D_source_size(iSpecies);
-				break;
-			case 4:
-				QRef = get_4D_source_size(iSpecies);
-				break;*/
 			default:
 				infoPtr->errorMsg("Warning in BoseEinstein::set_QRef: "
       "choice of QRef makes no sense, defaulting to 1D source size");
-				QRef = get_1D_source_size(iSpecies, useInv);
+				QRef = get_1D_source_size(iSpecies);
 				break;
 		}
 	}
-	// if not, do nothing
+
+	// If out of range, just use default value (type this correctly later)
+	if ( QRef < 0.05 )
+	{
+		// Reverting to minimum
+		QRef = 0.05;
+		cout << "failed!  Reverting to minimum QRef = " << QRef << "!" << endl;
+	}
+	else if ( QRef > 1.0 )
+	{
+		// Reverting to maximum
+		QRef = 1.0;
+		cout << "failed!  Reverting to maximum QRef = " << QRef << "!" << endl;
+	}
+	else
+		cout << "success!  Using QRef = " << QRef << "!" << endl;
 }
 
-double BoseEinstein::get_1D_source_size(int iSpecies, bool useInvariant)
+double BoseEinstein::get_1D_source_size(int iSpecies)
 {
 	double result = 0.0;
 	double count = 0.0;
 
-	if (useInvariant)
-		for (int i1 = nStored[iSpecies]; i1 < nStored[iSpecies+1]; ++i1)
-		//for (int i2 = i1 + 1; i2 < nStored[iSpecies+1]; ++i2)
-		{
-			//Vec4 xDiff = hadronBE[i1].x - hadronBE[i2].x;
-			Vec4 x = hadronBE[i1].x;
-			result += x*x;
-			count += 1.0;
-		}
+	if ( useInvariantSize )
+	{
+		if ( useRelativeDistance )
+			for (int i1 = nStored[iSpecies]; i1 < nStored[iSpecies+1] - 1; ++i1)
+			for (int i2 = i1 + 1; i2 < nStored[iSpecies+1]; ++i2)
+			{
+				Vec4 xDiff = hadronBE[i1].x - hadronBE[i2].x;
+				result += xDiff*xDiff;
+				count += 1.0;
+			}
+		else
+			for (int i1 = nStored[iSpecies]; i1 < nStored[iSpecies+1]; ++i1)
+			{
+				Vec4 x = hadronBE[i1].x;
+				result += x*x;
+				count += 1.0;
+			}
+	}
 	else
-		for (int i1 = nStored[iSpecies]; i1 < nStored[iSpecies+1]; ++i1)
-		//for (int i2 = i1 + 1; i2 < nStored[iSpecies+1]; ++i2)
-		{
-			//Vec4 xDiff = hadronBE[i1].x - hadronBE[i2].x;
-			Vec4 x = hadronBE[i1].x;
-			result += x.pAbs2();
-			count += 1.0;
-		}
+	{
+		if ( useRelativeDistance )
+			for (int i1 = nStored[iSpecies]; i1 < nStored[iSpecies+1] - 1; ++i1)
+			for (int i2 = i1 + 1; i2 < nStored[iSpecies+1]; ++i2)
+			{
+				Vec4 xDiff = hadronBE[i1].x - hadronBE[i2].x;
+				if ( useRestFrame ) xDiff.bstback( 0.5*(hadronBE[i1].p + hadronBE[i2].p) );
+				result += xDiff.pAbs2();
+				count += 1.0;
+			}
+		else
+			for (int i1 = nStored[iSpecies]; i1 < nStored[iSpecies+1]; ++i1)
+			{
+				Vec4 x = hadronBE[i1].x;
+				if ( useRestFrame ) x.bstback( hadronBE[i1].p );
+				result += x.pAbs2();
+				count += 1.0;
+			}
+	}
+
+	double RMSsize = sqrt(result / (count+1.e-100)) * MM2FM / HBARC;
 
 	// return RMS source size
-	return (sqrt(result / (count+1.e-100)));
+	return ( 1.0 / RMSsize );
 }
 
-void BoseEinstein::get_3D_source_size(int iSpecies, double & xSize, double & ySize, double & zSize)
-{
-	xSize = 0.0, ySize = 0.0, zSize = 0.0;
-	double count = 0.0;
-
-	for (int i1 = nStored[iSpecies]; i1 < nStored[iSpecies+1]; ++i1)
-	//for (int i2 = i1 + 1; i2 < nStored[iSpecies+1]; ++i2)
-	{
-		//Vec4 xDiff = hadronBE[i1].x - hadronBE[i2].x;
-		Vec4 x = hadronBE[i1].x;
-		xSize += x.px()*x.px();
-		ySize += x.py()*x.py();
-		zSize += x.pz()*x.pz();
-		count += 1.0;
-	}
-
-	xSize = sqrt(xSize / (count+1.e-100));
-	ySize = sqrt(ySize / (count+1.e-100));
-	zSize = sqrt(zSize / (count+1.e-100));
-
-	return;
-}
-
-void BoseEinstein::get_4D_source_size(int iSpecies, double & xSize, double & ySize, double & zSize, double & tSize)
-{
-	xSize = 0.0, ySize = 0.0, zSize = 0.0, tSize = 0.0;
-	double count = 0.0;
-
-	for (int i1 = nStored[iSpecies]; i1 < nStored[iSpecies+1]; ++i1)
-	//for (int i2 = i1 + 1; i2 < nStored[iSpecies+1]; ++i2)
-	{
-		//Vec4 xDiff = hadronBE[i1].x - hadronBE[i2].x;
-		Vec4 x = hadronBE[i1].x;
-		xSize += x.px()*x.px();
-		ySize += x.py()*x.py();
-		zSize += x.pz()*x.pz();
-		tSize += x.e()*x.e();
-		count += 1.0;
-	}
-
-	xSize = sqrt(xSize / (count+1.e-100));
-	ySize = sqrt(ySize / (count+1.e-100));
-	zSize = sqrt(zSize / (count+1.e-100));
-	tSize = sqrt(tSize / (count+1.e-100));
-
-	return;
-}
 
 //--------------------------------------------------------------------------
 // Perform Bose-Einstein corrections on an event.
@@ -281,8 +267,8 @@ bool BoseEinstein::shiftEvent( Event& event) {
 //cout << "(particle#=" << i << "): pShift = " << hadronBE[i].pShift;
     eSumOriginal  += hadronBE[i].p.e();
     hadronBE[i].p += hadronBE[i].pShift;
-cout 	<< setprecision(8)
-		<< "Original p and pShift: " << i << endl << "p=" << hadronBE[i].p << "pShift=" << hadronBE[i].pShift;
+/*cout 	<< setprecision(8)
+		<< "Original p and pShift: " << i << endl << "p=" << hadronBE[i].p << "pShift=" << hadronBE[i].pShift;*/
     hadronBE[i].p.e( sqrt( hadronBE[i].p.pAbs2() + hadronBE[i].m2 ) );
     eSumShifted   += hadronBE[i].p.e();
     eDiffByComp   += dot3( hadronBE[i].pComp, hadronBE[i].p)
@@ -299,12 +285,12 @@ cout 	<< setprecision(8)
   }
 
 
-cout 	<< setprecision(8)
+/*cout 	<< setprecision(8)
 		<< "Balancing energy budget: "
 		<< eSumOriginal << "   " << eSumShifted << "   " << eDiffByComp << "   "
 		<< COMPRELERR * eSumOriginal << "   " << COMPFACMAX * abs(eDiffByComp) << endl
 		<< "TEST: " << abs(eSumShifted - eSumOriginal) << " > " << COMPRELERR * eSumOriginal << endl
-		<< "TEST: " << abs(eSumShifted - eSumOriginal) << " < " << COMPFACMAX * abs(eDiffByComp) << endl;
+		<< "TEST: " << abs(eSumShifted - eSumOriginal) << " < " << COMPFACMAX * abs(eDiffByComp) << endl;*/
 
   // Iterate compensation shift until convergence.
   int iStep = 0;
@@ -323,9 +309,9 @@ cout 	<< setprecision(8)
     eDiffByComp      = 0.;
     for (int i = 0; i < nStored[9]; ++i) {
       hadronBE[i].p += compFac * hadronBE[i].pComp;
-      hadronBE[i].pShift += compFac * hadronBE[i].pComp;
+/*      hadronBE[i].pShift += compFac * hadronBE[i].pComp;
 cout 	<< setprecision(8)
-		<< "Net shift at this point: " << i << "   " << hadronBE[i].pShift;
+		<< "Net shift at this point: " << i << "   " << hadronBE[i].pShift;*/
       hadronBE[i].p.e( sqrt( hadronBE[i].p.pAbs2() + hadronBE[i].m2 ) );
       eSumShifted   += hadronBE[i].p.e();
       eDiffByComp   += dot3( hadronBE[i].pComp, hadronBE[i].p)
@@ -393,12 +379,37 @@ bool BoseEinstein::getSortedPairs( vector< pair< double, pair <int,int> > > & so
 
 cout << "<<<==========================================================>>>" << endl;
 cout << "CHECK sortedPairs (size = " << sortedPairs.size() << "): " << endl;
+cout << "SKIP trivial first and last pairs." << endl;
 	for (const auto & iPair : sortedPairs)
-		cout << iPair.first << "   "
-				<< iPair.second.first << "   "
-				<< iPair.second.second << "   "
-				<< ((iPair.second.first < 0) ? -1 : hadronBE[iPair.second.first].iPos) << "   "
-				<< ((iPair.second.second < 0) ? -1 : hadronBE[iPair.second.second].iPos) << endl;
+	{
+		// only care about physical pairs for checking purposes
+		if (   &iPair == &sortedPairs.front()
+			or &iPair == &sortedPairs.back() )
+			continue;
+
+		const int iPair1 = iPair.second.first;
+		const int iPair2 = iPair.second.second;
+		Vec4 xDiff = ( hadronBE[iPair1].x - hadronBE[iPair2].x ) * MM2FM / HBARC;
+		xDiff.bstback( 0.5*( hadronBE[iPair1].p + hadronBE[iPair2].p ) );
+		cout << iPair.first << "   " << iPair1 << "   " << iPair2 << "   "
+				<< ((iPair1 < 0) ? -1 : hadronBE[iPair.second.first].iPos) << "   "
+				<< ((iPair2 < 0) ? -1 : hadronBE[iPair.second.second].iPos) << "   "
+				<< xDiff.pAbs() << endl;
+	}
+	for (const auto & iPair : sortedPairs)
+	{
+		// only care about physical pairs for checking purposes
+		if (   &iPair == &sortedPairs.front()
+			or &iPair == &sortedPairs.back() )
+			continue;
+
+		const int iPair1 = iPair.second.first;
+		const int iPair2 = iPair.second.second;
+		Vec4 xDiff = ( hadronBE[iPair1].x - hadronBE[iPair2].x ) * MM2FM / HBARC;
+		xDiff.bstback( 0.5*( hadronBE[iPair1].p + hadronBE[iPair2].p ) );
+		cout << setprecision(8) << xDiff.pAbs() << ", ";
+	}
+cout << endl;
 cout << "<<<==========================================================>>>" << endl;
 
 	return true;
@@ -558,16 +569,19 @@ cout << "CHECK: " << running_den_sum << "   " << running_num_sum << endl;
 
 			// Note coordinate separation in GeV^{-1}.
 			running_den_sum += 1.0;
-			if ( iPair == 0 )
-				running_num_sum += 2.0;
-			else
+			//if ( iPair == 0 )
+			//	running_num_sum += 2.0;	// why was this part ever here?!?
+			//else
 			{
-				const int iPair1 = sortedPairs[iPair].second.first;
-				const int iPair2 = sortedPairs[iPair].second.second;
+				//const int iPair1 = sortedPairs[iPair].second.first;
+				//const int iPair2 = sortedPairs[iPair].second.second;
+				const int iPair1 = sortedPairs[iPair+1].second.first;
+				const int iPair2 = sortedPairs[iPair+1].second.second;
 
 				Vec4 xDiff = ( hadronBE[iPair1].x - hadronBE[iPair2].x ) * MM2FM / HBARC;
 				const double arg = ( hadronBE[iPair1].p - hadronBE[iPair2].p ) * xDiff;
 				running_num_sum += 1.0 + sphericalbesselj0( arg );
+cout << "Check args: " << arg << endl;
 			}
 		}
 
@@ -702,6 +716,7 @@ cout << "\t" << thisPairDen << "   " << leftPairNum << "   " << rightPairNum << 
 			const double arg = ( hadronBE[iPair1].p - hadronBE[iPair2].p )
 								* ( hadronBE[iPair1].x - hadronBE[iPair2].x )
 								* MM2FM / HBARC;
+cout << "Check args again: " << arg << endl;
 			// Do this for shifts and compensation shifts together
 			/*if ( abs(arg) > 2.0 * M_PI )
 			{
@@ -719,7 +734,7 @@ cout << "\t" << thisPairDen << "   " << leftPairNum << "   " << rightPairNum << 
 				pairShifts.push_back( Qnew - Q0 );
 				pairCompensationShifts.push_back( 0.0 );
 			}*/
-			if ( abs(arg) > 16.0 * M_PI )
+			if ( abs(arg) > 1.0 * M_PI )
 			{
 				pairShifts.push_back( 0.0 );
 				pairCompensationShifts.push_back( Qnew - Q0 );

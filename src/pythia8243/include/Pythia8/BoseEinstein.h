@@ -74,9 +74,10 @@ private:
   static const double STEPSIZE, Q2MIN, COMPRELERR, COMPFACMAX;
 
   // Initialization data, read from Settings.
-  bool   doPion, doKaon, doEta, useInv, useDist;
+  bool   doPion, doKaon, doEta, useInvariantSize,
+         useDistribution, useRelativeDistance, useRestFrame;
   ///===CJP(begin)===
-  int dim;
+  int sourceDimension;
   double lambda, QRef, RRef;
   ///===CJP(end)===
 
@@ -97,10 +98,8 @@ private:
   int number_of_pairs, number_of_shifted_pairs, number_of_too_close_pairs, number_of_too_separated_pairs;
 
   // Some functions to get source sizes
-  void set_QRef(int iSpecies);
-  double get_1D_source_size(int iSpecies, bool useInvariant);
-  void get_3D_source_size(int iSpecies, double & xSize, double & ySize, double & zSize);
-  void get_4D_source_size(int iSpecies, double & xSize, double & ySize, double & zSize, double & tSize);
+  void set_QRef( int iSpecies );
+  double get_1D_source_size( int iSpecies );
 
   // Get list of pairs sorted by increasing Q2inv.
   bool getSortedPairs( vector< pair< double, pair <int,int> > > & sortedPairs, int iSpecies );

@@ -83,7 +83,7 @@ method_mode = 0
 
 #===========
 # whether or not BE effects are pre-included from Pythia
-BE_mode = 0
+BE_mode = 1
 
 #===========
 # whether to use smoothness approximation
