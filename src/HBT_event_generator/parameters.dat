@@ -1,7 +1,7 @@
 #===========
 # width of binning delta (GeV)
 bin_epsilon = 0.01
-use_pz_bin_asymmetry = 1
+use_pz_bin_asymmetry = 0
 pz_bin_factor = 100.0
 
 #===========
@@ -44,9 +44,9 @@ KLmax = 1.0
 n_qo_pts = 22
 n_qs_pts = 22
 n_ql_pts = 22
-delta_qo = 0.025
-delta_qs = 0.025
-delta_ql = 0.025
+delta_qo = 0.05
+delta_qs = 0.05
+delta_ql = 0.05
 
 # relative momentum (1D)
 n_Q_pts = 22
@@ -130,7 +130,7 @@ chosen_MCID = 211
 include_thermal = 1
 
 # include decay particles (0 - false, 1 - true)
-include_decays = 0
+include_decays = 1
 
 #===========
 # Output specifications

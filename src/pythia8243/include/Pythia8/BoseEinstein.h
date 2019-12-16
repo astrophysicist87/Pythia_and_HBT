@@ -75,7 +75,8 @@ private:
 
   // Initialization data, read from Settings.
   bool   doPion, doKaon, doEta, useInvariantSize,
-         useDistribution, useRelativeDistance, useRestFrame;
+         useDistribution, useRelativeDistance, useRestFrame,
+		 include_phase_space;
   ///===CJP(begin)===
   int sourceDimension;
   double lambda, QRef, RRef;
@@ -109,12 +110,26 @@ private:
   void shiftPairs_mode1( vector< pair< double, pair <int,int> > > & sortedPairs,
 						 vector<double> & pairShifts,
 						 vector<double> & pairCompensationShifts, int iTab);
-//  void shiftPairs_mode2( vector< pair< double, pair <int,int> > > & sortedPairs,
-//						 vector<double> & pairShifts,
-//						 vector<double> & pairCompensationShifts, int iTab);
+  void shiftPairs_mode2( vector< pair< double, pair <int,int> > > & sortedPairs,
+						 vector<double> & pairShifts,
+						 vector<double> & pairCompensationShifts, int iTab);
 
   // Miscellaneous functions
-  double compute_integral(double a_in, double b_in, double c, double d);
+  double compute_integral_with_phasespace(double a_in, double b_in, double c, double d);
+  double compute_integral_without_phasespace(double a_in, double b_in, double c);
+
+  // Compute pair density from CDF.
+  void set_pair_density(
+			vector< pair< double, pair <int,int> > > & sortedPairs,
+			vector<double> & denBar );
+
+  // Compute the unshifted pair integrals at each Qi.
+  void evaluate_shift_relation_at_Qi(
+			vector< pair< double, pair <int,int> > > & sortedPairs,
+			vector< pair< double, double > > & LHS,
+			vector< pair< double, double > > & RHS,
+			vector<double> & denBar, int iTab );
+
   ///===CJP(end)===
 
 };

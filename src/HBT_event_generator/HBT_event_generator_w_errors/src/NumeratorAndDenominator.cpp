@@ -451,7 +451,9 @@ void HBT_event_generator::Compute_numerator_and_denominator_momentum_space_only_
 	bool perform_random_shuffle = false;
 
 	int number_of_completed_events = 0;
-	err << "  * Computing numerator and denominator of correlation function with errors" << endl;
+	out << "  * Computing correlation function:" << endl
+		<< "  * - momentum-space only" << endl
+		<< "  * - 3D" << endl;
 
 	double average_Npair_numerator = 0.0;
 	double average_Nmixed_denominator = 0.0;
@@ -571,7 +573,8 @@ void HBT_event_generator::Compute_numerator_and_denominator_momentum_space_only_
 		vector<unsigned int> indices(allEvents.size());
 		iota(indices.begin(), indices.end(), 0);
 
-		if ( perform_random_shuffle )
+		if ( perform_random_shuffle
+			or n_mixing_events < (int)allEvents.size()-1 )
 			random_shuffle(indices.begin(), indices.end());
 		vector<int> mixedEvents;
 		for (int mix_idx = 0; mix_idx <= n_mixing_events; ++mix_idx)
