@@ -8,6 +8,7 @@
 #include "Pythia8/BoseEinstein.h"
 
 #include <ostream>
+#include <chrono>
 
 namespace Pythia8 {
 
@@ -22,7 +23,7 @@ namespace Pythia8 {
 
 ///===CJP(begin)===
 
-const int npts = 7;
+/*const int npts = 7;
 const double x_pts_7[7] = { -0.94910791234275852,
 							-0.741531185599394440,
 							-0.40584515137739717,
@@ -37,7 +38,40 @@ const double x_wts_7[7] = { 0.1294849661688696933,
 							0.4179591836734693878,
 							0.3818300505051189449,
 							0.2797053914892766679,
-							0.1294849661688696933 };
+							0.1294849661688696933 };*/
+
+const int npts = 15;
+const double x_pts_15[15] = { -0.98799251802048543,
+							  -0.93727339240070590,
+							  -0.84820658341042722,
+							  -0.72441773136017005,
+							  -0.57097217260853885,
+							  -0.39415134707756337,
+							  -0.20119409399743452,
+							  0.0,
+							  0.20119409399743452,
+							  0.39415134707756337,
+							  0.57097217260853885,
+							  0.7244177313601700,
+							  0.8482065834104272,
+							  0.9372733924007059,
+							  0.9879925180204854};
+
+const double x_wts_15[15] = { 0.03075324199611726835,
+							  0.07036604748810812471,
+							  0.10715922046717193501,
+							  0.1395706779261543144,
+							  0.1662692058169939336,
+							  0.1861610000155622110,
+							  0.1984314853271115765,
+							  0.2025782419255612729,
+							  0.1984314853271115765,
+							  0.1861610000155622110, 
+							  0.1662692058169939336,
+							  0.1395706779261543144,
+							  0.10715922046717193501,
+							  0.07036604748810812471,
+							  0.03075324199611726835};
 
 // Enumeration of id codes and table for particle species considered.
 const int    BoseEinstein::IDHADRON[9] = { 211, -211, 111, 321, -321,
@@ -202,6 +236,8 @@ bool BoseEinstein::shiftEvent( Event& event) {
   // Reset list of identical particles.
   hadronBE.resize(0);
 
+	auto start = std::chrono::system_clock::now();
+
   // Loop over all hadron species with BE effects.
   nStored[0] = 0;
   for (int iSpecies = 0; iSpecies < 9; ++iSpecies) {
@@ -249,7 +285,10 @@ bool BoseEinstein::shiftEvent( Event& event) {
 			{
 				bool enoughPairsToProceed = getSortedPairs( sortedPairs, iSpecies );
 				if ( enoughPairsToProceed )
+				{
+					cout << "BoseEinsteinCheck: NPair = " << sortedPairs.size()-2 << endl;
 					shiftPairs_mode2( sortedPairs, pairShifts, pairCompensationShifts, iTab );
+				}
 			}
 			break;
 		default:
@@ -257,6 +296,8 @@ bool BoseEinstein::shiftEvent( Event& event) {
 			break;
 	}
   }
+
+//cout << "Made it here (1)" << endl;
 
   // Must have at least two pairs to carry out compensation.
   if (nStored[9] < 2) return true;
@@ -269,9 +310,12 @@ bool BoseEinstein::shiftEvent( Event& event) {
 //cout << "(particle#=" << i << "): p = " << hadronBE[i].p;
 //cout << "(particle#=" << i << "): pShift = " << hadronBE[i].pShift;
     eSumOriginal  += hadronBE[i].p.e();
+/*cout    << setprecision(12) << setw(16)
+                << "Original p and pShift: " << i
+                << " (id=" << hadronBE[i].id << ")" << endl
+                << "p=" << hadronBE[i].p
+                << "pShift=" << hadronBE[i].pShift;*/
     hadronBE[i].p += hadronBE[i].pShift;
-/*cout 	<< setprecision(8)
-		<< "Original p and pShift: " << i << endl << "p=" << hadronBE[i].p << "pShift=" << hadronBE[i].pShift;*/
     hadronBE[i].p.e( sqrt( hadronBE[i].p.pAbs2() + hadronBE[i].m2 ) );
     eSumShifted   += hadronBE[i].p.e();
     eDiffByComp   += dot3( hadronBE[i].pComp, hadronBE[i].p)
@@ -286,6 +330,8 @@ cout 	<< setprecision(8)
 		<< COMPRELERR * eSumOriginal << "   " << COMPFACMAX * abs(eDiffByComp) << endl;*/
 
   }
+
+//cout << "Made it here (2)" << endl;
 
 
 /*cout 	<< setprecision(8)
@@ -322,16 +368,17 @@ cout 	<< setprecision(8)
     }
   }
 
+//cout << "Made it here (3)" << endl;
 
   // Error if no convergence, and then return without doing BE shift.
   // However, not grave enough to kill event, so return true.
   if ( abs(eSumShifted - eSumOriginal) > COMPRELERR * eSumOriginal ) {
     infoPtr->errorMsg("Warning in BoseEinstein::shiftEvent: "
       "no consistent BE shift topology found, so skip BE");
-cout << setprecision(16) << "This event did not pass! Check: " << abs(eSumShifted - eSumOriginal) << " < " << COMPRELERR * eSumOriginal << endl;
+cout << setprecision(16) << "BoseEinsteinCheck: This event did not pass! Check: " << abs(eSumShifted - eSumOriginal) << " < " << COMPRELERR * eSumOriginal << endl;
     return true;
   }
-else cout << setprecision(16) << "This event passes! Check: " << abs(eSumShifted - eSumOriginal) << " < " << COMPRELERR * eSumOriginal << endl;
+else cout << setprecision(16) << "BoseEinsteinCheck: This event passes! Check: " << abs(eSumShifted - eSumOriginal) << " < " << COMPRELERR * eSumOriginal << endl;
 
 
   // Store new particle copies with shifted momenta.
@@ -339,6 +386,11 @@ else cout << setprecision(16) << "This event passes! Check: " << abs(eSumShifted
     int iNew = event.copy( hadronBE[i].iPos, 99);
     event[ iNew ].p( hadronBE[i].p );
   }
+
+    auto end = std::chrono::system_clock::now();
+
+    std::chrono::duration<double> elapsed_seconds = end-start;
+std::cout << "BoseEinsteinCheck: elapsed time: " << elapsed_seconds.count() << " s" << endl;
 
   // Done.
   return true;
@@ -363,7 +415,7 @@ bool BoseEinstein::getSortedPairs(
 	for (int i2 = i1 + 1; i2 < nStored[iSpecies+1]; ++i2)
 		sortedPairs.push_back(
 			std::make_pair(
-				m2(hadronBE[i1].p, hadronBE[i2].p) - m2Pair[iTab],
+				sqrt( m2(hadronBE[i1].p, hadronBE[i2].p) - m2Pair[iTab] ),
 				std::make_pair(i1, i2)
 			)
 		);
@@ -862,32 +914,51 @@ double BoseEinstein::compute_integral_with_phasespace(double a_in, double b_in, 
 	// Computes integral given by Integrate[Q^2 j0[c Q] / Sqrt[Q^2 + d], {Q, a, b}]
 	double a = a_in, b = b_in, c = c_in, d = d_in;
 	double result = 0.0;
-	const double period = 2.0*M_PI/c;
 
-	// While limits contain more than one full period,
-	// do one period at a time
-	while ( b - a > period )
+	if ( a > 1000.0*d )	// do the integral approximately here
 	{
-		double a0 = a, a1 = a0 + period;
-		double hw = 0.5*period, cen = 0.5*(a0+a1);
-		for (int i = 0; i < npts; ++i)
-		{
-			double Qloc = cen + hw * x_pts_7[i];
-			result += hw * x_wts_7[i] * Qloc * sin(c*Qloc) / ( c*sqrt(Qloc*Qloc + d) );
-		}
-		a += period;
+		result = ( cos(a*c) - cos(b*c) ) / (c*c);
 	}
+	else
+	{
+		const double period = 2.0*M_PI/c;
+
+		// While limits contain more than one full period,
+		// do one period at a time
+		while ( b - a > period )
+		{
+			double a0 = a, a1 = a0 + period;
+			double hw = 0.5*period, cen = 0.5*(a0+a1);
+			for (int i = 0; i < npts; ++i)
+			{
+				double Qloc = cen + hw * x_pts_15[i];
+				result += hw * x_wts_15[i] * Qloc * sin(c*Qloc) / ( c*sqrt(Qloc*Qloc + d) );
+			}
+			a += period;
+		}
 	
-	// Finally, do remaining (fraction of a) period
-	{
-		double a0 = a, a1 = b;
-		double hw = 0.5*period, cen = 0.5*(a0+a1);
-		for (int i = 0; i < npts; ++i)
+		// Finally, do remaining (fraction of a) period
 		{
-			double Qloc = cen + hw * x_pts_7[i];
-			result += hw * x_wts_7[i] * Qloc * sin(c*Qloc) / ( c*sqrt(Qloc*Qloc + d) );
+			double a0 = a, a1 = b;
+			double hw = 0.5*(a1-a0), cen = 0.5*(a0+a1);
+			for (int i = 0; i < npts; ++i)
+			{
+				double Qloc = cen + hw * x_pts_15[i];
+				result += hw * x_wts_15[i] * Qloc * sin(c*Qloc) / ( c*sqrt(Qloc*Qloc + d) );
+			}
 		}
 	}
+
+/*
+cout << "Test integration: " << setprecision(12) << setw(16) << a_in << "   " << b_in << "   " << c_in << "   " << d_in;
+// Limit in which to do integral approximately
+if ( a_in > 1000.0*d_in )
+{
+	const double approximate_result = ( cos(a_in * c_in) - cos(b_in * c_in) ) / (c_in*c_in);
+	cout << "  COMPARE: " << result << "   " << approximate_result  << " (error of " << 100.0*(approximate_result-result)/result << "%)" << endl;
+}
+else
+	cout << "   " << result << endl;*/
 
 	return ( result );
 }
@@ -908,8 +979,8 @@ double BoseEinstein::compute_integral_without_phasespace(double a_in, double b_i
 		double hw = 0.5*period, cen = 0.5*(a0+a1);
 		for (int i = 0; i < npts; ++i)
 		{
-			double Qloc = cen + hw * x_pts_7[i];
-			result += hw * x_wts_7[i] * sphericalbesselj0(c*Qloc);
+			double Qloc = cen + hw * x_pts_15[i];
+			result += hw * x_wts_15[i] * sphericalbesselj0(c*Qloc);
 		}
 		a += period;
 	}
@@ -917,11 +988,11 @@ double BoseEinstein::compute_integral_without_phasespace(double a_in, double b_i
 	// Finally, do remaining (fraction of a) period
 	{
 		double a0 = a, a1 = b;
-		double hw = 0.5*period, cen = 0.5*(a0+a1);
+		double hw = 0.5*(a1-a0), cen = 0.5*(a0+a1);
 		for (int i = 0; i < npts; ++i)
 		{
-			double Qloc = cen + hw * x_pts_7[i];
-			result += hw * x_wts_7[i] * sphericalbesselj0(c*Qloc);
+			double Qloc = cen + hw * x_pts_15[i];
+			result += hw * x_wts_15[i] * sphericalbesselj0(c*Qloc);
 		}
 	}
 
@@ -944,7 +1015,8 @@ void BoseEinstein::set_pair_density(
 		denBar.push_back( 1.0 / ( sortedPairs[iPair+1].first - sortedPairs[iPair].first ) );
 	
 	// Density must go to zero eventually.
-	denBar.push_back( 0.0 );
+	//denBar.push_back( 0.0 );
+	denBar.back() = 0.0;
 
 	return;
 }
@@ -964,6 +1036,17 @@ void BoseEinstein::evaluate_shift_relation_at_Qi(
 	LHS.clear();
 	RHS.clear();
 
+//cout << "This is just a test: "
+//		<< compute_integral_with_phasespace( 1.0, 2.0, 3.0, 4.0 )
+//		<< endl;
+
+/*cout << "First check of sorted pairs:" << endl;
+for (const auto & thisPair : sortedPairs)
+	cout << thisPair.first << "   "
+		<< thisPair.second.first << "   "
+		<< thisPair.second.second << endl;
+cout << endl;*/
+
 	//------------------
 	// Set LHS integral.
 	int pairCount = 0;
@@ -974,27 +1057,32 @@ void BoseEinstein::evaluate_shift_relation_at_Qi(
 			auto nextPair = ( pairCount == (int)sortedPairs.size()-1 ) ? thisPair : *(&thisPair+1);
 			const double thisQ = thisPair.first;
 			const double nextQ = nextPair.first;
+
+			LHS.push_back( std::make_pair( thisQ, result ) );
+
 			const double this_sqrt_Q2_plus_4m2 = sqrt(thisQ*thisQ + m2Pair[iTab]);
 			const double next_sqrt_Q2_plus_4m2 = sqrt(nextQ*nextQ + m2Pair[iTab]);
 			const double this_antideriv = 0.5*thisQ*this_sqrt_Q2_plus_4m2 - 0.5*m2Pair[iTab]*log( thisQ + this_sqrt_Q2_plus_4m2 );
 			const double next_antideriv = 0.5*nextQ*next_sqrt_Q2_plus_4m2 - 0.5*m2Pair[iTab]*log( nextQ + next_sqrt_Q2_plus_4m2 );
 			result += denBar[pairCount] * ( next_antideriv - this_antideriv );
 
-			LHS.push_back( std::make_pair( thisQ, result ) );
 			pairCount++;
 		}
 	else
 		for (const auto & thisPair : sortedPairs)
 		{
+			LHS.push_back( std::make_pair( thisPair.first, result ) );
+
 			result += 1.0;	// denBar[pairCount] cancels
 
-			LHS.push_back( std::make_pair( thisPair.first, result ) );
 			pairCount++;
 		}
 
 	//------------------
 	// Set RHS integral.
 	pairCount = 0;
+	result = 0.0;
+//cout << "Start setting RHS" << endl;
 	if ( include_phase_space )
 		for (const auto & thisPair : sortedPairs)
 		{
@@ -1002,8 +1090,11 @@ void BoseEinstein::evaluate_shift_relation_at_Qi(
 			const double thisQ = thisPair.first;
 			const double nextQ = nextPair.first;
 
+//cout << "Check Qs: " << setprecision(12) << setw(16) << thisQ << "   " << nextQ << endl;
+
+			RHS.push_back( std::make_pair( thisQ, result ) );
+
 			const double one_by_N = 1.0 / static_cast<double>(sortedPairs.size() - 2);
-			//int jPair = 0;
 			for (const auto & eachPair : sortedPairs)
 			{
 				// Skip unphysical dummy pairs.
@@ -1016,6 +1107,8 @@ void BoseEinstein::evaluate_shift_relation_at_Qi(
 				Vec4 xDiffPRF = ( hadronBE[i1].x - hadronBE[i2].x ) * MM2FM / HBARC;
 				xDiffPRF.bstback( 0.5*(hadronBE[i1].p + hadronBE[i2].p) );
 				
+
+//cout << "Check Qs(again): " << setprecision(12) << setw(16) << thisQ << "   " << nextQ << endl;
 				// Add in physical results
 				result += one_by_N * denBar[pairCount]
 							* compute_integral_with_phasespace(
@@ -1023,9 +1116,8 @@ void BoseEinstein::evaluate_shift_relation_at_Qi(
 			}
 
 			// Reuse result from LHS integral.
-			result += LHS[pairCount].second;
+			//result += LHS[pairCount].second;	// Postpone to below
 
-			RHS.push_back( std::make_pair( thisQ, result ) );
 			pairCount++;
 		}
 	else
@@ -1035,8 +1127,9 @@ void BoseEinstein::evaluate_shift_relation_at_Qi(
 			const double thisQ = thisPair.first;
 			const double nextQ = nextPair.first;
 
+			RHS.push_back( std::make_pair( thisQ, result ) );
+
 			const double one_by_N = 1.0 / static_cast<double>(sortedPairs.size() - 2);
-			//int jPair = 0;
 			for (const auto & eachPair : sortedPairs)
 			{
 				// Skip unphysical dummy pairs.
@@ -1056,11 +1149,17 @@ void BoseEinstein::evaluate_shift_relation_at_Qi(
 			}
 
 			// Reuse result from LHS integral.
-			result += LHS[pairCount].second;
+			//result += LHS[pairCount].second;	// Postpone to below
 
-			RHS.push_back( std::make_pair( thisQ, result ) );
 			pairCount++;
 		}
+
+	// Add in constant piece to RHS result.
+	for (int iPair = 0; iPair < (int)LHS.size(); ++iPair)
+		RHS[iPair].second += LHS[iPair].second;
+
+//cout << "Done setting RHS" << endl;
+//if (1) exit(8);
 
 	return;
 }
@@ -1074,6 +1173,7 @@ void BoseEinstein::shiftPairs_mode2(
 					vector<double> & pairShifts,
 					vector<double> & pairCompensationShifts, int iTab)
 {
+
 	//--------------------------------
 	// Construct and set pair density.
 	vector<double> denBar;
@@ -1085,6 +1185,23 @@ void BoseEinstein::shiftPairs_mode2(
 	vector< pair< double, double > > LHS, RHS;
 	evaluate_shift_relation_at_Qi( sortedPairs, LHS, RHS, denBar, iTab );
 
+/*cout << "<<<============================================>>>" << endl;
+cout << "Check sizes: " << setprecision(12) << setw(16) << sortedPairs.size() << "   " << LHS.size() << "   " << RHS.size() << "   " << denBar.size() << endl;
+cout << "Check sortedPairs: " << endl;
+for (const auto & iPair : sortedPairs) cout << iPair.first << "   " << iPair.second.first << "   " << iPair.second.second << endl;
+cout << "Check LHS: " << endl;
+for (const auto & iLHS : LHS) cout << iLHS.first << "   " << iLHS.second << endl;
+cout << "Check RHS: " << endl;
+for (const auto & iRHS : RHS) cout << iRHS.first << "   " << iRHS.second << endl;
+cout << "Check denBar: " << endl;
+for (const auto & iPair : denBar) cout << iPair << endl;
+cout << "<<<============================================>>>" << endl;*/
+
+//if (1) exit (8);
+
+	// keep track of which pairs are shifted
+	int n_skipped_pairs = 0;
+	vector<bool> this_pair_shifted(sortedPairs.size()-2, false);
 
 	// -------------------------------------------
 	// Finally, get shifts for each physical pair.
@@ -1098,27 +1215,37 @@ void BoseEinstein::shiftPairs_mode2(
 		double RHS_lower = RHS[thisPair].second;
 		double RHS_upper = RHS[thisPair+1].second;
 
+//cout << "Test: " << Q0 << "   " << iPair << "   " << iPair1 << "   " << iPair2 << "   " << RHS_lower << "   " << thisPairLHS << "   " << RHS_upper << endl;
 
 		//--------------------------------------------
 		// Find RHS interval which contains LHS value.
-		while ( RHS_lower > thisPairLHS )
+		while ( RHS_lower > thisPairLHS
+			and thisPair >= 0 )
 		{
 			// shift to the left
 			RHS_lower = RHS[--thisPair].second;
 			RHS_upper = RHS[thisPair+1].second;
 		}
-		while ( RHS_upper < thisPairLHS )
+		while ( RHS_upper < thisPairLHS
+			and thisPair < (int)RHS.size()-1)
 		{
 			// shift to the right
 			RHS_lower = RHS[++thisPair].second;
 			RHS_upper = RHS[thisPair+1].second;
 		}
 
+//cout << "Test again: " << Q0 << "   " << iPair << "   " << iPair1 << "   " << iPair2 << "   " << RHS_lower << "   " << thisPairLHS << "   " << RHS_upper << endl;
+//if (1) exit(8);
 
 		//-------------------------------------------------
 		// If search ended up out of range, skip this pair.
-		if ( thisPair < 0 )
-			break;
+		if ( thisPair < 0 or thisPair > (int)sortedPairs.size() - 2 )
+		{
+			n_skipped_pairs++;
+			continue;
+		}
+
+//cout << "Test thisPair = " << thisPair << "   " << sortedPairs.size() << endl;
 
 		const double leftQ = sortedPairs.at(thisPair).first;
 		const double rightQ = sortedPairs.at(thisPair+1).first;
@@ -1131,19 +1258,32 @@ void BoseEinstein::shiftPairs_mode2(
 		constexpr int MAXTRIES = 10;
 		double RHSi = RHS_lower;
 		double RHSnew = RHS_upper;
-		const double c0 = thisPairLHS - RHS_lower;	// Initial deviation
+		const double c0 = thisPairLHS;	// The target value
 		double Qi = leftQ;
 		double Qnew = rightQ;
 		int ntries = 0;
 		if ( include_phase_space )
 			while ( abs( RHSnew - c0 ) > ACCURACY and ntries < MAXTRIES )
 			{
+				//cout << "with phase space: ntries = " << ntries << endl;
+
+				//-----------------------------
+				// Set RHSnew to left endpoint.
+				RHSnew = RHSi;
+
+				//---------------------------------------
+				// Add in the constant phase space piece.
 				const double sqrt_Q2_plus_4m2 = sqrt(Qnew*Qnew + m2Pair[iTab]);
+				const double sqrt_Qi2_plus_4m2 = sqrt(Qi*Qi + m2Pair[iTab]);
 				const double PSfactor = Qnew*Qnew / sqrt_Q2_plus_4m2;
-				double deriv = PSfactor;
-				RHSnew = thisdenBar * ( 0.5*Qnew*sqrt_Q2_plus_4m2
-							- 0.5*m2Pair[iTab]*log( Qnew + sqrt_Q2_plus_4m2 ) )
-						 - RHSi;
+				double deriv = thisdenBar * PSfactor;
+				RHSnew += thisdenBar * (
+							0.5*Qnew*sqrt_Q2_plus_4m2 - 0.5*m2Pair[iTab]*log( Qnew + sqrt_Q2_plus_4m2 )
+							-0.5*Qi*sqrt_Qi2_plus_4m2 + 0.5*m2Pair[iTab]*log( Qi + sqrt_Qi2_plus_4m2 )
+								);
+
+				//---------------------------------
+				// Add in the BE enhancement piece.
 				for (const auto & eachPair : sortedPairs)
 				{
 					// Skip unphysical dummy pairs.
@@ -1155,6 +1295,8 @@ void BoseEinstein::shiftPairs_mode2(
 					const int i2 = eachPair.second.second;
 					Vec4 xDiffPRF = ( hadronBE[i1].x - hadronBE[i2].x ) * MM2FM / HBARC;
 					xDiffPRF.bstback( 0.5*(hadronBE[i1].p + hadronBE[i2].p) );
+
+//cout << "Physical pairs: " << eachPair.first << "   " << xDiffPRF.pAbs() << endl;
 			
 					// Add in physical results
 					const double xDiff = xDiffPRF.pAbs();
@@ -1166,6 +1308,7 @@ void BoseEinstein::shiftPairs_mode2(
 					//pairCount++;
 				}
 
+				//cout << "NR method: " << Qnew << "   " << RHSnew << "   " << deriv << "   " << c0 << endl;	
 				Qnew -= (RHSnew - c0) / deriv;
 
 				ntries++;
@@ -1173,8 +1316,21 @@ void BoseEinstein::shiftPairs_mode2(
 		else
 			while ( abs( RHSnew - c0 ) > ACCURACY and ntries < MAXTRIES )
 			{
-				double deriv = 1.0;
-				RHSnew = thisdenBar * Qnew - RHSi;
+				//cout << "without phase space: ntries = " << ntries << endl;
+
+				//-----------------------------
+				// Set RHSnew to left endpoint.
+				RHSnew = RHSi;
+
+
+				//---------------------------------------
+				// Add in the constant phase space piece.
+				double deriv = thisdenBar;
+				RHSnew += thisdenBar * ( Qnew - Qi );
+
+
+				//---------------------------------
+				// Add in the BE enhancement piece.
 				for (const auto & eachPair : sortedPairs)
 				{
 					// Skip unphysical dummy pairs.
@@ -1196,6 +1352,7 @@ void BoseEinstein::shiftPairs_mode2(
 					//pairCount++;
 				}
 
+				//cout << "NR method: " << Qnew << "   " << RHSnew << "   " << deriv << "   " << c0 << endl;	
 				Qnew -= (RHSnew - c0) / deriv;
 
 				ntries++;
@@ -1204,28 +1361,48 @@ void BoseEinstein::shiftPairs_mode2(
 
 		//-------------------------------------------
 		// Store results based on size of BE effects.
-		const double arg = ( hadronBE[iPair1].p - hadronBE[iPair2].p )
-							* ( hadronBE[iPair1].x - hadronBE[iPair2].x )
-							* MM2FM / HBARC;
+		Vec4 p1 = hadronBE[iPair1].p;
+		Vec4 p2 = hadronBE[iPair2].p;
+		Vec4 x1 = hadronBE[iPair1].x;
+		Vec4 x2 = hadronBE[iPair2].x;
+		const double arg = ( p1 - p2 ) * ( x1 - x2 ) * MM2FM / HBARC;
+		Vec4 xDiffPRF = ( x1 - x2 ) * MM2FM / HBARC;
+		xDiffPRF.bstback( 0.5*(p1 + p2) );
+
+		/*Vec4 qLocPRF = p1 - p2;
+		qLocPRF.bstback( 0.5*(p1 + p2) );
+		cout << setprecision(12) << setw(16) << " --> Checks Q: " << Q0 << "   " << sqrt(abs(( p1 - p2 ) * ( p1 - p2 ))) << endl;
+		cout << " --> Check qLocPRF: " << qLocPRF;
+		cout << " --> Check xDiffPRF: " << xDiffPRF;
+		cout << " --> Check arg: " << arg << "   " << qLocPRF*xDiffPRF << endl;*/
+
 		// Do this for shifts and compensation shifts together
-		if ( abs(arg) > 16.0 * M_PI )
+		/*if ( abs(arg) > 16.0 * M_PI )
 		{
 			pairShifts.push_back( 0.0 );
 			pairCompensationShifts.push_back( Qnew - Q0 );
 		}
-		else
-		{
+		else*/
+		//{
 			pairShifts.push_back( Qnew - Q0 );
 			pairCompensationShifts.push_back( 0.0 );
-		}
+		//}
+		cout << "BoseEinsteinCheck: CHECK args: "
+				<< arg << "   " << Q0 << "   " << xDiffPRF.pAbs() << "   " << Q0*xDiffPRF.pAbs()
+				<< "; shift is " << Qnew - Q0 << " of " << Q0 << endl;
+
+		this_pair_shifted[iPair-1] = true;
 
 	}
 
+	cout << "BoseEinsteinCheck: n_skipped_pairs = " << n_skipped_pairs << endl;
+
+
+//if (1) exit(8);
 
 
 
-
-
+//cout << "MAde it ere..." << endl;
 
 
 
@@ -1236,12 +1413,15 @@ void BoseEinstein::shiftPairs_mode2(
 	int pairIndex = 0;
 	for (const auto & iPair : sortedPairs)
 	{
+
 		const int i1 	   = iPair.second.first;
 		const int i2 	   = iPair.second.second;
 		const double Qold  = iPair.first;
 		double Qnew  = Qold + pairShifts[pairIndex];
 		const double Q2old = Qold*Qold;
 		double Q2new = Qnew*Qnew;
+
+//cout << "Check shifting: Qold = " << Qold << ", Qnew = " << Qnew << endl;
 
 		// Calculate corresponding three-momentum shift.
 		double Q2Diff    = Q2new - Q2old;
@@ -1284,6 +1464,8 @@ void BoseEinstein::shiftPairs_mode2(
 		pairIndex++;
 
 	}
+
+//cout << "Finished here" << endl;
 
 	return;
 }
