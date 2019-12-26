@@ -56,7 +56,7 @@ public:
     x1GammaSave(), x2GammaSave(), Q2Gamma1Save(), Q2Gamma2Save(), eCMsubSave(),
     thetaLepton1(), thetaLepton2(), sHatNewSave(), mVMDASave(), mVMDBSave(),
     scaleVMDASave(), scaleVMDBSave(), counters(), weightCKKWLSave(1.),
-    weightFIRSTSave(0.) {
+    weightFIRSTSave(0.), hasBECShiftsEvent(false) {
     for (int i = 0; i < 40; ++i) counters[i] = 0;
     setNWeights(1);}
 
@@ -154,6 +154,11 @@ public:
   double mVMDB()              const {return mVMDBSave;}
   double scaleVMDA()          const {return scaleVMDASave;}
   double scaleVMDB()          const {return scaleVMDBSave;}
+
+//<<<===BEGIN CP===>>>
+  // Information on success of Bose-Einstein shifts (false if not used)
+  bool   hasBECShifts()       const {return hasBECShiftsEvent;}
+//<<<===END CP===>>>
 
   // Mandelstam variables (notation as if subcollision).
   double mHat(int i = 0)      const {return sqrt(sH[i]);}
@@ -515,6 +520,9 @@ public:
          thetaLepton1, thetaLepton2, sHatNewSave, mVMDASave, mVMDBSave,
          scaleVMDASave, scaleVMDBSave;
 
+  // Variables for Bose-Einstein shifts
+  bool   hasBECShiftsEvent;
+
   // Vector of various loop counters.
   int    counters[50];
 
@@ -572,6 +580,9 @@ public:
   void setVMDstateB(bool isVMDBIn, int idBIn, double mBIn, double scaleBIn)
     {isVMDstateBEvent = isVMDBIn; idVMDBSave = idBIn; mVMDBSave = mBIn;
     scaleVMDBSave = scaleBIn;}
+
+  // Set info related to Bose-Einstein shifts
+  void setBECShifts( double hasBECShiftsIn) { hasBECShifts = hasBECShiftsIn; }
 
   // Reset info for current event: only from Pythia class.
   void clear() {

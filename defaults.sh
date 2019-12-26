@@ -24,9 +24,8 @@ bMax="20.0"
 # BE and related specifications
 QRefValue="0.2"			# GeV
 BEeffects='off'
-BEEnhancementMode='2'	# 0 - use fixed QRef
-						# 1 - use ST interval with Gaussian BE form
-						# 2 - use ST interval with spherical Bessel BE form
+BEEnhancementMode='1'	# 0 - use fixed QRef
+						# 1 - use ST interval with spherical Bessel BE form
 SetFragmentationVertices='on'
 SetPartonVertices='off'
 ThermalOnly='false'

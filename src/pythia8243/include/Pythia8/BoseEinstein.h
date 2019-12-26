@@ -110,9 +110,6 @@ private:
   void shiftPairs_mode1( vector< pair< double, pair <int,int> > > & sortedPairs,
 						 vector<double> & pairShifts,
 						 vector<double> & pairCompensationShifts, int iTab);
-  void shiftPairs_mode2( vector< pair< double, pair <int,int> > > & sortedPairs,
-						 vector<double> & pairShifts,
-						 vector<double> & pairCompensationShifts, int iTab);
 
   // Miscellaneous functions
   double compute_integral_with_phasespace(double a_in, double b_in, double c, double d);

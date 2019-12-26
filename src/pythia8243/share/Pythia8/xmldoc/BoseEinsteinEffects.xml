@@ -115,7 +115,7 @@ lab frame.
 </flag>
 
 <!--CJP(begin)-->
-<parm name="BoseEinstein:enhanceMode" default="0" min="0" max="2"> 
+<parm name="BoseEinstein:enhanceMode" default="0" min="0" max="1"> 
 A parameter to specify how the Bose-Einstein effects are modeled;
 a value of "0" corresponds to the default method with a constant
 choice of QRef which sets the scale for the effects, whereas a
