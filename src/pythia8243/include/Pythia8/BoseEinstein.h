@@ -76,7 +76,8 @@ private:
   // Initialization data, read from Settings.
   bool   doPion, doKaon, doEta, useInvariantSize,
          useDistribution, useRelativeDistance, useRestFrame,
-		 include_phase_space, linear_interpolate_CDF;
+		 include_phase_space, linear_interpolate_CDF,
+		 include_posDelQ_in_compensation;
   ///===CJP(begin)===
   int sourceDimension;
   double lambda, QRef, RRef;

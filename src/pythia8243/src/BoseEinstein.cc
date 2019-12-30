@@ -110,8 +110,8 @@ bool BoseEinstein::init(Info* infoPtrIn, Settings& settings,
   useRelativeDistance 	 = settings.flag("BoseEinstein:useRelativeDistance");
   useRestFrame 			 = settings.flag("BoseEinstein:useRestFrame");
   include_phase_space	 = true;	// for right now
-  linear_interpolate_CDF = true;	// for right now
-
+  linear_interpolate_CDF = false;	// for right now
+  include_posDelQ_in_compensation   = true;
 
   // Shape of Bose-Einstein enhancement/suppression.
   lambda 				= settings.parm("BoseEinstein:lambda");
@@ -1203,7 +1203,10 @@ if (1) return;*/
 				<< Qnew - Q0 << " of " << Q0 << endl;
 
 //cout << "Line = " << __LINE__ << endl;
-		this_pair_shifted.at(iPair-1) = true;
+		// Shift pairs closer together; use pairs
+		// shifted further away to compensate.
+		if ( not include_posDelQ_in_compensation or Qnew <= Q0 )
+			this_pair_shifted.at(iPair-1) = true;
 //cout << "Line = " << __LINE__ << endl;
 
 	}
