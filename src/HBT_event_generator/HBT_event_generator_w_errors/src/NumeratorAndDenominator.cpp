@@ -517,13 +517,13 @@ void HBT_event_generator::Compute_numerator_and_denominator_momentum_space_only_
 			double ql = qz;
 
 			// Get indices
-			int KT_idx 	= floor((KT - KT_min)/KT_bin_width);
+			int KT_idx 	 = floor((KT - KT_min)/KT_bin_width);
 			int Kphi_idx = floor((Kphi - Kphi_min)/Kphi_bin_width);
-			int KL_idx 	= floor((Kz - KL_min)/KL_bin_width);
+			int KL_idx 	 = floor((Kz - KL_min)/KL_bin_width);
 
-			int qo_idx 	= floor((qo - qo_min) / delta_qo);
-			int qs_idx 	= floor((qs - qs_min) / delta_qs);
-			int ql_idx 	= floor((ql - ql_min) / delta_ql);
+			int qo_idx 	 = floor((qo - qo_min) / delta_qo);
+			int qs_idx 	 = floor((qs - qs_min) / delta_qs);
+			int ql_idx 	 = floor((ql - ql_min) / delta_ql);
 
 			// Momentum-space cuts
 			if ( KT_idx < 0 or KT_idx >= n_KT_bins )
@@ -565,7 +565,8 @@ void HBT_event_generator::Compute_numerator_and_denominator_momentum_space_only_
 		//========= Doing denominator =========
 		//=====================================
 
-		// Randomly sample events to mix with
+		//------------------------------------
+		// Randomly sample events to mix with.
 		const unsigned int n_mixing_events = min( (int)allEvents.size()-1, n_mix_minimum );
 		//const unsigned int n_mixing_events = allEvents.size()-1;
 		//const unsigned int n_mixing_events = 100;
@@ -584,6 +585,8 @@ void HBT_event_generator::Compute_numerator_and_denominator_momentum_space_only_
 				mixedEvents.push_back( indices[mix_idx] );
 			}
 
+		//--------------------------------
+		// Randomly rotate sampled events.
 		vector<double> random_angles(n_mixing_events, 0.0), cos_rand_angles, sin_rand_angles;
 		if ( perform_random_rotation )
 			get_random_angles(n_mixing_events, random_angles);
@@ -593,7 +596,8 @@ void HBT_event_generator::Compute_numerator_and_denominator_momentum_space_only_
 			sin_rand_angles.push_back( sin( random_angles[mix_idx] ) );
 		}
 
-		// Loop over mixed events
+		//------------------------
+		// Loop over mixed events.
 		for (int jEvent = 0; jEvent < mixedEvents.size(); ++jEvent)
 		{
 			EventRecord mixedEvent = allEvents[mixedEvents[jEvent]];
@@ -601,7 +605,8 @@ void HBT_event_generator::Compute_numerator_and_denominator_momentum_space_only_
 			double c_rand_phi = cos_rand_angles[jEvent],
 					s_rand_phi = sin_rand_angles[jEvent];
 
-			// Sum over pairs of particles
+			//-----------------------------
+			// Sum over pairs of particles.
 			for (int iParticle = 0; iParticle < event.particles.size(); ++iParticle)
 			for (int jParticle = 0; jParticle < mixedEvent.particles.size(); ++jParticle)
 			{
@@ -611,7 +616,8 @@ void HBT_event_generator::Compute_numerator_and_denominator_momentum_space_only_
 
 				double Ei = pi.E, pix = pi.px, piy = pi.py, piz = pi.pz;
 
-				// Randomly rotate the mixed event in transverse plane
+				//-----------------------------------------------------
+				// Randomly rotate the mixed event in transverse plane.
 				double Ej = pj.E,
 						pjx = pj.px*c_rand_phi - pj.py*s_rand_phi,
 						pjy = pj.px*s_rand_phi + pj.py*c_rand_phi,

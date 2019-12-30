@@ -303,11 +303,11 @@ bool BoseEinstein::shiftEvent( Event& event) {
 //cout << "(particle#=" << i << "): p = " << hadronBE[i].p;
 //cout << "(particle#=" << i << "): pShift = " << hadronBE[i].pShift;
     eSumOriginal  += hadronBE[i].p.e();
-/*cout    << setprecision(12) << setw(16)
+cout    << setprecision(12) << setw(16)
                 << "Original p and pShift: " << i
                 << " (id=" << hadronBE[i].id << ")" << endl
                 << "p=" << hadronBE[i].p
-                << "pShift=" << hadronBE[i].pShift;*/
+                << "pShift=" << hadronBE[i].pShift;
     hadronBE[i].p += hadronBE[i].pShift;
     hadronBE[i].p.e( sqrt( hadronBE[i].p.pAbs2() + hadronBE[i].m2 ) );
     eSumShifted   += hadronBE[i].p.e();
@@ -370,14 +370,14 @@ cout 	<< setprecision(8)
       "no consistent BE shift topology found, so skip BE");
 	cout << setprecision(16) << "BoseEinsteinCheck: This event did not pass! Check: "
 			<< abs(eSumShifted - eSumOriginal) << " < " << COMPRELERR * eSumOriginal << endl;
-	infoPtr->setBEShifts( false );
+	infoPtr->setBECShifts( false );
     return true;
   }
   else
   {
 	cout << setprecision(16) << "BoseEinsteinCheck: This event passes! Check: "
 			<< abs(eSumShifted - eSumOriginal) << " < " << COMPRELERR * eSumOriginal << endl;
-	infoPtr->setBEShifts( true );
+	infoPtr->setBECShifts( true );
   }
 
 
@@ -935,7 +935,7 @@ void BoseEinstein::shiftPairs_mode1(
 	// Set LHS and RHS of shift relation at each pair Q.
 	vector< pair< double, double > > LHS, RHS;
 	evaluate_shift_relation_at_Qi( sortedPairs, LHS, RHS, denBar, iTab );
-/*
+///*
 cout << "<<<============================================>>>" << endl;
 cout << "Check sizes: " << setprecision(12) << setw(16) << sortedPairs.size() << "   " << LHS.size() << "   " << RHS.size() << "   " << denBar.size() << endl;
 cout << "Check sortedPairs: " << endl;
@@ -969,7 +969,7 @@ for (const auto & eachPair : sortedPairs)
 	//}
 }
 cout << "<<<============================================>>>" << endl;
-*/
+//*/
 /*double currentQ = 0.0;
 for (int iQ = 0; iQ < (int)effSource.size(); iQ++)
 {

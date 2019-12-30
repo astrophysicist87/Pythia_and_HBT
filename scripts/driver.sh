@@ -132,7 +132,7 @@ do
 			# New Pythia options, flags, parameters, etc.
 			# which I've added myself (not generally compatible yet)
 			# Comment out lines below this one if running on unmodified Pythia
-			#echo 'BoseEinstein:enhanceMode =' $BEEnhancementMode >> main_BEeffects.cmnd
+			echo 'BoseEinstein:enhanceMode =' $BEEnhancementMode >> main_BEeffects.cmnd
 
 			# time and run
 			if $useArbitraryParticle
@@ -222,9 +222,9 @@ do
 				# BE_mode value for enhancement mode = 0 or 1
 				chosen_BE_mode=1
 				# handle the special case
-			    if [ "$BEEnhancementMode" == "2" ]; then
-					chosen_BE_mode=2
-				fi
+			    #if [ "$BEEnhancementMode" == "2" ]; then
+				#	chosen_BE_mode=2
+				#fi
 		fi
 
 		# time and run

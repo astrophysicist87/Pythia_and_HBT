@@ -520,9 +520,6 @@ public:
          thetaLepton1, thetaLepton2, sHatNewSave, mVMDASave, mVMDBSave,
          scaleVMDASave, scaleVMDBSave;
 
-  // Variables for Bose-Einstein shifts
-  bool   hasBECShiftsEvent;
-
   // Vector of various loop counters.
   int    counters[50];
 
@@ -555,6 +552,7 @@ public:
   friend class GammaKinematics;
   friend class HeavyIons;
   friend class SigmaTotal;
+  friend class BoseEinstein;
 
   // Set info on the two incoming beams: only from Pythia class.
   void setBeamA( int idAin, double pzAin, double eAin, double mAin) {
@@ -582,7 +580,7 @@ public:
     scaleVMDBSave = scaleBIn;}
 
   // Set info related to Bose-Einstein shifts
-  void setBECShifts( double hasBECShiftsIn) { hasBECShifts = hasBECShiftsIn; }
+  void setBECShifts( bool hasBECShiftsIn ) { hasBECShiftsEvent = hasBECShiftsIn; }
 
   // Reset info for current event: only from Pythia class.
   void clear() {
@@ -719,6 +717,9 @@ public:
 
   // Save merging weight (i.e.  CKKW-L-type weight, summed O(\alpha_s) weight).
   double weightCKKWLSave, weightFIRSTSave;
+
+  // Variables for Bose-Einstein shifts.
+  bool   hasBECShiftsEvent;
 
   // Set info on resolved processes.
   void setIsResolved(bool isResIn) {isRes = isResIn;}
