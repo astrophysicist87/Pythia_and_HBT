@@ -111,7 +111,7 @@ bool BoseEinstein::init(Info* infoPtrIn, Settings& settings,
   useRestFrame 			 = settings.flag("BoseEinstein:useRestFrame");
   include_phase_space	 = true;	// for right now
   linear_interpolate_CDF = false;	// for right now
-  include_posDelQ_in_compensation   = true;
+  include_posDelQ_in_compensation   = false;
 
   // Shape of Bose-Einstein enhancement/suppression.
   lambda 				= settings.parm("BoseEinstein:lambda");
@@ -279,7 +279,7 @@ bool BoseEinstein::shiftEvent( Event& event) {
 				bool enoughPairsToProceed = getSortedPairs( sortedPairs, iSpecies );
 				if ( enoughPairsToProceed )
 				{
-					cout << "BoseEinsteinCheck: NPair = " << sortedPairs.size()-2 << endl;
+					//cout << "BoseEinsteinCheck: NPair = " << sortedPairs.size()-2 << endl;
 					shiftPairs_mode1( sortedPairs, pairShifts, pairCompensationShifts, iTab );
 				}
 			}
@@ -303,11 +303,11 @@ bool BoseEinstein::shiftEvent( Event& event) {
 //cout << "(particle#=" << i << "): p = " << hadronBE[i].p;
 //cout << "(particle#=" << i << "): pShift = " << hadronBE[i].pShift;
     eSumOriginal  += hadronBE[i].p.e();
-cout    << setprecision(12) << setw(16)
+/*cout    << setprecision(12) << setw(16)
                 << "Original p and pShift: " << i
                 << " (id=" << hadronBE[i].id << ")" << endl
                 << "p=" << hadronBE[i].p
-                << "pShift=" << hadronBE[i].pShift;
+                << "pShift=" << hadronBE[i].pShift;*/
     hadronBE[i].p += hadronBE[i].pShift;
     hadronBE[i].p.e( sqrt( hadronBE[i].p.pAbs2() + hadronBE[i].m2 ) );
     eSumShifted   += hadronBE[i].p.e();
@@ -369,14 +369,14 @@ cout 	<< setprecision(8)
     infoPtr->errorMsg("Warning in BoseEinstein::shiftEvent: "
       "no consistent BE shift topology found, so skip BE");
 	cout << setprecision(16) << "BoseEinsteinCheck: This event did not pass! Check: "
-			<< abs(eSumShifted - eSumOriginal) << " < " << COMPRELERR * eSumOriginal << endl;
+			<< abs(eSumShifted - eSumOriginal) << " < " << COMPRELERR * eSumOriginal << "\n";
 	infoPtr->setBECShifts( false );
     return true;
   }
   else
   {
 	cout << setprecision(16) << "BoseEinsteinCheck: This event passes! Check: "
-			<< abs(eSumShifted - eSumOriginal) << " < " << COMPRELERR * eSumOriginal << endl;
+			<< abs(eSumShifted - eSumOriginal) << " < " << COMPRELERR * eSumOriginal << "\n";
 	infoPtr->setBECShifts( true );
   }
 
@@ -390,7 +390,7 @@ cout 	<< setprecision(8)
     auto end = std::chrono::system_clock::now();
 
     std::chrono::duration<double> elapsed_seconds = end-start;
-std::cout << "BoseEinsteinCheck: elapsed time: " << elapsed_seconds.count() << " s" << endl;
+std::cout << "BoseEinsteinCheck: elapsed time: " << elapsed_seconds.count() << " s" << "\n";
 
   // Done.
   return true;
@@ -923,7 +923,7 @@ void BoseEinstein::shiftPairs_mode1(
 					vector<double> & pairShifts,
 					vector<double> & pairCompensationShifts, int iTab)
 {
-	auto start = std::chrono::system_clock::now();
+//	auto start = std::chrono::system_clock::now();
 
 	//--------------------------------
 	// Construct and set pair density.
@@ -935,7 +935,7 @@ void BoseEinstein::shiftPairs_mode1(
 	// Set LHS and RHS of shift relation at each pair Q.
 	vector< pair< double, double > > LHS, RHS;
 	evaluate_shift_relation_at_Qi( sortedPairs, LHS, RHS, denBar, iTab );
-///*
+/*
 cout << "<<<============================================>>>" << endl;
 cout << "Check sizes: " << setprecision(12) << setw(16) << sortedPairs.size() << "   " << LHS.size() << "   " << RHS.size() << "   " << denBar.size() << endl;
 cout << "Check sortedPairs: " << endl;
@@ -969,7 +969,7 @@ for (const auto & eachPair : sortedPairs)
 	//}
 }
 cout << "<<<============================================>>>" << endl;
-//*/
+*/
 /*double currentQ = 0.0;
 for (int iQ = 0; iQ < (int)effSource.size(); iQ++)
 {
@@ -1199,8 +1199,8 @@ if (1) return;*/
 			pairShifts.push_back( Qnew - Q0 );
 			pairCompensationShifts.push_back( 0.0 );
 		//}
-		cout << "BoseEinsteinCheck: CHECK shift is "
-				<< Qnew - Q0 << " of " << Q0 << endl;
+//		cout << "BoseEinsteinCheck: CHECK shift is "
+//				<< Qnew - Q0 << " of " << Q0 << endl;
 
 //cout << "Line = " << __LINE__ << endl;
 		// Shift pairs closer together; use pairs
@@ -1211,7 +1211,7 @@ if (1) return;*/
 
 	}
 
-	cout << "BoseEinsteinCheck: n_skipped_pairs = " << n_skipped_pairs << endl;
+//	cout << "BoseEinsteinCheck: n_skipped_pairs = " << n_skipped_pairs << endl;
 
 
 //if (1) exit(8);
@@ -1291,10 +1291,10 @@ if (1) return;*/
 	}
 
 //cout << "Finished here" << endl;
-	auto end = std::chrono::system_clock::now();
+//	auto end = std::chrono::system_clock::now();
 
-    std::chrono::duration<double> elapsed_seconds = end-start;
-	std::cout << "BoseEinsteinCheck: spent " << elapsed_seconds.count() << "s in " << __FUNCTION__ << endl;
+//    std::chrono::duration<double> elapsed_seconds = end-start;
+//	std::cout << "BoseEinsteinCheck: spent " << elapsed_seconds.count() << "s in " << __FUNCTION__ << endl;
 
 
 	return;
