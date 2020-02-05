@@ -229,14 +229,14 @@ void generate_events_v2(vector<EventRecord> & allEvents, ParameterReader * paraR
 		double KTmin = paraRdr->getVal("KTmin");
 		double KTmax = paraRdr->getVal("KTmax");
 
-		const double TFO = 0.12;										// FO temp of 120 MeV
+		const double TFO = 0.12;                                                      // FO temp of 120 MeV
 
-		normal_distribution<double> distribution( 0.0, 1.0/sqrt(2.0) );	// rescale by variable source radius
+		normal_distribution<double> distribution( 0.0, 1.0/sqrt(2.0) );               // rescale by variable source radius
 		//uniform_real_distribution<double> KPhi_distribution( 0.0, 2.0*M_PI );
-		//exponential_distribution<double> KT_distribution( 1.0 / TFO );		// set width from FO temp
+		//exponential_distribution<double> KT_distribution( 1.0 / TFO );		      // set width from FO temp
 		//uniform_real_distribution<double> KT_distribution( KTmin, KTmax );
-		//weibull_distribution<double> weird_KT_distribution( 2.0, sqrt(2.0)*TFO );			// Weibull corresponds to distribution
-																				// of magnitude of two normal R.V.s
+		//weibull_distribution<double> weird_KT_distribution( 2.0, sqrt(2.0)*TFO );     // Weibull corresponds to distribution
+                                                                                      // of magnitude of two normal R.V.s
 		//uniform_real_distribution<double> KL_distribution( KLmin, KLmax );
 
 		// set some emission function parameters

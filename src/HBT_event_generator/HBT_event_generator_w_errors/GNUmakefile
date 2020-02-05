@@ -38,40 +38,71 @@ ifeq "$(MAIN)" ""
 MAIN		=	run_HBT_event_generator.e
 endif
 
-SRC		=	main.cpp \
-			$(SRCDIR)/Arsenal.cpp \
-			$(SRCDIR)/ParameterReader.cpp \
-			$(SRCDIR)/gauss_quadrature.cpp \
-			$(SRCDIR)/NumeratorAndDenominator.cpp \
-			$(SRCDIR)/NumeratorAndDenominator1D.cpp \
-			$(SRCDIR)/NumeratorAndDenominator1D_rotInv.cpp \
-			$(SRCDIR)/NumeratorAndDenominator_wBA.cpp \
-			$(SRCDIR)/NumeratorAndDenominator1D_wBA.cpp \
-			$(SRCDIR)/NumeratorAndDenominator1D_rotInv_wBA.cpp \
-			$(SRCDIR)/HBT_event_generator.cpp
-			#$(SRCDIR)/SingleParticleSpectra.cpp
+ifeq "$(CHECKS)" ""
+CHECKS		=	run_checks.e
+endif
 
-INC		= 	main.h \
-			$(SRCDIR)/EventRecord.h \
-			$(SRCDIR)/ParticleRecord.h \
-			$(SRCDIR)/Stopwatch.h \
-			$(SRCDIR)/Arsenal.h \
-			$(SRCDIR)/ParameterReader.h \
-			$(SRCDIR)/gauss_quadrature.h \
-			$(SRCDIR)/ensemble.h \
-			$(SRCDIR)/random_events.h \
-			$(SRCDIR)/estimate_error.h \
-			$(SRCDIR)/HBT_event_generator.h
+SRC			=	main.cpp \
+				$(SRCDIR)/Arsenal.cpp \
+				$(SRCDIR)/ParameterReader.cpp \
+				$(SRCDIR)/gauss_quadrature.cpp \
+				$(SRCDIR)/NumeratorAndDenominator.cpp \
+				$(SRCDIR)/NumeratorAndDenominator1D.cpp \
+				$(SRCDIR)/NumeratorAndDenominator1D_rotInv.cpp \
+				$(SRCDIR)/NumeratorAndDenominator_wBA.cpp \
+				$(SRCDIR)/NumeratorAndDenominator1D_wBA.cpp \
+				$(SRCDIR)/NumeratorAndDenominator1D_rotInv_wBA.cpp \
+				$(SRCDIR)/HBT_event_generator.cpp
+				#$(SRCDIR)/SingleParticleSpectra.cpp
+
+CHECKSRC	=	run_checks.cpp \
+				$(SRCDIR)/Arsenal.cpp \
+				$(SRCDIR)/ParameterReader.cpp \
+				$(SRCDIR)/gauss_quadrature.cpp \
+				$(SRCDIR)/NumeratorAndDenominator.cpp \
+				$(SRCDIR)/NumeratorAndDenominator1D.cpp \
+				$(SRCDIR)/NumeratorAndDenominator1D_rotInv.cpp \
+				$(SRCDIR)/NumeratorAndDenominator_wBA.cpp \
+				$(SRCDIR)/NumeratorAndDenominator1D_wBA.cpp \
+				$(SRCDIR)/NumeratorAndDenominator1D_rotInv_wBA.cpp \
+				$(SRCDIR)/HBT_event_generator.cpp
+
+INC			= 	main.h \
+				$(SRCDIR)/EventRecord.h \
+				$(SRCDIR)/ParticleRecord.h \
+				$(SRCDIR)/Stopwatch.h \
+				$(SRCDIR)/Arsenal.h \
+				$(SRCDIR)/ParameterReader.h \
+				$(SRCDIR)/gauss_quadrature.h \
+				$(SRCDIR)/ensemble.h \
+				$(SRCDIR)/random_events.h \
+				$(SRCDIR)/estimate_error.h \
+				$(SRCDIR)/HBT_event_generator.h
+
+CHECKINC 	= 	run_checks.h \
+				$(SRCDIR)/EventRecord.h \
+				$(SRCDIR)/ParticleRecord.h \
+				$(SRCDIR)/Stopwatch.h \
+				$(SRCDIR)/Arsenal.h \
+				$(SRCDIR)/ParameterReader.h \
+				$(SRCDIR)/gauss_quadrature.h \
+				$(SRCDIR)/ensemble.h \
+				$(SRCDIR)/random_events.h \
+				$(SRCDIR)/estimate_error.h \
+				$(SRCDIR)/HBT_event_generator.h
 
 # -------------------------------------------------
 
-OBJDIR		=	.
-SRCFILES 	= 	$(SRC) $(INC) GNUmakefile_HBTeg
-OBJECTS		=	$(addprefix $(OBJDIR)/, $(addsuffix $O, \
-			$(basename $(SRC))))
-TARGET		=	$(MAIN)
-INSTPATH	=	..
-#INSTPATH	=	$(HOME)/local/bin
+OBJDIR			=	.
+#SRCFILES 		= 	$(SRC) $(INC) GNUmakefile
+#CHECKSRCFILES 	= 	$(CHECKSRC) $(CHECKINC) GNUmakefile
+OBJECTS			=	$(addprefix $(OBJDIR)/, $(addsuffix $O, \
+					$(basename $(SRC))))
+CHECKOBJS		=	$(addprefix $(OBJDIR)/, $(addsuffix $O, \
+					$(basename $(CHECKSRC))))
+TARGET			=	$(MAIN)
+INSTPATH		=	..
+#INSTPATH		=	$(HOME)/local/bin
 
 # --------------- Pattern rules -------------------
 
@@ -85,10 +116,10 @@ $(OBJDIR)/%.o: %.cpp
 
 .PHONY:		all mkobjdir clean distclean install
 
-all:		mkobjdir $(TARGET)
+all:		mkobjdir $(TARGET) $(CHECKS)
 
 help:
-		@grep '^##' GNUmakefile_HBTeg
+		@grep '^##' GNUmakefile
 
 mkobjdir:	
 		-@mkdir -p $(OBJDIR)
@@ -97,12 +128,19 @@ $(TARGET):	$(OBJECTS)
 		$(CC) $(OBJECTS) -o $(TARGET) $(LDFLAGS) 
 #		strip $(TARGET)
 
+$(CHECKS):	$(CHECKOBJS)	
+		$(CC) $(CHECKOBJS) -o $(CHECKS) $(LDFLAGS) 
+#		strip $(TARGET)
+
 clean:		
-		-rm $(OBJECTS)
+		-rm -f $(OBJECTS)
+		-rm -f $(CHECKOBJS)
 
 distclean:	
-		-rm $(TARGET)
-		-rm $(OBJECTS)
+		-rm -f $(TARGET)
+		-rm -f $(CHECKS)
+		-rm -f $(OBJECTS)
+		-rm -f $(CHECKOBJS)
 #		-rm $(MAIN)
 
 install:	$(TARGET)
@@ -115,5 +153,7 @@ $(SRCDIR)/HBT_event_generator.cpp: $(SRCDIR)/HBT_event_generator.h $(SRCDIR)/Ars
 									$(SRCDIR)/Stopwatch.h $(SRCDIR)/EventRecord.h \
 									$(SRCDIR)/ParticleRecord.h $(SRCDIR)/ensemble.h
 ./main.cpp: $(SRCDIR)/Stopwatch.h $(SRCDIR)/ParameterReader.h main.h $(SRCDIR)/EventRecord.h \
+			$(SRCDIR)/ParticleRecord.h $(SRCDIR)/ensemble.h
+./run_checks.cpp: $(SRCDIR)/Stopwatch.h $(SRCDIR)/ParameterReader.h run_checks.h $(SRCDIR)/EventRecord.h \
 			$(SRCDIR)/ParticleRecord.h $(SRCDIR)/ensemble.h
 
