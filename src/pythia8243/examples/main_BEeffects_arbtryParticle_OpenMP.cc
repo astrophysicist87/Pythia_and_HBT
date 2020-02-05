@@ -638,6 +638,10 @@ if (1) exit (9);
 			if ( not event_in_chosen_centrality_class )
 				continue;
 
+			// ignore events which don't generate particles!
+			if ( event_multiplicity < 3 )
+				continue;
+
 			//just for now
 			//if ( pion_multiplicity < 50 or pion_multiplicity > 100 )
 			//	continue;

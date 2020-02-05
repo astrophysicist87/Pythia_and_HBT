@@ -339,11 +339,14 @@ void HBT_event_generator::Compute_numerator_and_denominator_methodMode0_q_mode_1
 
 						// Otherwise, set the |root|
 						const double qs0 = sqrt( Q0*Q0 - qo*qo - ql*ql );
+						const double xi1 = qo*KT+ql*KL;
+						const double xi2 = particle_mass*particle_mass + KT*KT + KL*KL + 0.25*Q0*Q0;
+						const double E1E2 = sqrt(xi2*xi2 - xi1*xi1);
 
 						// weight factor from delta-function identities
 						// to get the normalization right
 						const double weight_factor = /*(qs0 < 1.e-6) ? 0.0 :*/ 1.0 / ( 2.0 * qs0 + 1.e-100 );
-						const double integration_weight = qRP * qRPwt * ttheta_q_wts[ithq];
+						const double integration_weight = qRP * qRPwt * ttheta_q_wts[ithq] / E1E2;	// N.B. - must divide by factors of E1 and E2!!!!!
 
 						// Sum over +/- roots in q_s direction
 						for (int i_qs_root = 0; i_qs_root <= 1; i_qs_root++)

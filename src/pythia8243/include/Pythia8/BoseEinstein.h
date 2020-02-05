@@ -114,6 +114,7 @@ private:
 
   // Miscellaneous functions
   double compute_integral_with_phasespace(double a_in, double b_in, double c, double d);
+  double compute_integral_with_phasespace(double a_in, double b_in, vector<double> & cvec_in, double d_in);
   double compute_integral_without_phasespace(double a_in, double b_in, double c);
 
   // Compute pair density from CDF.

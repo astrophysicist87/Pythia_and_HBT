@@ -371,6 +371,8 @@ void HBT_event_generator::Compute_numerator_and_denominator_methodMode0_q_mode_1
 
 						// Otherwise, set the |root|
 						const double qs0 = sqrt( disc / ( 4.0*xi0 + xi3 ) );
+						const double xi2 = xi0 + 0.25*qs0*qs0;
+						const double E1E2 = sqrt(xi2*xi2 - xi1*xi1);
 						//if (abs(qs0) < 1.e-6)
 						//	continue;
 
@@ -379,7 +381,7 @@ void HBT_event_generator::Compute_numerator_and_denominator_methodMode0_q_mode_1
 						const double weight_num = abs( (4.0*xi0+xi3)*(4.0*xi0+xi3) - 4.0*xi1*xi1 );
 						const double weight_den = 1.e-100+qs0*( (4.0*xi0+xi3)*(4.0*xi0+xi3) + 4.0*xi1*xi1 + weight_num );
 						const double weight_factor = /*(qs0 < 1.e-6) ? 0.0 :*/ weight_num / weight_den;
-						const double integration_weight = qRP * qRPwt * ttheta_q_wts[ithq];
+						const double integration_weight = qRP * qRPwt * ttheta_q_wts[ithq] / E1E2;	// N.B. - must divide by factors of E1 and E2!!!!!
 
 						// Sum over +/- roots in q_s direction
 						for (int i_qs_root = 0; i_qs_root <= 1; i_qs_root++)
