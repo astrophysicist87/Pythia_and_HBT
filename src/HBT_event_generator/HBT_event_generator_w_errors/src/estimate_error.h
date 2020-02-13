@@ -131,6 +131,10 @@ double estimate_ratio_error(
 		? 1.e+6
 		: abs( num / den ) * sqrt( cA + cB - 2.0*cAB );
 
+	// estimate error of numerator and denominator separately
+	num_err = sqrt(sigA2);
+	den_err = sqrt(sigB2);
+
 	if (verbose)
 	{
 		out << setprecision(8);

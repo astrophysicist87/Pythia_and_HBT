@@ -528,7 +528,7 @@ void HBT_event_generator::Output_correlation_function_q_mode_3D( string filename
 
 void HBT_event_generator::Output_correlation_function_q_mode_1D( string filename )
 {
-	int prec = 6;
+	int prec = 8;
 	int extrawidth = 6;
 
 	ofstream ofs( filename.c_str() );

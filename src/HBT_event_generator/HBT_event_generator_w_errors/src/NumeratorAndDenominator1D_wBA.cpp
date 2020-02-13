@@ -19,7 +19,7 @@ void HBT_event_generator::Compute_numerator_and_denominator_methodMode2_q_mode_1
 	//bool perform_random_rotation = false;
 	//bool perform_random_shuffle = false;
 
-	constexpr bool do_denominator = true;
+	constexpr bool do_denominator = false;
 
 	const int q_space_size = n_Q_bins*n_qRP_pts*n_thq_pts;
 	const int K_space_size = n_KT_bins*n_Kphi_bins*n_KL_bins;
@@ -218,17 +218,15 @@ void HBT_event_generator::Compute_numerator_and_denominator_methodMode2_q_mode_1
 										- qy * (yi - yj)
 										- qz * (zi - zj);
 
-							double num_term = cos( arg / hbarC )
-												/*/ ( 1.0
-													* px_bin_width
-													* py_bin_width
-													* pz_bin_width )*/;
+							double num_term = cos( arg / hbarC );
 
-							//private_num[index7D] += num_term;
-							private_num[index7D] += integration_weight
-													* weight_factor
-													* num_term
-													/*/ ( num_pairs_this_event )*/;
+							private_num[index7D] += ( include_energy_factors ) ?
+													integration_weight * weight_factor * num_term / ( Ei * Ej ) :
+													integration_weight * weight_factor * num_term
+													/ ( num_pairs_this_event
+														* px_bin_width
+														* py_bin_width
+														* pz_bin_width );
 
 							/*if ( inCenter )
 								normalizations[index3D]
@@ -386,7 +384,9 @@ void HBT_event_generator::Compute_numerator_and_denominator_methodMode2_q_mode_1
 								continue;
 
 							//private_den[index7D]++;
-							private_den[index7D] += integration_weight * weight_factor;
+							private_den[index7D] += ( include_energy_factors ) ?
+													integration_weight * weight_factor / ( Ei * Ej ) :
+													integration_weight * weight_factor;
 
 						}	// end of loop over qs-roots
 					}

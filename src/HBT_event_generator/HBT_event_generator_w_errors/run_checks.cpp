@@ -35,7 +35,7 @@ int main(int argc, char *argv[])
 	paraRdr->readFromFile("./parameters.dat");
 
 	// Read-in particle and ensemble information
-	vector<string> particle_info_filename, ensemble_info_filename;
+	vector<string> particle_info_filename;
 	read_file_catalogue("./particle_catalogue.dat", particle_info_filename);
 	paraRdr->readFromFile(particle_info_filename[0]);
 
@@ -53,9 +53,6 @@ int main(int argc, char *argv[])
 	// Throws exception if NaNs are encountered
 	feenableexcept(FE_INVALID | FE_OVERFLOW);
 
-	int file_mode = paraRdr->getVal("file_mode");
-
-
 	// Set-up output files
 	string path = "./results/";	// make sure this directory exists
 	string chosen_particle_name = "pi";
@@ -69,56 +66,56 @@ int main(int argc, char *argv[])
 	ofstream outmain(out_filename_stream.str().c_str());
 	ofstream errmain(err_filename_stream.str().c_str());
 
-	//if ( file_mode == 0 )	//use random number generation
+	//-----------------------------
+	//Use random number generation
+	//-----------------------------
+
+	// Vector to hold all event information
+	vector<EventRecord> allEvents;
+
+
+	// Read in the files
+	//generate_events(allEvents, paraRdr);
+	generate_events_v2(allEvents, paraRdr);
+
+
+	// Create HBT_event_generator object from allEvents
+	HBT_event_generator
+		HBT_event_ensemble( paraRdr, allEvents,
+							outmain, errmain );
+
+
+	// Loop a few more times to build up statistics
+	// N.B. - 2147483647 is max value for int
+	//const int nLoops = 100;  //say
+	const int nLoops = paraRdr->getVal("RNG_nLoops");
+	for (int iLoop = 1; iLoop < nLoops; ++iLoop)
 	{
 
-		// Vector to hold all event information
-		vector<EventRecord> allEvents;
+		if ( iLoop >= nLoops )
+			break;
 
+		if ( iLoop % 1 == 0 )
+			cout << "Starting iLoop = " << iLoop << endl;
 
-		// Read in the files
+		// Read in the next file
 		//generate_events(allEvents, paraRdr);
 		generate_events_v2(allEvents, paraRdr);
 
 
-		// Create HBT_event_generator object from allEvents
-		HBT_event_generator
-			HBT_event_ensemble( paraRdr, allEvents,
-								outmain, errmain );
-
-
-		// Loop a few more times to build up statistics
-		// N.B. - 2147483647 is max value for int
-		//const int nLoops = 100;  //say
-		const int nLoops = paraRdr->getVal("RNG_nLoops");
-		for (int iLoop = 1; iLoop < nLoops; ++iLoop)
-		{
-
-			if ( iLoop >= nLoops )
-				break;
-
-			if ( iLoop % 1 == 0 )
-				cout << "Starting iLoop = " << iLoop << endl;
-
-			// Read in the next file
-			//generate_events(allEvents, paraRdr);
-			generate_events_v2(allEvents, paraRdr);
-
-
-			// - for each file, update numerator and denominator
-			HBT_event_ensemble.Update_records( allEvents );
-
-		}
-
-
-		// Compute correlation function itself
-		HBT_event_ensemble.Compute_correlation_function();
-
-
-		// Output correlation function
-		HBT_event_ensemble.Output_correlation_function( "./results/HBT_pipiCF.dat" );
+		// - for each file, update numerator and denominator
+		HBT_event_ensemble.Update_records( allEvents );
 
 	}
+
+
+	// Compute correlation function itself
+	HBT_event_ensemble.Compute_correlation_function();
+
+
+	// Output correlation function
+	HBT_event_ensemble.Output_correlation_function( "./results/HBT_pipiCF.dat" );
+
 
 
 	// Print out run-time

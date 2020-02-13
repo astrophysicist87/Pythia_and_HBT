@@ -122,6 +122,28 @@ private:
 			vector< pair< double, pair <int,int> > > & sortedPairs,
 			vector<double> & denBar );
 
+  // Set vector of sorted space-time separations in PRFs.
+  void set_sorted_xDiffs(
+			vector< pair< double, pair <int,int> > > & sortedPairs,
+			vector<double> & sorted_xDiffs
+			);
+
+  // Set lefthand side of shift relation.
+  void set_LHS(
+			vector< pair< double, pair <int,int> > > & sortedPairs,
+			vector< pair< double, double > > & LHS,
+			vector<double> & denBar, int iTab
+			);
+
+  // Set righthand side of shift relation.
+  void set_RHS(
+			vector< pair< double, pair <int,int> > > & sortedPairs,
+			vector<double> & sorted_xDiffs,
+			vector< pair< double, double > > & LHS,
+			vector< pair< double, double > > & RHS,
+			vector<double> & denBar, int iTab
+			);
+
   // Compute the unshifted pair integrals at each Qi.
   void evaluate_shift_relation_at_Qi(
 			vector< pair< double, pair <int,int> > > & sortedPairs,

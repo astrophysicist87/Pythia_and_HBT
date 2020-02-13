@@ -114,9 +114,13 @@ $(OBJDIR)/%.o: %.cpp
 
 # -------------------------------------------------
 
-.PHONY:		all mkobjdir clean distclean install
+.PHONY:		all mkobjdir clean distclean install target checks
 
 all:		mkobjdir $(TARGET) $(CHECKS)
+
+target:		mkobjdir $(TARGET)
+
+checks:		mkobjdir $(CHECKS)
 
 help:
 		@grep '^##' GNUmakefile

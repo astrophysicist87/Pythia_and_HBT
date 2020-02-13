@@ -107,7 +107,7 @@ void generate_events_v2(vector<EventRecord> & allEvents, ParameterReader * paraR
 
 	normal_distribution<double> distribution(0.0,RNG_R/sqrt(2.0));
 
-	int model_to_use = 2;
+	int model_to_use = 0;
 	// model_to_use values:
 	//		0 - Zhang, Wiedemann, Slotta, and Heinz (1997) or slight variant
 	//		1 - my own toy emission function

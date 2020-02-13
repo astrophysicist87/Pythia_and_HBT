@@ -346,7 +346,10 @@ void HBT_event_generator::Compute_numerator_and_denominator_methodMode0_q_mode_1
 						// weight factor from delta-function identities
 						// to get the normalization right
 						const double weight_factor = /*(qs0 < 1.e-6) ? 0.0 :*/ 1.0 / ( 2.0 * qs0 + 1.e-100 );
-						const double integration_weight = qRP * qRPwt * ttheta_q_wts[ithq] / E1E2;	// N.B. - must divide by factors of E1 and E2!!!!!
+						const double integration_weight
+										= ( include_energy_factors ) ?
+											qRP * qRPwt * ttheta_q_wts[ithq] / E1E2 :
+											qRP * qRPwt * ttheta_q_wts[ithq];	// N.B. - must divide by factors of E1 and E2!!!!!
 
 						// Sum over +/- roots in q_s direction
 						for (int i_qs_root = 0; i_qs_root <= 1; i_qs_root++)
