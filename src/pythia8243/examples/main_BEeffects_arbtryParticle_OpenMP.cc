@@ -173,7 +173,7 @@ int main(int argc, char *argv[])
 	HBT_particle_IDs.insert ( { { atoi(argv[5]), 0 } } );
 
 	// thermal particles only or resonance decays included
-	bool thermal_only = false;	// could make this command line
+	bool thermal_only = true;	// could make this command line
 	bool track_unshifted_particles = true;
 	bool store_Bjorken_coordinates = false;	// tau, eta_s, y, and m
 
@@ -317,7 +317,7 @@ int main(int argc, char *argv[])
 
 		// ==============================================
 		// Seed RNG different for each thread to avoid redundant events
-		bool use_random_time = true;
+		bool use_random_time = false;
  		if ( omp_get_max_threads() > 1 )
 		{
 			pythiaVector[iThread].readString("Random:setSeed = on");
@@ -328,11 +328,11 @@ int main(int argc, char *argv[])
 			pythiaVector[iThread].readString("Random:setSeed = on");
  			pythiaVector[iThread].readString("Random:seed = 0");
 		}
- 		else
+ 		/*else
 		{
 			pythiaVector[iThread].readString("Random:setSeed = on");
  			pythiaVector[iThread].readString("Random:seed = -1");
-		}
+		}*/
 
 
 		//========================================

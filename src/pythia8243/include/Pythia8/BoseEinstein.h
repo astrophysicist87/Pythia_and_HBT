@@ -95,6 +95,9 @@ private:
   // Vector of hadrons to study.
   vector<BoseEinsteinHadron> hadronBE;
 
+  // Effective source grid
+  vector<double> Qgrid, phase_space, effSource, integrated_effective_source;
+
   ///===CJP(begin)===
   int enhanceMode;
   int number_of_pairs, number_of_shifted_pairs, number_of_too_close_pairs, number_of_too_separated_pairs;

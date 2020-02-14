@@ -1142,7 +1142,13 @@ double mean = 0.0, rms = 0.0, avg_log = 0.0;
 
 const double npairs = sortedPairs.size()-2;
 
-vector<double> effSource(100001);
+// set grids
+const int Qgridsize = 10001;
+Qgrid.resize( Qgridsize );
+phase_space.resize( Qgridsize );
+effSource.resize( Qgridsize );
+integrated_effective_source.resize( Qgridsize );
+
 const double dQ = 0.001;
 //for (const auto & eachPair : sortedPairs)
 for (int iPair = 1; iPair < (int)sortedPairs.size()-1; iPair++)
@@ -1178,14 +1184,8 @@ for (int iPair = 1; iPair < (int)sortedPairs.size()-1; iPair++)
 	//*/
 }
 
-//cout << setprecision(12) << "size estimate (inverse linear) = " << npairs / size_estimate_sum << endl;
-//cout << setprecision(12) << "size estimate (inverse quadratic) = " << sqrt(npairs / size_estimate_sqsum) << endl;
-//cout << setprecision(12) << "size estimate (inverse cubic) = " << sqrt(npairs / size_estimate_cubsum) << endl;
-//cout << setprecision(12) << "size estimate (mean) = " << mean / npairs << endl;
-//cout << setprecision(12) << "size estimate (rms) = " << sqrt(rms / npairs) << endl;
 cout << "npairs = " << (int)npairs << endl;
 cout << setprecision(12) << "size estimate (linear halfwidth) = " << 2.0 * size_estimate_sqsum / (M_PI * size_estimate_sum) << endl;
-//cout << setprecision(12) << "size estimate (gaussian approximation) = " << sqrt(3.0 * size_estimate_cubsum / size_estimate_sum) << endl;
 cout << setprecision(12) << "size estimate (gaussian approximation / 2) = " << 0.5 * sqrt(3.0 * size_estimate_cubsum / size_estimate_sum) << endl;
 cout << setprecision(12) << "size estimate (geometric mean) = " << exp(avg_log / npairs) << endl;
 
@@ -1193,13 +1193,37 @@ cout << setprecision(12) << "size estimate (geometric mean) = " << exp(avg_log /
 cout << "<<<============================================>>>" << endl;
 //*/
 double currentQ = 0.0;
-for (int iQ = 0; iQ < (int)effSource.size(); iQ++)
+if (include_phase_space)
+	for (int iQ = 0; iQ < (int)Qgrid.size(); iQ++)
+	{
+		phase_space[iQ] = currentQ*currentQ / sqrt(currentQ*currentQ + m2Pair[iTab]);
+		currentQ += dQ;
+	}
+else
+	for (int iQ = 0; iQ < (int)Qgrid.size(); iQ++)
+		phase_space[iQ] = 1.0;
+
+//reset
+double previousIntegrand = 0.0, currentIntegrand = 0.0;
+currentQ = 0.0;
+double runningIntegral = 0.0;
+for (int iQ = 0; iQ < (int)Qgrid.size(); iQ++)
 {
-	cout << "effSource: " << setprecision(12) << currentQ << "   " << effSource[iQ] / (double)(sortedPairs.size()-2) << endl;
+	Qgrid[iQ] = currentQ;
+	effSource[iQ] /= (double)(sortedPairs.size()-2);
+	previousIntegrand = currentIntegrand;
+	currentIntegrand = phase_space[iQ] * effSource[iQ];
+	runningIntegral += 0.5*dQ*(currentIntegrand + previousIntegrand);
+	integrated_effective_source[iQ] = runningIntegral;
+	cout << "effSource: " << setprecision(12)
+			<< currentQ << "   "
+			<< phase_space[iQ] << "   "
+			<< effSource[iQ] << "   "
+			<< integrated_effective_source[iQ] << endl;
 	currentQ += dQ;
 }
 //if (1) return;
-if (1) exit (8);
+//if (1) exit (8);
 	return;
 }
 
@@ -1214,11 +1238,9 @@ void BoseEinstein::set_RHS(
 			vector<double> & denBar, int iTab
 			)
 {
-//cout << "RHS:" << endl;
 	int pairCount = 0;
 	double result = 0.0;
-//cout << "Sizes: " << sortedPairs.size() << "   " << LHS.size() << "   " << RHS.size() << "   "
-//		<< denBar.size() << "   " << sorted_xDiffs.size() << endl;
+
 	if ( include_phase_space )
 		for (const auto & thisPair : sortedPairs)
 		{
@@ -1226,69 +1248,92 @@ void BoseEinstein::set_RHS(
 			const double thisQ = thisPair.first;
 			const double nextQ = nextPair.first;
 
-//cout << "Check Qs: " << setprecision(12) << setw(16) << thisQ << "   " << nextQ << endl;
-
 			RHS.push_back( std::make_pair( thisQ, result ) );
-//cout << setprecision(12) << thisQ << "   " << result << endl;
 
 			if ( pairCount == (int)sorted_xDiffs.size() )
 				continue;
 
-//cout << "pairCount = " << pairCount << " of " << sortedPairs.size() - 2 << endl;
-
-//if (pairCount > 10000) exit(8);
+			//--------------------------------------
+			// Decide how to compute BE enhancement.
+			constexpr bool compute_BE_enhancement_exactly = true;
 
 			const double one_by_N = 1.0 / static_cast<double>(sortedPairs.size() - 2);
-			int eachPairIndex = 0;
-			for (const auto & eachPair : sortedPairs)
+			if ( compute_BE_enhancement_exactly )
 			{
-//if (not pairCount == eachPairIndex) continue;
-				// Skip unphysical dummy pairs.
-				if (   &eachPair == &sortedPairs.front()
-					or &eachPair == &sortedPairs.back() )
-					continue;
+				int eachPairIndex = 0;
+				for (const auto & eachPair : sortedPairs)
+				{
+					// Skip unphysical dummy pairs.
+					if (   &eachPair == &sortedPairs.front()
+						or &eachPair == &sortedPairs.back() )
+						continue;
 				
-				//const int i1 = eachPair.second.first;
-				//const int i2 = eachPair.second.second;
-				//Vec4 xDiffPRF = ( hadronBE[i1].x - hadronBE[i2].x ) * MM2FM / HBARC;
-				//xDiffPRF.bstback( 0.5*(hadronBE[i1].p + hadronBE[i2].p) );
-				//const double xDiffVal = xDiffPRF.pAbs();
-				const double xDiffPRFVal = sorted_xDiffs.at(eachPairIndex++);
+					const double xDiffPRFVal = sorted_xDiffs.at(eachPairIndex++);
 
-//cout << "Check Qs(again): " << setprecision(12) << setw(16) << thisQ << "   " << nextQ << endl;
-				// Add in physical results
-//cout << "need to access " << pairCount << "th element of " << denBar.size() << "-length denBar at line=" << __LINE__ << "...";
-//cout << "Line = " << __LINE__ << endl;
-				result += one_by_N * denBar.at(pairCount)
-							* compute_integral_with_phasespace(
-								thisQ, nextQ, xDiffPRFVal, m2Pair[iTab]);
-/*cout << "check result here: " << pairCount << "   " << one_by_N << "   " << denBar.at(pairCount) << "   " << thisQ << "   " << nextQ << "   " << xDiffPRFVal << "   " << m2Pair[iTab] << "   " << result << "   " << compute_integral_with_phasespace(
-								thisQ, nextQ, xDiffPRFVal, m2Pair[iTab]) << endl;*/
-//if (1) exit(8);
-//cout << "Line = " << __LINE__ << endl;
-//cout << "success!" << endl;
+					result += one_by_N * denBar.at(pairCount)
+								* compute_integral_with_phasespace(
+									thisQ, nextQ, xDiffPRFVal, m2Pair[iTab]);
+					/*cout << "check result here: " << pairCount << "   "
+							<< one_by_N << "   " << denBar.at(pairCount) << "   "
+							<< thisQ << "   " << nextQ << "   "
+							<< xDiffPRFVal << "   " << m2Pair[iTab] << "   "
+							<< result << "   " << compute_integral_with_phasespace(
+													thisQ, nextQ, xDiffPRFVal, m2Pair[iTab]) << endl;
+					*/
+				}
+			}
+			// use effective source if within Qgrid
+			else if ( thisQ < Qgrid.back() )
+			{
+				// make this a global variable
+				const double dQ = 0.001;
+				const double Qmin = 0.0;
+				const int iQ = static_cast<int>( (thisQ - Qmin) / dQ );
+				if ( iQ + 1 >= (int)Qgrid.size() )
+					continue;
+				const int jQ = static_cast<int>( (nextQ - Qmin) / dQ );
+				
+				// interpolate running effective source integral and take difference
+				const double EiQ = integrated_effective_source.at(iQ);
+				const double EthisQ = EiQ + ( thisQ - Qgrid.at(iQ) )
+										* ( integrated_effective_source.at(iQ+1) - EiQ ) / dQ;
+
+				double EnextQ = integrated_effective_source.back();
+				if ( jQ + 1 < (int)Qgrid.size() )
+				{
+					const double EjQ = integrated_effective_source.at(jQ);
+					EnextQ = EjQ + ( nextQ - Qgrid.at(jQ) )
+										* ( integrated_effective_source.at(jQ+1) - EjQ ) / dQ;
+				}
+				
+				result += EnextQ - EthisQ;
 			}
 
 			// whole vector inside at once
 			//result += one_by_N * denBar.at(pairCount)
-            //                      * compute_integral_with_phasespace( thisQ, nextQ, sorted_xDiffs, m2Pair[iTab]);
-//cout << "Line = " << __LINE__ << endl;
-			// DOUBLE CHECK INDICES HERE!!!
-/*cout << "pairCount = " << pairCount << endl;
-cout << "Line = " << __LINE__ << endl;
-cout << "denBar.at(pairCount) = " << denBar.at(pairCount) << endl;
-cout << "Line = " << __LINE__ << endl;
-cout << "sorted_xDiffs.at(pairCount) = " << sorted_xDiffs.at(pairCount) << endl;
-cout << "Line = " << __LINE__ << endl;*/
-/*			result += one_by_N * denBar.at(pairCount)
-						* compute_integral_with_phasespace(
-							thisQ, nextQ, sorted_xDiffs.at(pairCount), m2Pair[iTab]);
-cout << "check result here: "
-		<< pairCount << "   " << one_by_N << "   " << denBar.at(pairCount) << "   "
-		<< thisQ << "   " << nextQ << "   " << sorted_xDiffs.at(pairCount) << "   " << m2Pair[iTab] << "   "
-		<< result << "   " << compute_integral_with_phasespace(thisQ, nextQ, sorted_xDiffs.at(pairCount), m2Pair[iTab]) << endl;*/
+            //          * compute_integral_with_phasespace( thisQ, nextQ, sorted_xDiffs, m2Pair[iTab]);
 
-//cout << "Line = " << __LINE__ << endl;
+			// DOUBLE CHECK INDICES HERE!!!
+			/*cout << "pairCount = " << pairCount << endl;
+			cout << "Line = " << __LINE__ << endl;
+			cout << "denBar.at(pairCount) = "
+					<< denBar.at(pairCount) << endl;
+			cout << "Line = " << __LINE__ << endl;
+			cout << "sorted_xDiffs.at(pairCount) = "
+					<< sorted_xDiffs.at(pairCount) << endl;
+			cout << "Line = " << __LINE__ << endl;
+			*/
+			/*			result += one_by_N * denBar.at(pairCount)
+									* compute_integral_with_phasespace(
+										thisQ, nextQ, sorted_xDiffs.at(pairCount), m2Pair[iTab]);
+			cout << "check result here: "
+					<< pairCount << "   " << one_by_N << "   " << denBar.at(pairCount) << "   "
+					<< thisQ << "   " << nextQ << "   "
+					<< sorted_xDiffs.at(pairCount) << "   " << m2Pair[iTab] << "   "
+					<< result << "   " << compute_integral_with_phasespace(
+											thisQ, nextQ, sorted_xDiffs.at(pairCount), m2Pair[iTab]) << endl;
+			*/
+
 			pairCount++;
 		}
 	else
@@ -1328,11 +1373,20 @@ cout << "check result here: "
 	// Add in constant piece to RHS result.
 	for (int iPair = 0; iPair < (int)LHS.size(); ++iPair)
 		RHS.at(iPair).second += LHS.at(iPair).second;
-//cout << "Line = " << __LINE__ << endl;
-//cout << "Sizes: " << sortedPairs.size() << "   " << LHS.size() << "   " << RHS.size() << "   " << sorted_xDiffs.size() << endl;
-//for (int iPair = 0; iPair < (int)LHS.size(); ++iPair)
-//	cout << "CHECK: "  << setprecision(12) << sortedPairs.at(iPair).first << "   " << LHS.at(iPair).second << "   " << RHS.at(iPair).second << endl;
-//if (1) exit(8);
+
+	// check LHS and RHS at this point
+	//cout << "Line = " << __LINE__ << endl;
+	cout << "Sizes: " << sortedPairs.size() << "   "
+			<< LHS.size() << "   " << RHS.size() << "   "
+			<< sorted_xDiffs.size() << endl;
+
+	for (int iPair = 0; iPair < (int)LHS.size(); ++iPair)
+		cout << "CHECK: "  << setprecision(12)
+				<< sortedPairs.at(iPair).first << "   "
+				<< LHS.at(iPair).second << "   "
+				<< RHS.at(iPair).second << endl;
+
+	//if (1) exit(8);
 
 	return;
 }
@@ -1557,7 +1611,8 @@ if (1) exit (8);*/
 
 					//---------------------------------
 					// Add in the BE enhancement piece.
-					/*for (const auto & eachPair : sortedPairs)
+					///*
+					for (const auto & eachPair : sortedPairs)
 					{
 						// Skip unphysical dummy pairs.
 						if (   &eachPair == &sortedPairs.front()
@@ -1575,7 +1630,9 @@ if (1) exit (8);*/
 									* compute_integral_with_phasespace( Qlower, Qnew, xDiffMag, m2Pair[iTab] );
 						deriv  += one_by_N * thisdenBar
 									* PSfactor * sphericalbesselj0( Qnew * xDiffMag );
-					}*/
+					}
+					//*/
+/*
 // DOUBLE CHECK INDICES HERE!!!
 {
 	const int i1  = sortedPairs.at(iPair).second.first;
@@ -1589,6 +1646,7 @@ if (1) exit (8);*/
 	deriv  += one_by_N * thisdenBar
 				* PSfactor * sphericalbesselj0( Qnew * xDiffMag );
 }
+*/
 
 				}
 
