@@ -91,6 +91,8 @@ const double BoseEinstein::COMPRELERR = 1e-10;
 const double BoseEinstein::COMPFACMAX = 1000.;
 const int    BoseEinstein::NCOMPSTEP  = 10;
 
+const double BoseEinstein::dQ = 1e-3;
+
 //--------------------------------------------------------------------------
 
 // Find settings. Precalculate table used to find momentum shifts.
@@ -102,16 +104,17 @@ bool BoseEinstein::init(Info* infoPtrIn, Settings& settings,
   infoPtr                = infoPtrIn;
 
   // Main flags.
-  doPion 				 = settings.flag("BoseEinstein:Pion");
-  doKaon 				 = settings.flag("BoseEinstein:Kaon");
-  doEta 				 = settings.flag("BoseEinstein:Eta");
-  useInvariantSize 		 = settings.flag("BoseEinstein:useInvariantSourceSize");
-  useDistribution 		 = settings.flag("BoseEinstein:useDistribution");
-  useRelativeDistance 	 = settings.flag("BoseEinstein:useRelativeDistance");
-  useRestFrame 			 = settings.flag("BoseEinstein:useRestFrame");
-  include_phase_space	 = true;	// for right now
-  linear_interpolate_CDF = false;	// for right now
-  include_posDelQ_in_compensation   = true;
+  doPion 				          = settings.flag("BoseEinstein:Pion");
+  doKaon 				          = settings.flag("BoseEinstein:Kaon");
+  doEta 				          = settings.flag("BoseEinstein:Eta");
+  useInvariantSize 		          = settings.flag("BoseEinstein:useInvariantSourceSize");
+  useDistribution 		          = settings.flag("BoseEinstein:useDistribution");
+  useRelativeDistance 	          = settings.flag("BoseEinstein:useRelativeDistance");
+  useRestFrame 			          = settings.flag("BoseEinstein:useRestFrame");
+  include_phase_space	          = settings.flag("BoseEinstein:includePhaseSpace");
+  linear_interpolate_CDF          = settings.flag("BoseEinstein:linearInterpolateCDF");
+  include_posDelQ_in_compensation = settings.flag("BoseEinstein:usePositiveShiftsForCompensation");
+  compute_BE_enhancement_exactly  = settings.flag("BoseEinstein:computeBEEnhancementExactly");
 
   // Shape of Bose-Einstein enhancement/suppression.
   lambda 				= settings.parm("BoseEinstein:lambda");
@@ -1040,12 +1043,14 @@ void BoseEinstein::set_pair_density(
 
 	if ( linear_interpolate_CDF )
 	{
+		cout << "linearly interpolating!" << endl;
 		// Take the derivative of the linear interpolant.
 		for (int iPair = 0; iPair < (int)sortedPairs.size()-1; ++iPair)
 			denBar.push_back( 1.0 / ( sortedPairs.at(iPair+1).first - sortedPairs.at(iPair).first ) );
 	}
 	else
 	{
+		cout << "NOT linearly interpolating!" << endl;
 		// Do not estimate pair density.
 		for (int iPair = 0; iPair < (int)sortedPairs.size()-1; ++iPair)
 			denBar.push_back( 1.0 );
@@ -1143,18 +1148,21 @@ double mean = 0.0, rms = 0.0, avg_log = 0.0;
 const double npairs = sortedPairs.size()-2;
 
 // set grids
-const int Qgridsize = 10001;
-Qgrid.resize( Qgridsize );
-phase_space.resize( Qgridsize );
-effSource.resize( Qgridsize );
-integrated_effective_source.resize( Qgridsize );
+//const double Qmaximum = sortedPairs.back().first;
+const double Qmaximum = 10.0;	// GeV
+const int Qgridsize = static_cast<int>(Qmaximum / dQ) + 1;
+Qgrid.assign( Qgridsize, 0.0 );
+phase_space.assign( Qgridsize, 0.0 );
+effSource.assign( Qgridsize, 0.0 );
+integrated_effective_source.assign( Qgridsize, 0.0 );
 
-const double dQ = 0.001;
+cout << "npairs = " << (int)npairs << endl;
+
 //for (const auto & eachPair : sortedPairs)
 for (int iPair = 1; iPair < (int)sortedPairs.size()-1; iPair++)
 {
 	//cerr << "iPair = " << iPair << " of " << (int)sortedPairs.size() << "\n";
-	auto eachPair = sortedPairs[iPair];
+	auto eachPair = sortedPairs.at(iPair);
 	// Skip unphysical dummy pairs.
 	//if (   &eachPair == &sortedPairs.front()
 	//	or &eachPair == &sortedPairs.back() )
@@ -1166,6 +1174,8 @@ for (int iPair = 1; iPair < (int)sortedPairs.size()-1; iPair++)
 	xDiffPRF.bstback( 0.5*(hadronBE[i1].p + hadronBE[i2].p) );
 
 	const double xDiffval = xDiffPRF.pAbs();
+
+//cout << setprecision(12) << "sortedPairs.at(" << iPair << ").first = " << eachPair.first << endl;
 
 	size_estimate_sum += 1.0 / xDiffval;
 	size_estimate_sqsum += 1.0 / (xDiffval*xDiffval);
@@ -1181,10 +1191,10 @@ for (int iPair = 1; iPair < (int)sortedPairs.size()-1; iPair++)
 		effSource[iQ] += sphericalbesselj0(currentQ * xDiffval);
 		currentQ += dQ;
 	}
+//cout << setprecision(12) << "effSource[0] = " << effSource[0] << endl;
 	//*/
 }
 
-cout << "npairs = " << (int)npairs << endl;
 cout << setprecision(12) << "size estimate (linear halfwidth) = " << 2.0 * size_estimate_sqsum / (M_PI * size_estimate_sum) << endl;
 cout << setprecision(12) << "size estimate (gaussian approximation / 2) = " << 0.5 * sqrt(3.0 * size_estimate_cubsum / size_estimate_sum) << endl;
 cout << setprecision(12) << "size estimate (geometric mean) = " << exp(avg_log / npairs) << endl;
@@ -1255,10 +1265,8 @@ void BoseEinstein::set_RHS(
 
 			//--------------------------------------
 			// Decide how to compute BE enhancement.
-			constexpr bool compute_BE_enhancement_exactly = true;
-
 			const double one_by_N = 1.0 / static_cast<double>(sortedPairs.size() - 2);
-			if ( compute_BE_enhancement_exactly )
+			if ( compute_BE_enhancement_exactly or thisQ >= Qgrid.back() )
 			{
 				int eachPairIndex = 0;
 				for (const auto & eachPair : sortedPairs)
@@ -1282,11 +1290,10 @@ void BoseEinstein::set_RHS(
 					*/
 				}
 			}
-			// use effective source if within Qgrid
+			// use effective source if within Qgrid, use exact calculation otherwise
 			else if ( thisQ < Qgrid.back() )
 			{
 				// make this a global variable
-				const double dQ = 0.001;
 				const double Qmin = 0.0;
 				const int iQ = static_cast<int>( (thisQ - Qmin) / dQ );
 				if ( iQ + 1 >= (int)Qgrid.size() )
@@ -1306,33 +1313,12 @@ void BoseEinstein::set_RHS(
 										* ( integrated_effective_source.at(jQ+1) - EjQ ) / dQ;
 				}
 				
-				result += EnextQ - EthisQ;
+				result += denBar.at(pairCount) * ( EnextQ - EthisQ );	// factor of 1/N already included!!!
 			}
 
 			// whole vector inside at once
 			//result += one_by_N * denBar.at(pairCount)
             //          * compute_integral_with_phasespace( thisQ, nextQ, sorted_xDiffs, m2Pair[iTab]);
-
-			// DOUBLE CHECK INDICES HERE!!!
-			/*cout << "pairCount = " << pairCount << endl;
-			cout << "Line = " << __LINE__ << endl;
-			cout << "denBar.at(pairCount) = "
-					<< denBar.at(pairCount) << endl;
-			cout << "Line = " << __LINE__ << endl;
-			cout << "sorted_xDiffs.at(pairCount) = "
-					<< sorted_xDiffs.at(pairCount) << endl;
-			cout << "Line = " << __LINE__ << endl;
-			*/
-			/*			result += one_by_N * denBar.at(pairCount)
-									* compute_integral_with_phasespace(
-										thisQ, nextQ, sorted_xDiffs.at(pairCount), m2Pair[iTab]);
-			cout << "check result here: "
-					<< pairCount << "   " << one_by_N << "   " << denBar.at(pairCount) << "   "
-					<< thisQ << "   " << nextQ << "   "
-					<< sorted_xDiffs.at(pairCount) << "   " << m2Pair[iTab] << "   "
-					<< result << "   " << compute_integral_with_phasespace(
-											thisQ, nextQ, sorted_xDiffs.at(pairCount), m2Pair[iTab]) << endl;
-			*/
 
 			pairCount++;
 		}
@@ -1507,6 +1493,10 @@ for (int iQ = 0; iQ < (int)effSource.size(); iQ++)
 //if (1) return;
 if (1) exit (8);*/
 
+	// vector to track sorted pair separations
+	vector<double> sorted_xDiffs(sortedPairs.size()-2);
+	set_sorted_xDiffs( sortedPairs, sorted_xDiffs );
+
 	// keep track of which pairs are shifted
 	int n_skipped_pairs = 0;
 	vector<bool> this_pair_shifted(sortedPairs.size()-2, false);
@@ -1612,41 +1602,55 @@ if (1) exit (8);*/
 					//---------------------------------
 					// Add in the BE enhancement piece.
 					///*
-					for (const auto & eachPair : sortedPairs)
+					if ( compute_BE_enhancement_exactly or Qlower >= Qgrid.back() )
 					{
-						// Skip unphysical dummy pairs.
-						if (   &eachPair == &sortedPairs.front()
-							or &eachPair == &sortedPairs.back() )
-							continue;
+						int eachPairIndex = 0;
+						for (const auto & eachPair : sortedPairs)
+						{
+							// Skip unphysical dummy pairs.
+							if (   &eachPair == &sortedPairs.front()
+								or &eachPair == &sortedPairs.back() )
+								continue;
 
-						const int i1  = eachPair.second.first;
-						const int i2  = eachPair.second.second;
-						Vec4 xDiffPRF = ( hadronBE[i1].x - hadronBE[i2].x ) * MM2FM / HBARC;
-						xDiffPRF.bstback( 0.5*(hadronBE[i1].p + hadronBE[i2].p) );
-		
-						// Add in physical results
-						const double xDiffMag = xDiffPRF.pAbs();
-						RHSnew += one_by_N * thisdenBar
-									* compute_integral_with_phasespace( Qlower, Qnew, xDiffMag, m2Pair[iTab] );
-						deriv  += one_by_N * thisdenBar
-									* PSfactor * sphericalbesselj0( Qnew * xDiffMag );
+							// Add in physical results
+							const double xDiffMag = sorted_xDiffs.at(eachPairIndex++);
+							RHSnew += one_by_N * thisdenBar
+										* compute_integral_with_phasespace( Qlower, Qnew, xDiffMag, m2Pair[iTab] );
+							deriv  += one_by_N * thisdenBar
+										* PSfactor * sphericalbesselj0( Qnew * xDiffMag );
+						}
+					}
+					// use effective source if within Qgrid, use exact calculation otherwise
+					else if ( Qlower < Qgrid.back() )
+					{
+						// make this a global variable
+						const double Qmin = 0.0;
+						const int iQ = static_cast<int>( (Qlower - Qmin) / dQ );
+						if ( iQ + 1 >= (int)Qgrid.size() )
+							continue;
+						const int jQ = static_cast<int>( (Qnew - Qmin) / dQ );
+				
+						// interpolate running effective source integral and take difference
+						const double EiQ = integrated_effective_source.at(iQ);
+						const double EQlower = EiQ + ( Qlower - Qgrid.at(iQ) )
+												* ( integrated_effective_source.at(iQ+1) - EiQ ) / dQ;
+
+						double EQnew = integrated_effective_source.back();
+						double SQnew = effSource.back();
+						if ( jQ + 1 < (int)Qgrid.size() )
+						{
+							const double EjQ = integrated_effective_source.at(jQ);
+							const double SjQ = effSource.at(jQ);
+							EQnew = EjQ + ( Qnew - Qgrid.at(jQ) )
+												* ( integrated_effective_source.at(jQ+1) - EjQ ) / dQ;
+							SQnew = SjQ + ( Qnew - Qgrid.at(jQ) ) * ( effSource.at(jQ+1) - SjQ ) / dQ;
+						}
+				
+						RHSnew += thisdenBar * (EQnew - EQlower);	// 1/N factor already included!
+						deriv += thisdenBar * PSfactor * SQnew;		// 1/N factor already included!
+						
 					}
 					//*/
-/*
-// DOUBLE CHECK INDICES HERE!!!
-{
-	const int i1  = sortedPairs.at(iPair).second.first;
-	const int i2  = sortedPairs.at(iPair).second.second;
-	Vec4 xDiffPRF = ( hadronBE[i1].x - hadronBE[i2].x ) * MM2FM / HBARC;
-	xDiffPRF.bstback( 0.5*(hadronBE[i1].p + hadronBE[i2].p) );
-	const double xDiffMag = xDiffPRF.pAbs();
-	RHSnew += one_by_N * thisdenBar
-				* compute_integral_with_phasespace(
-					Qlower, Qnew, xDiffMag, m2Pair[iTab]);
-	deriv  += one_by_N * thisdenBar
-				* PSfactor * sphericalbesselj0( Qnew * xDiffMag );
-}
-*/
 
 				}
 

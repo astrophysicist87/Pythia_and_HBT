@@ -178,10 +178,15 @@ int main(int argc, char *argv[])
 	bool store_Bjorken_coordinates = false;	// tau, eta_s, y, and m
 
 	// Some Bose-Einstein options (add to *.cmnd file eventually)
-	bool useInvariantSize 		= false;	// Lorentz-invariant size vs. spatial size only
-	bool useDistribution 		= false;		// Estimate QRef vs. take as input parameter
-	bool useRelativeDistance 	= true;		// Use relative distances or absolute sizes
-	bool useRestFrame 			= true;		// Use rest frame vs. lab frame
+	bool useInvariantSize 					= false;	// Lorentz-invariant size vs. spatial size only
+	bool useDistribution 					= false;	// Estimate QRef vs. take as input parameter
+	bool useRelativeDistance 				= true;		// Use relative distances or absolute sizes
+	bool useRestFrame 						= true;		// Use rest frame vs. lab frame
+	bool includePhaseSpace					= true;		// Include phase-space factor
+	bool linearInterpolateCDF				= false;	// Estimate pair density via linear interpolation
+	bool usePositiveShiftsForCompensation	= true;		// Pairs shifted apart used to compensate pairs shifted together
+	bool computeBEEnhancementExactly		= true;		// Whether to evaluate BE enhancement approximately or exactly
+
 
 	//if ( momentum_space_modifications )
 	//	cout << "Using momentum space modifications!" << endl;
@@ -361,6 +366,14 @@ int main(int argc, char *argv[])
 			pythiaVector[iThread].readString("BoseEinstein:useRelativeDistance = on");
 		if ( useRestFrame )
 			pythiaVector[iThread].readString("BoseEinstein:useRestFrame = on");
+		if ( includePhaseSpace )
+			pythiaVector[iThread].readString("BoseEinstein:includePhaseSpace = on");
+		if ( linearInterpolateCDF )
+			pythiaVector[iThread].readString("BoseEinstein:linearInterpolateCDF = on");
+		if ( usePositiveShiftsForCompensation )
+			pythiaVector[iThread].readString("BoseEinstein:usePositiveShiftsForCompensation = on");
+		if ( computeBEEnhancementExactly )
+			pythiaVector[iThread].readString("BoseEinstein:computeBEEnhancementExactly = on");
 
 
 		// ==============================================
@@ -652,8 +665,9 @@ if (1) exit (9);
 				continue;
 
 			//just for now
-			//if ( pion_multiplicity < 50 or pion_multiplicity > 100 )
-			//	continue;
+			const int pion_multiplicity = HBT_particle_multiplicities[ HBT_particle_IDs[ 211 ] ];
+			if ( pion_multiplicity < 50 or pion_multiplicity > 100 )
+				continue;
 			// just pick something to guarantee large multiplicity
 			//if ( event_multiplicity < 70000 )
 			//	continue;

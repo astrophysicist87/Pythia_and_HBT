@@ -73,6 +73,15 @@ echo 'SetFragmentationVertices='$SetFragmentationVertices
 echo 'SetPartonVertices='$SetPartonVertices
 echo 'ThermalOnly='$ThermalOnly
 echo
+echo 'useInvariantSize='$useInvariantSize
+echo 'useDistribution='$useDistribution
+echo 'useRelativeDistance='$useRelativeDistance
+echo 'useRestFrame='$useRestFrame
+echo 'includePhaseSpace='$includePhaseSpace
+echo 'linearInterpolateCDF='$linearInterpolateCDF
+echo 'usePositiveShiftsForCompensation='$usePositiveShiftsForCompensation
+echo 'computeBEEnhancementExactly='$computeBEEnhancementExactly
+echo
 echo 'UseColorReconnection='$UseColorReconnection
 echo 'UseRopeHadronization='$UseRopeHadronization
 echo 'IncludeStringShoving='$IncludeStringShoving

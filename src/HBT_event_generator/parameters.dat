@@ -36,8 +36,8 @@ n_Kphi_pts = 2
 
 # KL grid
 n_KL_pts = 2
-KLmin = -1.0
-KLmax = 1.0
+KLmin = -10.0
+KLmax = 10.0
 
 #===========
 # relative momenta (3D)
@@ -79,11 +79,11 @@ scalar_mode = 0
 
 #===========
 # whether to use GEHW method (0), Chun's method (1) or bin-averaging method (2)
-method_mode = 0
+method_mode = 2
 
 #===========
 # whether or not BE effects are pre-included from Pythia
-BE_mode = 1
+BE_mode = 0
 
 #===========
 # whether to use smoothness approximation
@@ -130,7 +130,7 @@ chosen_MCID = 211
 include_thermal = 1
 
 # include decay particles (0 - false, 1 - true)
-include_decays = 1
+include_decays = 0
 
 #===========
 # Output specifications

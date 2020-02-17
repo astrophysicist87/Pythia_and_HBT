@@ -90,6 +90,7 @@ Include effects or not for identical <ei>K^+</ei>, <ei>K^-</ei>,
 Include effects or not for identical <ei>eta</ei> and <ei>eta'</ei>. 
 </flag>
 
+<!--CJP(begin)-->
 <flag name="BoseEinstein:useInvariantSourceSize" default="off"> 
 Whether or not to use invariant source size in estimating pair
 distribution.  "On" gives the root mean square invariant relative
@@ -114,7 +115,29 @@ Whether to evaluate distances in rest frame of particle or pair vs.
 lab frame.
 </flag>
 
-<!--CJP(begin)-->
+<flag name="BoseEinstein:includePhaseSpace" default="off"> 
+Whether to include
+<eq> 
+g(Q) = \frac{Q^2}{\sqrt{Q^2 + 4m^2}} 
+</eq>
+factor when evaluating BE shift relation.
+</flag>
+
+<flag name="BoseEinstein:linearInterpolateCDF" default="off"> 
+Whether to include the estimated pair density when evaluating
+the BE shift relation.
+</flag>
+
+<flag name="BoseEinstein:usePositiveShiftsForCompensation" default="off"> 
+Uses particle pairs shifted apart to balance particle pairs shifted
+together.
+</flag>
+
+<flag name="BoseEinstein:computeBEEnhancementExactly" default="off"> 
+Whether to evaluate be enhancement exactly or using an approximation 
+(the latter is faster).
+</flag>
+
 <parm name="BoseEinstein:enhanceMode" default="0" min="0" max="1"> 
 A parameter to specify how the Bose-Einstein effects are modeled;
 a value of "0" corresponds to the default method with a constant

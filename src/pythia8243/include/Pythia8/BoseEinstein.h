@@ -72,12 +72,14 @@ private:
   // Constants: could only be changed in the code itself.
   static const int    IDHADRON[9], ITABLE[9], NCOMPSTEP;
   static const double STEPSIZE, Q2MIN, COMPRELERR, COMPFACMAX;
+  static const double dQ;
 
   // Initialization data, read from Settings.
   bool   doPion, doKaon, doEta, useInvariantSize,
          useDistribution, useRelativeDistance, useRestFrame,
 		 include_phase_space, linear_interpolate_CDF,
-		 include_posDelQ_in_compensation;
+		 include_posDelQ_in_compensation,
+		 compute_BE_enhancement_exactly;
   ///===CJP(begin)===
   int sourceDimension;
   double lambda, QRef, RRef;
