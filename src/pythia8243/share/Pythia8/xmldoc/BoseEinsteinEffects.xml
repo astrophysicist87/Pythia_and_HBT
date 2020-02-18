@@ -115,7 +115,7 @@ Whether to evaluate distances in rest frame of particle or pair vs.
 lab frame.
 </flag>
 
-<flag name="BoseEinstein:includePhaseSpace" default="off"> 
+<flag name="BoseEinstein:includePhaseSpace" default="on"> 
 Whether to include
 <eq> 
 g(Q) = \frac{Q^2}{\sqrt{Q^2 + 4m^2}} 
@@ -123,17 +123,17 @@ g(Q) = \frac{Q^2}{\sqrt{Q^2 + 4m^2}}
 factor when evaluating BE shift relation.
 </flag>
 
-<flag name="BoseEinstein:linearInterpolateCDF" default="off"> 
+<flag name="BoseEinstein:linearInterpolateCDF" default="on"> 
 Whether to include the estimated pair density when evaluating
 the BE shift relation.
 </flag>
 
-<flag name="BoseEinstein:usePositiveShiftsForCompensation" default="off"> 
+<flag name="BoseEinstein:usePositiveShiftsForCompensation" default="on"> 
 Uses particle pairs shifted apart to balance particle pairs shifted
 together.
 </flag>
 
-<flag name="BoseEinstein:computeBEEnhancementExactly" default="off"> 
+<flag name="BoseEinstein:computeBEEnhancementExactly" default="on"> 
 Whether to evaluate be enhancement exactly or using an approximation 
 (the latter is faster).
 </flag>

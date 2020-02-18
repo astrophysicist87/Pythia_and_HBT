@@ -143,6 +143,14 @@ int main(int argc, char *argv[])
 		exit(8);
 	}
 
+	// Use this to convert boolean variables
+	// to appropriate flag toggles in Pythia.
+	std::unordered_map<bool, string> boolean_toggle
+		= {
+			{ true,  "on"  },
+			{ false, "off" }
+		  };
+
 	// Can easily add more later
 	std::unordered_map<string, string> particle_IDs
 		= {
@@ -358,7 +366,7 @@ int main(int argc, char *argv[])
 		bool momentum_space_modifications = pythiaVector[iThread].settings.flag("HadronLevel:BoseEinstein");
 		if ( thermal_only and momentum_space_modifications )
 			pythiaVector[iThread].readString("BoseEinstein:widthSep = 1.0");	// allows to shift only "thermal" particles
-		if ( useInvariantSize )
+		/*if ( useInvariantSize )
 			pythiaVector[iThread].readString("BoseEinstein:useInvariantSourceSize = on");
 		if ( useDistribution )
 			pythiaVector[iThread].readString("BoseEinstein:useDistribution = on");
@@ -373,7 +381,19 @@ int main(int argc, char *argv[])
 		if ( usePositiveShiftsForCompensation )
 			pythiaVector[iThread].readString("BoseEinstein:usePositiveShiftsForCompensation = on");
 		if ( computeBEEnhancementExactly )
-			pythiaVector[iThread].readString("BoseEinstein:computeBEEnhancementExactly = on");
+			pythiaVector[iThread].readString("BoseEinstein:computeBEEnhancementExactly = on");*/
+
+
+		//------------------------------------------------------------------------
+		// N.B.: THIS CURRENTLY OVERWRITES OPTIONS PASSED IN THROUGH *.CMND FILES.
+		pythiaVector[iThread].readString("BoseEinstein:useInvariantSourceSize = " 			+ boolean_toggle[useInvariantSize]);
+		pythiaVector[iThread].readString("BoseEinstein:useDistribution = " 					+ boolean_toggle[useDistribution]);
+		pythiaVector[iThread].readString("BoseEinstein:useRelativeDistance = " 				+ boolean_toggle[useRelativeDistance]);
+		pythiaVector[iThread].readString("BoseEinstein:useRestFrame = " 					+ boolean_toggle[useRestFrame]);
+		pythiaVector[iThread].readString("BoseEinstein:includePhaseSpace = " 				+ boolean_toggle[includePhaseSpace]);
+		pythiaVector[iThread].readString("BoseEinstein:linearInterpolateCDF = " 			+ boolean_toggle[linearInterpolateCDF]);
+		pythiaVector[iThread].readString("BoseEinstein:usePositiveShiftsForCompensation = " + boolean_toggle[usePositiveShiftsForCompensation]);
+		pythiaVector[iThread].readString("BoseEinstein:computeBEEnhancementExactly = " 		+ boolean_toggle[computeBEEnhancementExactly]);
 
 
 		// ==============================================

@@ -133,6 +133,15 @@ do
 			# which I've added myself (not generally compatible yet)
 			# Comment out lines below this one if running on unmodified Pythia
 			echo 'BoseEinstein:enhanceMode =' $BEEnhancementMode >> main_BEeffects.cmnd
+			echo 'BoseEinstein:useInvariantSize =' $useInvariantSize >> main_BEeffects.cmnd
+			echo 'BoseEinstein:useDistribution =' $useDistribution >> main_BEeffects.cmnd
+			echo 'BoseEinstein:useRelativeDistance =' $useRelativeDistance >> main_BEeffects.cmnd
+			echo 'BoseEinstein:useRestFrame =' $useRestFrame >> main_BEeffects.cmnd
+			echo 'BoseEinstein:includePhaseSpace =' $includePhaseSpace >> main_BEeffects.cmnd
+			echo 'BoseEinstein:linearInterpolateCDF =' $linearInterpolateCDF >> main_BEeffects.cmnd
+			echo 'BoseEinstein:usePositiveShiftsForCompensation =' $usePositiveShiftsForCompensation >> main_BEeffects.cmnd
+			echo 'BoseEinstein:computeBEEnhancementExactly =' $computeBEEnhancementExactly >> main_BEeffects.cmnd
+
 
 			# time and run
 			if $useArbitraryParticle
