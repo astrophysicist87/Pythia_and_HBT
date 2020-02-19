@@ -15,7 +15,10 @@ echo 'chosen_OMP_NUM_THREADS='$chosen_OMP_NUM_THREADS > omp_env.sh
 # set up array of job specifications
 
 declare -a specs=(
-	'useArbitraryParticle=true projectile="p" target="p" beamEnergy="13000.0" chosenHBTparticle="211" Nevents=1 storeBjorkenCoordinates="false" BEeffects="on"'
+    'useArbitraryParticle=true projectile="p" target="p" beamEnergy="14000.0" chosenHBTparticle="211" Nevents=1000000
+     storeBjorkenCoordinates="false" linearInterpolateCDF="off" BEeffects="on"'
+    'useArbitraryParticle=true projectile="p" target="p" beamEnergy="14000.0" chosenHBTparticle="211" Nevents=1000000
+     storeBjorkenCoordinates="false" linearInterpolateCDF="on" BEeffects="on"'
 	#'useArbitraryParticle=true projectile="C" target="C" beamEnergy="5020.0" chosenHBTparticle="211" Nevents=10000 runHBTEG=false runFitCF=false runSV=false bMin=0.0 bMax=1.0'
 	#'useArbitraryParticle=true projectile="O" target="O" beamEnergy="5020.0" chosenHBTparticle="211" Nevents=10000 runHBTEG=false runFitCF=false runSV=false bMin=0.0 bMax=1.0'
 	#'useArbitraryParticle=true projectile="Cu" target="Cu" beamEnergy="5020.0" chosenHBTparticle="211" Nevents=10000 runHBTEG=false runFitCF=false runSV=false bMin=0.0 bMax=1.0'
@@ -61,7 +64,7 @@ do
 	cp -r src $HOME_RESULTS_DIRECTORY/job-${job}/
 	
 	executableString="./driver.sh ${specs[i]} &> driver.out"
-	generate_pbs '12:00:00' $chosen_OMP_NUM_THREADS $executableString > $HOME_RESULTS_DIRECTORY/job-${job}/submit.pbs
+	generate_pbs '48:00:00' $chosen_OMP_NUM_THREADS $executableString > $HOME_RESULTS_DIRECTORY/job-${job}/submit.pbs
 	
 	cp scripts/driver.sh $HOME_RESULTS_DIRECTORY/job-${job}
 	cp scripts/rerun.sh $HOME_RESULTS_DIRECTORY/job-${job}
