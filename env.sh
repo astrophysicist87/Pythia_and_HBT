@@ -73,7 +73,7 @@ echo 'SetFragmentationVertices='$SetFragmentationVertices
 echo 'SetPartonVertices='$SetPartonVertices
 echo 'ThermalOnly='$ThermalOnly
 echo
-echo 'useInvariantSize='$useInvariantSize
+echo 'useInvariantSourceSize='$useInvariantSourceSize
 echo 'useDistribution='$useDistribution
 echo 'useRelativeDistance='$useRelativeDistance
 echo 'useRestFrame='$useRestFrame

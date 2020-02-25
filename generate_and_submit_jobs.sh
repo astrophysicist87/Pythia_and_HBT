@@ -3,7 +3,7 @@
 (
 	# info for this run
 	NTHREADS=12
-	DIRECTORY=RESULTS_pp_Nev10000000_wBA
+	DIRECTORY=RESULTS_pp_Nev1000_wBEeffects_DUMMY
 
 	./generate_jobs.sh $NTHREADS $DIRECTORY
 

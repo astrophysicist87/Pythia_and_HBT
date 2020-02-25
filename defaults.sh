@@ -30,7 +30,7 @@ SetFragmentationVertices='on'
 SetPartonVertices='off'
 ThermalOnly='false'
 
-useInvariantSize='off'                   # Lorentz-invariant size vs. spatial size only
+useInvariantSourceSize='off'             # Lorentz-invariant size vs. spatial size only
 useDistribution='off'                    # Estimate QRef vs. take as input parameter
 useRelativeDistance='on'                 # Use relative distances or absolute sizes
 useRestFrame='on'                        # Use rest frame vs. lab frame

@@ -13,7 +13,7 @@ echo 'chosen_OMP_NUM_THREADS='$chosen_OMP_NUM_THREADS > omp_env.sh
 # set up array of job specifications
 
 declare -a specs=(
-		'useArbitraryParticle=true projectile="p" target="p" beamEnergy="14000.0" chosenHBTparticle="211" Nevents=10000000 storeBjorkenCoordinates="false" BEeffects="off"'
+		'useArbitraryParticle=true projectile="p" target="p" beamEnergy="14000.0" chosenHBTparticle="211" Nevents=1000 storeBjorkenCoordinates="false" BEeffects="on"'
 		#'useArbitraryParticle=true projectile="Pb" target="Pb" beamEnergy="2760.0" chosenHBTparticle="211" Nevents=1000 bMin=0.0 bMax=0.001'
 		#'useArbitraryParticle=true projectile="Pb" target="Pb" beamEnergy="2760.0" chosenHBTparticle="321" Nevents=100000 bMin=0.0 bMax=0.001'
 		#'useArbitraryParticle=true projectile="Pb" target="Pb" beamEnergy="5020.0" Nevents=100 bMin=0.0 bMax=1.0 runHBTEG=false runFitCF=false runSV=false'

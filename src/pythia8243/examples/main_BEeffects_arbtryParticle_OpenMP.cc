@@ -186,14 +186,14 @@ int main(int argc, char *argv[])
 	bool store_Bjorken_coordinates = false;	// tau, eta_s, y, and m
 
 	// Some Bose-Einstein options (add to *.cmnd file eventually)
-	bool useInvariantSize 					= false;	// Lorentz-invariant size vs. spatial size only
-	bool useDistribution 					= false;	// Estimate QRef vs. take as input parameter
-	bool useRelativeDistance 				= true;		// Use relative distances or absolute sizes
+	bool useInvariantSourceSize             = false;     // Lorentz-invariant size vs. spatial size only
+	bool useDistribution                    = false;     // Estimate QRef vs. take as input parameter
+	bool useRelativeDistance                = true;     // Use relative distances or absolute sizes
 	bool useRestFrame 						= true;		// Use rest frame vs. lab frame
 	bool includePhaseSpace					= true;		// Include phase-space factor
-	bool linearInterpolateCDF				= false;	// Estimate pair density via linear interpolation
+	bool linearInterpolateCDF				= true;     // Estimate pair density via linear interpolation
 	bool usePositiveShiftsForCompensation	= true;		// Pairs shifted apart used to compensate pairs shifted together
-	bool computeBEEnhancementExactly		= true;		// Whether to evaluate BE enhancement approximately or exactly
+	bool computeBEEnhancementExactly		= true;     // Whether to evaluate BE enhancement approximately or exactly
 
 
 	//if ( momentum_space_modifications )
@@ -351,7 +351,7 @@ int main(int argc, char *argv[])
 		//----------------------------------------------
 		// N.B.: THESE OPTIONS MAY BE OVERWRITTEN BY
 		//       OPTIONS PASSED IN THROUGH *.CMND FILES.
-		pythiaVector[iThread].readString("BoseEinstein:useInvariantSourceSize = " 			+ boolean_toggle[useInvariantSize]);
+		pythiaVector[iThread].readString("BoseEinstein:useInvariantSourceSize = " 			+ boolean_toggle[useInvariantSourceSize]);
 		pythiaVector[iThread].readString("BoseEinstein:useDistribution = " 					+ boolean_toggle[useDistribution]);
 		pythiaVector[iThread].readString("BoseEinstein:useRelativeDistance = " 				+ boolean_toggle[useRelativeDistance]);
 		pythiaVector[iThread].readString("BoseEinstein:useRestFrame = " 					+ boolean_toggle[useRestFrame]);
@@ -369,7 +369,7 @@ int main(int argc, char *argv[])
 		// ==============================================
 		// use this to turn off energy-momentum
 		// conservation, etc. for debugging purposes
-		//pythiaVector[iThread].readString("Check:event = off");
+		pythiaVector[iThread].readString("Check:event = off");
 
 
 		// ==============================================
@@ -599,17 +599,6 @@ if (false)
 						hadron_multiplicity++;
 						if ( p.isCharged() )
 							charged_hadron_multiplicity++;
-/*#pragma omp critical
-{
-Vec4 pCopy1 = p.p();
-Vec4 pCopy2 = p.p();
-pCopy1.bst(p.p());
-pCopy2.bstback(p.p());
-cout << "CHECKTHIS: p.p() = " << p.p() << endl;
-cout << "CHECKTHIS: pCopy1.bst(p.p()) = " << pCopy1 << endl;
-cout << "CHECKTHIS: pCopy2.bstback(p.p()) = " << pCopy2 << endl;
-if (1) exit (9);
-}*/
 
 				 		if ( HBT_particle_IDs.count( p.id() ) > 0 )	// i.e., is pion(+) or another HBT particle in the HBT_particle_IDs map
 						{
@@ -670,9 +659,9 @@ if (1) exit (9);
 				continue;
 
 			//just for now
-			const int pion_multiplicity = HBT_particle_multiplicities[ HBT_particle_IDs[ 211 ] ];
-			if ( pion_multiplicity < 50 or pion_multiplicity > 100 )
-				continue;
+			//const int pion_multiplicity = HBT_particle_multiplicities[ HBT_particle_IDs[ 211 ] ];
+			//if ( pion_multiplicity < 50 or pion_multiplicity > 100 )
+			//	continue;
 			// just pick something to guarantee large multiplicity
 			//if ( event_multiplicity < 70000 )
 			//	continue;

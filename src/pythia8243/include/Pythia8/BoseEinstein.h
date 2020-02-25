@@ -70,9 +70,10 @@ public:
 private:
 
   // Constants: could only be changed in the code itself.
+  static const bool   BE_VERBOSE;
   static const int    IDHADRON[9], ITABLE[9], NCOMPSTEP;
   static const double STEPSIZE, Q2MIN, COMPRELERR, COMPFACMAX;
-  static const double dQ;
+  static const double dQ, Qmaximum;
 
   // Initialization data, read from Settings.
   bool   doPion, doKaon, doEta, useInvariantSize,
