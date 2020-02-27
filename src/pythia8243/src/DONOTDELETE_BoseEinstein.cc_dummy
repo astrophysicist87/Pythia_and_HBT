@@ -286,7 +286,7 @@ bool BoseEinstein::shiftEvent( Event& event) {
 
 		// Then add a bunch more pions...
 		if (true)
-		for (int i = 0; i < 10; i++)
+		for (int i = 0; i < 1000; i++)
 		{
 			// same "mother" for all
 			int jNew = event.copy( lastPion, 99 );
@@ -519,24 +519,17 @@ bool BoseEinstein::getSortedPairs(
 	// Reset.
     int iTab  = ITABLE[ iSpecies ];
 	sortedPairs.clear();
+	//sortedPairs_xDiffPRF.clear();
 
 	// get all values in vector first
 	for (int i1 = nStored[iSpecies]; i1 < nStored[iSpecies+1] - 1; ++i1)
 	for (int i2 = i1 + 1; i2 < nStored[iSpecies+1]; ++i2)
-	{
-		Vec4 qPRF = hadronBE.at(i1).p - hadronBE.at(i2).p;
-		qPRF.bstback( 0.5*( hadronBE.at(i1).p + hadronBE.at(i2).p ) );
-
 		sortedPairs.push_back(
 			std::make_pair(
 				sqrt( m2(hadronBE.at(i1).p, hadronBE.at(i2).p) - m2Pair[iTab] ),
 				std::make_pair(i1, i2)
 			)
 		);
-		pairs_sorted_by_qxPRF.push_back( std::make_pair( qPRF.px(), std::make_pair(i1, i2) ) );
-		pairs_sorted_by_qyPRF.push_back( std::make_pair( qPRF.py(), std::make_pair(i1, i2) ) );
-		pairs_sorted_by_qzPRF.push_back( std::make_pair( qPRF.pz(), std::make_pair(i1, i2) ) );
-	}
 
 	// check if there are enough pairs of this species to do shift
 	if (sortedPairs.size() < 2)
@@ -547,36 +540,27 @@ bool BoseEinstein::getSortedPairs(
 
 	// THEN sort them (sorts on first column in ascending order automatically)
 	sort( sortedPairs.begin(), sortedPairs.end() );
-	sort( pairs_sorted_by_qxPRF.begin(), pairs_sorted_by_qxPRF.end() );
-	sort( pairs_sorted_by_qyPRF.begin(), pairs_sorted_by_qyPRF.end() );
-	sort( pairs_sorted_by_qzPRF.begin(), pairs_sorted_by_qzPRF.end() );
-
-cout << "CHECK pairs:" << endl;
-for (const auto & eachPair : sortedPairs)
-{
-	const int i1 = eachPair.second.first;
-	const int i2 = eachPair.second.second;
-	Vec4 q = hadronBE.at(i1).p - hadronBE.at(i2).p;
-	Vec4 qPRF = q;
-	qPRF.bstback( 0.5*( hadronBE.at(i1).p + hadronBE.at(i2).p ) );
-	cout << i1 << "   " << i2 << "   " << setprecision(12) << eachPair.first << "   " << qPRF.pAbs() << endl;
-	cout << i1 << "   " << i2 << "   " << q;
-	cout << i1 << "   " << i2 << "   " << qPRF;
-}
-
-cout << endl << endl << endl << "CHECK qzPRF pairs:" << endl;
-for (const auto & eachPair : pairs_sorted_by_qzPRF)
-{
-	const int i1 = eachPair.second.first;
-	const int i2 = eachPair.second.second;
-	cout << i1 << "   " << i2 << "   " << setprecision(12) << eachPair.first << endl;
-}
-
-
-if (1) exit(8);
 
 	// add fake first "pair"
 	sortedPairs.insert(sortedPairs.begin(), std::make_pair( 0.0, std::make_pair(-1, -1) ) );
+
+/*
+cout << "Check sortedPairs: " << endl;
+for (const auto & iPair : sortedPairs)
+{
+	const int i1 = iPair.second.first;
+	const int i2 = iPair.second.second;
+	Vec4 xDiffPRF = ( hadronBE.at(i1).x - hadronBE.at(i2).x ) * MM2FM / HBARC;
+	xDiffPRF.bstback( 0.5*(hadronBE.at(i1).p + hadronBE.at(i2).p) );
+
+	double thisQ = iPair.first;
+	double nextQ = (&iPair == &sortedPairs.back() ) ? 1.1*iPair.first : (*(&iPair+1)).first;
+
+	cout << setprecision(12) << thisQ << "   " << nextQ - thisQ << "   " << xDiffPRF.pAbs() * HBARC << "   " << xDiffPRF.pAbs() << "   " << m2Pair[iTab] << endl;
+}
+
+if (1) exit(8);
+*/
 
 	// add fake last "pair" (new QVal is 10% larger than last one, just for definiteness)
 	sortedPairs.push_back( std::make_pair( 1.1*sortedPairs.back().first, std::make_pair(-1, -1) ) );
@@ -706,6 +690,169 @@ void BoseEinstein::shiftPair_fixedQRef( int i1, int i2, int iTab) {
 }
 
 
+double BoseEinstein::compute_integral_with_phasespace(double a_in, double b_in, double c_in, double d_in)
+{
+	// Computes integral given by Integrate[Q^2 j0[c Q] / Sqrt[Q^2 + d], {Q, a, b}]
+	double a = a_in, b = b_in, c = c_in, d = d_in;
+	double overallSign = 1.0;
+	if (b<a)
+	{
+		a=b_in;
+		b=a_in;
+		overallSign = -1.0;
+	}
+	double result = 0.0;
+
+	///*
+	//---------
+	// Check 0.
+	// Taylor expand part of phase space to second order
+	// and do resulting integral analytically.
+	{
+		const double cen = 0.5 * ( a + b );
+		const double sqrt_cen2_plus_d = sqrt(cen*cen + d);
+		const double cen2 = cen*cen;
+		const double cen3 = cen2*cen;
+		const double cen5 = cen2*cen3;
+		const double a2 = a*a, b2 = b*b, d2 = d*d;
+		const double sqrt_cen2_plus_d_5 = sqrt_cen2_plus_d*sqrt_cen2_plus_d*sqrt_cen2_plus_d*sqrt_cen2_plus_d*sqrt_cen2_plus_d;
+		const double approx_lhs
+						= ( 2.0*cen5 - cen3*d + 8.0*cen2*d*a
+							+ 2.0*d2*a - 3.0*cen*d*a2
+							) / ( 2.0*sqrt_cen2_plus_d_5 );
+		const double approx_rhs
+						= ( 2.0*cen5 - cen3*d + 8.0*cen2*d*b
+							+ 2.0*d2*b - 3.0*cen*d*b2
+							) / ( 2.0*sqrt_cen2_plus_d_5 );
+		const double exact_lhs = a / sqrt(a2 + d), exact_rhs = b / sqrt(b2 + d);
+		const double eps_check0 = 0.001;
+		if ( 		abs( 1.0-approx_lhs/exact_lhs ) < eps_check0
+				and abs( 1.0-approx_rhs/exact_rhs ) < eps_check0 )
+		{
+			const double c2 = c_in*c_in;
+			const double c4 = c2*c2;
+
+			return ( overallSign *
+								 ( 1.0/(2.0*c4*sqrt_cen2_plus_d_5) )
+								*(    ( 6.0*cen*d + c2*( 2.0*cen5 - cen*(3.0*a2 - 8.0*a*cen + cen2)*d + 2.0*a*d2) )*cos(a*c)
+									+ (-6.0*cen*d + c2*(-2.0*cen5 + cen*(3.0*b2 - 8.0*b*cen + cen2)*d - 2.0*b*d2) )*cos(b*c)
+									+ 2.0*c*d*( - (-3.0*a*cen + 4.0*cen2 + d)*sin(a*c)
+												+ (-3.0*b*cen + 4.0*cen2 + d)*sin(b*c) ) )
+					);
+		}
+	}
+
+	//---------
+	// Check 1.
+	// Lowest order Riemann 'sum' if b - a is small enough
+	{
+		const double cen = 0.5 * ( a + b );
+		const double delta = b - a;
+
+		const double cot_cenc = 1.0/tan(c*cen);
+		const double cen2_plus_d = cen*cen + d;
+		const double eps = delta*delta
+							* ( 2.0*c*d*cen2_plus_d*cot_cenc
+								- cen*(3.0*d+c*c*cen2_plus_d*cen2_plus_d) )
+							/ ( 24.0*cen*cen2_plus_d*cen2_plus_d );
+
+		if ( abs(eps) < 0.00001 )
+			return ( overallSign * delta * cen * cen * sphericalbesselj0(c*cen) / sqrt(cen * cen + d) );
+	}
+
+	//---------
+	// Check 2.
+	if ( a > 1000.0*d )	// do the integral approximately here
+	{
+		result = ( cos(a*c) - cos(b*c) ) / (c*c);
+		return ( overallSign*result );
+	}
+	
+	//---------
+	// Check 3.
+	const double sin_ac = sin(a*c), sin_bc = sin(b*c),
+				 cos_ac = cos(a*c), cos_bc = cos(b*c);
+	const double sq_ad = sqrt(a*a+d), sq_bd = sqrt(b*b+d);
+	const double comp1 =   a*a*sq_bd*sq_bd*sq_bd*sin_ac
+						 - b*b*sq_ad*sq_ad*sq_ad*sin_bc;
+	const double comp2 = sq_ad*sq_ad*sq_bd*sq_bd*c
+						 *(a*sq_bd*cos_ac - b*sq_ad*cos_bc);
+	if ( abs(comp1) < 0.0001*abs(comp2) )		// do it approximately here too
+	{
+		const double term1 =  ( a * c * cos_ac - sin_ac ) / sq_ad;
+		const double term2 = -( b * c * cos_bc - sin_bc ) / sq_bd;
+		result = ( term1 + term2 ) / (c*c*c);
+		return ( overallSign*result );
+	}
+	else
+	{
+		const double period = 2.0*M_PI/c;
+
+		// While limits contain more than one full period,
+		// do one period at a time
+		while ( b - a > period )
+		{
+			double a0 = a, a1 = a0 + period;
+			double hw = 0.5*period, cen = 0.5*(a0+a1);
+			for (int i = 0; i < npts; ++i)
+			{
+				double Qloc = cen + hw * x_pts[i];
+				result += hw * x_wts[i] * Qloc * sin(c*Qloc) / ( c*sqrt(Qloc*Qloc + d) );
+			}
+			a += period;
+		}
+	
+		// Finally, do remaining (fraction of a) period
+		{
+			double a0 = a, a1 = b;
+			double hw = 0.5*(a1-a0), cen = 0.5*(a0+a1);
+			for (int i = 0; i < npts; ++i)
+			{
+				double Qloc = cen + hw * x_pts[i];
+				result += hw * x_wts[i] * Qloc * sin(c*Qloc) / ( c*sqrt(Qloc*Qloc + d) );
+			}
+		}
+	}
+
+	return ( overallSign*result );
+}
+
+
+double BoseEinstein::compute_integral_without_phasespace(double a_in, double b_in, double c_in)
+{
+	// Computes integral given by Integrate[j0[c Q], {Q, a, b}]
+	double a = a_in, b = b_in, c = c_in;
+	double result = 0.0;
+	const double period = 2.0*M_PI/c;
+
+	// While limits contain more than one full period,
+	// do one period at a time
+	while ( b - a > period )
+	{
+		double a0 = a, a1 = a0 + period;
+		double hw = 0.5*period, cen = 0.5*(a0+a1);
+		for (int i = 0; i < npts; ++i)
+		{
+			double Qloc = cen + hw * x_pts[i];
+			result += hw * x_wts[i] * sphericalbesselj0(c*Qloc);
+		}
+		a += period;
+	}
+	
+	// Finally, do remaining (fraction of a) period
+	{
+		double a0 = a, a1 = b;
+		double hw = 0.5*(a1-a0), cen = 0.5*(a0+a1);
+		for (int i = 0; i < npts; ++i)
+		{
+			double Qloc = cen + hw * x_pts[i];
+			result += hw * x_wts[i] * sphericalbesselj0(c*Qloc);
+		}
+	}
+
+	return ( result );
+}
+
 
 //---------------------------------------------------------------------------
 // Compute the derivative of the linearly interpolated pair CDF vs. Q.
@@ -770,109 +917,6 @@ void BoseEinstein::set_sorted_xDiffs(
 }
 
 
-
-//-------------------------------------------------
-// Set lefthand side of shift relation.
-void BoseEinstein::set_effective_source(
-			vector< pair< double, pair <int,int> > > & sortedPairs, int iTab
-			)
-{
-	//dummy statement
-	if (iTab){;}
-
-	//-------------------------------
-	// Estimate scale for Q sampling.
-	//double size_estimate_sum = 0.0;
-	//double size_estimate_sqsum = 0.0
-	//double size_estimate_cubsum = 0.0;
-	//double mean = 0.0
-	//double rms = 0.0
-	//double avg_log = 0.0;
-
-	//-----------
-	// Set grids.
-	const int Qgridsize = static_cast<int>(Qmaximum / dQ) + 1;
-	Qgrid.assign( Qgridsize, 0.0 );
-	phase_space.assign( Qgridsize, 0.0 );
-	effSource.assign( Qgridsize, 0.0 );
-	integrated_effective_source.assign( Qgridsize, 0.0 );
-
-	//const double npairs = sortedPairs.size()-2;
-	//cout << "npairs = " << (int)npairs << endl;
-
-	for (int iPair = 1; iPair < (int)sortedPairs.size()-1; iPair++)
-	{
-
-		auto eachPair = sortedPairs.at(iPair);
-
-		const int i1 = eachPair.second.first;
-		const int i2 = eachPair.second.second;
-		Vec4 xDiffPRF = ( hadronBE.at(i1).x - hadronBE.at(i2).x ) * MM2FM / HBARC;
-		xDiffPRF.bstback( 0.5*(hadronBE.at(i1).p + hadronBE.at(i2).p) );
-
-		const double xDiffval = xDiffPRF.pAbs();
-
-		/*size_estimate_sum += 1.0 / xDiffval;
-		size_estimate_sqsum += 1.0 / (xDiffval*xDiffval);
-		size_estimate_cubsum += 1.0 / (xDiffval*xDiffval*xDiffval);
-		mean += xDiffval;
-		rms += xDiffval*xDiffval;
-		avg_log += log(1.0 / xDiffval);*/
-
-		double currentQ = 0.0;
-		for (int iQ = 0; iQ < (int)effSource.size(); iQ++)
-		{
-			//effSource[iQ] += sphericalbesselj0(currentQ * xDiffval);
-			effSource[iQ] += cos(currentQ * xDiffval);
-			currentQ += dQ;
-		}
-	}
-
-	/*
-	cout << setprecision(12) << "size estimate (linear halfwidth) = "
-			<< 2.0 * size_estimate_sqsum / (M_PI * size_estimate_sum) << endl;
-	cout << setprecision(12) << "size estimate (gaussian approximation / 2) = "
-			<< 0.5 * sqrt(3.0 * size_estimate_cubsum / size_estimate_sum) << endl;
-	cout << setprecision(12) << "size estimate (geometric mean) = "
-			<< exp(avg_log / npairs) << endl;
-	*/
-
-	double currentQ = 0.0;
-	/*if (include_phase_space)
-		for (int iQ = 0; iQ < (int)Qgrid.size(); iQ++)
-		{
-			phase_space[iQ] = currentQ*currentQ / sqrt(currentQ*currentQ + m2Pair[iTab]);
-			currentQ += dQ;
-		}
-	else*/
-		for (int iQ = 0; iQ < (int)Qgrid.size(); iQ++)
-			phase_space[iQ] = 1.0;
-
-	//reset
-	double previousIntegrand = 0.0, currentIntegrand = 0.0;
-	currentQ = 0.0;
-	double runningIntegral = 0.0;
-	for (int iQ = 0; iQ < (int)Qgrid.size(); iQ++)
-	{
-		Qgrid[iQ] = currentQ;
-		effSource[iQ] /= (double)(sortedPairs.size()-2);
-		previousIntegrand = currentIntegrand;
-		currentIntegrand = phase_space[iQ] * effSource[iQ];
-		runningIntegral += 0.5*dQ*(currentIntegrand + previousIntegrand);
-		integrated_effective_source[iQ] = runningIntegral;
-		cout << "effSource: " << setprecision(12)
-				<< currentQ << "   "
-				<< phase_space[iQ] << "   "
-				<< effSource[iQ] << "   "
-				<< integrated_effective_source[iQ] << endl;
-		currentQ += dQ;
-	}
-	//if (1) return;
-	if (1) exit (8);
-
-}
-
-
 //-------------------------------------------------
 // Set lefthand side of shift relation.
 void BoseEinstein::set_LHS(
@@ -881,32 +925,151 @@ void BoseEinstein::set_LHS(
 			vector<double> & denBar, int iTab
 			)
 {
-	//dummy statement
-	if (iTab){;}
-
 	int pairCount = 0;
 	double result = 0.0;
-	for (const auto & thisPair : sortedPairs)
+	if ( include_phase_space )
+		for (const auto & thisPair : sortedPairs)
+		{
+			auto nextPair = ( pairCount == (int)sortedPairs.size()-1 ) ? thisPair : *(&thisPair+1);
+			const double thisQ = thisPair.first;
+			const double nextQ = nextPair.first;
+
+			LHS.push_back( std::make_pair( thisQ, result ) );
+
+			if ( pairCount == (int)denBar.size() )
+				continue;
+
+			const double this_sqrt_Q2_plus_4m2 = sqrt(thisQ*thisQ + m2Pair[iTab]);
+			const double next_sqrt_Q2_plus_4m2 = sqrt(nextQ*nextQ + m2Pair[iTab]);
+			const double this_antideriv = 0.5*thisQ*this_sqrt_Q2_plus_4m2 - 0.5*m2Pair[iTab]*log( thisQ + this_sqrt_Q2_plus_4m2 );
+			const double next_antideriv = 0.5*nextQ*next_sqrt_Q2_plus_4m2 - 0.5*m2Pair[iTab]*log( nextQ + next_sqrt_Q2_plus_4m2 );
+
+			result += denBar.at(pairCount) * ( next_antideriv - this_antideriv );
+
+			pairCount++;
+
+		}
+	else
+		for (const auto & thisPair : sortedPairs)
+		{
+			auto nextPair = ( pairCount == (int)sortedPairs.size()-1 ) ? thisPair : *(&thisPair+1);
+			const double thisQ = thisPair.first;
+			const double nextQ = nextPair.first;
+
+			LHS.push_back( std::make_pair( thisPair.first, result ) );
+
+			if ( pairCount == (int)denBar.size() )
+				continue;
+
+			result += denBar.at(pairCount) * ( nextQ - thisQ );
+
+			pairCount++;
+		}
+
+
+//if (not compute_BE_enhancement_exactly)
+{
+
+// estimate scale for Q sampling
+double size_estimate_sum = 0.0, size_estimate_sqsum = 0.0, size_estimate_cubsum = 0.0;
+double mean = 0.0, rms = 0.0, avg_log = 0.0;
+
+//const double npairs = sortedPairs.size()-2;
+
+// set grids
+//const double Qmaximum = sortedPairs.back().first;
+//const double Qmaximum = 0.1;	// GeV
+const int Qgridsize = static_cast<int>(Qmaximum / dQ) + 1;
+Qgrid.assign( Qgridsize, 0.0 );
+phase_space.assign( Qgridsize, 0.0 );
+effSource.assign( Qgridsize, 0.0 );
+integrated_effective_source.assign( Qgridsize, 0.0 );
+
+//cout << "npairs = " << (int)npairs << endl;
+
+//for (const auto & eachPair : sortedPairs)
+for (int iPair = 1; iPair < (int)sortedPairs.size()-1; iPair++)
+{
+	//cerr << "iPair = " << iPair << " of " << (int)sortedPairs.size() << "\n";
+
+	auto eachPair = sortedPairs.at(iPair);
+
+	// Skip unphysical dummy pairs.
+	//if (   &eachPair == &sortedPairs.front()
+	//	or &eachPair == &sortedPairs.back() )
+	//	continue;
+
+	const int i1 = eachPair.second.first;
+	const int i2 = eachPair.second.second;
+	Vec4 xDiffPRF = ( hadronBE.at(i1).x - hadronBE.at(i2).x ) * MM2FM / HBARC;
+	xDiffPRF.bstback( 0.5*(hadronBE.at(i1).p + hadronBE.at(i2).p) );
+
+	const double xDiffval = xDiffPRF.pAbs();
+
+//cout << setprecision(12) << "sortedPairs.at(" << iPair << ").first = " << eachPair.first << endl;
+
+	size_estimate_sum += 1.0 / xDiffval;
+	size_estimate_sqsum += 1.0 / (xDiffval*xDiffval);
+	size_estimate_cubsum += 1.0 / (xDiffval*xDiffval*xDiffval);
+	mean += xDiffval;
+	rms += xDiffval*xDiffval;
+	avg_log += log(1.0 / xDiffval);
+
+	///*
+	double currentQ = 0.0;
+	for (int iQ = 0; iQ < (int)effSource.size(); iQ++)
 	{
-		auto nextPair = ( pairCount == (int)sortedPairs.size()-1 ) ? thisPair : *(&thisPair+1);
-		const double thisQ = thisPair.first;
-		const double nextQ = nextPair.first;
-
-		LHS.push_back( std::make_pair( thisPair.first, result ) );
-
-		if ( pairCount == (int)denBar.size() )
-			continue;
-
-		result += denBar.at(pairCount) * ( nextQ - thisQ );
-
-		pairCount++;
+		//effSource[iQ] += sphericalbesselj0(currentQ * xDiffval);
+		effSource[iQ] += cos(currentQ * xDiffval);
+		currentQ += dQ;
 	}
+//cout << setprecision(12) << "effSource[0] = " << effSource[0] << endl;
+	//*/
+}
 
+/*
+cout << setprecision(12) << "size estimate (linear halfwidth) = " << 2.0 * size_estimate_sqsum / (M_PI * size_estimate_sum) << endl;
+cout << setprecision(12) << "size estimate (gaussian approximation / 2) = " << 0.5 * sqrt(3.0 * size_estimate_cubsum / size_estimate_sum) << endl;
+cout << setprecision(12) << "size estimate (geometric mean) = " << exp(avg_log / npairs) << endl;
+*/
 
-	// Allows me to compute effective 
-	if (not compute_BE_enhancement_exactly)
-		set_effective_source( sortedPairs, iTab );
+//if (1) exit (8);
+//cout << "<<<============================================>>>" << endl;
+//*/
+double currentQ = 0.0;
+if (include_phase_space)
+	for (int iQ = 0; iQ < (int)Qgrid.size(); iQ++)
+	{
+		phase_space[iQ] = currentQ*currentQ / sqrt(currentQ*currentQ + m2Pair[iTab]);
+		currentQ += dQ;
+	}
+else
+	for (int iQ = 0; iQ < (int)Qgrid.size(); iQ++)
+		phase_space[iQ] = 1.0;
 
+//reset
+double previousIntegrand = 0.0, currentIntegrand = 0.0;
+currentQ = 0.0;
+double runningIntegral = 0.0;
+for (int iQ = 0; iQ < (int)Qgrid.size(); iQ++)
+{
+	Qgrid[iQ] = currentQ;
+	effSource[iQ] /= (double)(sortedPairs.size()-2);
+	previousIntegrand = currentIntegrand;
+	currentIntegrand = phase_space[iQ] * effSource[iQ];
+	runningIntegral += 0.5*dQ*(currentIntegrand + previousIntegrand);
+	integrated_effective_source[iQ] = runningIntegral;
+	cout << "effSource: " << setprecision(12)
+			<< currentQ << "   "
+			<< phase_space[iQ] << "   "
+			<< effSource[iQ] << "   "
+			<< integrated_effective_source[iQ] << endl;
+	currentQ += dQ;
+}
+//if (1) return;
+if (1) exit (8);
+
+}
 	return;
 }
 
@@ -921,45 +1084,122 @@ void BoseEinstein::set_RHS(
 			vector<double> & denBar, int iTab
 			)
 {
-	if (iTab){;}
-
 	int pairCount = 0;
 	double result = 0.0;
 
-	// Compute two-body enhancement here
-	for (const auto & thisPair : sortedPairs)
-	{
-		//auto nextPair = ( pairCount == (int)sortedPairs.size()-1 ) ? thisPair : *(&thisPair+1);
-		const double thisQ = thisPair.first;
-		//const double nextQ = nextPair.first;
-
-		RHS.push_back( std::make_pair( thisQ, result ) );
-
-		if ( pairCount == (int)denBar.size() )
-			continue;
-
-		if (sorted_xDiffs.size() > 0){;}
-
-		//const double one_by_N = 1.0 / static_cast<double>(sortedPairs.size() - 2);
-		//int eachPairIndex = 0;
-		for (const auto & eachPair : sortedPairs)
+	if ( include_phase_space )
+		for (const auto & thisPair : sortedPairs)
 		{
-			// Skip unphysical dummy pairs.
-			if (   &eachPair == &sortedPairs.front()
-				or &eachPair == &sortedPairs.back() )
+			auto nextPair = ( pairCount == (int)sortedPairs.size()-1 ) ? thisPair : *(&thisPair+1);
+			const double thisQ = thisPair.first;
+			const double nextQ = nextPair.first;
+
+			RHS.push_back( std::make_pair( thisQ, result ) );
+
+			if ( pairCount == (int)sorted_xDiffs.size() )
 				continue;
 
-			//const double xDiffPRFVal = sorted_xDiffs.at(eachPairIndex++);
-			
-			// Add in results from this pair
-			/*result += one_by_N * denBar.at(pairCount)
-						* compute_integral_without_phasespace(
-							thisQ, nextQ, xDiffPRFVal);*/
+			if ( BE_VERBOSE )
+				cout << "Obtained RHS for pair #" << pairCount << " of " << -2 + (int)sorted_xDiffs.size() << endl;
 
+			//--------------------------------------
+			// Decide how to compute BE enhancement.
+			const double one_by_N = 1.0 / static_cast<double>(sortedPairs.size() - 2);
+			if ( compute_BE_enhancement_exactly or thisQ >= Qgrid.back() )
+			{
+				int eachPairIndex = 0;
+				for (const auto & eachPair : sortedPairs)
+				{
+					// Skip unphysical dummy pairs.
+					if (   &eachPair == &sortedPairs.front()
+						or &eachPair == &sortedPairs.back() )
+						continue;
+				
+
+					const double xDiffPRFVal = sorted_xDiffs.at(eachPairIndex++);
+
+
+					result += one_by_N * denBar.at(pairCount)
+								* compute_integral_with_phasespace(
+									thisQ, nextQ, xDiffPRFVal, m2Pair[iTab]);
+					/*cout << "check result here: " << pairCount << "   "
+							<< one_by_N << "   " << denBar.at(pairCount) << "   "
+							<< thisQ << "   " << nextQ << "   "
+							<< xDiffPRFVal << "   " << m2Pair[iTab] << "   "
+							<< result << "   " << compute_integral_with_phasespace(
+													thisQ, nextQ, xDiffPRFVal, m2Pair[iTab]) << endl;
+					*/
+				}
+			}
+			// use effective source if within Qgrid, use exact calculation otherwise
+			else if ( thisQ < Qgrid.back() )
+			{
+				// make this a global variable
+				const double Qmin = 0.0;
+				const int iQ = static_cast<int>( (thisQ - Qmin) / dQ );
+				if ( iQ + 1 >= (int)Qgrid.size() )
+					continue;
+				const int jQ = static_cast<int>( (nextQ - Qmin) / dQ );
+				
+				// interpolate running effective source integral and take difference
+
+				const double EiQ = integrated_effective_source.at(iQ);
+				const double EthisQ = EiQ + ( thisQ - Qgrid.at(iQ) )
+										* ( integrated_effective_source.at(iQ+1) - EiQ ) / dQ;
+
+
+				double EnextQ = integrated_effective_source.back();
+				if ( jQ + 1 < (int)Qgrid.size() )
+				{
+
+					const double EjQ = integrated_effective_source.at(jQ);
+					EnextQ = EjQ + ( nextQ - Qgrid.at(jQ) )
+										* ( integrated_effective_source.at(jQ+1) - EjQ ) / dQ;
+
+				}
+				
+
+				result += denBar.at(pairCount) * ( EnextQ - EthisQ );	// factor of 1/N already included!!!
+
+			}
+
+			pairCount++;
 		}
+	else
+		for (const auto & thisPair : sortedPairs)
+		{
+			auto nextPair = ( pairCount == (int)sortedPairs.size()-1 ) ? thisPair : *(&thisPair+1);
+			const double thisQ = thisPair.first;
+			const double nextQ = nextPair.first;
 
-		pairCount++;
-	}
+			RHS.push_back( std::make_pair( thisQ, result ) );
+
+			if ( pairCount == (int)denBar.size() )
+				continue;
+
+			const double one_by_N = 1.0 / static_cast<double>(sortedPairs.size() - 2);
+			for (const auto & eachPair : sortedPairs)
+			{
+				// Skip unphysical dummy pairs.
+				if (   &eachPair == &sortedPairs.front()
+					or &eachPair == &sortedPairs.back() )
+					continue;
+
+				const int i1 = eachPair.second.first;
+				const int i2 = eachPair.second.second;
+				Vec4 xDiffPRF = ( hadronBE.at(i1).x - hadronBE.at(i2).x ) * MM2FM / HBARC;
+				xDiffPRF.bstback( 0.5*(hadronBE.at(i1).p + hadronBE.at(i2).p) );
+				
+				// Add in physical results
+
+				result += one_by_N * denBar.at(pairCount)
+							* compute_integral_without_phasespace(
+								thisQ, nextQ, xDiffPRF.pAbs());
+
+			}
+
+			pairCount++;
+		}
 
 	// Add in constant piece to RHS result.
 	for (int iPair = 0; iPair < (int)LHS.size(); ++iPair)
@@ -1161,54 +1401,164 @@ void BoseEinstein::shiftPairs_mode1(
 		// Start iteration.
 		int ntries = 0;
 		bool success = true;	// assume true unless something fails
-		while ( abs( RHSnew - c0 ) > ACCURACY and ntries < MAXTRIES )
-		{
-			//cout << "without phase space: ntries = " << ntries << endl;
-
-			double deriv = thisdenBar;
-
-			if (ntries > 0)
+		if ( include_phase_space )
+			while ( abs( RHSnew - c0 ) > ACCURACY and ntries < MAXTRIES )
 			{
-				//-----------------------------
-				// Set RHSnew to left endpoint.
-				RHSnew = RHS_lower;
+				//cout << "with phase space: ntries = " << ntries << endl;
 
-				//---------------------------------------
-				// Add in the constant phase space piece.
-				RHSnew += thisdenBar * ( Qnew - Qlower );
+				const double sqrt_Q2_plus_4m2 = sqrt(Qnew*Qnew + m2Pair[iTab]);
+				const double PSfactor         = Qnew*Qnew / sqrt_Q2_plus_4m2;
+				double deriv                  = thisdenBar * PSfactor;
 
-				//---------------------------------
-				// Add in the BE enhancement piece.
-				int eachPairIndex = 0;
-				for (const auto & eachPair : sortedPairs)
+				if (ntries > 0)
 				{
-					// Skip unphysical dummy pairs.
-					if (   &eachPair == &sortedPairs.front()
-						or &eachPair == &sortedPairs.back() )
-						continue;
+					//-----------------------------
+					// Set RHSnew to left endpoint.
+					RHSnew = RHS_lower;
 
-					const double xDiffMag = sorted_xDiffs.at(eachPairIndex++);
-		
-					// Add in results for this pair
-					//RHSnew += one_by_N * thisdenBar * compute_integral_without_phasespace( Qlower, Qnew, xDiffMag );
-					deriv += one_by_N * thisdenBar * cos( Qnew * xDiffMag );
+					//---------------------------------------
+					// Add in the constant phase space piece.
+					const double sqrt_Qlower2_plus_4m2 = sqrt(Qlower*Qlower + m2Pair[iTab]);
+					RHSnew += thisdenBar * (
+								0.5*Qnew*sqrt_Q2_plus_4m2 - 0.5*m2Pair[iTab]*log( Qnew + sqrt_Q2_plus_4m2 )
+								-0.5*Qlower*sqrt_Qlower2_plus_4m2 + 0.5*m2Pair[iTab]*log( Qlower + sqrt_Qlower2_plus_4m2 )
+									);
 
-					//pairCount++;
+					//---------------------------------
+					// Add in the BE enhancement piece.
+					///*
+					if ( compute_BE_enhancement_exactly or Qlower >= Qgrid.back() )
+					{
+						int eachPairIndex = 0;
+						for (const auto & eachPair : sortedPairs)
+						{
+							// Skip unphysical dummy pairs.
+							if (   &eachPair == &sortedPairs.front()
+								or &eachPair == &sortedPairs.back() )
+								continue;
+
+							// Add in physical results
+
+							const double xDiffMag = sorted_xDiffs.at(eachPairIndex++);
+							RHSnew += one_by_N * thisdenBar
+										* compute_integral_with_phasespace( Qlower, Qnew, xDiffMag, m2Pair[iTab] );
+							deriv  += one_by_N * thisdenBar
+										* PSfactor * sphericalbesselj0( Qnew * xDiffMag );
+
+						}
+					}
+					// use effective source if within Qgrid, use exact calculation otherwise
+					else if ( Qlower < Qgrid.back() )
+					{
+						// make this a global variable
+						const double Qmin = 0.0;
+						const int iQ = static_cast<int>( (Qlower - Qmin) / dQ );
+						if ( iQ + 1 >= (int)Qgrid.size() )
+							continue;
+						const int jQ = static_cast<int>( (Qnew - Qmin) / dQ );
+				
+						// interpolate running effective source integral and take difference
+
+						const double EiQ = integrated_effective_source.at(iQ);
+						const double EQlower = EiQ + ( Qlower - Qgrid.at(iQ) )
+												* ( integrated_effective_source.at(iQ+1) - EiQ ) / dQ;
+
+
+						double EQnew = integrated_effective_source.back();
+						double SQnew = effSource.back();
+						if ( jQ + 1 < (int)Qgrid.size() )
+						{
+
+							const double EjQ = integrated_effective_source.at(jQ);
+
+							const double SjQ = effSource.at(jQ);
+
+							EQnew = EjQ + ( Qnew - Qgrid.at(jQ) )
+												* ( integrated_effective_source.at(jQ+1) - EjQ ) / dQ;
+
+							SQnew = SjQ + ( Qnew - Qgrid.at(jQ) ) * ( effSource.at(jQ+1) - SjQ ) / dQ;
+						}
+				
+						RHSnew += thisdenBar * (EQnew - EQlower);	// 1/N factor already included!
+						deriv += thisdenBar * PSfactor * SQnew;		// 1/N factor already included!
+						
+					}
+					//*/
+
 				}
+
+				//if ( ntries>0 and ( RHSnew > RHS_upper or RHSnew < RHS_lower ) )
+				//	cout << "WARNING: RHSnew = " << RHSnew << " not in range (" << RHS_lower << ", " << RHS_upper << ")!" << endl;
+				if ( BE_VERBOSE and (Qnew > Qupper or Qnew < Qlower) )
+					cout << "WARNING (ntries=" << ntries << "): Qnew = " << Qnew << " not in range (" << Qlower << ", " << Qupper << ")!" << endl;
+				//cout << "NR method (ntries=" << ntries << "): " << Qnew << "   " << RHSnew << "   " << deriv << "   " << c0 << endl;	
+
+				//----------------------------
+				// Get next estimate for Qnew.
+				Qnew -= (RHSnew - c0) / deriv;
+
+				// If it went out of range, give up.
+				if ( Qnew < 1.e-10 or Qnew >= sortedPairs.back().first )
+				{
+					success = false;
+					break;
+				}
+
+				ntries++;
 			}
+		else
+			while ( abs( RHSnew - c0 ) > ACCURACY and ntries < MAXTRIES )
+			{
+				//cout << "without phase space: ntries = " << ntries << endl;
 
-			//if ( ntries>0 and ( RHSnew > RHS_upper or RHSnew < RHS_lower ) )
-			//	cout << "WARNING: RHSnew = " << RHSnew << " not in range (" << RHS_lower << ", " << RHS_upper << ")!" << endl;
-			if ( BE_VERBOSE and (Qnew > Qupper or Qnew < Qlower) )
-				cout << "WARNING (ntries=" << ntries << "): Qnew = " << Qnew << " not in range (" << Qlower << ", " << Qupper << ")!" << endl;
-			//cout << "NR method (ntries=" << ntries << "): " << Qnew << "   " << RHSnew << "   " << deriv << "   " << c0 << endl;	
+				double deriv = thisdenBar;
 
-			//----------------------------
-			// Get next estimate for Qnew.
-			Qnew -= (RHSnew - c0) / deriv;
+				if (ntries > 0)
+				{
+					//-----------------------------
+					// Set RHSnew to left endpoint.
+					RHSnew = RHS_lower;
 
-			ntries++;
-		}
+					//---------------------------------------
+					// Add in the constant phase space piece.
+					RHSnew += thisdenBar * ( Qnew - Qlower );
+
+					//---------------------------------
+					// Add in the BE enhancement piece.
+					for (const auto & eachPair : sortedPairs)
+					{
+						// Skip unphysical dummy pairs.
+						if (   &eachPair == &sortedPairs.front()
+							or &eachPair == &sortedPairs.back() )
+							continue;
+
+						const int i1 = eachPair.second.first;
+						const int i2 = eachPair.second.second;
+						Vec4 xDiffPRF = ( hadronBE.at(i1).x - hadronBE.at(i2).x ) * MM2FM / HBARC;
+						xDiffPRF.bstback( 0.5*(hadronBE.at(i1).p + hadronBE.at(i2).p) );
+			
+						// Add in physical results
+						const double xDiff = xDiffPRF.pAbs();
+						RHSnew += one_by_N * thisdenBar
+									* compute_integral_without_phasespace( Qlower, Qnew, xDiff );
+						deriv += one_by_N * thisdenBar * sphericalbesselj0( Qnew * xDiff );
+
+						//pairCount++;
+					}
+				}
+
+				//if ( ntries>0 and ( RHSnew > RHS_upper or RHSnew < RHS_lower ) )
+				//	cout << "WARNING: RHSnew = " << RHSnew << " not in range (" << RHS_lower << ", " << RHS_upper << ")!" << endl;
+				if ( BE_VERBOSE and (Qnew > Qupper or Qnew < Qlower) )
+					cout << "WARNING (ntries=" << ntries << "): Qnew = " << Qnew << " not in range (" << Qlower << ", " << Qupper << ")!" << endl;
+				//cout << "NR method (ntries=" << ntries << "): " << Qnew << "   " << RHSnew << "   " << deriv << "   " << c0 << endl;	
+
+				//----------------------------
+				// Get next estimate for Qnew.
+				Qnew -= (RHSnew - c0) / deriv;
+
+				ntries++;
+			}
 
 
 		//-------------------------------------------------

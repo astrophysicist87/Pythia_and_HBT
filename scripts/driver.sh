@@ -51,8 +51,8 @@ clean_directory $HBT_SV_DIRECTORY
 #=====================================
 
 nCC=0
-#for centralityCutString in "0-100%"
-for centralityCutString in $centralityClass
+#for centralityCutString in $centralityClass
+for centralityCutString in "0-100%" "0-20%" "20-40%" "40-100%"
 do
 	#========================================
 	# process centrality class information

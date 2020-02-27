@@ -181,7 +181,7 @@ int main(int argc, char *argv[])
 	HBT_particle_IDs.insert ( { { atoi(argv[5]), 0 } } );
 
 	// thermal particles only or resonance decays included
-	bool thermal_only = true;	// could make this command line
+	bool thermal_only = false;	// could make this command line
 	bool track_unshifted_particles = true;
 	bool store_Bjorken_coordinates = false;	// tau, eta_s, y, and m
 
@@ -191,7 +191,7 @@ int main(int argc, char *argv[])
 	bool useRelativeDistance                = true;     // Use relative distances or absolute sizes
 	bool useRestFrame 						= true;		// Use rest frame vs. lab frame
 	bool includePhaseSpace					= true;		// Include phase-space factor
-	bool linearInterpolateCDF				= true;     // Estimate pair density via linear interpolation
+	bool linearInterpolateCDF				= false;     // Estimate pair density via linear interpolation
 	bool usePositiveShiftsForCompensation	= true;		// Pairs shifted apart used to compensate pairs shifted together
 	bool computeBEEnhancementExactly		= true;     // Whether to evaluate BE enhancement approximately or exactly
 
@@ -361,6 +361,11 @@ int main(int argc, char *argv[])
 		pythiaVector[iThread].readString("BoseEinstein:computeBEEnhancementExactly = " 		+ boolean_toggle[computeBEEnhancementExactly]);
 
 
+		// For now.
+		//pythiaVector[iThread].readString("BoseEinstein:Kaon = off");
+		//pythiaVector[iThread].readString("BoseEinstein:Eta = off");
+
+
 		//========================================
 		// Read in any standard Pythia options
 		pythiaVector[iThread].readFile( "main_BEeffects.cmnd" );
@@ -369,7 +374,7 @@ int main(int argc, char *argv[])
 		// ==============================================
 		// use this to turn off energy-momentum
 		// conservation, etc. for debugging purposes
-		pythiaVector[iThread].readString("Check:event = off");
+		//pythiaVector[iThread].readString("Check:event = off");
 
 
 		// ==============================================

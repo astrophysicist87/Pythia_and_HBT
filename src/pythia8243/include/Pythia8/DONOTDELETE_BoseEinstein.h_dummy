@@ -101,11 +101,6 @@ private:
   // Effective source grid
   vector<double> Qgrid, phase_space, effSource, integrated_effective_source;
 
-  // May be useful
-  vector< pair< double, pair <int,int> > > pairs_sorted_by_qxPRF;
-  vector< pair< double, pair <int,int> > > pairs_sorted_by_qyPRF;
-  vector< pair< double, pair <int,int> > > pairs_sorted_by_qzPRF;
-
   ///===CJP(begin)===
   int enhanceMode;
   int number_of_pairs, number_of_shifted_pairs, number_of_too_close_pairs, number_of_too_separated_pairs;
@@ -124,14 +119,10 @@ private:
 						 vector<double> & pairCompensationShifts, int iTab);
 
   // Miscellaneous functions
-  //double compute_integral_with_phasespace(double a_in, double b_in, double c, double d);
-  //double compute_integral_with_phasespace(double a_in, double b_in, vector<double> & cvec_in, double d_in);
-  //double compute_integral_without_phasespace(double a_in, double b_in, double c);
+  double compute_integral_with_phasespace(double a_in, double b_in, double c, double d);
+  double compute_integral_with_phasespace(double a_in, double b_in, vector<double> & cvec_in, double d_in);
+  double compute_integral_without_phasespace(double a_in, double b_in, double c);
 
-  // Set effective source to accelerate evaluation of BE enhancement.
-  void set_effective_source(
-			vector< pair< double, pair <int,int> > > & sortedPairs, int iTab
-			);
 
   // Compute pair density from CDF.
   void set_pair_density(

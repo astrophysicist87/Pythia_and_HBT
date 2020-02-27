@@ -551,7 +551,7 @@ bool BoseEinstein::getSortedPairs(
 	sort( pairs_sorted_by_qyPRF.begin(), pairs_sorted_by_qyPRF.end() );
 	sort( pairs_sorted_by_qzPRF.begin(), pairs_sorted_by_qzPRF.end() );
 
-cout << "CHECK pairs:" << endl;
+/*cout << "CHECK pairs:" << endl;
 for (const auto & eachPair : sortedPairs)
 {
 	const int i1 = eachPair.second.first;
@@ -573,7 +573,7 @@ for (const auto & eachPair : pairs_sorted_by_qzPRF)
 }
 
 
-if (1) exit(8);
+if (1) exit(8);*/
 
 	// add fake first "pair"
 	sortedPairs.insert(sortedPairs.begin(), std::make_pair( 0.0, std::make_pair(-1, -1) ) );
