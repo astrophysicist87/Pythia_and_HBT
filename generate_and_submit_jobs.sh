@@ -2,8 +2,8 @@
 
 (
 	# info for this run
-	NTHREADS=12
-	DIRECTORY=RESULTS_pp_Nev10000000_MB_wBA
+	NTHREADS=4
+	DIRECTORY=RESULTS_pp_Nev10000000_MB_wBA_noE1E2
 
 	./generate_jobs.sh $NTHREADS $DIRECTORY
 

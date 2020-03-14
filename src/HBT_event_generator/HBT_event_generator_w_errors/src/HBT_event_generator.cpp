@@ -484,8 +484,8 @@ void HBT_event_generator::Output_correlation_function_q_mode_3D( string filename
 		<< left << "N" << setw(prec+16)
 		<< left << "N(err)" << setw(prec+16)
 		<< left << "D" << setw(prec+16)
-		<< left << "D(err)" << setw(prec+36)
-		<< left << "C"  << setw(prec+36)
+		<< left << "D(err)" << setw(prec+32)
+		<< left << "C"  << setw(prec+32)
 		<< left << "C(err)" << endl;
 
 	ofs << "# " << setfill('-') << setw(150) << " " << endl;

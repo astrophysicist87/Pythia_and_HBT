@@ -99,12 +99,22 @@ private:
   vector<BoseEinsteinHadron> hadronBE;
 
   // Effective source grid
-  vector<double> Qgrid, phase_space, effSource, integrated_effective_source;
+  vector<double> Qgrid, phase_space, effective_source, integrated_effective_source;
 
   // May be useful
+  vector< pair< double, pair <int,int> > > sortedPairs;
   vector< pair< double, pair <int,int> > > pairs_sorted_by_qxPRF;
   vector< pair< double, pair <int,int> > > pairs_sorted_by_qyPRF;
   vector< pair< double, pair <int,int> > > pairs_sorted_by_qzPRF;
+  vector< pair< double, pair <int,int> > > pairs_sorted_by_abs_qxPRF;
+  vector< pair< double, pair <int,int> > > pairs_sorted_by_abs_qyPRF;
+  vector< pair< double, pair <int,int> > > pairs_sorted_by_abs_qzPRF;
+  vector< pair< double, pair <int,int> > > pairs_sorted_by_qx;
+  vector< pair< double, pair <int,int> > > pairs_sorted_by_qy;
+  vector< pair< double, pair <int,int> > > pairs_sorted_by_qz;
+  vector< pair< double, pair <int,int> > > pairs_sorted_by_abs_qx;
+  vector< pair< double, pair <int,int> > > pairs_sorted_by_abs_qy;
+  vector< pair< double, pair <int,int> > > pairs_sorted_by_abs_qz;
 
   ///===CJP(begin)===
   int enhanceMode;
@@ -115,57 +125,38 @@ private:
   double get_1D_source_size( int iSpecies );
 
   // Get list of pairs sorted by increasing Q2inv.
-  bool getSortedPairs( vector< pair< double, pair <int,int> > > & sortedPairs, int iSpecies );
+  bool setSortedPairs( int iSpecies );
 
   // Calculate shift and (unnormalized) compensation for pair.
-  void shiftPair_fixedQRef(int i1, int i2, int iHad);
-  void shiftPairs_mode1( vector< pair< double, pair <int,int> > > & sortedPairs,
-						 vector<double> & pairShifts,
-						 vector<double> & pairCompensationShifts, int iTab);
-
-  // Miscellaneous functions
-  //double compute_integral_with_phasespace(double a_in, double b_in, double c, double d);
-  //double compute_integral_with_phasespace(double a_in, double b_in, vector<double> & cvec_in, double d_in);
-  //double compute_integral_without_phasespace(double a_in, double b_in, double c);
-
-  // Set effective source to accelerate evaluation of BE enhancement.
-  void set_effective_source(
-			vector< pair< double, pair <int,int> > > & sortedPairs, int iTab
-			);
-
-  // Compute pair density from CDF.
-  void set_pair_density(
-			vector< pair< double, pair <int,int> > > & sortedPairs,
-			vector<double> & denBar );
-
-  // Set vector of sorted space-time separations in PRFs.
-  void set_sorted_xDiffs(
-			vector< pair< double, pair <int,int> > > & sortedPairs,
-			vector<double> & sorted_xDiffs
-			);
+  void shiftPairs_mode1();
 
   // Set lefthand side of shift relation.
   void set_LHS(
-			vector< pair< double, pair <int,int> > > & sortedPairs,
-			vector< pair< double, double > > & LHS,
-			vector<double> & denBar, int iTab
-			);
+			const vector< pair< double, pair <int,int> > > & sorted_list_of_pairs,
+			vector< pair< double, double > > & LHS );
 
   // Set righthand side of shift relation.
   void set_RHS(
-			vector< pair< double, pair <int,int> > > & sortedPairs,
-			vector<double> & sorted_xDiffs,
-			vector< pair< double, double > > & LHS,
-			vector< pair< double, double > > & RHS,
-			vector<double> & denBar, int iTab
-			);
+			const vector< pair< double, pair <int,int> > > & sorted_list_of_pairs,
+			vector< pair< double, double > > & RHS );
+
+
+  // Compute and store shits for each pair.
+  void compute_shifts( const vector< pair< double, pair <int,int> > > & sorted_list_of_pairs );
+
 
   // Compute the unshifted pair integrals at each Qi.
-  void evaluate_shift_relation_at_Qi(
-			vector< pair< double, pair <int,int> > > & sortedPairs,
+  void evaluate_shift_relation_at_pair(
+			const vector< pair< double, pair <int,int> > > & sorted_list_of_pairs,
 			vector< pair< double, double > > & LHS,
-			vector< pair< double, double > > & RHS,
-			vector<double> & denBar, int iTab );
+			vector< pair< double, double > > & RHS
+			);
+
+  // Set effective source.
+  void set_effective_source();
+
+  // Miscellaneous
+  double Newtons_Method( const double a, const double b );
 
   ///===CJP(end)===
 

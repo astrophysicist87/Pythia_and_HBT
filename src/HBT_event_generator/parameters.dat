@@ -16,9 +16,9 @@ KT_grid_mode = 0
 	#     (for integrating correlation function)
 
 # KT points
-n_KT_pts = 6
+n_KT_pts = 2
 KTmin = 0.0
-KTmax = 1.0
+KTmax = 0.000001
 
 #=======
 # Kphi grid
@@ -41,12 +41,12 @@ KLmax = 10.0
 
 #===========
 # relative momenta (3D)
-n_qo_pts = 22
-n_qs_pts = 22
-n_ql_pts = 22
+n_qo_pts = 2
+n_qs_pts = 2
+n_ql_pts = 202
 delta_qo = 0.05
 delta_qs = 0.05
-delta_ql = 0.05
+delta_ql = 0.001
 
 # relative momentum (1D)
 n_Q_pts = 22

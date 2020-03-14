@@ -248,9 +248,12 @@ void HBT_event_generator::Compute_numerator_and_denominator_methodMode2_q_mode_3
 
 				double q0 = get_q0(particle_mass, qo, qs, ql, KT, KL);
 
+				//const double energy_factors = 1.0 / ( Ei * Ej );
+				const double energy_factors = 1.0 / ( K0*K0 - 0.25*q0*q0 );
+
 				//private_den[index6D]++;
 				private_den[index6D] += ( include_energy_factors ) ?
-										overall_factor / ( Ei * Ej ) :
+										overall_factor * energy_factors :
 										overall_factor;
 
 			}
