@@ -31,7 +31,8 @@ O               =       .o
 LDFLAGS         =       $(CFLAGS)
 #LDFLAGS			+=		-L/home/blixen/plumberg/lib -lshifter
 SYSTEMFILES     =       $(SRCGNU)
-SRCDIR		=	src
+SRCDIR			=	src
+INCDIRREMOTE	=	/scratch/blixen/plumberg/test_shifter/include
 
 # --------------- Files involved ------------------
 
@@ -106,8 +107,8 @@ INSTPATH		=	..
 
 # --------------- Pattern rules -------------------
 
-run_checks.o: run_checks.cpp
-	$(CC) -L/scratch/blixen/plumberg/test_shifter/lib $(CFLAGS) -c $< -o $@ -lshifter
+#run_checks.o: run_checks.cpp
+#	$(CC) -L/scratch/blixen/plumberg/test_shifter/lib $(CFLAGS) -c $< -o $@ -lshifter
 
 $(OBJDIR)/%.o: %.cpp
 	$(CC) $(CFLAGS) -c $< -o $@
@@ -162,5 +163,6 @@ $(SRCDIR)/HBT_event_generator.cpp: $(SRCDIR)/HBT_event_generator.h $(SRCDIR)/Ars
 ./main.cpp: $(SRCDIR)/Stopwatch.h $(SRCDIR)/ParameterReader.h main.h $(SRCDIR)/EventRecord.h \
 			$(SRCDIR)/ParticleRecord.h $(SRCDIR)/ensemble.h
 ./run_checks.cpp: $(SRCDIR)/Stopwatch.h $(SRCDIR)/ParameterReader.h run_checks.h $(SRCDIR)/EventRecord.h \
-			$(SRCDIR)/ParticleRecord.h $(SRCDIR)/ensemble.h
+			$(SRCDIR)/ParticleRecord.h $(SRCDIR)/ensemble.h $(INCDIRREMOTE)/FourVector.h \
+			$(INCDIRREMOTE)/ParticleRecord.h  $(INCDIRREMOTE)/shifter.h
 
