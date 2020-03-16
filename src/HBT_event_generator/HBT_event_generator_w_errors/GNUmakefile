@@ -110,7 +110,7 @@ INSTPATH		=	..
 #run_checks.o: run_checks.cpp
 #	$(CC) -L/scratch/blixen/plumberg/test_shifter/lib $(CFLAGS) -c $< -o $@ -lshifter
 
-$(OBJDIR)/%.o: %.cpp
+$(OBJDIR)/%.o: $(SRCDIR)/%.cpp
 	$(CC) $(CFLAGS) -c $< -o $@
 
 %.cpp:
