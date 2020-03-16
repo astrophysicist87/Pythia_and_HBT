@@ -106,6 +106,9 @@ INSTPATH		=	..
 
 # --------------- Pattern rules -------------------
 
+run_checks.o: run_checks.cpp
+	$(CC) -L/scratch/blixen/plumberg/test_shifter/lib $(CFLAGS) -c $< -o $@ -lshifter
+
 $(OBJDIR)/%.o: %.cpp
 	$(CC) $(CFLAGS) -c $< -o $@
 
