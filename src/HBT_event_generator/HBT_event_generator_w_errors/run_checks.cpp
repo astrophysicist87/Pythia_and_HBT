@@ -16,9 +16,9 @@
 #include "src/random_events.h"
 #include "run_checks.h"
 
-#include "/scratch/blixen/plumberg/test_shifter/include/shifter.h"
-#include "/scratch/blixen/plumberg/test_shifter/include/ParticleRecord.h"
 #include "/scratch/blixen/plumberg/test_shifter/include/FourVector.h"
+#include "/scratch/blixen/plumberg/test_shifter/include/ParticleRecord.h"
+#include "/scratch/blixen/plumberg/test_shifter/include/shifter.h"
 
 using namespace std;
 
