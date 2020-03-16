@@ -32,7 +32,7 @@ LDFLAGS         =       $(CFLAGS)
 #LDFLAGS			+=		-L/home/blixen/plumberg/lib -lshifter
 SYSTEMFILES     =       $(SRCGNU)
 SRCDIR			=	src
-INCDIRREMOTE	=	/scratch/blixen/plumberg/test_shifter/include
+#INCDIRREMOTE	=	/scratch/blixen/plumberg/test_shifter/include
 
 # --------------- Files involved ------------------
 
@@ -137,7 +137,7 @@ $(TARGET):	$(OBJECTS)
 #		strip $(TARGET)
 
 $(CHECKS):	$(CHECKOBJS)	
-		$(CC) -L/scratch/blixen/plumberg/test_shifter/lib $(CFLAGS) $(CHECKOBJS) -o $(CHECKS) -lshifter
+		$(CC) $(CFLAGS) $(CHECKOBJS) -o $(CHECKS)
 #		strip $(TARGET)
 
 clean:		
@@ -163,6 +163,5 @@ $(SRCDIR)/HBT_event_generator.cpp: $(SRCDIR)/HBT_event_generator.h $(SRCDIR)/Ars
 ./main.cpp: $(SRCDIR)/Stopwatch.h $(SRCDIR)/ParameterReader.h main.h $(SRCDIR)/EventRecord.h \
 			$(SRCDIR)/ParticleRecord.h $(SRCDIR)/ensemble.h
 ./run_checks.cpp: $(SRCDIR)/Stopwatch.h $(SRCDIR)/ParameterReader.h run_checks.h $(SRCDIR)/EventRecord.h \
-			$(SRCDIR)/ParticleRecord.h $(SRCDIR)/ensemble.h $(INCDIRREMOTE)/FourVector.h \
-			$(INCDIRREMOTE)/ParticleRecord.h  $(INCDIRREMOTE)/shifter.h
+			$(SRCDIR)/ParticleRecord.h $(SRCDIR)/ensemble.h
 
