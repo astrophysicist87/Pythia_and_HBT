@@ -12,6 +12,7 @@
 #include <complex>
 
 //#include "ParameterReader.h"
+#include "/home/blixen/plumberg/src/ArsenalAndParameterReaderSource/ParameterReader.h"
 //#include "Arsenal.h"
 #include "/home/blixen/plumberg/src/ArsenalAndParameterReaderSource/Arsenal.h"
 #include "EventRecord.h"
