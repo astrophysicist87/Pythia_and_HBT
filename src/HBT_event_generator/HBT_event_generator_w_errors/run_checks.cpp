@@ -96,13 +96,16 @@ int main(int argc, char *argv[])
 	// Shift events here.
 	constexpr bool shift_events = true;
 	if ( shift_events )
+	{
+		paraRdr->setVal("BE_mode", 1);
 		for ( auto & event: allEvents )
 		{
 			vector<shift_lib::ParticleRecord> event_to_shift;
 			convert_event_to_shifter_format( event, event_to_shift );
-			shift_lib::shiftEvent( event_to_shift );
+			shift_lib::shifter shifted_event( paraRdr, event_to_shift, cout, cerr );
 			convert_shifter_format_to_event( event_to_shift, event );
 		}
+	}
 
 
 	// Create HBT_event_generator object from allEvents
@@ -135,7 +138,7 @@ int main(int argc, char *argv[])
 			{
 				vector<shift_lib::ParticleRecord> event_to_shift;
 				convert_event_to_shifter_format( event, event_to_shift );
-				shift_lib::shiftEvent( event_to_shift );
+				shift_lib::shifter shifted_event( paraRdr, event_to_shift, cout, cerr );
 				convert_shifter_format_to_event( event_to_shift, event );
 			}
 
