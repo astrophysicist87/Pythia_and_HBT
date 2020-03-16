@@ -79,6 +79,10 @@ int main(int argc, char *argv[])
 	generate_events_v2(allEvents, paraRdr);
 
 
+	// Shift events here.
+	shiftEvents( allEvents );
+
+
 	// Create HBT_event_generator object from allEvents
 	HBT_event_generator
 		HBT_event_ensemble( paraRdr, allEvents,
@@ -101,6 +105,10 @@ int main(int argc, char *argv[])
 		// Read in the next file
 		//generate_events(allEvents, paraRdr);
 		generate_events_v2(allEvents, paraRdr);
+
+
+		// Shift events here.
+		shiftEvents();
 
 
 		// - for each file, update numerator and denominator

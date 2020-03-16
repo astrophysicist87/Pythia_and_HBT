@@ -29,6 +29,7 @@ CFLAGS= -O3 -fopenmp -std=c++11 -g
 RM		=	rm -f
 O               =       .o
 LDFLAGS         =       $(CFLAGS)
+LDFLAGS			+=		-L/home/blixen/plumberg/lib -lshifter
 SYSTEMFILES     =       $(SRCGNU)
 SRCDIR		=	src
 
@@ -53,7 +54,6 @@ SRC			=	main.cpp \
 				$(SRCDIR)/NumeratorAndDenominator1D_wBA.cpp \
 				$(SRCDIR)/NumeratorAndDenominator1D_rotInv_wBA.cpp \
 				$(SRCDIR)/HBT_event_generator.cpp
-				#$(SRCDIR)/SingleParticleSpectra.cpp
 
 CHECKSRC	=	run_checks.cpp \
 				$(SRCDIR)/Arsenal.cpp \
