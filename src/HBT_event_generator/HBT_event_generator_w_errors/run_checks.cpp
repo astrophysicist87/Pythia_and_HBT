@@ -187,10 +187,10 @@ void convert_event_to_shifter_format(
 		particle_to_shift.particleID 	= particleIndex++;
 		particle_to_shift.m 			= pion_mass;
 		particle_to_shift.m2 			= pion_mass*pion_mass;
-		particle_to_shift.x( particle.x, particle.y, particle.z, particle.t );
-		particle_to_shift.p( particle.px, particle.py, particle.pz, particle.E );
-		particle_to_shift.pShift( 0.0, 0.0, 0.0, 0.0 );
-		particle_to_shift.pComp( 0.0, 0.0, 0.0, 0.0 );
+		particle_to_shift.x 			= Vec4( particle.x, particle.y, particle.z, particle.t );
+		particle_to_shift.p 			= Vec4( particle.px, particle.py, particle.pz, particle.E );
+		particle_to_shift.pShift 		= Vec4( 0.0, 0.0, 0.0, 0.0 );
+		particle_to_shift.pComp 		= Vec4( 0.0, 0.0, 0.0, 0.0 );
 
 		event_to_shift.push_back( particle_to_shift );
 	}
