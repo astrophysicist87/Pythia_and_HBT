@@ -29,7 +29,7 @@ CFLAGS= -O3 -fopenmp -std=c++11 -g
 RM		=	rm -f
 O               =       .o
 LDFLAGS         =       $(CFLAGS)
-LDFLAGS			+=		-L/home/blixen/plumberg/lib -lshifter
+#LDFLAGS			+=		-L/home/blixen/plumberg/lib -lshifter
 SYSTEMFILES     =       $(SRCGNU)
 SRCDIR		=	src
 
@@ -133,7 +133,7 @@ $(TARGET):	$(OBJECTS)
 #		strip $(TARGET)
 
 $(CHECKS):	$(CHECKOBJS)	
-		$(CC) $(CHECKOBJS) -o $(CHECKS) $(LDFLAGS) 
+		$(CC) $(CHECKOBJS) $(CFLAGS) -L/home/blixen/plumberg/lib -o $(CHECKS) -lshifter
 #		strip $(TARGET)
 
 clean:		
