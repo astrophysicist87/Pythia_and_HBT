@@ -133,7 +133,7 @@ $(TARGET):	$(OBJECTS)
 #		strip $(TARGET)
 
 $(CHECKS):	$(CHECKOBJS)	
-		$(CC) -L/home/blixen/plumberg/lib -lshifter $(CFLAGS) $(CHECKOBJS) -o $(CHECKS)
+		$(CC) -L/home/blixen/plumberg/lib $(CFLAGS) $(CHECKOBJS) -o $(CHECKS) -lshifter
 #		strip $(TARGET)
 
 clean:		
