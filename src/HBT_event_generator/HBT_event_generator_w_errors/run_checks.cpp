@@ -206,14 +206,14 @@ void convert_shifter_format_to_event(
 	int particleIndex = 0;
 	for ( auto & particle : event_to_shift )
 	{
-		events.particles.at(particleIndex).x = particle.x.px();
-		events.particles.at(particleIndex).y = particle.x.py();
-		events.particles.at(particleIndex).z = particle.x.pz();
-		events.particles.at(particleIndex).t = particle.x.e();
-		events.particles.at(particleIndex).px = particle.p.px();
-		events.particles.at(particleIndex).py = particle.p.py();
-		events.particles.at(particleIndex).pz = particle.p.pz();
-		events.particles.at(particleIndex).E = particle.p.e();
+		event.particles.at(particleIndex).x = particle.x.px();
+		event.particles.at(particleIndex).y = particle.x.py();
+		event.particles.at(particleIndex).z = particle.x.pz();
+		event.particles.at(particleIndex).t = particle.x.e();
+		event.particles.at(particleIndex).px = particle.p.px();
+		event.particles.at(particleIndex).py = particle.p.py();
+		event.particles.at(particleIndex).pz = particle.p.pz();
+		event.particles.at(particleIndex).E = particle.p.e();
 
 		particleIndex++;
 	}
