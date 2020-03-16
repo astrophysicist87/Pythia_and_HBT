@@ -10,7 +10,8 @@
 
 #include "./EventRecord.h"
 #include "./ParticleRecord.h"
-#include "./ParameterReader.h"
+//#include "./ParameterReader.h"
+#include "/home/blixen/plumberg/src/ArsenalAndParameterReaderSource/ParameterReader.h"
 
 using namespace std;
 

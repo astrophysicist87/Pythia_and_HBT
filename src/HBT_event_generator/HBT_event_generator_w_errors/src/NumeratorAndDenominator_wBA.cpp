@@ -10,7 +10,8 @@
 #include <algorithm>
 
 #include "HBT_event_generator.h"
-#include "Arsenal.h"
+//#include "Arsenal.h"
+#include "/home/blixen/plumberg/src/ArsenalAndParameterReaderSource/Arsenal.h"
 #include "Stopwatch.h"
 
 
@@ -507,6 +508,7 @@ void HBT_event_generator::Compute_numerator_and_denominator_methodMode2_q_mode_3
 						// if we're not on an axis slice, skip this q-bin
 						if (
 								( iqo_not_center and iqs_not_center )
+
 								or ( iqo_not_center and iql_not_center )
 								or ( iqs_not_center and iql_not_center )
 							)

@@ -11,8 +11,9 @@
 #include <cstdlib>
 #include <complex>
 
-#include "ParameterReader.h"
-#include "Arsenal.h"
+//#include "ParameterReader.h"
+//#include "Arsenal.h"
+#include "/home/blixen/plumberg/src/ArsenalAndParameterReaderSource/Arsenal.h"
 #include "EventRecord.h"
 #include "ParticleRecord.h"
 #include "gauss_quadrature.h"

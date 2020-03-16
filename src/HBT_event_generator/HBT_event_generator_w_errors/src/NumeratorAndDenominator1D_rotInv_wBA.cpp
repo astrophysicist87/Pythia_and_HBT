@@ -10,7 +10,8 @@
 #include <algorithm>
 
 #include "HBT_event_generator.h"
-#include "Arsenal.h"
+//#include "Arsenal.h"
+#include "/home/blixen/plumberg/src/ArsenalAndParameterReaderSource/Arsenal.h"
 #include "Stopwatch.h"
 
 
@@ -248,6 +249,7 @@ void HBT_event_generator::Compute_numerator_and_denominator_methodMode2_q_mode_1
 			int KL_idx 	= floor((Kz - KL_min)/KL_bin_width);
 
 			// Momentum-space cuts
+
 			if ( KT_idx < 0 or KT_idx >= n_KT_bins )
 				continue;
 
