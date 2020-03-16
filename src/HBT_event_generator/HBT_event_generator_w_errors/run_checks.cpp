@@ -16,7 +16,21 @@
 #include "src/random_events.h"
 #include "run_checks.h"
 
+#include "/scratch/blixen/plumberg/test_shifter/include/shifter.h"
+#include "/scratch/blixen/plumberg/test_shifter/include/ParticleRecord.h"
+#include "/scratch/blixen/plumberg/test_shifter/include/FourVector.h"
+
 using namespace std;
+
+void convert_event_to_shifter_format(
+		const EventRecord & event,
+		vector<shift_lib::ParticleRecord> & event_to_shift );
+void convert_shifter_format_to_event( 
+		const vector<shift_lib::ParticleRecord> & event_to_shift,
+		EventRecord & event );
+
+
+
 
 int main(int argc, char *argv[])
 {
@@ -80,7 +94,15 @@ int main(int argc, char *argv[])
 
 
 	// Shift events here.
-	shiftEvents( allEvents );
+	constexpr bool shift_events = true;
+	if ( shift_events )
+		for ( auto & event: allEvents )
+		{
+			vector<shift_lib::ParticleRecord> event_to_shift;
+			convert_event_to_shifter_format( event, event_to_shift );
+			shift_lib::shiftEvent( event_to_shift );
+			convert_shifter_format_to_event( event_to_shift, event );
+		}
 
 
 	// Create HBT_event_generator object from allEvents
@@ -107,8 +129,15 @@ int main(int argc, char *argv[])
 		generate_events_v2(allEvents, paraRdr);
 
 
-		// Shift events here.
-		shiftEvents();
+		// Shift events also here.
+		if ( shift_events )
+			for ( auto & event: allEvents )
+			{
+				vector<shift_lib::ParticleRecord> event_to_shift;
+				convert_event_to_shifter_format( event, event_to_shift );
+				shift_lib::shiftEvent( event_to_shift );
+				convert_shifter_format_to_event( event_to_shift, event );
+			}
 
 
 		// - for each file, update numerator and denominator
@@ -135,5 +164,58 @@ int main(int argc, char *argv[])
 	// Wrap it up!
 	return (0);
 }
+
+
+
+
+void convert_event_to_shifter_format(
+		const EventRecord & event,
+		vector<shift_lib::ParticleRecord> & event_to_shift )
+{
+	event_to_shift.clear();
+	event_to_shift.resize(event.particles.size());
+
+	int particleIndex = 0;
+	double pion_mass = 0.13957;
+	for ( auto & particle : event.particles )
+	{
+		shift_lib::ParticleRecord particle_to_shift;
+
+		particle_to_shift.particleID 	= particleIndex++;
+		particle_to_shift.m 			= pion_mass;
+		particle_to_shift.m2 			= pion_mass*pion_mass;
+		particle_to_shift.x( particle.x, particle.y, particle.z, particle.t );
+		particle_to_shift.p( particle.px, particle.py, particle.pz, particle.E );
+		particle_to_shift.pShift( 0.0, 0.0, 0.0, 0.0 );
+		particle_to_shift.pComp( 0.0, 0.0, 0.0, 0.0 );
+
+		event_to_shift.push_back( particle_to_shift );
+	}
+	return;
+}
+
+
+
+void convert_shifter_format_to_event( 
+		const vector<shift_lib::ParticleRecord> & event_to_shift,
+		EventRecord & event )
+{
+	int particleIndex = 0;
+	for ( auto & particle : event_to_shift )
+	{
+		events.particles.at(particleIndex).x = particle.x.px();
+		events.particles.at(particleIndex).y = particle.x.py();
+		events.particles.at(particleIndex).z = particle.x.pz();
+		events.particles.at(particleIndex).t = particle.x.e();
+		events.particles.at(particleIndex).px = particle.p.px();
+		events.particles.at(particleIndex).py = particle.p.py();
+		events.particles.at(particleIndex).pz = particle.p.pz();
+		events.particles.at(particleIndex).E = particle.p.e();
+
+		particleIndex++;
+	}
+	return;
+}
+
 
 //End of file
