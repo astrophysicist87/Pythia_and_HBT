@@ -32,7 +32,7 @@ LDFLAGS         =       $(CFLAGS)
 #LDFLAGS			+=		-L/home/blixen/plumberg/lib -lshifter
 SYSTEMFILES     =       $(SRCGNU)
 SRCDIR			=	src
-INCDIRREMOTE	=	/home/blixe/plumberg/src/ArsenalAndParameterReaderSource
+INCDIRREMOTE	=	/home/blixen/plumberg/src/ArsenalAndParameterReaderSource
 
 # --------------- Files involved ------------------
 
@@ -44,8 +44,6 @@ ifeq "$(CHECKS)" ""
 CHECKS		=	run_checks.e
 endif
 
-				#$(SRCDIR)/Arsenal.cpp \
-				#$(SRCDIR)/ParameterReader.cpp \
 SRC			=	main.cpp \
 				$(SRCDIR)/gauss_quadrature.cpp \
 				$(SRCDIR)/NumeratorAndDenominator.cpp \
@@ -56,8 +54,6 @@ SRC			=	main.cpp \
 				$(SRCDIR)/NumeratorAndDenominator1D_rotInv_wBA.cpp \
 				$(SRCDIR)/HBT_event_generator.cpp
 
-				#$(SRCDIR)/Arsenal.cpp \
-				#$(SRCDIR)/ParameterReader.cpp \
 CHECKSRC	=	run_checks.cpp \
 				$(SRCDIR)/gauss_quadrature.cpp \
 				$(SRCDIR)/NumeratorAndDenominator.cpp \
@@ -68,8 +64,6 @@ CHECKSRC	=	run_checks.cpp \
 				$(SRCDIR)/NumeratorAndDenominator1D_rotInv_wBA.cpp \
 				$(SRCDIR)/HBT_event_generator.cpp
 
-				#$(SRCDIR)/Arsenal.h \
-				#$(SRCDIR)/ParameterReader.h \
 INC			= 	main.h \
 				$(SRCDIR)/EventRecord.h \
 				$(SRCDIR)/ParticleRecord.h \
@@ -80,8 +74,6 @@ INC			= 	main.h \
 				$(SRCDIR)/estimate_error.h \
 				$(SRCDIR)/HBT_event_generator.h
 
-				#$(SRCDIR)/Arsenal.h \
-				#$(SRCDIR)/ParameterReader.h \
 CHECKINC 	= 	run_checks.h \
 				$(SRCDIR)/EventRecord.h \
 				$(SRCDIR)/ParticleRecord.h \
@@ -133,11 +125,11 @@ mkobjdir:
 		-@mkdir -p $(OBJDIR)
 
 $(TARGET):	$(OBJECTS)	
-		$(CC) -I/home/blixe/plumberg/src/ArsenalAndParameterReaderSource/ -L/home/blixe/plumberg/src/ArsenalAndParameterReaderSource/ $(OBJECTS) -o $(TARGET) $(LDFLAGS) -lAAPR
+		$(CC) -I$(INCDIRREMOTE) -L$(INCDIRREMOTE) $(OBJECTS) -o $(TARGET) $(LDFLAGS) -lAAPR
 #		strip $(TARGET)
 
 $(CHECKS):	$(CHECKOBJS)	
-		$(CC) -I/home/blixe/plumberg/src/ArsenalAndParameterReaderSource/ -L/home/blixe/plumberg/src/ArsenalAndParameterReaderSource/ $(CFLAGS) $(CHECKOBJS) -o $(CHECKS) -lAAPR
+		$(CC) -I$(INCDIRREMOTE) -L$(INCDIRREMOTE) $(CFLAGS) $(CHECKOBJS) -o $(CHECKS) -lAAPR
 #		strip $(TARGET)
 
 clean:		
