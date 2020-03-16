@@ -164,13 +164,13 @@ install:	$(TARGET)
 #			$(SRCDIR)/ParticleRecord.h $(SRCDIR)/ensemble.h
 #./run_checks.cpp: $(SRCDIR)/Stopwatch.h $(SRCDIR)/ParameterReader.h run_checks.h $(SRCDIR)/EventRecord.h \
 #			$(SRCDIR)/ParticleRecord.h $(SRCDIR)/ensemble.h
-$(INCDIRREMOTE)/Arsenal.cpp: $(INCDIRREMOTE)/Arsenal.h
-$(INCDIRREMOTE)/ParameterReader.cpp: $(INCDIRREMOTE)/ParameterReader.h $(INCDIRREMOTE)/Arsenal.h
+#$(INCDIRREMOTE)/Arsenal.cpp: $(INCDIRREMOTE)/Arsenal.h
+#$(INCDIRREMOTE)/ParameterReader.cpp: $(INCDIRREMOTE)/ParameterReader.h $(INCDIRREMOTE)/Arsenal.h
 $(SRCDIR)/HBT_event_generator.cpp: $(SRCDIR)/HBT_event_generator.h \
 									$(SRCDIR)/Stopwatch.h $(SRCDIR)/EventRecord.h \
 									$(SRCDIR)/ParticleRecord.h $(SRCDIR)/ensemble.h
-./main.cpp: $(SRCDIR)/Stopwatch.h $(INCDIRREMOTE)/ParameterReader.h main.h $(SRCDIR)/EventRecord.h \
+./main.cpp: $(SRCDIR)/Stopwatch.h main.h $(SRCDIR)/EventRecord.h \
 			$(SRCDIR)/ParticleRecord.h $(SRCDIR)/ensemble.h
-./run_checks.cpp: $(SRCDIR)/Stopwatch.h $(INCDIRREMOTE)/ParameterReader.h run_checks.h $(SRCDIR)/EventRecord.h \
-			$(SRCDIR)/ParticleRecord.h $(SRCDIR)/ensemble.h $(INCDIRREMOTE)/Arsenal.h $(INCDIRREMOTE)/ParameterReader.h
+./run_checks.cpp: $(SRCDIR)/Stopwatch.h run_checks.h $(SRCDIR)/EventRecord.h \
+			$(SRCDIR)/ParticleRecord.h $(SRCDIR)/ensemble.h
 
