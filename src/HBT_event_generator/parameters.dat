@@ -92,7 +92,7 @@ use_smoothness_approximation = 0
 
 #===========
 # get particles randomly or from file
-file_mode = 1
+file_mode = 0
 	#=======
 	# sub-model options ( if file_mode == 0 )
 	RNG_R = 10.0	#fm
