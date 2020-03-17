@@ -17,7 +17,25 @@
 #include "src/random_events.h"
 #include "main.h"
 
+// these are included remotely
+#include "FourVector.h"
+#include "ParticleRecord.h"
+#include "ParameterReader.h"
+#include "shifter.h"
+
 using namespace std;
+
+constexpr bool shift_events = false;
+
+
+void convert_event_to_shifter_format(
+		const EventRecord & event,
+		vector<shift_lib::ParticleRecord> & event_to_shift );
+
+void convert_shifter_format_to_event( 
+		const vector<shift_lib::ParticleRecord> & event_to_shift,
+		EventRecord & event );
+
 
 int main(int argc, char *argv[])
 {
@@ -212,6 +230,29 @@ int main(int argc, char *argv[])
 		generate_events_v2(allEvents, paraRdr);
 
 
+		// Shift events here.
+		if ( shift_events )
+		{
+			paraRdr->setVal("BE_mode", 1);
+
+			shift_lib::ParameterReader * converted_paraRdr = new shift_lib::ParameterReader;
+			converted_paraRdr->readFromFile("./parameters.dat");
+			converted_paraRdr->readFromFile(particle_info_filename[0]);
+			converted_paraRdr->readFromArguments(argc, argv);
+			converted_paraRdr->setVal("BE_mode", 1);
+
+			for ( auto & event: allEvents )
+			{
+				vector<shift_lib::ParticleRecord> event_to_shift;
+				convert_event_to_shifter_format( event, event_to_shift );
+
+				shift_lib::shifter shifted_event( converted_paraRdr, event_to_shift, cout, cerr );
+
+				convert_shifter_format_to_event( event_to_shift, event );
+			}
+		}
+
+
 		// Create HBT_event_generator object from allEvents
 		HBT_event_generator
 			HBT_event_ensemble( paraRdr, allEvents,
@@ -234,6 +275,27 @@ int main(int argc, char *argv[])
 			// Read in the next file
 			//generate_events(allEvents, paraRdr);
 			generate_events_v2(allEvents, paraRdr);
+
+
+			// Shift events also here.
+			if ( shift_events )
+			{
+				paraRdr->setVal("BE_mode", 1);
+
+				shift_lib::ParameterReader * converted_paraRdr = new shift_lib::ParameterReader;
+				converted_paraRdr->readFromFile("./parameters.dat");
+				converted_paraRdr->readFromFile(particle_info_filename[0]);
+				converted_paraRdr->readFromArguments(argc, argv);
+				converted_paraRdr->setVal("BE_mode", 1);
+
+				for ( auto & event: allEvents )
+				{
+					vector<shift_lib::ParticleRecord> event_to_shift;
+					convert_event_to_shifter_format( event, event_to_shift );
+					shift_lib::shifter shifted_event( converted_paraRdr, event_to_shift, cout, cerr );
+					convert_shifter_format_to_event( event_to_shift, event );
+				}
+			}
 
 
 			// - for each file, update numerator and denominator
@@ -261,5 +323,56 @@ int main(int argc, char *argv[])
 	// Wrap it up!
 	return (0);
 }
+
+
+void convert_event_to_shifter_format(
+		const EventRecord & event,
+		vector<shift_lib::ParticleRecord> & event_to_shift )
+{
+	event_to_shift.clear();
+	event_to_shift.resize(event.particles.size());
+
+	int particleIndex = 0;
+	double pion_mass = 0.13957;
+	for ( auto & particle : event.particles )
+	{
+		shift_lib::ParticleRecord particle_to_shift;
+
+		particle_to_shift.particleID 	= particleIndex++;
+		particle_to_shift.m 			= pion_mass;
+		particle_to_shift.m2 			= pion_mass*pion_mass;
+		particle_to_shift.x 			= shift_lib::Vec4( particle.x, particle.y, particle.z, particle.t );
+		particle_to_shift.p 			= shift_lib::Vec4( particle.px, particle.py, particle.pz, particle.E );
+		particle_to_shift.pShift 		= shift_lib::Vec4( 0.0, 0.0, 0.0, 0.0 );
+		particle_to_shift.pComp 		= shift_lib::Vec4( 0.0, 0.0, 0.0, 0.0 );
+
+		event_to_shift.push_back( particle_to_shift );
+	}
+	return;
+}
+
+
+
+void convert_shifter_format_to_event( 
+		const vector<shift_lib::ParticleRecord> & event_to_shift,
+		EventRecord & event )
+{
+	int particleIndex = 0;
+	for ( auto & particle : event_to_shift )
+	{
+		event.particles.at(particleIndex).x = particle.x.px();
+		event.particles.at(particleIndex).y = particle.x.py();
+		event.particles.at(particleIndex).z = particle.x.pz();
+		event.particles.at(particleIndex).t = particle.x.e();
+		event.particles.at(particleIndex).px = particle.p.px();
+		event.particles.at(particleIndex).py = particle.p.py();
+		event.particles.at(particleIndex).pz = particle.p.pz();
+		event.particles.at(particleIndex).E = particle.p.e();
+
+		particleIndex++;
+	}
+	return;
+}
+
 
 //End of file
