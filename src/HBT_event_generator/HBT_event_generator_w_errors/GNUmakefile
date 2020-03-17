@@ -32,7 +32,8 @@ LDFLAGS         =       $(CFLAGS)
 #LDFLAGS			+=		-L/home/blixen/plumberg/lib -lshifter
 SYSTEMFILES     =       $(SRCGNU)
 SRCDIR			=	src
-INCDIRREMOTE	=	/home/blixen/plumberg/src/ArsenalAndParameterReaderSource
+#INCDIRREMOTE	=	/home/blixen/plumberg/src/ArsenalAndParameterReaderSource
+INCDIRREMOTE	=	.
 
 # --------------- Files involved ------------------
 
@@ -45,6 +46,8 @@ CHECKS		=	run_checks.e
 endif
 
 SRC			=	main.cpp \
+				$(SRCDIR)/Arsenal.cpp \
+				$(SRCDIR)/ParameterReader.cpp \
 				$(SRCDIR)/gauss_quadrature.cpp \
 				$(SRCDIR)/NumeratorAndDenominator.cpp \
 				$(SRCDIR)/NumeratorAndDenominator1D.cpp \
@@ -55,6 +58,8 @@ SRC			=	main.cpp \
 				$(SRCDIR)/HBT_event_generator.cpp
 
 CHECKSRC	=	run_checks.cpp \
+				$(SRCDIR)/Arsenal.cpp \
+				$(SRCDIR)/ParameterReader.cpp \
 				$(SRCDIR)/gauss_quadrature.cpp \
 				$(SRCDIR)/NumeratorAndDenominator.cpp \
 				$(SRCDIR)/NumeratorAndDenominator1D.cpp \
@@ -65,6 +70,8 @@ CHECKSRC	=	run_checks.cpp \
 				$(SRCDIR)/HBT_event_generator.cpp
 
 INC			= 	main.h \
+				$(SRCDIR)/Arsenal.h \
+				$(SRCDIR)/ParameterReader.h \
 				$(SRCDIR)/EventRecord.h \
 				$(SRCDIR)/ParticleRecord.h \
 				$(SRCDIR)/Stopwatch.h \
@@ -75,6 +82,8 @@ INC			= 	main.h \
 				$(SRCDIR)/HBT_event_generator.h
 
 CHECKINC 	= 	run_checks.h \
+				$(SRCDIR)/Arsenal.h \
+				$(SRCDIR)/ParameterReader.h \
 				$(SRCDIR)/EventRecord.h \
 				$(SRCDIR)/ParticleRecord.h \
 				$(SRCDIR)/Stopwatch.h \
@@ -103,10 +112,12 @@ INSTPATH		=	..
 #	$(CC) -L/scratch/blixen/plumberg/test_shifter/lib $(CFLAGS) -c $< -o $@ -lshifter
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.cpp
-	$(CC) -I$(INCDIRREMOTE) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -c $< -o $@
+#	$(CC) -I$(INCDIRREMOTE) $(CFLAGS) -c $< -o $@
 
 %.o: %.cpp
-	$(CC) -I$(INCDIRREMOTE) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -c $< -o $@
+#	$(CC) -I$(INCDIRREMOTE) $(CFLAGS) -c $< -o $@
 
 %.cpp:
 	if [ -f $@ ] ; then touch $@ ; else false ; fi
@@ -127,12 +138,14 @@ help:
 mkobjdir:	
 		-@mkdir -p $(OBJDIR)
 
-$(TARGET):	$(OBJECTS)	
-		$(CC) -I$(INCDIRREMOTE) -L$(INCDIRREMOTE) $(OBJECTS) -o $(TARGET) $(LDFLAGS) -lAAPR
+$(TARGET):	$(OBJECTS)
+		$(CC) $(OBJECTS) -o $(TARGET) $(LDFLAGS)
+#		$(CC) -I$(INCDIRREMOTE) -L$(INCDIRREMOTE) $(OBJECTS) -o $(TARGET) $(LDFLAGS) -lAAPR
 #		strip $(TARGET)
 
-$(CHECKS):	$(CHECKOBJS)	
-		$(CC) -I$(INCDIRREMOTE) -L$(INCDIRREMOTE) $(CFLAGS) $(CHECKOBJS) -o $(CHECKS) -lAAPR
+$(CHECKS):	$(CHECKOBJS)
+		$(CC) $(CFLAGS) $(CHECKOBJS) -o $(CHECKS)
+#		$(CC) -I$(INCDIRREMOTE) -L$(INCDIRREMOTE) $(CFLAGS) $(CHECKOBJS) -o $(CHECKS) -lAAPR
 #		strip $(TARGET)
 
 clean:		
@@ -159,13 +172,13 @@ install:	$(TARGET)
 #			$(SRCDIR)/ParticleRecord.h $(SRCDIR)/ensemble.h
 #./run_checks.cpp: $(SRCDIR)/Stopwatch.h $(SRCDIR)/ParameterReader.h run_checks.h $(SRCDIR)/EventRecord.h \
 #			$(SRCDIR)/ParticleRecord.h $(SRCDIR)/ensemble.h
-#$(INCDIRREMOTE)/Arsenal.cpp: $(INCDIRREMOTE)/Arsenal.h
-#$(INCDIRREMOTE)/ParameterReader.cpp: $(INCDIRREMOTE)/ParameterReader.h $(INCDIRREMOTE)/Arsenal.h
-$(SRCDIR)/HBT_event_generator.cpp: $(SRCDIR)/HBT_event_generator.h \
+$(SRCDIR)/Arsenal.cpp: $(SRCDIR)/Arsenal.h
+$(SRCDIR)/ParameterReader.cpp: $(SRCDIR)/ParameterReader.h $(SRCDIR)/Arsenal.h
+$(SRCDIR)/HBT_event_generator.cpp: $(SRCDIR)/HBT_event_generator.h $(SRCDIR)/ParameterReader.h \
 									$(SRCDIR)/Stopwatch.h $(SRCDIR)/EventRecord.h \
 									$(SRCDIR)/ParticleRecord.h $(SRCDIR)/ensemble.h
-./main.cpp: $(SRCDIR)/Stopwatch.h main.h $(SRCDIR)/EventRecord.h \
+./main.cpp: $(SRCDIR)/Stopwatch.h $(SRCDIR)/ParameterReader.h main.h $(SRCDIR)/EventRecord.h \
 			$(SRCDIR)/ParticleRecord.h $(SRCDIR)/ensemble.h
-./run_checks.cpp: $(SRCDIR)/Stopwatch.h run_checks.h $(SRCDIR)/EventRecord.h \
+./run_checks.cpp: $(SRCDIR)/Stopwatch.h $(SRCDIR)/ParameterReader.h run_checks.h $(SRCDIR)/EventRecord.h \
 			$(SRCDIR)/ParticleRecord.h $(SRCDIR)/ensemble.h
 

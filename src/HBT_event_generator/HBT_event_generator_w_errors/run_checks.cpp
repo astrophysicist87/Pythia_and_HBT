@@ -10,7 +10,7 @@
 
 #include "src/Stopwatch.h"
 #include "src/HBT_event_generator.h"
-#include "ParameterReader.h"
+#include "src/ParameterReader.h"
 //#include "/home/blixen/plumberg/src/ArsenalAndParameterReaderSource/ParameterReader.h"
 #include "src/EventRecord.h"
 #include "src/ParticleRecord.h"

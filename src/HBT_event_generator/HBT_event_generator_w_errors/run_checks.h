@@ -11,7 +11,7 @@
 
 #include "src/EventRecord.h"
 #include "src/ParticleRecord.h"
-#include "ParameterReader.h"
+#include "src/ParameterReader.h"
 //#include "/home/blixen/plumberg/src/ArsenalAndParameterReaderSource/ParameterReader.h"
 #include "src/ensemble.h"
 
