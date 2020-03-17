@@ -314,7 +314,7 @@ void generate_events_v2(vector<EventRecord> & allEvents, ParameterReader * paraR
 
 		}
 	}
-	else if ( model_to_use == 2 )
+	else if ( model_to_use == 3 )
 	{
 		double mass 	= paraRdr->getVal("mass");
 		double RNG_R 	= paraRdr->getVal("RNG_R");
