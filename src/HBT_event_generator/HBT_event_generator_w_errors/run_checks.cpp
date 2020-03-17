@@ -34,8 +34,6 @@ void convert_shifter_format_to_event(
 		const vector<shift_lib::ParticleRecord> & event_to_shift,
 		EventRecord & event );
 
-void convert_ParameterReader( ParameterReader * paraRdr_in, shift_lib::ParameterReader * paraRdr_out );
-
 
 int main(int argc, char *argv[])
 {
@@ -104,8 +102,11 @@ int main(int argc, char *argv[])
 	{
 		paraRdr->setVal("BE_mode", 1);
 
-		shift_lib::ParameterReader * converted_paraRdr;
-		convert_ParameterReader( paraRdr, converted_paraRdr );
+		shift_lib::ParameterReader * converted_paraRdr = new shift_lib::ParameterReader;
+		converted_paraRdr->readFromFile("./parameters.dat");
+		converted_paraRdr->readFromFile(particle_info_filename[0]);
+		converted_paraRdr->readFromArguments(argc, argv);
+		converted_paraRdr->setVal("BE_mode", 1);
 
 		for ( auto & event: allEvents )
 		{
@@ -148,8 +149,11 @@ int main(int argc, char *argv[])
 		{
 			paraRdr->setVal("BE_mode", 1);
 
-			shift_lib::ParameterReader * converted_paraRdr;
-			convert_ParameterReader( paraRdr, converted_paraRdr );
+			shift_lib::ParameterReader * converted_paraRdr = new shift_lib::ParameterReader;
+			converted_paraRdr->readFromFile("./parameters.dat");
+			converted_paraRdr->readFromFile(particle_info_filename[0]);
+			converted_paraRdr->readFromArguments(argc, argv);
+			converted_paraRdr->setVal("BE_mode", 1);
 
 			for ( auto & event: allEvents )
 			{
@@ -238,7 +242,7 @@ void convert_shifter_format_to_event(
 }
 
 
-void convert_ParameterReader( ParameterReader * paraRdr_in, shift_lib::ParameterReader * paraRdr_out )
+/*void convert_ParameterReader( ParameterReader * paraRdr_in, shift_lib::ParameterReader * paraRdr_out )
 {
 	//const int nParameters = paraRdr_in->names->size();
 	for ( const auto & name : *(paraRdr_in->names) )
@@ -246,7 +250,7 @@ void convert_ParameterReader( ParameterReader * paraRdr_in, shift_lib::Parameter
 	for ( const auto & value : *(paraRdr_in->value) )
 		paraRdr_out->value->push_back( value );
 	return;
-}
+}*/
 
 
 //End of file
