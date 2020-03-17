@@ -181,5 +181,5 @@ $(SRCDIR)/HBT_event_generator.cpp: $(SRCDIR)/HBT_event_generator.h $(SRCDIR)/Par
 ./main.cpp: $(SRCDIR)/Stopwatch.h $(SRCDIR)/ParameterReader.h main.h $(SRCDIR)/EventRecord.h \
 			$(SRCDIR)/ParticleRecord.h $(SRCDIR)/ensemble.h
 ./run_checks.cpp: $(SRCDIR)/Stopwatch.h $(SRCDIR)/ParameterReader.h run_checks.h $(SRCDIR)/EventRecord.h \
-			$(SRCDIR)/ParticleRecord.h $(SRCDIR)/ensemble.h $(INCDIRREMOTE)/FourVector.h $(INCDIRREMOTE)/ParticleRecord.h $(INCDIRREMOTE)/FourVector.h
+			$(SRCDIR)/ParticleRecord.h $(SRCDIR)/ensemble.h $(INCDIRREMOTE)/FourVector.h $(INCDIRREMOTE)/ParticleRecord.h $(INCDIRREMOTE)/FourVector.h $(INCDIRREMOTE)/ParameterReader.h
 
