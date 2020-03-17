@@ -26,6 +26,9 @@
 using namespace std;
 
 
+constexpr bool shift_events = false;
+
+
 void convert_event_to_shifter_format(
 		const EventRecord & event,
 		vector<shift_lib::ParticleRecord> & event_to_shift );
@@ -97,7 +100,6 @@ int main(int argc, char *argv[])
 
 
 	// Shift events here.
-	constexpr bool shift_events = true;
 	if ( shift_events )
 	{
 		paraRdr->setVal("BE_mode", 1);
