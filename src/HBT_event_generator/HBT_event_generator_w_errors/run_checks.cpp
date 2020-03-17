@@ -113,7 +113,7 @@ int main(int argc, char *argv[])
 			vector<shift_lib::ParticleRecord> event_to_shift;
 			convert_event_to_shifter_format( event, event_to_shift );
 
-			shift_lib::shifter shifted_event( paraRdr, event_to_shift, cout, cerr );
+			shift_lib::shifter shifted_event( converted_paraRdr, event_to_shift, cout, cerr );
 
 			convert_shifter_format_to_event( event_to_shift, event );
 		}
@@ -159,7 +159,7 @@ int main(int argc, char *argv[])
 			{
 				vector<shift_lib::ParticleRecord> event_to_shift;
 				convert_event_to_shifter_format( event, event_to_shift );
-				shift_lib::shifter shifted_event( paraRdr, event_to_shift, cout, cerr );
+				shift_lib::shifter shifted_event( converted_paraRdr, event_to_shift, cout, cerr );
 				convert_shifter_format_to_event( event_to_shift, event );
 			}
 		}
