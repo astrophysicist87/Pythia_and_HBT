@@ -33,7 +33,8 @@ LDFLAGS         =       $(CFLAGS)
 SYSTEMFILES     =       $(SRCGNU)
 SRCDIR			=	src
 #INCDIRREMOTE	=	/home/blixen/plumberg/src/ArsenalAndParameterReaderSource
-INCDIRREMOTE	=	.
+INCDIRREMOTE	=	/scratch/blixen/plumberg/test_shifter/include
+LIBDIRREMOTE	=	/scratch/blixen/plumberg/test_shifter/lib
 
 # --------------- Files involved ------------------
 
@@ -112,12 +113,12 @@ INSTPATH		=	..
 #	$(CC) -L/scratch/blixen/plumberg/test_shifter/lib $(CFLAGS) -c $< -o $@ -lshifter
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.cpp
-	$(CC) $(CFLAGS) -c $< -o $@
-#	$(CC) -I$(INCDIRREMOTE) $(CFLAGS) -c $< -o $@
+	$(CC) -I$(INCDIRREMOTE) $(CFLAGS) -c $< -o $@
+#	$(CC) $(CFLAGS) -c $< -o $@
 
 %.o: %.cpp
-	$(CC) $(CFLAGS) -c $< -o $@
-#	$(CC) -I$(INCDIRREMOTE) $(CFLAGS) -c $< -o $@
+	$(CC) -I$(INCDIRREMOTE) $(CFLAGS) -c $< -o $@
+#	$(CC) $(CFLAGS) -c $< -o $@
 
 %.cpp:
 	if [ -f $@ ] ; then touch $@ ; else false ; fi
@@ -139,13 +140,13 @@ mkobjdir:
 		-@mkdir -p $(OBJDIR)
 
 $(TARGET):	$(OBJECTS)
-		$(CC) $(OBJECTS) -o $(TARGET) $(LDFLAGS)
-#		$(CC) -I$(INCDIRREMOTE) -L$(INCDIRREMOTE) $(OBJECTS) -o $(TARGET) $(LDFLAGS) -lAAPR
+		$(CC) -I$(INCDIRREMOTE) -L$(LIBDIRREMOTE) $(OBJECTS) -o $(TARGET) $(LDFLAGS) -lshifter
+#		$(CC) $(OBJECTS) -o $(TARGET) $(LDFLAGS)
 #		strip $(TARGET)
 
 $(CHECKS):	$(CHECKOBJS)
-		$(CC) $(CFLAGS) $(CHECKOBJS) -o $(CHECKS)
-#		$(CC) -I$(INCDIRREMOTE) -L$(INCDIRREMOTE) $(CFLAGS) $(CHECKOBJS) -o $(CHECKS) -lAAPR
+		$(CC) -I$(INCDIRREMOTE) -L$(LIBDIRREMOTE) $(CFLAGS) $(CHECKOBJS) -o $(CHECKS) -lshifter
+#		$(CC) $(CFLAGS) $(CHECKOBJS) -o $(CHECKS)
 #		strip $(TARGET)
 
 clean:		
@@ -180,5 +181,5 @@ $(SRCDIR)/HBT_event_generator.cpp: $(SRCDIR)/HBT_event_generator.h $(SRCDIR)/Par
 ./main.cpp: $(SRCDIR)/Stopwatch.h $(SRCDIR)/ParameterReader.h main.h $(SRCDIR)/EventRecord.h \
 			$(SRCDIR)/ParticleRecord.h $(SRCDIR)/ensemble.h
 ./run_checks.cpp: $(SRCDIR)/Stopwatch.h $(SRCDIR)/ParameterReader.h run_checks.h $(SRCDIR)/EventRecord.h \
-			$(SRCDIR)/ParticleRecord.h $(SRCDIR)/ensemble.h
+			$(SRCDIR)/ParticleRecord.h $(SRCDIR)/ensemble.h $(INCDIRREMOTE)/FourVector.h $(INCDIRREMOTE)/ParticleRecord.h $(INCDIRREMOTE)/FourVector.h
 
