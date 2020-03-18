@@ -26,7 +26,7 @@
 using namespace std;
 
 
-constexpr bool shift_events = false;
+constexpr bool shift_events = true;
 
 
 void convert_event_to_shifter_format(
