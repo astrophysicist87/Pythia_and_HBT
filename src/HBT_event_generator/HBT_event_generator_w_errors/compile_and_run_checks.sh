@@ -1,8 +1,13 @@
 #! /usr/bin/env bash
 
 (
-	rm -rf results
-	mkdir results
+	# Command-line argument names and creates results directory
+	RESULTSDIRECTORY=$1
+
+	rm -rf $RESULTSDIRECTORY
+	mkdir $RESULTSDIRECTORY
+	echo $RESULTSDIRECTORY > ./resultsDirectory.dat
+	cp ../parameters.dat $RESULTSDIRECTORY
 
 	cd ../../../../test_shifter
 	git pull && gmake distclean && gmake all
