@@ -37,6 +37,15 @@ void convert_shifter_format_to_event(
 		const vector<shift_lib::ParticleRecord> & event_to_shift,
 		EventRecord & event );
 
+string get_resultsDirectory(string resultsDirectoryFilename)
+{
+	string resultsPath = "";
+	ifstream in_path( resultsDirectoryFilename.c_str() );
+	in_path >> resultsPath;
+	in_path.close();
+	return ( resultsPath );
+}
+
 
 int main(int argc, char *argv[])
 {
@@ -74,7 +83,9 @@ int main(int argc, char *argv[])
 	feenableexcept(FE_INVALID | FE_OVERFLOW);
 
 	// Set-up output files
-	string path = "./results/";	// make sure this directory exists
+	//string path = "./results/";	// make sure this directory exists
+	string path = get_resultsDirectory("./resultsDirectory.dat");
+	
 	string chosen_particle_name = "pi";
 	ostringstream out_filename_stream, err_filename_stream;
 	out_filename_stream << path << "HBT_"
@@ -215,7 +226,7 @@ int main(int argc, char *argv[])
 
 
 	// Output correlation function
-	HBT_event_ensemble.Output_correlation_function( "./results/HBT_pipiCF.dat" );
+	HBT_event_ensemble.Output_correlation_function( path + "HBT_pipiCF.dat" );
 
 
 
