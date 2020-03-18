@@ -206,7 +206,6 @@ void convert_event_to_shifter_format(
 		vector<shift_lib::ParticleRecord> & event_to_shift )
 {
 	event_to_shift.clear();
-	//event_to_shift.resize(event.particles.size());
 
 	int particleIndex = 0;
 	double pion_mass = 0.13957;
@@ -250,16 +249,6 @@ void convert_shifter_format_to_event(
 	return;
 }
 
-
-/*void convert_ParameterReader( ParameterReader * paraRdr_in, shift_lib::ParameterReader * paraRdr_out )
-{
-	//const int nParameters = paraRdr_in->names->size();
-	for ( const auto & name : *(paraRdr_in->names) )
-		paraRdr_out->names->push_back( name );
-	for ( const auto & value : *(paraRdr_in->value) )
-		paraRdr_out->value->push_back( value );
-	return;
-}*/
 
 
 //End of file

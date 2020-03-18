@@ -316,7 +316,7 @@ void generate_events_v2(vector<EventRecord> & allEvents, ParameterReader * paraR
 	}
 	else if ( model_to_use == 3 )
 	{
-		double mass 	= paraRdr->getVal("mass");
+		/*double mass 	= paraRdr->getVal("mass");
 		double RNG_R 	= paraRdr->getVal("RNG_R");
 		double RNG_a 	= paraRdr->getVal("RNG_a");
 
@@ -326,14 +326,14 @@ void generate_events_v2(vector<EventRecord> & allEvents, ParameterReader * paraR
 		int RNG_yDir 	= paraRdr->getVal("RNG_yDir");
 		int RNG_zDir 	= paraRdr->getVal("RNG_zDir");
 
-		bool RNG_seed	= (bool)paraRdr->getVal("RNG_seed");
+		bool RNG_seed	= (bool)paraRdr->getVal("RNG_seed");*/
 
 		unsigned seed = chrono::system_clock::now().time_since_epoch().count();
 		default_random_engine generator;
 		if ( RNG_seed )
 			generator = default_random_engine (seed);
 
-		normal_distribution<double> distribution(0.0, RNG_R);
+		normal_distribution<double> mode3_distribution(0.0, RNG_R);
 
 		for (int iEvent = 0; iEvent < RNG_Nev; ++iEvent)
 		{
