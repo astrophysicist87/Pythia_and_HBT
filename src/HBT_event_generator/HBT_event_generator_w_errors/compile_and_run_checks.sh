@@ -29,7 +29,7 @@
 
 	./run_checks.sh 5 20.0
 
-	wait
+	sleep 7200
 
 	./run_checks.sh 10 0.2
 
