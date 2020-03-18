@@ -83,7 +83,7 @@ method_mode = 2
 
 #===========
 # whether or not BE effects are pre-included from Pythia (or other particle/event generator)
-BE_mode = 0
+BE_mode = 1
 
 #===========
 # whether to use smoothness approximation
