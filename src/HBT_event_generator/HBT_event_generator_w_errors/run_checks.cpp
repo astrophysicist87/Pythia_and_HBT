@@ -43,7 +43,7 @@ string get_resultsDirectory(string resultsDirectoryFilename)
 	ifstream in_path( resultsDirectoryFilename.c_str() );
 	in_path >> resultsPath;
 	in_path.close();
-	return ( resultsPath );
+	return ( resultsPath + "/" );
 }
 
 
