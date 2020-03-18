@@ -117,17 +117,17 @@ int main(int argc, char *argv[])
 			vector<shift_lib::ParticleRecord> event_to_shift;
 			convert_event_to_shifter_format( event, event_to_shift );
 
-			cout << "event_to_shift.size() = " << event_to_shift.size() << endl;
+			/*cout << "event_to_shift.size() = " << event_to_shift.size() << endl;
 			int iParticle = 0;
 			for ( auto & particle_to_shift: event_to_shift )
-				cout << "BEFORE: " << iParticle++ << "   " << particle_to_shift;
+				cout << "BEFORE: " << iParticle++ << "   " << particle_to_shift;*/
 
 			shift_lib::shifter shifted_event( converted_paraRdr, event_to_shift, cout, cerr );
 
-			cout << "event_to_shift.size() = " << event_to_shift.size() << endl;
+			/*cout << "event_to_shift.size() = " << event_to_shift.size() << endl;
 			iParticle = 0;
 			for ( auto & particle_to_shift: event_to_shift )
-				cout << "AFTER: " << iParticle++ << "   " << particle_to_shift;
+				cout << "AFTER: " << iParticle++ << "   " << particle_to_shift;*/
 
 
 			convert_shifter_format_to_event( event_to_shift, event );
@@ -173,8 +173,14 @@ int main(int argc, char *argv[])
 			for ( auto & event: allEvents )
 			{
 				vector<shift_lib::ParticleRecord> event_to_shift;
+
+				// Convert to shifter format
 				convert_event_to_shifter_format( event, event_to_shift );
+
+				// Perform shift
 				shift_lib::shifter shifted_event( converted_paraRdr, event_to_shift, cout, cerr );
+
+				// Convert back to event format
 				convert_shifter_format_to_event( event_to_shift, event );
 			}
 		}
