@@ -97,7 +97,7 @@ file_mode = 0
 	# sub-model options ( if file_mode == 0 )
 	RNG_R = 5.0	#fm
 	RNG_a = 0.2		#GeV/fm
-	RNG_Nev = 10
+	RNG_Nev = 1000
 	RNG_mult = 100
 	RNG_xDir = 0
 	RNG_yDir = 0
