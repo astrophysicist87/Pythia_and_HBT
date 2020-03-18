@@ -1,19 +1,23 @@
 #! /usr/bin/env bash
 
 (
-	# Command-line argument names and creates results directory
-	RESULTSDIRECTORY=$1
-
-	rm -rf $RESULTSDIRECTORY
-	mkdir $RESULTSDIRECTORY
-	echo $RESULTSDIRECTORY > ./resultsDirectory.dat
-
 	cd ../../../../test_shifter
 	git pull && gmake distclean && gmake all
 
 	cd -
-	git pull && gmake distclean && gmake all && \
-		cp ../parameters.dat . && \
-		cp ../parameters.dat $RESULTSDIRECTORY && \
-		time ./run_checks.e &> run_checks.out
+	git pull && gmake distclean && gmake all
+
+	./run_checks.sh 5 0.02
+
+	./run_checks.sh 5 0.2
+
+	./run_checks.sh 5 2.0
+
+	./run_checks.sh 10 0.01
+
+	./run_checks.sh 10 0.1
+
+	./run_checks.sh 10 1.0
+
+
 ) &> compile_and_run_checks.out &
