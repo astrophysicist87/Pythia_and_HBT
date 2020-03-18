@@ -343,13 +343,13 @@ void generate_events_v2(vector<EventRecord> & allEvents, ParameterReader * paraR
 			{
 			
 				double tP = 0.0;	// cf. paper
-				double xP = RNG_xDir ? distribution(generator) : 0.0;
-				double yP = RNG_yDir ? distribution(generator) : 0.0;
-				double zP = RNG_zDir ? distribution(generator) : 0.0;
+				double xP = RNG_xDir ? mode3_distribution(generator) : 0.0;
+				double yP = RNG_yDir ? mode3_distribution(generator) : 0.0;
+				double zP = RNG_zDir ? mode3_distribution(generator) : 0.0;
 
-				double px = RNG_xDir ? RNG_a * distribution(generator) : 0.0;
-				double py = RNG_yDir ? RNG_a * distribution(generator) : 0.0;
-				double pz = RNG_zDir ? RNG_a * distribution(generator) : 0.0;
+				double px = RNG_xDir ? RNG_a * mode3_distribution(generator) : 0.0;
+				double py = RNG_yDir ? RNG_a * mode3_distribution(generator) : 0.0;
+				double pz = RNG_zDir ? RNG_a * mode3_distribution(generator) : 0.0;
 				double Ep = sqrt( mass*mass + px*px + py*py + pz*pz );
 
 				ParticleRecord particle;
