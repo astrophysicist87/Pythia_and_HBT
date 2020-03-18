@@ -113,6 +113,10 @@ int main(int argc, char *argv[])
 		for ( auto & event: allEvents )
 		{
 			cout << "event.particles.size() = " << event.particles.size() << endl;
+			cout << "Check before: " << event.particles.at(0).E << "   "
+					<< event.particles.at(0).px << "   "
+					<< event.particles.at(0).py << "   "
+					<< event.particles.at(0).pz << endl;
 
 			vector<shift_lib::ParticleRecord> event_to_shift;
 			convert_event_to_shifter_format( event, event_to_shift );
@@ -131,6 +135,12 @@ int main(int argc, char *argv[])
 
 
 			convert_shifter_format_to_event( event_to_shift, event );
+
+			cout << "Check after: " << event.particles.at(0).E << "   "
+					<< event.particles.at(0).px << "   "
+					<< event.particles.at(0).py << "   "
+					<< event.particles.at(0).pz << endl;
+
 		}
 	}
 
