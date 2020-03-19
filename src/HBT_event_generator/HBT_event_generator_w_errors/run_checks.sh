@@ -4,10 +4,10 @@ Rval=$1
 aval=$2
 stem=R`echo $Rval`_a`echo $aval`
 
-RESULTSDIRECTORY=results_${stem}
+RESULTSDIRECTORY=with_pair_density/results_${stem}
 
 rm -rf $RESULTSDIRECTORY
-mkdir $RESULTSDIRECTORY
+mkdir -p $RESULTSDIRECTORY
 echo $RESULTSDIRECTORY > ./resultsDirectory.dat
 cp ../parameters.dat
 cp ../parameters.dat $RESULTSDIRECTORY
