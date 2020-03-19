@@ -29,7 +29,7 @@
 
 	./run_checks.sh 5 20.0
 
-	sleep 7200
+	'''sleep 7200
 
 	./run_checks.sh 10 0.2
 
@@ -51,7 +51,7 @@
 
 	./run_checks.sh 10 15.0
 
-	./run_checks.sh 10 20.0
+	./run_checks.sh 10 20.0'''
 
 
 ) &> compile_and_run_checks.out &
