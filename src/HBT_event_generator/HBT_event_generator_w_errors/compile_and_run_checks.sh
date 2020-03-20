@@ -7,16 +7,6 @@
 	cd -
 	git pull && gmake distclean && gmake all
 
-	./run_checks.sh 5 0.2
-
-	./run_checks.sh 5 0.5
-
-	./run_checks.sh 5 0.75
-
-	./run_checks.sh 5 1.0
-
-	./run_checks.sh 5 1.5
-
 	./run_checks.sh 5 2.0
 
 	./run_checks.sh 5 5.0
@@ -29,17 +19,7 @@
 
 	./run_checks.sh 5 20.0
 
-	'''sleep 7200
-
-	./run_checks.sh 10 0.2
-
-	./run_checks.sh 10 0.5
-
-	./run_checks.sh 10 0.75
-
-	./run_checks.sh 10 1.0
-
-	./run_checks.sh 10 1.5
+	#sleep 7200
 
 	./run_checks.sh 10 2.0
 
@@ -51,7 +31,7 @@
 
 	./run_checks.sh 10 15.0
 
-	./run_checks.sh 10 20.0'''
+	./run_checks.sh 10 20.0
 
 
 ) &> compile_and_run_checks.out &
