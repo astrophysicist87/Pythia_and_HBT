@@ -79,7 +79,7 @@ scalar_mode = 0
 
 #===========
 # whether to use GEHW method (0), Chun's method (1) or bin-averaging method (2)
-method_mode = 2
+method_mode = 0
 
 #===========
 # whether or not BE effects are pre-included from Pythia (or other particle/event generator)
