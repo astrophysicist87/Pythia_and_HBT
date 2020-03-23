@@ -249,7 +249,9 @@ void HBT_event_generator::Compute_numerator_and_denominator_methodMode2_q_mode_3
 
 				int index6D     = indexer(KT_idx, Kphi_idx, KL_idx, iqo, iqs, iql);
 				int index6D_rev = indexer(KT_idx, Kphi_idx, KL_idx,
-											(n_qo_bins-1)-iqo, (n_qo_bins-1)-iqs, (n_qo_bins-1)-iql);
+											(n_qo_bins-1)-iqo,
+											(n_qs_bins-1)-iqs,
+											(n_ql_bins-1)-iql );
 
 				//double q0 = get_q0(particle_mass, qo, qs, ql, KT, KL);
 
