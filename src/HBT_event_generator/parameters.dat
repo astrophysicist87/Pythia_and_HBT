@@ -1,7 +1,7 @@
 #===========
 # width of binning delta (GeV)
 bin_epsilon = 0.01
-use_pz_bin_asymmetry = 1
+use_pz_bin_asymmetry = 0
 pz_bin_factor = 100.0
 
 #===========
@@ -36,8 +36,8 @@ n_Kphi_pts = 2
 
 # KL grid
 n_KL_pts = 2
-KLmin = -1.0
-KLmax = 1.0
+KLmin = -10.0
+KLmax = 10.0
 
 #===========
 # relative momenta (3D)
@@ -79,7 +79,7 @@ scalar_mode = 0
 
 #===========
 # whether to use GEHW method (0), Chun's method (1) or bin-averaging method (2)
-method_mode = 0
+method_mode = 2
 
 #===========
 # whether or not BE effects are pre-included from Pythia (or other particle/event generator)
