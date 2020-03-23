@@ -244,7 +244,7 @@ void HBT_event_generator::Compute_numerator_and_denominator_methodMode2_q_mode_3
 							or cpy*cpy > py_bin_width*py_bin_width
 							or cpz*cpz > pz_bin_width*pz_bin_width;
 
-				if ( this_pair_den_bin_false and rev_pair_den_bin_false )
+				if ( this_pair_den_bin_false or rev_pair_den_bin_false )
 					continue;
 
 				int index6D = indexer(KT_idx, Kphi_idx, KL_idx, iqo, iqs, iql);
