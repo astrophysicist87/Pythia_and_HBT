@@ -56,10 +56,11 @@ void HBT_event_generator::Compute_numerator_and_denominator_methodMode2_q_mode_3
 
 		// Sum over pairs of distinct particles
 		for (int iParticle = 0; iParticle < event.particles.size(); ++iParticle)
-		for (int jParticle = iParticle + 1; jParticle < event.particles.size(); ++jParticle)
+		for (int jParticle = 0; jParticle < event.particles.size(); ++jParticle)
+		//for (int jParticle = iParticle + 1; jParticle < event.particles.size(); ++jParticle)
 		{
-			//if (iParticle == jParticle)
-			//	continue;
+			if (iParticle == jParticle)
+				continue;
 
 			ParticleRecord pi = event.particles[iParticle];
 			ParticleRecord pj = event.particles[jParticle];
@@ -120,13 +121,13 @@ void HBT_event_generator::Compute_numerator_and_denominator_methodMode2_q_mode_3
 			for (int iql = 0; iql < n_ql_bins; iql++)
 			{
 
-				bool in_center = ( iqo == (n_qo_bins-1)/2
+				/*bool in_center = ( iqo == (n_qo_bins-1)/2
 						and iqs == (n_qs_bins-1)/2
-						and iql == (n_ql_bins-1)/2 );
+						and iql == (n_ql_bins-1)/2 );*/
 				double overall_factor = 1.0;
-					if ( not in_center and
-							not use_smoothness_approximation )
-								overall_factor = 2.0;
+				/*if ( not in_center and
+						not use_smoothness_approximation )
+							overall_factor = 2.0;*/
 
 				double qo = 0.5*(qo_pts[iqo]+qo_pts[iqo+1]);
 				double qs = 0.5*(qs_pts[iqs]+qs_pts[iqs+1]);
@@ -166,10 +167,11 @@ void HBT_event_generator::Compute_numerator_and_denominator_methodMode2_q_mode_3
 
 		// Sum over pairs of particles
 		for (int iParticle = 0; iParticle < event.particles.size(); ++iParticle)
-		for (int jParticle = iParticle + 1; jParticle < event.particles.size(); ++jParticle)
+		for (int jParticle = 0; jParticle < event.particles.size(); ++jParticle)
+		//for (int jParticle = iParticle + 1; jParticle < event.particles.size(); ++jParticle)
 		{
-			//if ( iParticle == jParticle )
-			//	continue;
+			if ( iParticle == jParticle )
+				continue;
 
 			ParticleRecord pi = event.particles[iParticle];
 			ParticleRecord pj = event.particles[jParticle];
@@ -237,12 +239,12 @@ void HBT_event_generator::Compute_numerator_and_denominator_methodMode2_q_mode_3
 						= 	   cmx*cmx > px_bin_width*px_bin_width
 							or cmy*cmy > py_bin_width*py_bin_width
 							or cmz*cmz > pz_bin_width*pz_bin_width;
-				bool rev_pair_den_bin_false
+				/*bool rev_pair_den_bin_false
 						= 	   cpx*cpx > px_bin_width*px_bin_width
 							or cpy*cpy > py_bin_width*py_bin_width
-							or cpz*cpz > pz_bin_width*pz_bin_width;
+							or cpz*cpz > pz_bin_width*pz_bin_width;*/
 
-				if ( this_pair_den_bin_false and rev_pair_den_bin_false )
+				if ( this_pair_den_bin_false /*and rev_pair_den_bin_false*/ )
 					continue;
 
 				int index6D = indexer(KT_idx, Kphi_idx, KL_idx, iqo, iqs, iql);
