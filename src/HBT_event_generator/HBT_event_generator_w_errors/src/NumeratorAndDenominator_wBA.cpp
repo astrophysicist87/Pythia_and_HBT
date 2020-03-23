@@ -146,7 +146,7 @@ void HBT_event_generator::Compute_numerator_and_denominator_methodMode2_q_mode_3
 							- qy * (yi - yj)
 							- qz * (zi - zj);
 
-				double num_term = cos(arg/hbarC);	// factor of 2 allows to collapse sum in half
+				double num_term = 2.0*cos(arg/hbarC);	// factor of 2 allows to collapse sum in half
 				//						/ ( 1.0
 				//							* px_bin_width
 				//							* py_bin_width
@@ -167,11 +167,11 @@ void HBT_event_generator::Compute_numerator_and_denominator_methodMode2_q_mode_3
 
 		// Sum over pairs of particles
 		for (int iParticle = 0; iParticle < event.particles.size(); ++iParticle)
-		for (int jParticle = 0; jParticle < event.particles.size(); ++jParticle)
-		//for (int jParticle = iParticle + 1; jParticle < event.particles.size(); ++jParticle)
+		//for (int jParticle = 0; jParticle < event.particles.size(); ++jParticle)
+		for (int jParticle = iParticle + 1; jParticle < event.particles.size(); ++jParticle)
 		{
-			if ( iParticle == jParticle )
-				continue;
+			//if ( iParticle == jParticle )
+			//	continue;
 
 			ParticleRecord pi = event.particles[iParticle];
 			ParticleRecord pj = event.particles[jParticle];
@@ -247,17 +247,20 @@ void HBT_event_generator::Compute_numerator_and_denominator_methodMode2_q_mode_3
 				if ( this_pair_den_bin_false /*and rev_pair_den_bin_false*/ )
 					continue;
 
-				int index6D = indexer(KT_idx, Kphi_idx, KL_idx, iqo, iqs, iql);
+				int index6D     = indexer(KT_idx, Kphi_idx, KL_idx, iqo, iqs, iql);
+				int index6D_rev = indexer(KT_idx, Kphi_idx, KL_idx,
+											(n_qo_bins-1)-iqo, (n_qo_bins-1)-iqs, (n_qo_bins-1)-iql);
 
-				double q0 = get_q0(particle_mass, qo, qs, ql, KT, KL);
+				//double q0 = get_q0(particle_mass, qo, qs, ql, KT, KL);
 
 				//const double energy_factors = 1.0 / ( Ei * Ej );
-				const double energy_factors = 1.0 / ( K0*K0 - 0.25*q0*q0 );
+				//const double energy_factors = 1.0 / ( K0*K0 - 0.25*q0*q0 );
 
-				//private_den[index6D]++;
-				private_den[index6D] += ( include_energy_factors ) ?
-										overall_factor * energy_factors :
-										overall_factor;
+				private_den[index6D]++;
+				private_den[index6D_rev]++;
+				//private_den[index6D] += ( include_energy_factors ) ?
+				//						overall_factor * energy_factors :
+				//						overall_factor;
 
 			}
 		}
