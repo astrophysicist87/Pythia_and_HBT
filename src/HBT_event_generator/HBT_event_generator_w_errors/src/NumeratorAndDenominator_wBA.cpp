@@ -121,13 +121,13 @@ void HBT_event_generator::Compute_numerator_and_denominator_methodMode2_q_mode_3
 			for (int iql = 0; iql < n_ql_bins; iql++)
 			{
 
-				/*bool in_center = ( iqo == (n_qo_bins-1)/2
+				bool in_center = ( iqo == (n_qo_bins-1)/2
 						and iqs == (n_qs_bins-1)/2
-						and iql == (n_ql_bins-1)/2 );*/
+						and iql == (n_ql_bins-1)/2 );
 				double overall_factor = 1.0;
-				/*if ( not in_center and
+				if ( not in_center and
 						not use_smoothness_approximation )
-							overall_factor = 2.0;*/
+							overall_factor = 2.0;
 
 				double qo = 0.5*(qo_pts[iqo]+qo_pts[iqo+1]);
 				double qs = 0.5*(qs_pts[iqs]+qs_pts[iqs+1]);
