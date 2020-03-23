@@ -1,6 +1,6 @@
 #===========
 # width of binning delta (GeV)
-bin_epsilon = 0.001
+bin_epsilon = 0.01
 use_pz_bin_asymmetry = 0
 pz_bin_factor = 100.0
 
