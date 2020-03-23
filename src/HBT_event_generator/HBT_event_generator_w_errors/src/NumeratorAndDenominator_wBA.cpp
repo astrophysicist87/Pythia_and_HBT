@@ -56,11 +56,11 @@ void HBT_event_generator::Compute_numerator_and_denominator_methodMode2_q_mode_3
 
 		// Sum over pairs of distinct particles
 		for (int iParticle = 0; iParticle < event.particles.size(); ++iParticle)
-		for (int jParticle = 0; jParticle < event.particles.size(); ++jParticle)
-		//for (int jParticle = iParticle + 1; jParticle < event.particles.size(); ++jParticle)
+		//for (int jParticle = 0; jParticle < event.particles.size(); ++jParticle)
+		for (int jParticle = iParticle + 1; jParticle < event.particles.size(); ++jParticle)
 		{
-			if (iParticle == jParticle)
-				continue;
+			//if (iParticle == jParticle)
+			//	continue;
 
 			ParticleRecord pi = event.particles[iParticle];
 			ParticleRecord pj = event.particles[jParticle];
@@ -167,11 +167,11 @@ void HBT_event_generator::Compute_numerator_and_denominator_methodMode2_q_mode_3
 
 		// Sum over pairs of particles
 		for (int iParticle = 0; iParticle < event.particles.size(); ++iParticle)
-		//for (int jParticle = 0; jParticle < event.particles.size(); ++jParticle)
-		for (int jParticle = iParticle + 1; jParticle < event.particles.size(); ++jParticle)
+		for (int jParticle = 0; jParticle < event.particles.size(); ++jParticle)
+		//for (int jParticle = iParticle + 1; jParticle < event.particles.size(); ++jParticle)
 		{
-			//if ( iParticle == jParticle )
-			//	continue;
+			if ( iParticle == jParticle )
+				continue;
 
 			ParticleRecord pi = event.particles[iParticle];
 			ParticleRecord pj = event.particles[jParticle];
