@@ -167,11 +167,11 @@ void HBT_event_generator::Compute_numerator_and_denominator_methodMode2_q_mode_3
 
 		// Sum over pairs of particles
 		for (int iParticle = 0; iParticle < event.particles.size(); ++iParticle)
-		for (int jParticle = 0; jParticle < event.particles.size(); ++jParticle)
-		//for (int jParticle = iParticle + 1; jParticle < event.particles.size(); ++jParticle)
+		//for (int jParticle = 0; jParticle < event.particles.size(); ++jParticle)
+		for (int jParticle = iParticle + 1; jParticle < event.particles.size(); ++jParticle)
 		{
-			if ( iParticle == jParticle )
-				continue;
+			//if ( iParticle == jParticle )
+			//	continue;
 
 			ParticleRecord pi = event.particles[iParticle];
 			ParticleRecord pj = event.particles[jParticle];
@@ -230,21 +230,21 @@ void HBT_event_generator::Compute_numerator_and_denominator_methodMode2_q_mode_3
 				double cmx = pix - pjx - SAfact*qx;
 				double cmy = piy - pjy - SAfact*qy;
 				double cmz = piz - pjz - SAfact*qz;
-				double cpx = pix - pjx + SAfact*qx;
+				/*double cpx = pix - pjx + SAfact*qx;
 				double cpy = piy - pjy + SAfact*qy;
-				double cpz = piz - pjz + SAfact*qz;
+				double cpz = piz - pjz + SAfact*qz;*/
 
 				// modified binning condition
 				bool this_pair_den_bin_false
 						= 	   cmx*cmx > px_bin_width*px_bin_width
 							or cmy*cmy > py_bin_width*py_bin_width
 							or cmz*cmz > pz_bin_width*pz_bin_width;
-				bool rev_pair_den_bin_false
+				/*bool rev_pair_den_bin_false
 						= 	   cpx*cpx > px_bin_width*px_bin_width
 							or cpy*cpy > py_bin_width*py_bin_width
-							or cpz*cpz > pz_bin_width*pz_bin_width;
+							or cpz*cpz > pz_bin_width*pz_bin_width;*/
 
-				if ( this_pair_den_bin_false and rev_pair_den_bin_false )
+				if ( this_pair_den_bin_false /*and rev_pair_den_bin_false*/ )
 					continue;
 
 				int index6D = indexer(KT_idx, Kphi_idx, KL_idx, iqo, iqs, iql);
