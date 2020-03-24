@@ -2,7 +2,7 @@
 
 (
 	# info for this run
-	NTHREADS=4
+	NTHREADS=12
 	DIRECTORY=RESULTS_pp_pA_AA_centScan
 
 	./generate_jobs.sh $NTHREADS $DIRECTORY
