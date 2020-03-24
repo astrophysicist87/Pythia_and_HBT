@@ -31,7 +31,8 @@ constexpr bool shift_events = false;
 
 void convert_event_to_shifter_format(
 		const EventRecord & event,
-		vector<shift_lib::ParticleRecord> & event_to_shift );
+		vector<shift_lib::ParticleRecord> & event_to_shift,
+		shift_lib::ParameterReader * converted_paraRdr );
 
 void convert_shifter_format_to_event( 
 		const vector<shift_lib::ParticleRecord> & event_to_shift,
@@ -245,7 +246,7 @@ int main(int argc, char *argv[])
 			for ( auto & event: allEvents )
 			{
 				vector<shift_lib::ParticleRecord> event_to_shift;
-				convert_event_to_shifter_format( event, event_to_shift );
+				convert_event_to_shifter_format( event, event_to_shift, converted_paraRdr );
 
 				shift_lib::shifter shifted_event( converted_paraRdr, event_to_shift, cout, cerr );
 
@@ -292,7 +293,7 @@ int main(int argc, char *argv[])
 				for ( auto & event: allEvents )
 				{
 					vector<shift_lib::ParticleRecord> event_to_shift;
-					convert_event_to_shifter_format( event, event_to_shift );
+					convert_event_to_shifter_format( event, event_to_shift, converted_paraRdr );
 					shift_lib::shifter shifted_event( converted_paraRdr, event_to_shift, cout, cerr );
 					convert_shifter_format_to_event( event_to_shift, event );
 				}
@@ -328,12 +329,13 @@ int main(int argc, char *argv[])
 
 void convert_event_to_shifter_format(
 		const EventRecord & event,
-		vector<shift_lib::ParticleRecord> & event_to_shift )
+		vector<shift_lib::ParticleRecord> & event_to_shift,
+		shift_lib::ParameterReader * converted_paraRdr )
 {
 	event_to_shift.clear();
 
 	int particleIndex = 0;
-	double pion_mass = 0.13957;
+	double pion_mass = converted_paraRdr->getVal("mass");
 	for ( auto & particle : event.particles )
 	{
 		shift_lib::ParticleRecord particle_to_shift;
