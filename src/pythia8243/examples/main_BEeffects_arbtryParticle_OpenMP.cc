@@ -86,8 +86,14 @@ class MyHIUserHooks : public HIUserHooks
 	public:
 
 		// Constructors create impact parameter generator.
-		MyHIUserHooks() { myImpactParameterGeneratorPtr = new MyImpactParameterGenerator(); }
-		MyHIUserHooks(double bMinIn, double bMaxIn) { myImpactParameterGeneratorPtr = new MyImpactParameterGenerator(bMinIn, bMaxIn); }
+		MyHIUserHooks()
+		{
+			myImpactParameterGeneratorPtr = new MyImpactParameterGenerator();
+		}
+		MyHIUserHooks(double bMinIn, double bMaxIn)
+		{
+			myImpactParameterGeneratorPtr = new MyImpactParameterGenerator(bMinIn, bMaxIn);
+		}
 
 		// Destructor deletes impact parameter generator.
 		~MyHIUserHooks() { delete myImpactParameterGeneratorPtr; }
