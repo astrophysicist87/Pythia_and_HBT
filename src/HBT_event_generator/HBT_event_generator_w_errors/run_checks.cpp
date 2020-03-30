@@ -123,7 +123,7 @@ int main(int argc, char *argv[])
 		converted_paraRdr->setVal("BE_mode", 1);
 
 		#pragma omp parallel for
-		for ( int iEvent = 0; iEvent < allEvents.size; iEvent++ )
+		for ( int iEvent = 0; iEvent < allEvents.size(); iEvent++ )
 		//for ( auto & event: allEvents )
 		{
 			EventRecord & event = allEvents[iEvent];
@@ -205,7 +205,7 @@ int main(int argc, char *argv[])
 			converted_paraRdr->setVal("BE_mode", 1);
 
 			#pragma omp parallel for
-			for ( int iEvent = 0; iEvent < allEvents.size; iEvent++ )
+			for ( int iEvent = 0; iEvent < allEvents.size(); iEvent++ )
 			//for ( auto & event: allEvents )
 			{
 				EventRecord & event = allEvents[iEvent];
