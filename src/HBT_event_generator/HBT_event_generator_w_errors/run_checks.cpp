@@ -123,8 +123,11 @@ int main(int argc, char *argv[])
 		converted_paraRdr->setVal("BE_mode", 1);
 
 		#pragma omp parallel for
-		for ( auto & event: allEvents )
+		for ( int iEvent = 0; iEvent < allEvents.size; iEvent++ )
+		//for ( auto & event: allEvents )
 		{
+			EventRecord & event = allEvents[iEvent];
+
 			cout << "event.particles.size() = " << event.particles.size() << endl;
 			int iParticle = 0;
 			for ( auto & particle : event.particles )
@@ -202,8 +205,11 @@ int main(int argc, char *argv[])
 			converted_paraRdr->setVal("BE_mode", 1);
 
 			#pragma omp parallel for
-			for ( auto & event: allEvents )
+			for ( int iEvent = 0; iEvent < allEvents.size; iEvent++ )
+			//for ( auto & event: allEvents )
 			{
+				EventRecord & event = allEvents[iEvent];
+				
 				vector<shift_lib::ParticleRecord> event_to_shift;
 
 				// Convert to shifter format
