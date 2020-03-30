@@ -1,6 +1,8 @@
 #! /usr/bin/env bash
 
 (
+	export OMP_NUM_THREADS=6
+
 	cd ../../../../test_shifter
 	git pull && gmake distclean && gmake all
 
