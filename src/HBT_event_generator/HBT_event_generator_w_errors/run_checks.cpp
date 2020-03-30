@@ -122,6 +122,7 @@ int main(int argc, char *argv[])
 		converted_paraRdr->readFromArguments(argc, argv);
 		converted_paraRdr->setVal("BE_mode", 1);
 
+		#pragma omp parallel for
 		for ( auto & event: allEvents )
 		{
 			cout << "event.particles.size() = " << event.particles.size() << endl;
@@ -200,6 +201,7 @@ int main(int argc, char *argv[])
 			converted_paraRdr->readFromArguments(argc, argv);
 			converted_paraRdr->setVal("BE_mode", 1);
 
+			#pragma omp parallel for
 			for ( auto & event: allEvents )
 			{
 				vector<shift_lib::ParticleRecord> event_to_shift;
