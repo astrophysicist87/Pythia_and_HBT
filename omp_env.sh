@@ -1,1 +1,1 @@
-chosen_OMP_NUM_THREADS=4
+chosen_OMP_NUM_THREADS=12
