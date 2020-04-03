@@ -85,6 +85,9 @@ collisionSystemStem=$projectile$target"_"`echo $beamEnergy`"GeV_Nev"$Nevents
 	echo 'BoseEinstein:usePositiveShiftsForCompensation =' $usePositiveShiftsForCompensation >> main_BEeffects.cmnd
 	echo 'BoseEinstein:computeBEEnhancementExactly =' $computeBEEnhancementExactly >> main_BEeffects.cmnd
 
+	# Default is now to compute all events in Pythia from the get-go
+	lowerLimit=0
+	upperLimit=100
 
 	# time and run
 	./run_BEeffects_arbtryParticle_OpenMP.sh \
