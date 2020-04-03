@@ -18,10 +18,10 @@
 #include "main.h"
 
 // these are included remotely
-#include "FourVector.h"
+/*#include "FourVector.h"
 #include "ParticleRecord.h"
 #include "ParameterReader.h"
-#include "shifter.h"
+#include "shifter.h"*/
 
 using namespace std;
 
@@ -29,14 +29,14 @@ using namespace std;
 constexpr bool shift_events = false;
 
 
-void convert_event_to_shifter_format(
+/*void convert_event_to_shifter_format(
 		const EventRecord & event,
 		vector<shift_lib::ParticleRecord> & event_to_shift,
 		shift_lib::ParameterReader * converted_paraRdr );
 
 void convert_shifter_format_to_event( 
 		const vector<shift_lib::ParticleRecord> & event_to_shift,
-		EventRecord & event );
+		EventRecord & event );*/
 
 
 int main(int argc, char *argv[])
@@ -233,7 +233,7 @@ int main(int argc, char *argv[])
 
 
 		// Shift events here.
-		if ( shift_events )
+		/*if ( shift_events )
 		{
 			paraRdr->setVal("BE_mode", 1);
 
@@ -252,7 +252,7 @@ int main(int argc, char *argv[])
 
 				convert_shifter_format_to_event( event_to_shift, event );
 			}
-		}
+		}*/
 
 
 		// Create HBT_event_generator object from allEvents
@@ -280,7 +280,7 @@ int main(int argc, char *argv[])
 
 
 			// Shift events also here.
-			if ( shift_events )
+			/*if ( shift_events )
 			{
 				paraRdr->setVal("BE_mode", 1);
 
@@ -297,7 +297,7 @@ int main(int argc, char *argv[])
 					shift_lib::shifter shifted_event( converted_paraRdr, event_to_shift, cout, cerr );
 					convert_shifter_format_to_event( event_to_shift, event );
 				}
-			}
+			}*/
 
 
 			// - for each file, update numerator and denominator
@@ -327,7 +327,7 @@ int main(int argc, char *argv[])
 }
 
 
-void convert_event_to_shifter_format(
+/*void convert_event_to_shifter_format(
 		const EventRecord & event,
 		vector<shift_lib::ParticleRecord> & event_to_shift,
 		shift_lib::ParameterReader * converted_paraRdr )
@@ -374,7 +374,7 @@ void convert_shifter_format_to_event(
 		particleIndex++;
 	}
 	return;
-}
+}*/
 
 
 //End of file
