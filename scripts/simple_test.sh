@@ -4,8 +4,9 @@ variable=19870426
 
 for var in "$@"
 do
-    #eval "$var"
-    "$var"
+    export "$var"
 done
+
+./simple_test2.sh
 
 echo $variable

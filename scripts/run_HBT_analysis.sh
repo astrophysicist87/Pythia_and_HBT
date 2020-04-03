@@ -1,21 +1,21 @@
 #! /usr/bin/env bash
 
 # Load header info
-source env.sh
+#source env.sh
 
 # Load default variable values
-source defaults.sh
+#source defaults.sh
 
 # Load OpenMP info
-source omp_env.sh
-export OMP_NUM_THREADS=$chosen_OMP_NUM_THREADS
-echo 'OMP_NUM_THREADS =' $OMP_NUM_THREADS
+#source omp_env.sh
+#export OMP_NUM_THREADS=$chosen_OMP_NUM_THREADS
+#echo 'OMP_NUM_THREADS =' $OMP_NUM_THREADS
 
 # Update any variables set from the command line
-for var in "$@"
-do
-    eval "$var"
-done
+#for var in "$@"
+#do
+#    export "$var"
+#done
 
 # make sure main results directory exists
 if [ ! -d "$MAIN_RESULTS_DIRECTORY" ]

@@ -17,7 +17,7 @@ echo 'OMP_NUM_THREADS =' $OMP_NUM_THREADS
 # Update any variables set from the command line
 for var in "$@"
 do
-    eval "$var"
+    export "$var"
 done
 
 # Save the settings this job was run with (for future defaults)
