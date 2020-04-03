@@ -25,7 +25,7 @@ done
 
 for centralityCutString in "0-100%" "0-10%" "10-20%" "20-40%" "40-60%" "60-100%"
 do
-	./run_HBT_anlysis.sh $centralityCutString	# do NOT submit Bash scripts in background
+	qsub -l walltime=24:00:00 -l nodes=1 -l ppn=40 -v "centralityCutString=$centralityCutString" run_HBT_anlysis.pbs
 done	# all centralities finished
 
 
