@@ -36,7 +36,7 @@ cd $HBT_EVENT_GEN_DIRECTORY
 echo 'In directory='`pwd`':'
 echo '#====================================='
 gmake distclean
-gmake all
+gmake target
 success=$[success+`echo $?`]
 
 #=====================================
