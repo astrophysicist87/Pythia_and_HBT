@@ -140,7 +140,8 @@ mkobjdir:
 		-@mkdir -p $(OBJDIR)
 
 $(TARGET):	$(OBJECTS)
-		$(CC) -I$(INCDIRREMOTE) -L$(LIBDIRREMOTE) $(OBJECTS) -o $(TARGET) $(LDFLAGS) -lshifter
+		$(CC) $(OBJECTS) -o $(TARGET) $(LDFLAGS)
+#		$(CC) -I$(INCDIRREMOTE) -L$(LIBDIRREMOTE) $(OBJECTS) -o $(TARGET) $(LDFLAGS) -lshifter
 #		$(CC) $(OBJECTS) -o $(TARGET) $(LDFLAGS)
 #		strip $(TARGET)
 
@@ -178,11 +179,11 @@ $(SRCDIR)/HBT_event_generator.cpp:  $(SRCDIR)/HBT_event_generator.h \
 									main.h \
 									$(SRCDIR)/EventRecord.h \
 									$(SRCDIR)/ParticleRecord.h \
-									$(SRCDIR)/ensemble.h \
-									$(INCDIRREMOTE)/FourVector.h \
-									$(INCDIRREMOTE)/ParticleRecord.h \
-									$(INCDIRREMOTE)/FourVector.h \
-									$(INCDIRREMOTE)/ParameterReader.h
+									$(SRCDIR)/ensemble.h
+									#$(INCDIRREMOTE)/FourVector.h \
+									#$(INCDIRREMOTE)/ParticleRecord.h \
+									#$(INCDIRREMOTE)/FourVector.h \
+									#$(INCDIRREMOTE)/ParameterReader.h
 ./run_checks.cpp: 					$(SRCDIR)/Stopwatch.h \
 									$(SRCDIR)/ParameterReader.h \
 									run_checks.h \
