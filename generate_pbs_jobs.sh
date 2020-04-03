@@ -15,33 +15,9 @@ echo 'chosen_OMP_NUM_THREADS='$chosen_OMP_NUM_THREADS > omp_env.sh
 # set up array of job specifications
 
 declare -a specs=(
-    'useArbitraryParticle=true projectile="p" target="p" beamEnergy="14000.0" chosenHBTparticle="211" Nevents=1000000
-     storeBjorkenCoordinates="false" linearInterpolateCDF="off" BEeffects="on"'
-    'useArbitraryParticle=true projectile="p" target="p" beamEnergy="14000.0" chosenHBTparticle="211" Nevents=1000000
-     storeBjorkenCoordinates="false" linearInterpolateCDF="on" BEeffects="on"'
-	#'useArbitraryParticle=true projectile="C" target="C" beamEnergy="5020.0" chosenHBTparticle="211" Nevents=10000 runHBTEG=false runFitCF=false runSV=false bMin=0.0 bMax=1.0'
-	#'useArbitraryParticle=true projectile="O" target="O" beamEnergy="5020.0" chosenHBTparticle="211" Nevents=10000 runHBTEG=false runFitCF=false runSV=false bMin=0.0 bMax=1.0'
-	#'useArbitraryParticle=true projectile="Cu" target="Cu" beamEnergy="5020.0" chosenHBTparticle="211" Nevents=10000 runHBTEG=false runFitCF=false runSV=false bMin=0.0 bMax=1.0'
-	#'useArbitraryParticle=true projectile="Xe" target="Xe" beamEnergy="5020.0" chosenHBTparticle="211" Nevents=10000 runHBTEG=false runFitCF=false runSV=false bMin=0.0 bMax=1.0'
-	#'useArbitraryParticle=true projectile="Au" target="Au" beamEnergy="5020.0" chosenHBTparticle="211" Nevents=10000 runHBTEG=false runFitCF=false runSV=false bMin=0.0 bMax=1.0'
-	#'useArbitraryParticle=true projectile="Pb" target="Pb" beamEnergy="5020.0" chosenHBTparticle="211" Nevents=10000 runHBTEG=false runFitCF=false runSV=false bMin=0.0 bMax=1.0'
-	#'useArbitraryParticle=true projectile="U" target="U" beamEnergy="5020.0" chosenHBTparticle="211" Nevents=10000 runHBTEG=false runFitCF=false runSV=false bMin=0.0 bMax=1.0'
-
-	#'useArbitraryParticle=true projectile="C" target="C" beamEnergy="5020.0" chosenHBTparticle="211" Nevents=10000 runHBTEG=false runFitCF=false runSV=false bMin=1.0 bMax=5.0'
-	#'useArbitraryParticle=true projectile="O" target="O" beamEnergy="5020.0" chosenHBTparticle="211" Nevents=10000 runHBTEG=false runFitCF=false runSV=false bMin=1.0 bMax=5.0'
-	#'useArbitraryParticle=true projectile="Cu" target="Cu" beamEnergy="5020.0" chosenHBTparticle="211" Nevents=10000 runHBTEG=false runFitCF=false runSV=false bMin=1.0 bMax=5.0'
-	#'useArbitraryParticle=true projectile="Xe" target="Xe" beamEnergy="5020.0" chosenHBTparticle="211" Nevents=10000 runHBTEG=false runFitCF=false runSV=false bMin=1.0 bMax=5.0'
-	#'useArbitraryParticle=true projectile="Au" target="Au" beamEnergy="5020.0" chosenHBTparticle="211" Nevents=10000 runHBTEG=false runFitCF=false runSV=false bMin=1.0 bMax=5.0'
-	#'useArbitraryParticle=true projectile="Pb" target="Pb" beamEnergy="5020.0" chosenHBTparticle="211" Nevents=10000 runHBTEG=false runFitCF=false runSV=false bMin=1.0 bMax=5.0'
-	#'useArbitraryParticle=true projectile="U" target="U" beamEnergy="5020.0" chosenHBTparticle="211" Nevents=10000 runHBTEG=false runFitCF=false runSV=false bMin=1.0 bMax=5.0'
-
-	#'useArbitraryParticle=true projectile="C" target="C" beamEnergy="5020.0" chosenHBTparticle="211" Nevents=10000 runHBTEG=false runFitCF=false runSV=false bMin=5.0 bMax=20.0'
-	#'useArbitraryParticle=true projectile="O" target="O" beamEnergy="5020.0" chosenHBTparticle="211" Nevents=10000 runHBTEG=false runFitCF=false runSV=false bMin=5.0 bMax=20.0'
-	#'useArbitraryParticle=true projectile="Cu" target="Cu" beamEnergy="5020.0" chosenHBTparticle="211" Nevents=10000 runHBTEG=false runFitCF=false runSV=false bMin=5.0 bMax=20.0'
-	#'useArbitraryParticle=true projectile="Xe" target="Xe" beamEnergy="5020.0" chosenHBTparticle="211" Nevents=10000 runHBTEG=false runFitCF=false runSV=false bMin=5.0 bMax=20.0'
-	#'useArbitraryParticle=true projectile="Au" target="Au" beamEnergy="5020.0" chosenHBTparticle="211" Nevents=10000 runHBTEG=false runFitCF=false runSV=false bMin=5.0 bMax=20.0'
-	#'useArbitraryParticle=true projectile="Pb" target="Pb" beamEnergy="5020.0" chosenHBTparticle="211" Nevents=10000 runHBTEG=false runFitCF=false runSV=false bMin=5.0 bMax=20.0'
-	#'useArbitraryParticle=true projectile="U" target="U" beamEnergy="5020.0" chosenHBTparticle="211" Nevents=10000 runHBTEG=false runFitCF=false runSV=false bMin=5.0 bMax=20.0'
+    'useArbitraryParticle=true projectile="p" target="p" beamEnergy="7000.0" chosenHBTparticle="211" Nevents=10000000 storeBjorkenCoordinates="false" BEeffects="off" runHBTEG="false" runFitCF="false" runSV="false"'
+    'useArbitraryParticle=true projectile="p" target="Pb" beamEnergy="5020.0" chosenHBTparticle="211" Nevents=1000000 storeBjorkenCoordinates="false" BEeffects="off" runHBTEG="false" runFitCF="false" runSV="false"'
+	'useArbitraryParticle=true projectile="Pb" target="Pb" beamEnergy="2760.0" chosenHBTparticle="211" Nevents=100000 storeBjorkenCoordinates="false" BEeffects="off" runHBTEG="false" runFitCF="false" runSV="false"'
 	)
 
 ########################################
