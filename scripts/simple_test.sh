@@ -4,7 +4,8 @@ variable=19870426
 
 for var in "$@"
 do
-    eval "$var"
+    #eval "$var"
+    "$var"
 done
 
 echo $variable
