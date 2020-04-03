@@ -27,12 +27,12 @@
 # END SETUP
 #===========
 
-if [ -z ${chosen_OMP_NUM_THREADS+x} ]
-then
-	echo "chosen_OMP_NUM_THREADS is unset"
-else
-	echo "chosen_OMP_NUM_THREADS is set to '$chosen_OMP_NUM_THREADS'"
-fi
+#if [ -z ${chosen_OMP_NUM_THREADS+x} ]
+#then
+#	echo "chosen_OMP_NUM_THREADS is unset"
+#else
+#	echo "chosen_OMP_NUM_THREADS is set to '$chosen_OMP_NUM_THREADS'"
+#fi
 
 
 # make sure main results directory exists
@@ -42,24 +42,11 @@ then
 	echo 'Created' $MAIN_RESULTS_DIRECTORY
 fi
 CURRENT_RESULTS_DIRECTORY=$MAIN_RESULTS_DIRECTORY
-if [ -z ${chosen_OMP_NUM_THREADS+x} ]
-then
-	echo "chosen_OMP_NUM_THREADS is unset"
-else
-	echo "chosen_OMP_NUM_THREADS is set to '$chosen_OMP_NUM_THREADS'"
-fi
 
 
 echo 'RUN_PYTHIA: Processing Nevents =' \
 		$Nevents $projectile'+'$target \
 		'collisions at' $beamEnergy 'GeV'
-
-if [ -z ${chosen_OMP_NUM_THREADS+x} ]
-then
-	echo "chosen_OMP_NUM_THREADS is unset"
-else
-	echo "chosen_OMP_NUM_THREADS is set to '$chosen_OMP_NUM_THREADS'"
-fi
 
 
 echo 'Doing some checks inside:'
@@ -135,13 +122,13 @@ collisionSystemStem=$projectile$target"_"`echo $beamEnergy`"GeV_Nev"$Nevents
 
 	# if Pythia was minimum bias (default), do centrality selection in subsequent codes
 	# otherwise, just do whatever events have been produced
-	lowerLimit=${centralityCut[0]}
-	upperLimit=${centralityCut[1]}
-	if $centralitySelectionInPythia
-	then
-		lowerLimit=0
-		upperLimit=100
-	fi
+	#lowerLimit=${centralityCut[0]}
+	#upperLimit=${centralityCut[1]}
+	#if $centralitySelectionInPythia
+	#then
+	#	lowerLimit=0
+	#	upperLimit=100
+	#fi
 
 
 	# Get the filenames which need to be processed
