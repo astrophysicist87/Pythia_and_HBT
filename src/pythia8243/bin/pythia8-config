@@ -16,7 +16,7 @@
 #     CFG_FILE: The Makefile configuration file.
 #     USAGE:    Text printed when the --help option is passed.
 ################################################################################
-CFG_FILE=/scratch/blixen/plumberg/Pythia_and_HBT/src/pythia8243/share/Pythia8/examples/Makefile.inc
+CFG_FILE=/cygdrive/c/Users/Christopher Plumberg/Documents/GitHub/Pythia_and_HBT/src/pythia8243/share/Pythia8/examples/Makefile.inc
 read -d "" USAGE << "BLOCKTEXT"
 Usage: ./pythia8-config [OPTIONS]
 
