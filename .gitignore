@@ -3,3 +3,5 @@
 *.a
 *.d
 *.inc
+*.out
+RESULTS*/*

@@ -32,7 +32,7 @@ else
 	echo "chosen_OMP_NUM_THREADS is set to '$chosen_OMP_NUM_THREADS'"
 fi
 
-./run_Pythia.sh
+bash run_Pythia.sh
 
 
 
