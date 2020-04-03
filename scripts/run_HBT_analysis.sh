@@ -17,12 +17,19 @@
 #    export "$var"
 #done
 
+declare -A boolVal=( ["true"]="1" ["false"]="0")
+
 # make sure main results directory exists
 if [ ! -d "$MAIN_RESULTS_DIRECTORY" ]
 then
 	mkdir $MAIN_RESULTS_DIRECTORY
 	echo 'Created' $MAIN_RESULTS_DIRECTORY
 fi
+
+echo 'Doing some checks here:'
+echo 'OMP_NUM_THREADS = '$OMP_NUM_THREADS
+echo 'chosen_OMP_NUM_THREADS = '$chosen_OMP_NUM_THREADS
+echo 'storeBjorkenCoordinates = '$storeBjorkenCoordinates
 
 #===================
 # Main calculation
