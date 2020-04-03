@@ -25,7 +25,7 @@ echo 'storeBjorkenCoordinates = '$storeBjorkenCoordinates
 echo 'versionNumber = '$versionNumber
 echo 'bMax = '$bMax
 
-./run_Pythia.sh "$@"
+./run_Pythia.sh
 
 
 
