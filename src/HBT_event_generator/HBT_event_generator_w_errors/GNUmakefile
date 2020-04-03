@@ -113,8 +113,9 @@ INSTPATH		=	..
 #	$(CC) -L/scratch/blixen/plumberg/test_shifter/lib $(CFLAGS) -c $< -o $@ -lshifter
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.cpp
-	$(CC) -I$(INCDIRREMOTE) $(CFLAGS) -c $< -o $@
-#	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -c $< -o $@
+#	$(CC) -I$(INCDIRREMOTE) $(CFLAGS) -c $< -o $@
+
 
 %.o: %.cpp
 	$(CC) -I$(INCDIRREMOTE) $(CFLAGS) -c $< -o $@
