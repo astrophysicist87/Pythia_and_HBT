@@ -39,6 +39,12 @@ echo 'RUN_PYTHIA: Processing Nevents =' \
 		$Nevents $projectile'+'$target \
 		'collisions at' $beamEnergy 'GeV'
 
+echo 'Doing some checks here:'
+echo 'OMP_NUM_THREADS = '$OMP_NUM_THREADS
+echo 'chosen_OMP_NUM_THREADS = '$chosen_OMP_NUM_THREADS
+echo 'storeBjorkenCoordinates = '$storeBjorkenCoordinates
+
+
 clean_directory $PYTHIA_DIRECTORY
 PYTHIA_RESULTS_DIRECTORY=$CURRENT_RESULTS_DIRECTORY/Pythia_results
 
