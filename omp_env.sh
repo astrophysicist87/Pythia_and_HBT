@@ -1,1 +1,1 @@
-export chosen_OMP_NUM_THREADS=2
+export chosen_OMP_NUM_THREADS=1
