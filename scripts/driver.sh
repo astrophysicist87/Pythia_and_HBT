@@ -19,15 +19,15 @@ done
 
 
 
-./run_Pythia.sh
+./run_Pythia.sh "$@"
 
 
-
+'''
 for centralityCutString in "0-100%" "0-10%" "10-20%" "20-40%" "40-60%" "60-100%"
 do
 	./run_HBT_anlysis.sh $centralityCutString	# do NOT submit Bash scripts in background
 done	# all centralities finished
-
+'''
 
 #zipFilename=$CURRENT_RESULTS_DIRECTORY".zip"
 
