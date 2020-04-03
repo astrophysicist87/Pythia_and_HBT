@@ -1,3 +1,5 @@
+#! /usr/bin/env bash
+
 generate_pbs () {
 
 echo '#! /usr/bin/env bash

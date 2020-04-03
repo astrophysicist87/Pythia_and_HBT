@@ -1,3 +1,5 @@
+#! /usr/bin/env bash
+
 #=====================================
 # Header info
 #=====================================
@@ -48,6 +50,8 @@ clean_directory () {
 
 output_settings () {
 
+echo '#! /usr/bin/env bash'
+echo
 echo 'runPythia='$runPythia
 #echo 'useParallel='$useParallel
 echo 'centralitySelectionInPythia='$centralitySelectionInPythia
