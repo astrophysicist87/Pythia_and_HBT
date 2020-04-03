@@ -23,3 +23,5 @@ echo 'fi
 echo 'echo '\''Finished everything'\'
 
 }
+
+export -f generate_pbs

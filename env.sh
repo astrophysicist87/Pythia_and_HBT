@@ -1,23 +1,22 @@
 #=====================================
 # Header info
 #=====================================
-HOME_DIRECTORY=`pwd`
-SOURCE_DIRECTORY=$HOME_DIRECTORY/src
+export HOME_DIRECTORY=`pwd`
+export SOURCE_DIRECTORY=$HOME_DIRECTORY/src
 # Pythia
-versionNumber=8243
-PYTHIA_DIRECTORY=$SOURCE_DIRECTORY/pythia${versionNumber}/examples
+export versionNumber=8243
+export PYTHIA_DIRECTORY=$SOURCE_DIRECTORY/pythia${versionNumber}/examples
 # HBT event generator
-HBT_DIRECTORY=$SOURCE_DIRECTORY/HBT_event_generator
+export HBT_DIRECTORY=$SOURCE_DIRECTORY/HBT_event_generator
 # HBT event generator
-HBT_EVENT_GEN_DIRECTORY=$HBT_DIRECTORY/HBT_event_generator_w_errors
+export HBT_EVENT_GEN_DIRECTORY=$HBT_DIRECTORY/HBT_event_generator_w_errors
 # Fit correlation function
-HBT_FITCF_DIRECTORY=$HBT_DIRECTORY/fit_correlation_function
+export HBT_FITCF_DIRECTORY=$HBT_DIRECTORY/fit_correlation_function
 # Source variances/HBT radii
-HBT_SV_DIRECTORY=$HBT_DIRECTORY/source_variances
+export HBT_SV_DIRECTORY=$HBT_DIRECTORY/source_variances
 
 # Main results directory
-MAIN_RESULTS_DIRECTORY=$HOME_DIRECTORY/results
-#CURRENT_RESULTS_DIRECTORY=$MAIN_RESULTS_DIRECTORY/results
+export MAIN_RESULTS_DIRECTORY=$HOME_DIRECTORY/results
 
 # convenient boolean conversion table
 declare -A boolVal=( ["true"]="1" ["false"]="0")
@@ -90,5 +89,8 @@ echo 'storeBjorkenCoordinates='$storeBjorkenCoordinates
 
 }
 
+export -f check_success
+export -f clean_directory
+export -f output_settings
 
 # End of file
