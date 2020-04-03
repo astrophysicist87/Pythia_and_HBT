@@ -1,5 +1,12 @@
 #! /usr/bin/env bash
 
+#PBS -l walltime=24:00:00
+#PBS -l nodes=1:ppn=40
+#PBS -A PAS0254
+#PBS -j oe
+
+cd "$PBS_O_WORKDIR" || exit $?
+
 # Load header info
 source env.sh
 
@@ -50,7 +57,7 @@ clean_directory $HBT_SV_DIRECTORY
 #=================================================
 # Set centrality class from command-line argument
 #=================================================
-centralityCutString=$1
+#centralityCutString=$1	# should be passed in as argument directly
 
 
 #=================================================
