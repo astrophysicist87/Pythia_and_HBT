@@ -25,6 +25,13 @@ echo 'storeBjorkenCoordinates = '$storeBjorkenCoordinates
 echo 'versionNumber = '$versionNumber
 echo 'bMax = '$bMax
 
+if [ -z ${chosen_OMP_NUM_THREADS+x} ]
+then
+	echo "chosen_OMP_NUM_THREADS is unset"
+else
+	echo "chosen_OMP_NUM_THREADS is set to '$chosen_OMP_NUM_THREADS'"
+fi
+
 ./run_Pythia.sh
 
 
