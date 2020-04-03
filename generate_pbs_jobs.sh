@@ -43,6 +43,8 @@ do
 	generate_pbs '48:00:00' $chosen_OMP_NUM_THREADS $executableString > $HOME_RESULTS_DIRECTORY/job-${job}/submit.pbs
 	
 	cp scripts/driver.sh $HOME_RESULTS_DIRECTORY/job-${job}
+	cp scripts/run_Pythia.sh $HOME_RESULTS_DIRECTORY/job-${job}
+	cp scripts/run_HBT_analysis.sh $HOME_RESULTS_DIRECTORY/job-${job}
 	cp scripts/rerun.sh $HOME_RESULTS_DIRECTORY/job-${job}
 	cp defaults.sh env.sh omp_env.sh $HOME_RESULTS_DIRECTORY/job-${job}
 done
