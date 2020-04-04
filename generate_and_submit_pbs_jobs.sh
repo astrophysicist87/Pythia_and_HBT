@@ -1,9 +1,13 @@
 #! /usr/bin/env bash
 
 (
-	./generate_pbs_jobs.sh 40 RESULTS
+	# info for this run
+	NTHREADS=1
+	DIRECTORY=RESULTS_test_new_format
 
-	./submit_pbs_jobs.sh RESULTS
+	./generate_pbs_jobs.sh $NTHREADS $DIRECTORY
+
+	./submit_pbs_jobs.sh $DIRECTORY
 ) &> /dev/null &
 
 # End of file
