@@ -39,14 +39,14 @@ do
 	mkdir $HOME_RESULTS_DIRECTORY/job-${job}
 	cp -r src $HOME_RESULTS_DIRECTORY/job-${job}/
 	
-	executableString="./driver.sh ${specs[i]} &> driver.out"
-	generate_pbs '48:00:00' $chosen_OMP_NUM_THREADS $executableString > $HOME_RESULTS_DIRECTORY/job-${job}/submit.pbs
+	executableString="./driver_pbs.sh ${specs[i]} &> driver_pbs.out"
+	generate_pbs $chosen_Pythia_walltime $chosen_OMP_NUM_THREADS $executableString > $HOME_RESULTS_DIRECTORY/job-${job}/submit.pbs
 	
-	cp scripts/driver.sh $HOME_RESULTS_DIRECTORY/job-${job}
+	cp scripts/driver_pbs.sh $HOME_RESULTS_DIRECTORY/job-${job}
 	cp scripts/run_Pythia.sh $HOME_RESULTS_DIRECTORY/job-${job}
-	cp scripts/run_HBT_analysis.sh $HOME_RESULTS_DIRECTORY/job-${job}
-	cp scripts/rerun.sh $HOME_RESULTS_DIRECTORY/job-${job}
-	cp defaults.sh env.sh omp_env.sh $HOME_RESULTS_DIRECTORY/job-${job}
+	cp scripts/run_HBT_analysis.pbs $HOME_RESULTS_DIRECTORY/job-${job}
+	cp scripts/rerun_pbs.sh $HOME_RESULTS_DIRECTORY/job-${job}
+	cp defaults.sh env.sh omp_env.sh pbs_env.sh $HOME_RESULTS_DIRECTORY/job-${job}
 done
 
 # End of file
