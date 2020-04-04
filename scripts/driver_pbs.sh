@@ -31,7 +31,7 @@ done
 for centralityCutString in "0-100%" "0-10%" "10-20%" "20-40%" "40-60%" "60-100%"
 do
 	qsub -l walltime=$chosen_HBT_walltime_per_centrality \
-		-l nodes=1 -l ppn=$OMP_NUM_THREADS \
+		-l nodes=1:ppn=$OMP_NUM_THREADS \
 		-v "centralityCutString=$centralityCutString" \
 		run_HBT_analysis.pbs
 done	# all centralities finished
