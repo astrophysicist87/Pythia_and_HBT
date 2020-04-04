@@ -2,8 +2,8 @@
 
 (
 	# info for this run
-	NTHREADS=1
-	DIRECTORY=RESULTS_test_new_format
+	NTHREADS=40
+	DIRECTORY=RESULTS
 
 	./generate_pbs_jobs.sh $NTHREADS $DIRECTORY
 
