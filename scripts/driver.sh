@@ -17,6 +17,8 @@ do
     export "$var"
 done
 
+# Save the settings this job was run with (for future defaults)
+output_settings > settings.sh
 
 #echo 'Doing some checks outside:'
 #echo 'OMP_NUM_THREADS = '$OMP_NUM_THREADS

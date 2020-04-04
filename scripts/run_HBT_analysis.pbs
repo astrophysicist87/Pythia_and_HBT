@@ -9,6 +9,10 @@ cd "$PBS_O_WORKDIR" || exit $?
 
 declare -A boolVal=( ["true"]="1" ["false"]="0")
 
+# Load environment settings
+source env.sh
+source settings.sh
+
 # make sure main results directory exists
 if [ ! -d "$MAIN_RESULTS_DIRECTORY" ]
 then
