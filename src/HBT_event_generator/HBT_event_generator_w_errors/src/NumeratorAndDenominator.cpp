@@ -522,6 +522,11 @@ void HBT_event_generator::Compute_numerator_and_denominator_momentum_space_only_
 			int Kphi_idx = floor((Kphi - Kphi_min)/Kphi_bin_width);
 			int KL_idx 	 = floor((Kz - KL_min)/KL_bin_width);
 
+			// Avoid problems if q goes out of range
+			if (   qo < qo_min or qs < qs_min or ql < ql_min
+				or qo > qo_max or qs > qs_max or ql > ql_max )
+				continue;
+
 			int qo_idx 	 = floor((qo - qo_min) / delta_qo);
 			int qs_idx 	 = floor((qs - qs_min) / delta_qs);
 			int ql_idx 	 = floor((ql - ql_min) / delta_ql);
@@ -647,6 +652,11 @@ void HBT_event_generator::Compute_numerator_and_denominator_momentum_space_only_
 				int KT_idx 	= floor((KT - KT_min)/KT_bin_width);
 				int Kphi_idx = floor((Kphi - Kphi_min)/Kphi_bin_width);
 				int KL_idx 	= floor((Kz - KL_min)/KL_bin_width);
+
+				// Avoid problems if q goes out of range
+				if (   qo < qo_min or qs < qs_min or ql < ql_min
+					or qo > qo_max or qs > qs_max or ql > ql_max )
+					continue;
 
 				int qo_idx 	= floor((qo - qo_min) / delta_qo);
 				int qs_idx 	= floor((qs - qs_min) / delta_qs);
