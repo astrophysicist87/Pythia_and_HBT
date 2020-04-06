@@ -60,26 +60,10 @@ int main(int argc, char *argv[])
 	read_file_catalogue("./particle_catalogue.dat", particle_info_filename);
 	paraRdr->readFromFile(particle_info_filename[0]);
 
-	/*
-	// Assume (mandatory) first argument is name of results directory
-	// Default result directory name is "results"
-	string path = "./results/";	// make sure this directory exists
-	path = argv[1];
-
-	// Create a shifted argv array with length argc-1
-	char argvShifted[ argc - 1 ][9999];
-    int iShiftedArg = 0;
-    for ( int iArg = 0; iArg < argc; iArg++ )
-    {
-            if ( iArg == 1 ) continue;
-            strncpy ( argvShifted[iShiftedArg++],
-						argv[iArg],
-						string(argv[iArg]).length() );
-    }*/
-
 	// Read-in command-line arguments
 	paraRdr->readFromArguments(argc, argv);
-	//paraRdr->readFromArguments(argc-1, argvShifted);
+	// string path = string(argv[1]);
+	//paraRdr->readFromArguments( argc, argv, (string)("#"), 2 );
 	paraRdr->echo();
 
 	// Check OpenMP
