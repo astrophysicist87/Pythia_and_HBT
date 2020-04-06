@@ -15,6 +15,8 @@ do
 		do
 
 			mkdir results
+			#DIRECTORY=auto/results_mult`echo $mult`_nLoops`echo $nLoops`_bw`echo $bw`
+			#mkdir -p $DIRECTORY
 
 			# time and run
 			nohup time ./run_HBT_event_generator.e \
