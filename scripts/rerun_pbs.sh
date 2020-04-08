@@ -5,4 +5,4 @@ mv settings.sh defaults.sh
 
 # Turns Pythia off by default, but can be turned
 # back on by including runPythia=true in "$@"
-nohup ./driver_pbs.sh runPythia=false $@ &>> driver.out &
+nohup ./driver_pbs.sh runPythia=false $@ &>> driver_pbs.out &

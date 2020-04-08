@@ -34,6 +34,8 @@ output_settings > settings.sh
 #	echo "chosen_OMP_NUM_THREADS is set to '$chosen_OMP_NUM_THREADS'"
 #fi
 
+
+# truth value of $runPythia evaluated inside
 ./run_Pythia.sh
 
 

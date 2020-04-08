@@ -68,57 +68,61 @@ collisionSystemStem=$projectile$target"_"`echo $beamEnergy`"GeV_Nev"$Nevents
 	cd $PYTHIA_DIRECTORY
 	echo '     Now in '`pwd`
 
-	# make sure results directory exists
-	if [ ! -d "$PYTHIA_RESULTS_DIRECTORY" ]
+	if $runPythia
 	then
-		mkdir $PYTHIA_RESULTS_DIRECTORY
+
+		# make sure results directory exists
+		if [ ! -d "$PYTHIA_RESULTS_DIRECTORY" ]
+		then
+			mkdir $PYTHIA_RESULTS_DIRECTORY
+		fi
+
+		# set some options for Pythia to run on
+		rm main_BEeffects.cmnd 2>/dev/null
+		# Turn on tracking of space-time information
+		echo 'Fragmentation:setVertices =' $SetFragmentationVertices >> main_BEeffects.cmnd
+		echo 'PartonVertex:setVertex =' $SetPartonVertices >> main_BEeffects.cmnd
+
+		# turn on and set Bose-Einstein effects
+		echo 'HadronLevel:BoseEinstein =' $BEeffects >> main_BEeffects.cmnd
+		echo 'BoseEinstein:QRef =' $QRefValue >> main_BEeffects.cmnd
+
+		# turn on/off other interesting mechanisms to test
+		echo 'ColourReconnection:reconnect = ' $UseColorReconnection >> main_BEeffects.cmnd
+		echo 'Ropewalk:RopeHadronization = ' $UseRopeHadronization >> main_BEeffects.cmnd
+		echo 'Ropewalk:doShoving = ' $IncludeStringShoving >> main_BEeffects.cmnd
+		echo 'Ropewalk:doFlavour = ' $IncludeFlavourRopesMechanism >> main_BEeffects.cmnd
+
+		# New Pythia options, flags, parameters, etc.
+		# which I've added myself (not generally compatible yet)
+		# Comment out lines below this one if running on unmodified Pythia
+		echo 'BoseEinstein:enhanceMode =' $BEEnhancementMode >> main_BEeffects.cmnd
+		echo 'BoseEinstein:useInvariantSourceSize =' $useInvariantSourceSize >> main_BEeffects.cmnd
+		echo 'BoseEinstein:useDistribution =' $useDistribution >> main_BEeffects.cmnd
+		echo 'BoseEinstein:useRelativeDistance =' $useRelativeDistance >> main_BEeffects.cmnd
+		echo 'BoseEinstein:useRestFrame =' $useRestFrame >> main_BEeffects.cmnd
+		echo 'BoseEinstein:includePhaseSpace =' $includePhaseSpace >> main_BEeffects.cmnd
+		echo 'BoseEinstein:linearInterpolateCDF =' $linearInterpolateCDF >> main_BEeffects.cmnd
+		echo 'BoseEinstein:usePositiveShiftsForCompensation =' $usePositiveShiftsForCompensation >> main_BEeffects.cmnd
+		echo 'BoseEinstein:computeBEEnhancementExactly =' $computeBEEnhancementExactly >> main_BEeffects.cmnd
+
+		# Default is now to compute all events in Pythia from the get-go
+		lowerLimit=0
+		upperLimit=100
+
+		# time and run
+		./run_BEeffects_arbtryParticle_OpenMP.sh \
+							$projectile $target $beamEnergy \
+							$Nevents $chosenHBTparticle \
+							$PYTHIA_RESULTS_DIRECTORY \
+							$lowerLimit $upperLimit \
+							$bMin $bMax $storeBjorkenCoordinates
+
+		# check and report whether run was successful
+		runSuccess=`echo $?`
+		check_success 'Pythia' $runSuccess
+
 	fi
-
-	# set some options for Pythia to run on
-	rm main_BEeffects.cmnd 2>/dev/null
-	# Turn on tracking of space-time information
-	echo 'Fragmentation:setVertices =' $SetFragmentationVertices >> main_BEeffects.cmnd
-	echo 'PartonVertex:setVertex =' $SetPartonVertices >> main_BEeffects.cmnd
-
-	# turn on and set Bose-Einstein effects
-	echo 'HadronLevel:BoseEinstein =' $BEeffects >> main_BEeffects.cmnd
-	echo 'BoseEinstein:QRef =' $QRefValue >> main_BEeffects.cmnd
-
-	# turn on/off other interesting mechanisms to test
-	echo 'ColourReconnection:reconnect = ' $UseColorReconnection >> main_BEeffects.cmnd
-	echo 'Ropewalk:RopeHadronization = ' $UseRopeHadronization >> main_BEeffects.cmnd
-	echo 'Ropewalk:doShoving = ' $IncludeStringShoving >> main_BEeffects.cmnd
-	echo 'Ropewalk:doFlavour = ' $IncludeFlavourRopesMechanism >> main_BEeffects.cmnd
-
-	# New Pythia options, flags, parameters, etc.
-	# which I've added myself (not generally compatible yet)
-	# Comment out lines below this one if running on unmodified Pythia
-	echo 'BoseEinstein:enhanceMode =' $BEEnhancementMode >> main_BEeffects.cmnd
-	echo 'BoseEinstein:useInvariantSourceSize =' $useInvariantSourceSize >> main_BEeffects.cmnd
-	echo 'BoseEinstein:useDistribution =' $useDistribution >> main_BEeffects.cmnd
-	echo 'BoseEinstein:useRelativeDistance =' $useRelativeDistance >> main_BEeffects.cmnd
-	echo 'BoseEinstein:useRestFrame =' $useRestFrame >> main_BEeffects.cmnd
-	echo 'BoseEinstein:includePhaseSpace =' $includePhaseSpace >> main_BEeffects.cmnd
-	echo 'BoseEinstein:linearInterpolateCDF =' $linearInterpolateCDF >> main_BEeffects.cmnd
-	echo 'BoseEinstein:usePositiveShiftsForCompensation =' $usePositiveShiftsForCompensation >> main_BEeffects.cmnd
-	echo 'BoseEinstein:computeBEEnhancementExactly =' $computeBEEnhancementExactly >> main_BEeffects.cmnd
-
-	# Default is now to compute all events in Pythia from the get-go
-	lowerLimit=0
-	upperLimit=100
-
-	# time and run
-	./run_BEeffects_arbtryParticle_OpenMP.sh \
-						$projectile $target $beamEnergy \
-						$Nevents $chosenHBTparticle \
-						$PYTHIA_RESULTS_DIRECTORY \
-						$lowerLimit $upperLimit \
-						$bMin $bMax $storeBjorkenCoordinates
-
-	# check and report whether run was successful
-	runSuccess=`echo $?`
-	check_success 'Pythia' $runSuccess
-
 
 	# if Pythia was minimum bias (default), do centrality selection in subsequent codes
 	# otherwise, just do whatever events have been produced

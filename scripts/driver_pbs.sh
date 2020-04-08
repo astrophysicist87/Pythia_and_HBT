@@ -27,6 +27,7 @@ done
 output_settings > settings.sh
 
 
+# truth value of $runPythia evaluated inside
 ./run_Pythia.sh
 
 
