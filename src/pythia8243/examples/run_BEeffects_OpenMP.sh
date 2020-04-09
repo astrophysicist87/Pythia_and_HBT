@@ -1,6 +1,6 @@
 #! /usr/bin/env bash
 
-source ../../../omp_env.sh
+source ../../../scripts/omp_env.sh
 export OMP_NUM_THREADS=$chosen_OMP_NUM_THREADS
 #export OMP_NUM_THREADS=1
 echo 'OMP_NUM_THREADS =' $OMP_NUM_THREADS
