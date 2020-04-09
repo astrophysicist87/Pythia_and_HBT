@@ -21,10 +21,10 @@
 		cd scripts/
 
 		# Generate jobs for these specifications
-		./scripts/generate_jobs.sh $NTHREADS $DIRECTORY_FULL_PATH
+		./generate_jobs.sh $NTHREADS $DIRECTORY_FULL_PATH
 
 		# Submit generated jobs
-		./scripts/submit_jobs.sh $DIRECTORY_FULL_PATH
+		./submit_jobs.sh $DIRECTORY_FULL_PATH
 	)
 ) #&> /dev/null &
 
