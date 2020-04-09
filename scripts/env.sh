@@ -4,7 +4,9 @@
 # Header info
 #=====================================
 #export HOME_DIRECTORY=`pwd`
-export HOME_DIRECTORY=`readlink -f $PWD/..`
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+export HOME_DIRECTORY=`readlink -f $DIR/..`
+export SCRIPTS_DIRECTORY=$HOME_DIRECTORY/scripts
 export SOURCE_DIRECTORY=$HOME_DIRECTORY/src
 # Pythia
 export versionNumber=8243
