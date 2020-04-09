@@ -2,12 +2,13 @@
 
 (
 	# info for this run
-	NTHREADS=1
-	DIRECTORY=RESULTS_test_new_format
+	NTHREADS=12
+	DIRECTORY=RESULTS
 
 	# Set job specifications here
 	declare -a specs=(
-		'useArbitraryParticle=true projectile="p" target="p" beamEnergy="7000.0" chosenHBTparticle="211" Nevents=10 storeBjorkenCoordinates="false" BEeffects="off"'
+		'useArbitraryParticle=true projectile="Pb" target="Pb" beamEnergy="2760.0" chosenHBTparticle="211" Nevents=100000 storeBjorkenCoordinates="false" BEeffects="off"'
+		#'useArbitraryParticle=true projectile="p" target="p" beamEnergy="7000.0" chosenHBTparticle="211" Nevents=10 storeBjorkenCoordinates="false" BEeffects="off"'
 	)
 
 	#-----------------------------------------------------
