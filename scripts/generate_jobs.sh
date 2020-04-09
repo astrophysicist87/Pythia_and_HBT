@@ -2,9 +2,9 @@
 
 ########################################
 # Fix OpenMP settings and compile
-#chosen_OMP_NUM_THREADS=$1
-#echo 'export chosen_OMP_NUM_THREADS='$chosen_OMP_NUM_THREADS > omp_env.sh
-#
+chosen_OMP_NUM_THREADS=$1
+echo 'export chosen_OMP_NUM_THREADS='$chosen_OMP_NUM_THREADS > $SCRIPTS_DIRECTORY/omp_env.sh
+
 echo 'generate_jobs.sh executed in' `pwd`
 
 #../compile_all.sh	\
