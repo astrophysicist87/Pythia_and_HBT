@@ -32,6 +32,7 @@ do
 	mkdir $HOME_RESULTS_DIRECTORY/job-${job}
 	mkdir $HOME_RESULTS_DIRECTORY/job-${job}/scripts
 	cp -r $SOURCE_DIRECTORY $HOME_RESULTS_DIRECTORY/job-${job}/
+	cp $HOME_DIRECTORY/parameters.dat $HOME_RESULTS_DIRECTORY/job-${job}/src
 	
 	executableString="./driver_pbs.sh ${specs[i]} &> driver_pbs.out"
 	generate_pbs $chosen_Pythia_walltime $chosen_OMP_NUM_THREADS $executableString > $HOME_RESULTS_DIRECTORY/job-${job}/submit.pbs
