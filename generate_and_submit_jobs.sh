@@ -16,11 +16,16 @@
 	source scripts/export_specs.sh
 	export_specs_array "${specs[@]}" > scripts/specs.sh
 
-	# Generate jobs for these specifications
-	./scripts/generate_jobs.sh $NTHREADS $DIRECTORY
+	DIRECTORY_FULL_PATH=`readlink -f $DIRECTORY`
+	(
+		cd scripts/
 
-	# Submit generated jobs
-	./scripts/submit_jobs.sh `readlink -f $DIRECTORY`
+		# Generate jobs for these specifications
+		./scripts/generate_jobs.sh $NTHREADS $DIRECTORY_FULL_PATH
+
+		# Submit generated jobs
+		./scripts/submit_jobs.sh $DIRECTORY_FULL_PATH
+	)
 ) &> /dev/null &
 
 # End of file
