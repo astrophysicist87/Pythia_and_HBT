@@ -1,7 +1,7 @@
 #! /usr/bin/env bash
 
-export chosen_Pythia_walltime='12:00:00'
-export chosen_HBT_walltime_per_centrality='24:00:00'
+#export chosen_Pythia_walltime='12:00:00'
+#export chosen_HBT_walltime_per_centrality='48:00:00'
 
 generate_pbs () {
 

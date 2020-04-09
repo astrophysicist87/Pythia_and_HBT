@@ -1,39 +1,5 @@
 #! /usr/bin/env bash
-
-#=============
-# BEGIN SETUP
-#=============
-# Load header info
-#source env.sh
-
-# Load default variable values
-#source defaults.sh
-
-# Load OpenMP info
-#source omp_env.sh
-#export OMP_NUM_THREADS=$chosen_OMP_NUM_THREADS
-#echo 'OMP_NUM_THREADS =' $OMP_NUM_THREADS
-
-# Update any variables set from the command line
-#for var in "$@"
-#do
-#    export "$var"
-#done
-
-# Save the settings this job was run with (for future defaults)
-#output_settings > settings.sh
-
-#===========
-# END SETUP
-#===========
-
-#if [ -z ${chosen_OMP_NUM_THREADS+x} ]
-#then
-#	echo "chosen_OMP_NUM_THREADS is unset"
-#else
-#	echo "chosen_OMP_NUM_THREADS is set to '$chosen_OMP_NUM_THREADS'"
-#fi
-
+#-------------------
 
 # make sure main results directory exists
 if [ ! -d "$MAIN_RESULTS_DIRECTORY" ]
@@ -47,14 +13,6 @@ CURRENT_RESULTS_DIRECTORY=$MAIN_RESULTS_DIRECTORY
 echo 'RUN_PYTHIA: Processing Nevents =' \
 		$Nevents $projectile'+'$target \
 		'collisions at' $beamEnergy 'GeV'
-
-
-echo 'Doing some checks inside:'
-echo 'OMP_NUM_THREADS = '$OMP_NUM_THREADS
-echo 'chosen_OMP_NUM_THREADS = '$chosen_OMP_NUM_THREADS
-echo 'storeBjorkenCoordinates = '$storeBjorkenCoordinates
-echo 'versionNumber = '$versionNumber
-echo 'bMax = '$bMax
 
 
 clean_directory $PYTHIA_DIRECTORY

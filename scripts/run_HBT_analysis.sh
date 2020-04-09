@@ -1,22 +1,5 @@
 #! /usr/bin/env bash
 
-# Load header info
-#source env.sh
-
-# Load default variable values
-#source defaults.sh
-
-# Load OpenMP info
-#source omp_env.sh
-#export OMP_NUM_THREADS=$chosen_OMP_NUM_THREADS
-#echo 'OMP_NUM_THREADS =' $OMP_NUM_THREADS
-
-# Update any variables set from the command line
-#for var in "$@"
-#do
-#    export "$var"
-#done
-
 declare -A boolVal=( ["true"]="1" ["false"]="0")
 
 # make sure main results directory exists
@@ -25,11 +8,6 @@ then
 	mkdir $MAIN_RESULTS_DIRECTORY
 	echo 'Created' $MAIN_RESULTS_DIRECTORY
 fi
-
-echo 'Doing some checks here:'
-echo 'OMP_NUM_THREADS = '$OMP_NUM_THREADS
-echo 'chosen_OMP_NUM_THREADS = '$chosen_OMP_NUM_THREADS
-echo 'storeBjorkenCoordinates = '$storeBjorkenCoordinates
 
 #===================
 # Main calculation

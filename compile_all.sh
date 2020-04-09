@@ -2,7 +2,8 @@
 
 #=====================================
 # Load header info
-source env.sh
+#source env.sh
+source scripts/env.sh
 
 default_num_threads=1
 export OMP_NUM_THREADS="${1:-$default_num_threads}"

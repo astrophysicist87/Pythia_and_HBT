@@ -20,13 +20,7 @@ done
 # Save the settings this job was run with (for future defaults)
 output_settings > settings.sh
 
-#echo 'Doing some checks outside:'
-#echo 'OMP_NUM_THREADS = '$OMP_NUM_THREADS
-#echo 'chosen_OMP_NUM_THREADS = '$chosen_OMP_NUM_THREADS
-#echo 'storeBjorkenCoordinates = '$storeBjorkenCoordinates
-#echo 'versionNumber = '$versionNumber
-#echo 'bMax = '$bMax
-#
+
 #if [ -z ${chosen_OMP_NUM_THREADS+x} ]
 #then
 #	echo "chosen_OMP_NUM_THREADS is unset"
@@ -40,6 +34,7 @@ output_settings > settings.sh
 
 
 
+# apply HBT analysis to each chosen centrality class
 for centralityCutString in "0-100%" #"0-10%" "10-20%" "20-40%" "40-60%" "60-100%"
 do
 	./run_HBT_analysis.sh $centralityCutString	# do NOT submit Bash scripts in background

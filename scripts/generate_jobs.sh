@@ -3,9 +3,10 @@
 ########################################
 # Fix OpenMP settings and compile
 chosen_OMP_NUM_THREADS=$1
-echo 'export chosen_OMP_NUM_THREADS='$chosen_OMP_NUM_THREADS > omp_env.sh
+#echo 'export chosen_OMP_NUM_THREADS='$chosen_OMP_NUM_THREADS > omp_env.sh
+echo 'export chosen_OMP_NUM_THREADS='$chosen_OMP_NUM_THREADS > scripts/omp_env.sh
 
-./compile_all.sh			\
+./compile_all.sh	\
 	$chosen_OMP_NUM_THREADS	\
 	&> compile_all.out
 
@@ -39,11 +40,13 @@ do
 	cp -r src $HOME_RESULTS_DIRECTORY/job-${job}/
 	echo "./driver.sh ${specs[i]} &> driver.out" > $HOME_RESULTS_DIRECTORY/job-${job}/submit.sh
 	chmod 755 $HOME_RESULTS_DIRECTORY/job-${job}/submit.sh	# set correct permissions!
-	cp scripts/driver.sh $HOME_RESULTS_DIRECTORY/job-${job}
-	cp scripts/run_Pythia.sh $HOME_RESULTS_DIRECTORY/job-${job}
-	cp scripts/run_HBT_analysis.sh $HOME_RESULTS_DIRECTORY/job-${job}
-	cp scripts/rerun.sh $HOME_RESULTS_DIRECTORY/job-${job}
-	cp defaults.sh env.sh omp_env.sh $HOME_RESULTS_DIRECTORY/job-${job}
+	cp scripts/driver.sh			$HOME_RESULTS_DIRECTORY/job-${job}
+	cp scripts/run_Pythia.sh		$HOME_RESULTS_DIRECTORY/job-${job}
+	cp scripts/run_HBT_analysis.sh	$HOME_RESULTS_DIRECTORY/job-${job}
+	cp scripts/rerun.sh				$HOME_RESULTS_DIRECTORY/job-${job}
+	cp scripts/defaults.sh scripts/specs.sh \
+		scripts/env.sh scripts/omp_env.sh \
+									$HOME_RESULTS_DIRECTORY/job-${job}
 done
 
 # End of file

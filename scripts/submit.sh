@@ -3,9 +3,9 @@
 chosen_OMP_NUM_THREADS=2
 echo 'chosen_OMP_NUM_THREADS='$chosen_OMP_NUM_THREADS > omp_env.sh
 
-( ./compile_all.sh			\
+( ../compile_all.sh			\
 	$chosen_OMP_NUM_THREADS	\
-	&> compile_all.out		\
+	&> ../compile_all.out	\
   && ./driver.sh			\
 	useParallel=true		\
 	projectile="p"			\
