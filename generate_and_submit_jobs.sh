@@ -14,7 +14,7 @@
 	# Shouldn't have to change anything below this point
 	#-----------------------------------------------------
 	source scripts/export_specs.sh
-	export_specs_array "${array[@]}" > scripts/specs.sh
+	export_specs_array "${specs[@]}" > scripts/specs.sh
 
 	# Generate jobs for these specifications
 	./generate_jobs.sh $NTHREADS $DIRECTORY
