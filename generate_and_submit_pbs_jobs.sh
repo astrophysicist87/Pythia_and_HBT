@@ -21,10 +21,10 @@
 	export_specs_array "${array[@]}" > scripts/specs.sh
 
 	# Generate jobs for these specifications
-	./generate_pbs_jobs.sh $NTHREADS $DIRECTORY $PYTHIA_WALLTIME $HBT_WALLTIME
+	./scripts/generate_pbs_jobs.sh $NTHREADS $DIRECTORY $PYTHIA_WALLTIME $HBT_WALLTIME
 
 	# Submit generated jobs
-	./submit_pbs_jobs.sh `readlink -f $DIRECTORY`
+	./scripts/submit_pbs_jobs.sh `readlink -f $DIRECTORY`
 ) &> /dev/null &
 
 # End of file

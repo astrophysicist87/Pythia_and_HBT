@@ -17,10 +17,10 @@
 	export_specs_array "${specs[@]}" > scripts/specs.sh
 
 	# Generate jobs for these specifications
-	./generate_jobs.sh $NTHREADS $DIRECTORY
+	./scripts/generate_jobs.sh $NTHREADS $DIRECTORY
 
 	# Submit generated jobs
-	./submit_jobs.sh `readlink -f $DIRECTORY`
+	./scripts/submit_jobs.sh `readlink -f $DIRECTORY`
 ) &> /dev/null &
 
 # End of file
