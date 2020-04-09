@@ -3,7 +3,8 @@
 #=====================================
 # Header info
 #=====================================
-export HOME_DIRECTORY=`pwd`
+#export HOME_DIRECTORY=`pwd`
+export HOME_DIRECTORY=`readlink -f $PWD/..`
 export SOURCE_DIRECTORY=$HOME_DIRECTORY/src
 # Pythia
 export versionNumber=8243
