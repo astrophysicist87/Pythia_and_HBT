@@ -25,7 +25,6 @@
 	# Generate jobs for these specifications
 	DIRECTORY_FULL_PATH=`readlink -f $DIRECTORY`
 	./scripts/generate_jobs.sh $NTHREADS $DIRECTORY_FULL_PATH
-	#$SPECS_FULL_PATH
 
 	# Submit generated jobs
 	./scripts/submit_jobs.sh $DIRECTORY_FULL_PATH

@@ -17,14 +17,22 @@
 	#-----------------------------------------------------
 	# Shouldn't have to change anything below this point
 	#-----------------------------------------------------
+	# Compile source code
+	./compile_all.sh $NTHREADS &> compile_all.out
+
+	# Export job specifications
+	source scripts/env.sh
 	source scripts/export_specs.sh
-	export_specs_array "${array[@]}" > scripts/specs.sh
+	SPECS_FULL_PATH=`readlink -f scripts/specs.sh`
+	export_specs_array "${specs[@]}" > $SPECS_FULL_PATH
 
 	# Generate jobs for these specifications
-	./scripts/generate_pbs_jobs.sh $NTHREADS $DIRECTORY $PYTHIA_WALLTIME $HBT_WALLTIME
+	DIRECTORY_FULL_PATH=`readlink -f $DIRECTORY`
+	./scripts/generate_pbs_jobs.sh $NTHREADS $DIRECTORY_FULL_PATH $PYTHIA_WALLTIME $HBT_WALLTIME
 
 	# Submit generated jobs
-	./scripts/submit_pbs_jobs.sh `readlink -f $DIRECTORY`
+	./scripts/submit_pbs_jobs.sh $DIRECTORY_FULL_PATH
+
 ) &> /dev/null &
 
 # End of file

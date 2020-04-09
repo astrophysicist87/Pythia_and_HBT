@@ -5,12 +5,6 @@
 chosen_OMP_NUM_THREADS=$1
 echo 'export chosen_OMP_NUM_THREADS='$chosen_OMP_NUM_THREADS > $SCRIPTS_DIRECTORY/omp_env.sh
 
-echo 'generate_jobs.sh executed in' `pwd`
-
-#../compile_all.sh	\
-#	$chosen_OMP_NUM_THREADS	\
-#	&> ../compile_all.out
-
 ########################################
 # set up array of job specifications
 source $SCRIPTS_DIRECTORY/specs.sh		#N.B. - PATHS RELATIVE TO CALLING (HOME) DIRECTORY
