@@ -5,6 +5,8 @@
 chosen_OMP_NUM_THREADS=$1
 echo 'export chosen_OMP_NUM_THREADS='$chosen_OMP_NUM_THREADS > omp_env.sh
 
+echo `pwd`
+
 ../compile_all.sh	\
 	$chosen_OMP_NUM_THREADS	\
 	&> ../compile_all.out
