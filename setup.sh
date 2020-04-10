@@ -3,7 +3,7 @@
 cd src/pythia8243
 
 
-setupMode=""
+setupMode="short"
 while getopts ":f" opt; do
   case ${opt} in
     f ) setupMode="full"
