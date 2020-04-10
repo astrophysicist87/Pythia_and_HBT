@@ -125,7 +125,7 @@ then
 
 	# check and report whether run was successful
 	runSuccess=`echo $?`
-	check_success 'HBT_event_generator' $runSuccess
+	check_success 'HBT_event_generator' $runSuccess '=' '| -- '`basename "$0"`': '
 
 	# copy results
 	cp HBT_event_generator.[oe]* ./results
@@ -164,7 +164,7 @@ then
 
 	# check and report whether run was successful
 	runSuccess=`echo $?`
-	check_success 'fit_correlation_function' $runSuccess
+	check_success 'fit_correlation_function' $runSuccess '=' '| -- '`basename "$0"`': '
 
 	# copy results
 	cp fit_correlation_function.[oe]* ./results
@@ -203,7 +203,7 @@ then
 
 	# check and report whether run was successful
 	runSuccess=`echo $?`
-	check_success 'source_variances' $runSuccess
+	check_success 'source_variances' $runSuccess '=' '| -- '`basename "$0"`': '
 
 	# copy results
 	cp SV_record.[oe]* ./results

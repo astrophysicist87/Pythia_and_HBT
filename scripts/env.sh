@@ -30,15 +30,27 @@ declare -A boolVal=( ["true"]="1" ["false"]="0")
 # Some function definitions
 #============================
 check_success () {
+	cdef="="
+	pdef=''
+	c="${3:-$cdef}"
+	prefix="${4:-$pdef}"
 	if [ "$2" -eq "0" ]
 	then
-		echo '===================================================='
-		echo '== '$1': run completed successfully!'
-		echo '===================================================='
+		#echo '===================================================='
+		#echo '== '$1': run completed successfully!'
+		#echo '===================================================='
+		echo $prefix`printf '%0.s'$c {1..60}`
+		string=`printf '%0.s'$c {1..2} && echo ' '$1': run completed successfully!'`
+		echo $prefix$string
+		echo $prefix`printf '%0.s'$c {1..60}`
 	else
-		echo '===================================================='
-		echo '== '$1': problems encountered!'
-		echo '===================================================='
+		#echo '===================================================='
+		#echo '== '$1': problems encountered!'
+		#echo '===================================================='
+		echo $prefix`printf '%0.s'$c {1..60}`
+		string=`printf '%0.s'$c {1..2} && echo ' '$1': problems encountered!'`
+		echo $prefix$string
+		echo $prefix`printf '%0.s'$c {1..60}`
 		exit $2
 	fi
 }
