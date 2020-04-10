@@ -4,7 +4,7 @@
 CWD=`pwd`
 echo '| ------------------------------------------------------------'
 echo '| - '`basename "$0"`': Executing this script in the following directory:'
-echo '| - '$CWD
+echo '| | '$CWD
 
 # make sure main results directory exists
 if [ ! -d "$MAIN_RESULTS_DIRECTORY" ]
@@ -83,7 +83,7 @@ collisionSystemStem=$projectile$target"_"`echo $beamEnergy`"GeV_Nev"$Nevents
 
 		# check and report whether run was successful
 		runSuccess=`echo $?`
-		check_success 'Pythia' $runSuccess
+		check_success 'Pythia' $runSuccess '-' '| | - '
 
 	fi
 

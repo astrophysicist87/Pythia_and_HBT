@@ -4,7 +4,7 @@
 CWD=`pwd`
 echo '| ------------------------------------------------------------'
 echo '| - '`basename "$0"`': Executing this script in the following directory:'
-echo '| - '$CWD
+echo '| | '$CWD
 
 declare -A boolVal=( ["true"]="1" ["false"]="0")
 
@@ -95,7 +95,7 @@ if $runHBTEG
 then
 (
 
-	echo '| - '`basename "$0"`':     Now entering '`realpath --relative-to="${PWD}" "$HBT_EVENT_GEN_DIRECTORY"`
+	echo '| - '`basename "$0"`': Now entering '`realpath --relative-to="${PWD}" "$HBT_EVENT_GEN_DIRECTORY"`
 	cd $HBT_EVENT_GEN_DIRECTORY
 
 	# using OpenMP (leave a couple cores free)
@@ -125,7 +125,7 @@ then
 
 	# check and report whether run was successful
 	runSuccess=`echo $?`
-	check_success 'HBT_event_generator' $runSuccess '=' '| -- '`basename "$0"`': '
+	check_success 'HBT_event_generator' $runSuccess '-' '| | - '
 
 	# copy results
 	cp HBT_event_generator.[oe]* ./results
@@ -146,7 +146,7 @@ if $runFitCF
 then
 (
 
-	echo '| - '`basename "$0"`':     Now entering '`realpath --relative-to="${PWD}" "$HBT_FITCF_DIRECTORY"`
+	echo '| - '`basename "$0"`': Now entering '`realpath --relative-to="${PWD}" "$HBT_FITCF_DIRECTORY"`
 	cd $HBT_FITCF_DIRECTORY
 
 	if [ ! -d "./results" ]
@@ -164,7 +164,7 @@ then
 
 	# check and report whether run was successful
 	runSuccess=`echo $?`
-	check_success 'fit_correlation_function' $runSuccess '=' '| -- '`basename "$0"`': '
+	check_success 'fit_correlation_function' $runSuccess '-' '| | - '
 
 	# copy results
 	cp fit_correlation_function.[oe]* ./results
@@ -183,7 +183,7 @@ if $runSV
 then
 (
 
-	echo '| - '`basename "$0"`':     Now entering '`realpath --relative-to="${PWD}" "$HBT_SV_DIRECTORY"`
+	echo '| - '`basename "$0"`': Now entering '`realpath --relative-to="${PWD}" "$HBT_SV_DIRECTORY"`
 	cd $HBT_SV_DIRECTORY
 
 	if [ ! -d "./results" ]
@@ -203,7 +203,7 @@ then
 
 	# check and report whether run was successful
 	runSuccess=`echo $?`
-	check_success 'source_variances' $runSuccess '=' '| -- '`basename "$0"`': '
+	check_success 'source_variances' $runSuccess '-' '| | - '
 
 	# copy results
 	cp SV_record.[oe]* ./results
