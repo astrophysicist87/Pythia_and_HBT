@@ -1,16 +1,21 @@
 #! /usr/bin/env bash
 #-------------------
 
+CWD=`pwd`
+echo '| ------------------------------------------------------------'
+echo '| - '`basename "$0"`': Executing this script in the following directory:'
+echo '| - '$CWD
+
 # make sure main results directory exists
 if [ ! -d "$MAIN_RESULTS_DIRECTORY" ]
 then
 	mkdir $MAIN_RESULTS_DIRECTORY
-	echo 'Created' $MAIN_RESULTS_DIRECTORY
+	echo '| - '`basename "$0"`': Created directory:' `realpath --relative-to="${PWD}" "$MAIN_RESULTS_DIRECTORY"`
 fi
 CURRENT_RESULTS_DIRECTORY=$MAIN_RESULTS_DIRECTORY
 
 
-echo 'RUN_PYTHIA: Processing Nevents =' \
+echo '| - '`basename "$0"`': Processing' \
 		$Nevents $projectile'+'$target \
 		'collisions at' $beamEnergy 'GeV'
 
@@ -23,8 +28,8 @@ collisionSystemStem=$projectile$target"_"`echo $beamEnergy`"GeV_Nev"$Nevents
 #=================
 # Run Pythia here
 (
+	echo '| - '`basename "$0"`':     Now entering '`realpath --relative-to="${PWD}" "$PYTHIA_DIRECTORY"`
 	cd $PYTHIA_DIRECTORY
-	echo '     Now in '`pwd`
 
 	if $runPythia
 	then
@@ -96,8 +101,8 @@ collisionSystemStem=$projectile$target"_"`echo $beamEnergy`"GeV_Nev"$Nevents
 	# Get the filenames which need to be processed
 	recordOfOutputFilenames_Sxp=$PYTHIA_RESULTS_DIRECTORY/`echo $collisionSystemStem`"_S_x_p_filenames.dat"
 	recordOfOutputFilename_mult=$PYTHIA_RESULTS_DIRECTORY/`echo $collisionSystemStem`"_total_N_filename.dat"
-	\rm $HBT_EVENT_GEN_DIRECTORY/catalogue.dat
-	\rm $HBT_SV_DIRECTORY/catalogue.dat
+	\rm -f $HBT_EVENT_GEN_DIRECTORY/catalogue.dat
+	\rm -f $HBT_SV_DIRECTORY/catalogue.dat
 	for line in `cat $recordOfOutputFilenames_Sxp`
 	do
 		readlink -f $PYTHIA_RESULTS_DIRECTORY/$line >> $HBT_EVENT_GEN_DIRECTORY/catalogue.dat
@@ -117,7 +122,8 @@ collisionSystemStem=$projectile$target"_"`echo $beamEnergy`"GeV_Nev"$Nevents
 
 )
 
-echo 'Finished everything!'
+echo '| - '`basename "$0"`': Finished everything!'
+echo '| ------------------------------------------------------------'
 
 
 # End of file

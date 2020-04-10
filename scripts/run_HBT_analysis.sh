@@ -1,4 +1,10 @@
 #! /usr/bin/env bash
+#-------------------
+
+CWD=`pwd`
+echo '| ------------------------------------------------------------'
+echo '| - '`basename "$0"`': Executing this script in the following directory:'
+echo '| - '$CWD
 
 declare -A boolVal=( ["true"]="1" ["false"]="0")
 
@@ -6,30 +12,8 @@ declare -A boolVal=( ["true"]="1" ["false"]="0")
 if [ ! -d "$MAIN_RESULTS_DIRECTORY" ]
 then
 	mkdir $MAIN_RESULTS_DIRECTORY
-	echo 'Created' $MAIN_RESULTS_DIRECTORY
+	echo '| - '`basename "$0"`': Created directory:' `realpath --relative-to="${PWD}" "$MAIN_RESULTS_DIRECTORY"`
 fi
-
-#===================
-# Main calculation
-#===================
-
-echo 'Processing Nevents =' $Nevents $projectile'+'$target 'collisions at' $beamEnergy 'GeV'
-
-
-# make sure current results directory exists
-#nextCurrentResultsDirectoryName=`get_dirname $CURRENT_RESULTS_DIRECTORY '-' "true"`
-#CURRENT_RESULTS_DIRECTORY=$nextCurrentResultsDirectoryName
-#mkdir $CURRENT_RESULTS_DIRECTORY
-#echo 'Created' $CURRENT_RESULTS_DIRECTORY
-CURRENT_RESULTS_DIRECTORY=$MAIN_RESULTS_DIRECTORY
-
-#=====================================
-# Clean all working directories
-clean_directory $HBT_DIRECTORY
-clean_directory $HBT_EVENT_GEN_DIRECTORY
-clean_directory $HBT_FITCF_DIRECTORY
-clean_directory $HBT_SV_DIRECTORY
-#=====================================
 
 
 #=================================================
@@ -37,11 +21,9 @@ clean_directory $HBT_SV_DIRECTORY
 #=================================================
 centralityCutString=$1	# should be passed in as argument directly
 
-
 #=================================================
 # process centrality class information
 success=0
-echo '  -- analyzing centrality class' $centralityCutString
 
 centralityCut=(`echo $centralityCutString | sed 's/-/ /g' | sed 's/%//g'`)
 thisCentrality="C"${centralityCut[0]}"_"${centralityCut[1]}
@@ -60,6 +42,23 @@ fi
 
 
 #=================================================
+# Miscellaneous set-up
+# make sure current results directory exists
+#nextCurrentResultsDirectoryName=`get_dirname $CURRENT_RESULTS_DIRECTORY '-' "true"`
+#CURRENT_RESULTS_DIRECTORY=$nextCurrentResultsDirectoryName
+#mkdir $CURRENT_RESULTS_DIRECTORY
+#echo 'Created' $CURRENT_RESULTS_DIRECTORY
+CURRENT_RESULTS_DIRECTORY=$MAIN_RESULTS_DIRECTORY
+
+#=====================================
+# Clean all working directories
+clean_directory $HBT_DIRECTORY
+clean_directory $HBT_EVENT_GEN_DIRECTORY
+clean_directory $HBT_FITCF_DIRECTORY
+clean_directory $HBT_SV_DIRECTORY
+#=====================================
+
+#=================================================
 # set names of sub-directories
 HBT_RESULTS_DIRECTORY=$CURRENT_RESULTS_DIRECTORY/HBT_results
 HBT_CEN_RESULTS_DIRECTORY=$HBT_RESULTS_DIRECTORY/$thisCentrality
@@ -70,26 +69,41 @@ then
 	rm -rf $HBT_CEN_RESULTS_DIRECTORY
 fi
 mkdir -p $HBT_CEN_RESULTS_DIRECTORY
+echo '| - '`basename "$0"`': Created directory:' `realpath --relative-to="${PWD}" "$HBT_CEN_RESULTS_DIRECTORY"`
 #=================================================
+
 
 collisionSystemStem=$projectile$target"_"`echo $beamEnergy`"GeV_Nev"$Nevents
 
+
 #=====================================
 #=====================================
 #=====================================
+
+#===================
+# Main calculation
+#===================
+
+echo '| - '`basename "$0"`': Processing' \
+		$Nevents $projectile'+'$target \
+		'collisions at' $beamEnergy 'GeV' \
+		'in centrality class' $centralityCutString
+
+
 # Run HBT_event_generator
 if $runHBTEG
 then
 (
 
+	echo '| - '`basename "$0"`':     Now entering '`realpath --relative-to="${PWD}" "$HBT_EVENT_GEN_DIRECTORY"`
 	cd $HBT_EVENT_GEN_DIRECTORY
-	echo '     Now in '`pwd`
 
 	# using OpenMP (leave a couple cores free)
 	export OMP_NUM_THREADS=$chosen_OMP_NUM_THREADS
 
 	if [ ! -d "./results" ]; then
-		    mkdir results
+		mkdir results
+		echo '| - '`basename "$0"`': Created directory "results" in' `realpath --relative-to="${PWD}" "$HBT_EVENT_GEN_DIRECTORY"`
 	fi
 
 	cp ../parameters.dat .
@@ -132,12 +146,13 @@ if $runFitCF
 then
 (
 
+	echo '| - '`basename "$0"`':     Now entering '`realpath --relative-to="${PWD}" "$HBT_FITCF_DIRECTORY"`
 	cd $HBT_FITCF_DIRECTORY
-	echo '     Now in '`pwd`
 
 	if [ ! -d "./results" ]
 	then
 		mkdir results
+		echo '| - '`basename "$0"`': Created directory "results" in' `realpath --relative-to="${PWD}" "$HBT_FITCF_DIRECTORY"`
 	fi
 
 	cp ../parameters.dat .
@@ -168,12 +183,13 @@ if $runSV
 then
 (
 
+	echo '| - '`basename "$0"`':     Now entering '`realpath --relative-to="${PWD}" "$HBT_SV_DIRECTORY"`
 	cd $HBT_SV_DIRECTORY
-	echo '     Now in '`pwd`
 
 	if [ ! -d "./results" ]
 	then
 		mkdir results
+		echo '| - '`basename "$0"`': Created directory "results" in' `realpath --relative-to="${PWD}" "$HBT_SV_DIRECTORY"`
 	fi
 
 	cp ../parameters.dat .
@@ -200,7 +216,8 @@ fi
 
 cp $HBT_DIRECTORY/parameters.dat $HBT_CEN_RESULTS_DIRECTORY
 
-echo 'Finished everything!'
+echo '| - '`basename "$0"`': Finished everything for centrality class =' $centralityCutString'!'
+echo '| ------------------------------------------------------------'
 
 
 # End of file

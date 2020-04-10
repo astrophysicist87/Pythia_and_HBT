@@ -44,7 +44,7 @@ check_success () {
 }
 
 clean_directory () {
-	rm $1/*.out $1/*.err $1/*.txt
+	rm -f $1/*.out $1/*.err $1/*.txt
 	#rm $1/*catalogue.dat
 	#rm $1/parameters.dat
 	rm -rf $1/results
