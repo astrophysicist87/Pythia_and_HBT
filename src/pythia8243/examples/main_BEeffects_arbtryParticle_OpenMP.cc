@@ -222,7 +222,7 @@ int main(int argc, char *argv[])
 
 	//const int total_number_of_events = 100000;
 	const int total_number_of_events = atoi(argv[4]);
-	const int max_events_per_file = 10000;
+	const int max_events_per_file = 10;
 	int current_file_index = 0;
 	string file_index_string = "";
 	if (total_number_of_events > max_events_per_file)
