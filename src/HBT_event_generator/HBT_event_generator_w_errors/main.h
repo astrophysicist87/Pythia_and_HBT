@@ -363,6 +363,9 @@ void read_in_file_OSCAR(string filename, vector<EventRecord> & eventsInFile, Par
 		infile >> nParticles;
 		cout << " containing " << nParticles << " particles." << endl;
 
+		cout << "We are currently looking for eventID " << nextEventID << " = "
+				<< ensemble_multiplicites[nextEventIndex].eventID << endl;
+
 		// if this event not in chosen centrality class,
 		// skip all the particles in it automatically
 		if ( not eventID == nextEventID )
