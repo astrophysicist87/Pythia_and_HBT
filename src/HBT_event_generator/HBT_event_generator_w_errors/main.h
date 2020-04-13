@@ -356,11 +356,17 @@ void read_in_file_OSCAR(string filename, vector<EventRecord> & eventsInFile, Par
 		int eventID = -1, nParticles = -1;
 		int particleCount = 0;
 
+		string headerLine;
+		getline(infile, headerLine)
+		istringstream issHEAD(headerLine);
+
 		// read in first line: contains event index and number of particles stored from this event
-		infile >> eventID;
+		//infile >> eventID;
+		issHEAD >> eventID;
 		cout << "Reading in eventID = " << eventID;
 		if ( infile.eof() ) break;
-		infile >> nParticles;
+		//infile >> nParticles;
+		issHEAD >> nParticles;
 		cout << " containing " << nParticles << " particles." << endl;
 
 		cout << "We are currently looking for eventID " << nextEventID << " = "
