@@ -357,7 +357,7 @@ void read_in_file_OSCAR(string filename, vector<EventRecord> & eventsInFile, Par
 		int particleCount = 0;
 
 		string headerLine;
-		getline(infile, headerLine)
+		getline(infile, headerLine);
 		istringstream issHEAD(headerLine);
 
 		// read in first line: contains event index and number of particles stored from this event
