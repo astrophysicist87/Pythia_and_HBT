@@ -27,7 +27,7 @@ class ParameterReader
     bool exist(string name); // check if parameter with "name" exists
     void setVal(string name, double value); // set the parameter with "name" to value "value"
     double getVal(string name); // return the value for parameter with "name"
-    void echo(); // print out all parameters to the screen
+    void echo(bool verbose = false); // print out all parameters to the screen
 };
 
 
