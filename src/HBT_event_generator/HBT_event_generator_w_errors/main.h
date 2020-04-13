@@ -373,8 +373,10 @@ void read_in_file_OSCAR(string filename, vector<EventRecord> & eventsInFile, Par
 			cout << "Check 1: " << eventID << " =!= " << nextEventID << endl;
 			string line;
 			for ( int iParticle = 0; iParticle < nParticles; ++iParticle )
+			{
 				getline(infile, line);
-			cout << "The last line I read in was: " << endl << line << endl;
+				cout << "The last line I read in was: " << endl << line << endl;
+			}
 			continue;
 		}
 		else
