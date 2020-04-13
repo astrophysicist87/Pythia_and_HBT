@@ -365,7 +365,7 @@ void read_in_file_OSCAR(string filename, vector<EventRecord> & eventsInFile, Par
 		if ( infile.eof() ) break;
 		//infile >> nParticles;
 		cout << " containing " << nParticles << " particles." << endl;*/
-		cout << "About to read in this line: " << headerLine << endl;
+		cout << "About to read in this line: " << endl << headerLine << endl;
 		if ( !( issHEAD >> eventID >> nParticles ) ) break;
 		cout << "Reading in eventID = " << eventID << " containing " << nParticles << " particles." << endl;
 
@@ -395,6 +395,9 @@ void read_in_file_OSCAR(string filename, vector<EventRecord> & eventsInFile, Par
 			++nextEventIndex;
 			nextEventID = ( nextEventIndex == ensemble_multiplicites.size() ) ?
 							-1 : ensemble_multiplicites[nextEventIndex].eventID;
+			cout << "Check 2b: " << nextEventIndex << "   " << nextEventID << "   "
+					<< ensemble_multiplicites.size() << "   "
+					<< ensemble_multiplicites[nextEventIndex].eventID << endl;
 		}
 
 		// to hold relevant particles for this event
@@ -410,6 +413,7 @@ void read_in_file_OSCAR(string filename, vector<EventRecord> & eventsInFile, Par
 		{
 			string nextParticleLine;
 			getline(infile, nextParticleLine);
+			cout << "Reading in this line in particle loop: " << endl << nextParticleLine << endl;
 			istringstream issNEXT(nextParticleLine);
 			issNEXT //>> eventID		// these are now redundant
 					//>> particleID		// and unnecessary
