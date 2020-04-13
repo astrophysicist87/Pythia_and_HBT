@@ -42,7 +42,10 @@ void HBT_event_generator::Compute_numerator_and_denominator_methodMode2_q_mode_3
 	for (int iEvent = 0; iEvent < allEvents.size(); ++iEvent)
 	{
 		EventRecord event = allEvents[iEvent];
-		cout << "Now doing event = " << event.eventID << " of full ensemble" << endl;
+		#pragma omp critical
+		{
+			cout << "Now doing event = " << event.eventID << " of full ensemble" << endl;
+		}
 
 		vector<double> private_num(numerator.size(), 0.0);
 		vector<double> private_num2(numerator2.size(), 0.0);

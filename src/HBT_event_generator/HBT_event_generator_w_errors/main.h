@@ -358,10 +358,10 @@ void read_in_file_OSCAR(string filename, vector<EventRecord> & eventsInFile, Par
 
 		// read in first line: contains event index and number of particles stored from this event
 		infile >> eventID;
-		//cout << "Reading in eventID = " << eventID;
+		cout << "Reading in eventID = " << eventID;
 		if ( infile.eof() ) break;
 		infile >> nParticles;
-		//cout << " containing " << nParticles << " particles." << endl;
+		cout << " containing " << nParticles << " particles." << endl;
 
 		// if this event not in chosen centrality class,
 		// skip all the particles in it automatically
@@ -443,8 +443,8 @@ void read_in_file_OSCAR(string filename, vector<EventRecord> & eventsInFile, Par
 		// break if done with this centrality class
 		if ( nextEventID < 0 )
 		{
-			//cout << "nextEventID < 0!  Exiting..." << endl;
-			//cout << nextEventIndex << "   " << nextEventID << endl;
+			cout << "nextEventID < 0!  Exiting..." << endl;
+			cout << nextEventIndex << "   " << nextEventID << endl;
 			break;
 		}
 
@@ -459,7 +459,7 @@ void read_in_file_OSCAR(string filename, vector<EventRecord> & eventsInFile, Par
 									+ n_events_read_from_this_file );
 
 	// debugging
-	bool verbose = false;
+	bool verbose = true;
 	if (verbose)
 	{
 		cout << "=============================================================================================" << endl;
