@@ -44,7 +44,8 @@ echo '| '`basename "$0"`': running Pythia!'
 
 
 # apply HBT analysis to each chosen centrality class
-for centralityCutString in "0-100%" "0-10%" "10-20%" "20-40%" "40-60%" "60-100%"
+#for centralityCutString in "0-100%" "0-10%" "10-20%" "20-40%" "40-60%" "60-100%"
+for centralityCutString in "20-40%" "40-60%"
 do
 	echo '| '`basename "$0"`': running HBT analysis for centrality class = '$centralityCutString'!'
 	./run_HBT_analysis.sh $centralityCutString	# do NOT submit Bash scripts in background

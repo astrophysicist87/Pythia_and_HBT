@@ -90,10 +90,10 @@ int main(int argc, char *argv[])
 	//string path = "./results/";	// make sure this directory exists
 	string chosen_particle_name = "pi";
 	ostringstream out_filename_stream, err_filename_stream;
-	out_filename_stream << path << "HBT_"
+	out_filename_stream << path << "/HBT_"
 						<< chosen_particle_name << chosen_particle_name
 						<< "CF.out";
-	err_filename_stream << path << "HBT_"
+	err_filename_stream << path << "/HBT_"
 						<< chosen_particle_name << chosen_particle_name
 						<< "CF.err";
 	ofstream outmain(out_filename_stream.str().c_str());

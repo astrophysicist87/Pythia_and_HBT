@@ -382,6 +382,7 @@ void read_in_file_OSCAR(string filename, vector<EventRecord> & eventsInFile, Par
 
 		// to hold relevant particles for this event
 		EventRecord event;
+		event.eventID = eventID;
 
 		int MCID, thermal_or_decay;
 		double E, px, py, pz;

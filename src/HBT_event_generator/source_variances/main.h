@@ -37,7 +37,7 @@ void display_intro(int logo_mode)
 string get_filename( string path, string chosen_particle_name, string extension )
 {
 	ostringstream filename_stream;
-	filename_stream << path << "HBT_"
+	filename_stream << path << "/HBT_"
 					<< chosen_particle_name << chosen_particle_name
 					<< "SVradii." << extension;
 	return ( filename_stream.str() );
