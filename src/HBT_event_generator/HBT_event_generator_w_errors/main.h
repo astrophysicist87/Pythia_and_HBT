@@ -472,6 +472,8 @@ void read_in_file_OSCAR(string filename, vector<EventRecord> & eventsInFile, Par
 			break;
 		}
 
+	cout << "Made it here" << endl;
+
 	//} while ( not infile.eof() );
 	}
 
