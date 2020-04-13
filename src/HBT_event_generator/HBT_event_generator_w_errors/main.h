@@ -384,7 +384,7 @@ void read_in_file_OSCAR(string filename, vector<EventRecord> & eventsInFile, Par
 				getline(infile, line);
 				//cout << "The last line I read in was: " << endl << line << endl;
 			}
-			cout << "The last line I read in was: " << endl << line << endl;
+			//cout << "The last line I read in was: " << endl << line << endl;
 			continue;
 		}
 		else
@@ -413,7 +413,7 @@ void read_in_file_OSCAR(string filename, vector<EventRecord> & eventsInFile, Par
 		{
 			string nextParticleLine;
 			getline(infile, nextParticleLine);
-			cout << "Reading in this line in particle loop: " << endl << nextParticleLine << endl;
+			//cout << "Reading in this line in particle loop: " << endl << nextParticleLine << endl;
 			istringstream issNEXT(nextParticleLine);
 			issNEXT //>> eventID		// these are now redundant
 					//>> particleID		// and unnecessary
