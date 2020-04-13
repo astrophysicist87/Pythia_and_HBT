@@ -17,6 +17,18 @@ fi
 
 
 #=================================================
+# Miscellaneous set-up
+CURRENT_RESULTS_DIRECTORY=$MAIN_RESULTS_DIRECTORY
+
+#=====================================
+# Clean all working directories
+#clean_directory $HBT_DIRECTORY
+#clean_directory $HBT_EVENT_GEN_DIRECTORY
+#clean_directory $HBT_FITCF_DIRECTORY
+#clean_directory $HBT_SV_DIRECTORY
+#=====================================
+
+#=================================================
 # Set centrality class from command-line argument
 #=================================================
 centralityCutString=$1	# should be passed in as argument directly
@@ -40,23 +52,6 @@ then
 	upperLimit=100
 fi
 
-
-#=================================================
-# Miscellaneous set-up
-# make sure current results directory exists
-#nextCurrentResultsDirectoryName=`get_dirname $CURRENT_RESULTS_DIRECTORY '-' "true"`
-#CURRENT_RESULTS_DIRECTORY=$nextCurrentResultsDirectoryName
-#mkdir $CURRENT_RESULTS_DIRECTORY
-#echo 'Created' $CURRENT_RESULTS_DIRECTORY
-CURRENT_RESULTS_DIRECTORY=$MAIN_RESULTS_DIRECTORY
-
-#=====================================
-# Clean all working directories
-clean_directory $HBT_DIRECTORY
-clean_directory $HBT_EVENT_GEN_DIRECTORY
-clean_directory $HBT_FITCF_DIRECTORY
-clean_directory $HBT_SV_DIRECTORY
-#=====================================
 
 #=================================================
 # set names of sub-directories
@@ -101,12 +96,16 @@ then
 	# using OpenMP (leave a couple cores free)
 	export OMP_NUM_THREADS=$chosen_OMP_NUM_THREADS
 
-	if [ ! -d "./results" ]; then
-		mkdir results
-		echo '| - '`basename "$0"`': Created directory "results" in' `realpath --relative-to="${PWD}" "$HBT_EVENT_GEN_DIRECTORY"`
+	CF_RESULTS_DIRECTORY=$HBT_CEN_RESULTS_DIRECTORY/CF_results
+
+	if [ ! -d "$CF_RESULTS_DIRECTORY" ]; then
+		mkdir $CF_RESULTS_DIRECTORY
+		#echo '| - '`basename "$0"`': Created directory "results" in' `realpath --relative-to="${PWD}" "$HBT_EVENT_GEN_DIRECTORY"`
+		echo '| - '`basename "$0"`': Created directory "CF_results" in' `realpath --relative-to="${PWD}" "$HBT_CEN_RESULTS_DIRECTORY"`
 	fi
 
-	cp ../parameters.dat .
+	#cp ../parameters.dat .
+	cp ../parameters.dat ./*catalogue.dat $CF_RESULTS_DIRECTORY
 
 	#default: assume BE effects are turned off in Pythia
 	chosen_BE_mode=0
@@ -116,11 +115,18 @@ then
 
 	# time and run
 	nohup time ./run_HBT_event_generator.e \
+			$CF_RESULTS_DIRECTORY \
+			$CF_RESULTS_DIRECTORY/parameters.dat \
+			$CF_RESULTS_DIRECTORY/particle_catalogue.dat \
+			$CF_RESULTS_DIRECTORY/catalogue.dat \
+			$CF_RESULTS_DIRECTORY/ensemble_catalogue.dat \
+			centrality_minimum=$lowerLimit \
+			centrality_maximum=$upperLimit \
 			BE_mode=$chosen_BE_mode \
 			chosen_MCID=$chosenHBTparticle \
 			store_Bjorken_coordinates="${boolVal[$storeBjorkenCoordinates]}" \
-			1> HBT_event_generator.out \
-			2> HBT_event_generator.err
+			1> $CF_RESULTS_DIRECTORY/HBT_event_generator.out \
+			2> $CF_RESULTS_DIRECTORY/HBT_event_generator.err
 	# N.B. - centralities determined either here or in Pythia, but not both
 
 	# check and report whether run was successful
@@ -128,11 +134,11 @@ then
 	check_success 'HBT_event_generator' $runSuccess '-' '| | - '
 
 	# copy results
-	cp HBT_event_generator.[oe]* ./results
-	mkdir $HBT_CEN_RESULTS_DIRECTORY/CF_results
-	cp -r ./results/* $HBT_CEN_RESULTS_DIRECTORY/CF_results
+	#cp HBT_event_generator.[oe]* ./results
+	#mkdir $HBT_CEN_RESULTS_DIRECTORY/CF_results
+	#cp -r ./results/* $HBT_CEN_RESULTS_DIRECTORY/CF_results
 
-	readlink -f ./results/HBT_pipiCF.dat > $HBT_FITCF_DIRECTORY/catalogue.dat
+	readlink -f $CF_RESULTS_DIRECTORY/HBT_pipiCF.dat > $HBT_FITCF_DIRECTORY/catalogue.dat
 
 	#exit $runSuccess
 )
@@ -149,27 +155,35 @@ then
 	echo '| - '`basename "$0"`': Now entering '`realpath --relative-to="${PWD}" "$HBT_FITCF_DIRECTORY"`
 	cd $HBT_FITCF_DIRECTORY
 
-	if [ ! -d "./results" ]
+	FIT_RESULTS_DIRECTORY=$HBT_CEN_RESULTS_DIRECTORY/fit_results
+
+	if [ ! -d "$FIT_RESULTS_DIRECTORY" ]
 	then
-		mkdir results
-		echo '| - '`basename "$0"`': Created directory "results" in' `realpath --relative-to="${PWD}" "$HBT_FITCF_DIRECTORY"`
+		mkdir $FIT_RESULTS_DIRECTORY
+		#echo '| - '`basename "$0"`': Created directory "results" in' `realpath --relative-to="${PWD}" "$HBT_FITCF_DIRECTORY"`
+		echo '| - '`basename "$0"`': Created directory "fit_results" in' `realpath --relative-to="${PWD}" "$HBT_CEN_RESULTS_DIRECTORY"`
 	fi
 
-	cp ../parameters.dat .
+	#cp ../parameters.dat .
+	cp ../parameters.dat ./*catalogue.dat $FIT_RESULTS_DIRECTORY
 
 	# time and run
 	nohup time ./run_fit_correlation_function.e \
-			1> fit_correlation_function.out \
-			2> fit_correlation_function.err
+			$FIT_RESULTS_DIRECTORY \
+			$FIT_RESULTS_DIRECTORY/parameters.dat \
+			$FIT_RESULTS_DIRECTORY/particle_catalogue.dat \
+			$FIT_RESULTS_DIRECTORY/catalogue.dat \
+			1> $FIT_RESULTS_DIRECTORY/fit_correlation_function.out \
+			2> $FIT_RESULTS_DIRECTORY/fit_correlation_function.err
 
 	# check and report whether run was successful
 	runSuccess=`echo $?`
 	check_success 'fit_correlation_function' $runSuccess '-' '| | - '
 
 	# copy results
-	cp fit_correlation_function.[oe]* ./results
-	mkdir $HBT_CEN_RESULTS_DIRECTORY/fit_results
-	cp -r ./results/* $HBT_CEN_RESULTS_DIRECTORY/fit_results
+	#cp fit_correlation_function.[oe]* ./results
+	#mkdir $HBT_CEN_RESULTS_DIRECTORY/fit_results
+	#cp -r ./results/* $HBT_CEN_RESULTS_DIRECTORY/fit_results
 
 	#exit $runSuccess
 )
@@ -186,34 +200,46 @@ then
 	echo '| - '`basename "$0"`': Now entering '`realpath --relative-to="${PWD}" "$HBT_SV_DIRECTORY"`
 	cd $HBT_SV_DIRECTORY
 
-	if [ ! -d "./results" ]
+	SV_RESULTS_DIRECTORY=$HBT_CEN_RESULTS_DIRECTORY/SV_results
+
+	if [ ! -d "$SV_RESULTS_DIRECTORY" ]
 	then
-		mkdir results
-		echo '| - '`basename "$0"`': Created directory "results" in' `realpath --relative-to="${PWD}" "$HBT_SV_DIRECTORY"`
+		mkdir $SV_RESULTS_DIRECTORY
+		#echo '| - '`basename "$0"`': Created directory "results" in' `realpath --relative-to="${PWD}" "$HBT_SV_DIRECTORY"`
+		echo '| - '`basename "$0"`': Created directory "SV_results" in' `realpath --relative-to="${PWD}" "$HBT_CEN_RESULTS_DIRECTORY"`
 	fi
 
-	cp ../parameters.dat .
+	#cp ../parameters.dat .
+	cp ../parameters.dat ./*catalogue.dat $SV_RESULTS_DIRECTORY
 
 	# time and run
 	nohup time ./SV.e \
+			$SV_RESULTS_DIRECTORY \
+			$SV_RESULTS_DIRECTORY/parameters.dat \
+			$SV_RESULTS_DIRECTORY/particle_catalogue.dat \
+			$SV_RESULTS_DIRECTORY/catalogue.dat \
+			$SV_RESULTS_DIRECTORY/ensemble_catalogue.dat \
+			centrality_minimum=$lowerLimit \
+			centrality_maximum=$upperLimit \
 			chosen_MCID=$chosenHBTparticle \
 			store_Bjorken_coordinates="${boolVal[$storeBjorkenCoordinates]}" \
-			1> SV_record.out \
-			2> SV_record.err
+			1> $SV_RESULTS_DIRECTORY/SV_record.out \
+			2> $SV_RESULTS_DIRECTORY/SV_record.err
 
 	# check and report whether run was successful
 	runSuccess=`echo $?`
 	check_success 'source_variances' $runSuccess '-' '| | - '
 
 	# copy results
-	cp SV_record.[oe]* ./results
-	mkdir $HBT_CEN_RESULTS_DIRECTORY/SV_results
-	cp -r ./results/* $HBT_CEN_RESULTS_DIRECTORY/SV_results
+	#cp SV_record.[oe]* ./results
+	#mkdir $HBT_CEN_RESULTS_DIRECTORY/SV_results
+	#cp -r ./results/* $HBT_CEN_RESULTS_DIRECTORY/SV_results
 
 	#exit $runSuccess
 )
 fi
 
+# Overkill, but copy it over anyway
 cp $HBT_DIRECTORY/parameters.dat $HBT_CEN_RESULTS_DIRECTORY
 
 echo '| - '`basename "$0"`': Finished everything for centrality class =' $centralityCutString'!'

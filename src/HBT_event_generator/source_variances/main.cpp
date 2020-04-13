@@ -23,18 +23,28 @@ int main(int argc, char *argv[])
 {
 	// Display intro
 	display_intro(2);   
+   
+	// Set parameter and catalogue filenames and results directory name from command-line
+	string path                      = string(argv[1]);	// results directory
+	string parametersFilename        = string(argv[2]);	
+	string particleCatalogueFilename = string(argv[3]);	
+	string catalogueFilename         = string(argv[4]);	
+	string ensembleCatalogueFilename = string(argv[5]);	
 
 	// Read-in free parameters
 	ParameterReader * paraRdr = new ParameterReader;
-	paraRdr->readFromFile("./parameters.dat");
+	//paraRdr->readFromFile("./parameters.dat");
+	paraRdr->readFromFile(parametersFilename);
 
 	// Read-in particle and ensemble information
 	vector<string> particle_info_filename, ensemble_info_filename;
-	read_file_catalogue("./particle_catalogue.dat", particle_info_filename);
+	//read_file_catalogue("./particle_catalogue.dat", particle_info_filename);
+	read_file_catalogue(particleCatalogueFilename, particle_info_filename);
 	paraRdr->readFromFile(particle_info_filename[0]);
 
 	// Read-in command-line arguments
-	paraRdr->readFromArguments(argc, argv);
+	//paraRdr->readFromArguments(argc, argv);
+	paraRdr->readFromArguments( argc, argv, (string)("#"), 6 );
 	paraRdr->echo();
 
 	// Start timing
@@ -48,8 +58,8 @@ int main(int argc, char *argv[])
 
 
 	// Set-up output files
-	string outmain_filename = get_filename( "./results/", "pi", "out" );
-	string errmain_filename = get_filename( "./results/", "pi", "err" );
+	string outmain_filename = get_filename( path, "pi", "out" );
+	string errmain_filename = get_filename( path, "pi", "err" );
 	ofstream outmain( outmain_filename.c_str() );
 	ofstream errmain( errmain_filename.c_str() );
 
@@ -62,25 +72,28 @@ int main(int argc, char *argv[])
 		// Specify files containing all position-momentum information
 		// from which to construct HBT correlation function
 		vector<string> all_file_names;
-		read_file_catalogue("./catalogue.dat", all_file_names);
+		//read_file_catalogue("./catalogue.dat", all_file_names);
+		read_file_catalogue(catalogueFilename, all_file_names);
 
 		// Process multiplicity and ensemble information
 		vector<string> ensemble_info;
-		read_file_catalogue("./ensemble_catalogue.dat", ensemble_info);
+		//read_file_catalogue("./ensemble_catalogue.dat", ensemble_info);
+		read_file_catalogue(ensembleCatalogueFilename, ensemble_info);
 
 		// allows to give files appropriate names
 		string collision_system_info = ensemble_info[0];
 		string target_name, projectile_name, beam_energy;
 		int Nevents;
-		double centrality_minimum, centrality_maximum;
 		istringstream iss(collision_system_info);
 		iss >> target_name
 			>> projectile_name
 			>> beam_energy
-			>> centrality_minimum
-			>> centrality_maximum
+			//>> centrality_minimum
+			//>> centrality_maximum
 			>> Nevents;
 
+		double centrality_minimum = paraRdr->getVal("centrality_minimum");
+		double centrality_maximum = paraRdr->getVal("centrality_maximum");
 
 		// select only those events falling into specificed centrality range
 		string multiplicity_filename = ensemble_info[1];
@@ -132,11 +145,11 @@ int main(int argc, char *argv[])
 			HBT_event_ensemble.Set_radii();
 
 			// Output radii and source variances
-			HBT_event_ensemble.Output_source_moments( "./results/source_moments_XYZ.dat", "XYZ" );
-			HBT_event_ensemble.Output_source_moments( "./results/source_moments_OSL.dat", "OSL" );
-			HBT_event_ensemble.Output_source_variances( "./results/source_variances_XYZ.dat", "XYZ" );
-			HBT_event_ensemble.Output_source_variances( "./results/source_variances_OSL.dat", "OSL" );
-			HBT_event_ensemble.Output_HBTradii( "./results/HBT_SV_radii.dat" );
+			HBT_event_ensemble.Output_source_moments( path + "/source_moments_XYZ.dat", "XYZ" );
+			HBT_event_ensemble.Output_source_moments( path + "/source_moments_OSL.dat", "OSL" );
+			HBT_event_ensemble.Output_source_variances( path + "/source_variances_XYZ.dat", "XYZ" );
+			HBT_event_ensemble.Output_source_variances( path + "/source_variances_OSL.dat", "OSL" );
+			HBT_event_ensemble.Output_HBTradii( path + "/HBT_SV_radii.dat" );
 
 		}
 		else if ( mode == "read all" )
@@ -160,11 +173,11 @@ int main(int argc, char *argv[])
 			HBT_event_ensemble.Set_radii();
 
 			// Output radii and source variances
-			HBT_event_ensemble.Output_source_moments( "./results/source_moments_XYZ.dat", "XYZ" );
-			HBT_event_ensemble.Output_source_moments( "./results/source_moments_OSL.dat", "OSL" );
-			HBT_event_ensemble.Output_source_variances( "./results/source_variances_XYZ.dat", "XYZ" );
-			HBT_event_ensemble.Output_source_variances( "./results/source_variances_OSL.dat", "OSL" );
-			HBT_event_ensemble.Output_HBTradii( "./results/HBT_SV_radii.dat" );
+			HBT_event_ensemble.Output_source_moments( path + "/source_moments_XYZ.dat", "XYZ" );
+			HBT_event_ensemble.Output_source_moments( path + "/source_moments_OSL.dat", "OSL" );
+			HBT_event_ensemble.Output_source_variances( path + "/source_variances_XYZ.dat", "XYZ" );
+			HBT_event_ensemble.Output_source_variances( path + "/source_variances_OSL.dat", "OSL" );
+			HBT_event_ensemble.Output_HBTradii( path + "/HBT_SV_radii.dat" );
 
 		}
 	
@@ -213,11 +226,11 @@ int main(int argc, char *argv[])
 		HBT_event_ensemble.Set_radii();
 
 		// Output radii and source variances
-		HBT_event_ensemble.Output_source_moments( "./results/source_moments_XYZ.dat", "XYZ" );
-		HBT_event_ensemble.Output_source_moments( "./results/source_moments_OSL.dat", "OSL" );
-		HBT_event_ensemble.Output_source_variances( "./results/source_variances_XYZ.dat", "XYZ" );
-		HBT_event_ensemble.Output_source_variances( "./results/source_variances_OSL.dat", "OSL" );
-		HBT_event_ensemble.Output_HBTradii( "./results/HBT_SV_radii.dat" );
+		HBT_event_ensemble.Output_source_moments( path + "/source_moments_XYZ.dat", "XYZ" );
+		HBT_event_ensemble.Output_source_moments( path + "/source_moments_OSL.dat", "OSL" );
+		HBT_event_ensemble.Output_source_variances( path + "/source_variances_XYZ.dat", "XYZ" );
+		HBT_event_ensemble.Output_source_variances( path + "/source_variances_OSL.dat", "OSL" );
+		HBT_event_ensemble.Output_HBTradii( path + "/HBT_SV_radii.dat" );
 
 	}
 

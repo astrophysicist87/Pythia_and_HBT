@@ -22,25 +22,35 @@ int main(int argc, char *argv[])
 	//===============
 	// Display intro
 	print_header(2);   
+   
+	// Set parameter and catalogue filenames and results directory name from command-line
+	string path                      = string(argv[1]);	// results directory
+	string parametersFilename        = string(argv[2]);	
+	string particleCatalogueFilename = string(argv[3]);	
+	string catalogueFilename         = string(argv[4]);	
 
 	//===================================
 	// Read-in free parameters
 	ParameterReader * paraRdr
 		= new ParameterReader;
-	paraRdr->readFromFile("./parameters.dat");
+	//paraRdr->readFromFile("./parameters.dat");
+	paraRdr->readFromFile(parametersFilename);
 
 	// Read-in HBT particle information
 	string particle_info_filename
-		= read_file_catalogue("./particle_catalogue.dat");
+		= read_file_catalogue(particleCatalogueFilename);
+	//	= read_file_catalogue("./particle_catalogue.dat");
 	paraRdr->readFromFile(particle_info_filename);
 
 	// Read-in command-line arguments
-	paraRdr->readFromArguments(argc, argv);
+	//paraRdr->readFromArguments(argc, argv);
+	paraRdr->readFromArguments( argc, argv, (string)("#"), 5 );
 	paraRdr->echo();
 
 	// Read in name of file(s) to process
 	string input_filename
-		= read_file_catalogue("./catalogue.dat");
+		= read_file_catalogue(catalogueFilename);
+	//	= read_file_catalogue("./catalogue.dat");
 
 	//===================================
 	// Main calculation starts here
@@ -53,8 +63,8 @@ int main(int argc, char *argv[])
 	feenableexcept(FE_INVALID | FE_OVERFLOW);
 
 	// Set-up output files
-	string path
-		= dirname( input_filename );	// make sure this directory exists
+	//string path
+	//	= dirname( input_filename );	// make sure this directory exists
 	string base_filename
 		= basename( input_filename );
 	ostringstream out_filename_stream, err_filename_stream;
@@ -80,7 +90,7 @@ int main(int argc, char *argv[])
 							outmain, errmain );
 	
 	string HBTradii_filename
-		= "./results/HBTradii.dat";
+		= path + "/HBTradii.dat";
 	HBT_event_ensemble.Output_HBTradii( HBTradii_filename );
 
 
