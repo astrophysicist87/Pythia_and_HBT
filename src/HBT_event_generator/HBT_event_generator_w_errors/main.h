@@ -408,7 +408,10 @@ void read_in_file_OSCAR(string filename, vector<EventRecord> & eventsInFile, Par
 		// loop over all particles
 		for ( int iParticle = 0; iParticle < nParticles; ++iParticle )
 		{
-			infile  //>> eventID		// these are now redundant
+			string nextParticleLine;
+			getline(infile, nextParticleLine);
+			istringstream issNEXT(nextParticleLine);
+			issNEXT //>> eventID		// these are now redundant
 					//>> particleID		// and unnecessary
 					>> MCID >> thermal_or_decay
 					>> E >> px >> py >> pz
