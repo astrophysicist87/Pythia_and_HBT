@@ -397,9 +397,9 @@ void read_in_file_OSCAR(string filename, vector<EventRecord> & eventsInFile, Par
 			++nextEventIndex;
 			nextEventID = ( nextEventIndex == ensemble_multiplicites.size() ) ?
 							-1 : ensemble_multiplicites[nextEventIndex].eventID;
-			cout << "Check 2b: " << nextEventIndex << "   " << nextEventID << "   "
-					<< ensemble_multiplicites.size() << "   "
-					<< ensemble_multiplicites[nextEventIndex].eventID << endl;
+			//cout << "Check 2b: " << nextEventIndex << "   " << nextEventID << "   "
+			//		<< ensemble_multiplicites.size() << "   "
+			//		<< ensemble_multiplicites[nextEventIndex].eventID << endl;
 		}
 
 		// to hold relevant particles for this event
