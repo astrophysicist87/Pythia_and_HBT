@@ -370,12 +370,15 @@ void read_in_file_OSCAR(string filename, vector<EventRecord> & eventsInFile, Par
 		// skip all the particles in it automatically
 		if ( not eventID == nextEventID )
 		{
+			cout << "Check 1: " << eventID << " =!= " << nextEventID << endl;
 			string line;
 			for ( int iParticle = 0; iParticle < nParticles; ++iParticle )
 				getline(infile, line);
+			continue;
 		}
 		else
 		{
+			cout << "Check 2: " << eventID << " == " << nextEventID << endl;
 			//set next event to include
 			// (negative means we're done reading in selected events)
 			++nextEventIndex;
