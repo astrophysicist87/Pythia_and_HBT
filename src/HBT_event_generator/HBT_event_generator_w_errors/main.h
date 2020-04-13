@@ -367,19 +367,19 @@ void read_in_file_OSCAR(string filename, vector<EventRecord> & eventsInFile, Par
 		if ( infile.eof() ) break;
 		//infile >> nParticles;
 		cout << " containing " << nParticles << " particles." << endl;*/
-		cout << "About to read in this line: " << endl << headerLine << endl;
+		//cout << "About to read in this line: " << endl << headerLine << endl;
 		if ( !( issHEAD >> eventID >> nParticles ) ) break;
 		cout << "Reading in eventID = " << eventID << " containing " << nParticles << " particles." << endl;
 
 
-		cout << "We are currently looking for eventID " << nextEventID << " = "
-				<< ensemble_multiplicites[nextEventIndex].eventID << endl;
+		//cout << "We are currently looking for eventID " << nextEventID << " = "
+		//		<< ensemble_multiplicites[nextEventIndex].eventID << endl;
 
 		// if this event not in chosen centrality class,
 		// skip all the particles in it automatically
 		if ( not ( eventID == nextEventID ) )
 		{
-			cout << "Check 1: " << eventID << " =!= " << nextEventID << endl;
+			//cout << "Check 1: " << eventID << " =!= " << nextEventID << endl;
 			string line;
 			for ( int iParticle = 0; iParticle < nParticles; ++iParticle )
 			{
@@ -391,7 +391,7 @@ void read_in_file_OSCAR(string filename, vector<EventRecord> & eventsInFile, Par
 		}
 		else
 		{
-			cout << "Check 2: " << eventID << " == " << nextEventID << endl;
+			//cout << "Check 2: " << eventID << " == " << nextEventID << endl;
 			//set next event to include
 			// (negative means we're done reading in selected events)
 			++nextEventIndex;
@@ -474,7 +474,7 @@ void read_in_file_OSCAR(string filename, vector<EventRecord> & eventsInFile, Par
 			break;
 		}
 
-	cout << "Made it here" << endl;
+	//cout << "Made it here" << endl;
 
 	//} while ( not infile.eof() );
 	}
