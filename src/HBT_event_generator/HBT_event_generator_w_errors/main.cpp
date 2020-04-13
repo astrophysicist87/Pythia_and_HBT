@@ -129,7 +129,7 @@ int main(int argc, char *argv[])
 			>> Nevents;
 
 		double centrality_minimum = paraRdr->getVal("centrality_minimum");
-
+		double centrality_maximum = paraRdr->getVal("centrality_maximum");
 
 		cout << "run_HBT_event_generator(): "
 				<< "Using centrality class: "
