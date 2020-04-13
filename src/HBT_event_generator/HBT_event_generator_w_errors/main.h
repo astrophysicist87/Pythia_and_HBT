@@ -361,13 +361,14 @@ void read_in_file_OSCAR(string filename, vector<EventRecord> & eventsInFile, Par
 		istringstream issHEAD(headerLine);
 
 		// read in first line: contains event index and number of particles stored from this event
-		//infile >> eventID;
-		issHEAD >> eventID;
+		/*infile >> eventID;
 		cout << "Reading in eventID = " << eventID;
 		if ( infile.eof() ) break;
 		//infile >> nParticles;
-		issHEAD >> nParticles;
-		cout << " containing " << nParticles << " particles." << endl;
+		cout << " containing " << nParticles << " particles." << endl;*/
+		if ( not ( issHEAD >> eventID >> nParticles ) ) break;
+		cout << "Reading in eventID = " << eventID << " containing " << nParticles << " particles." << endl;
+
 
 		cout << "We are currently looking for eventID " << nextEventID << " = "
 				<< ensemble_multiplicites[nextEventIndex].eventID << endl;
@@ -474,7 +475,7 @@ void read_in_file_OSCAR(string filename, vector<EventRecord> & eventsInFile, Par
 									+ n_events_read_from_this_file );
 
 	// debugging
-	bool verbose = true;
+	bool verbose = false;
 	if (verbose)
 	{
 		cout << "=============================================================================================" << endl;
