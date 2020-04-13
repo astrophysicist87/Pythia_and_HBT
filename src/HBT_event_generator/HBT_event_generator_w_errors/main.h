@@ -365,6 +365,7 @@ void read_in_file_OSCAR(string filename, vector<EventRecord> & eventsInFile, Par
 		if ( infile.eof() ) break;
 		//infile >> nParticles;
 		cout << " containing " << nParticles << " particles." << endl;*/
+		cout << "About to read in this line: " << headerLine << endl;
 		if ( !( issHEAD >> eventID >> nParticles ) ) break;
 		cout << "Reading in eventID = " << eventID << " containing " << nParticles << " particles." << endl;
 
