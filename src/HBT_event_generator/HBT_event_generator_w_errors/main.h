@@ -368,7 +368,7 @@ void read_in_file_OSCAR(string filename, vector<EventRecord> & eventsInFile, Par
 
 		// if this event not in chosen centrality class,
 		// skip all the particles in it automatically
-		if ( not eventID == nextEventID )
+		if ( not ( eventID == nextEventID ) )
 		{
 			cout << "Check 1: " << eventID << " =!= " << nextEventID << endl;
 			string line;

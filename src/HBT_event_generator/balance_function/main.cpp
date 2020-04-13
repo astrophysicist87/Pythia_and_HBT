@@ -30,6 +30,12 @@ int main(int argc, char *argv[])
 	cout << endl << "**********************************************************" << endl << endl;
    
 
+	if (true)
+	{
+		cerr << "You still need to fix not eventID == ... error!!!" << endl;
+		exit(8);
+	}
+
 	// Read-in free parameters
 	ParameterReader * paraRdr = new ParameterReader;
 	paraRdr->readFromFile("./parameters.dat");
