@@ -4,7 +4,7 @@ source $SCRIPTS_DIRECTORY/pbs_env.sh
 
 # Set PBS walltime directives
 export chosen_Pythia_walltime=$3
-export chosen_HBT_walltime_per_centrality=$4
+export chosen_HBT_walltime_per_event_class=$4
 
 ########################################
 # Fix OpenMP settings and compile
@@ -34,7 +34,7 @@ do
 	cp -r $SOURCE_DIRECTORY $HOME_RESULTS_DIRECTORY/job-${job}/
 	cp $HOME_DIRECTORY/parameters.dat $HOME_RESULTS_DIRECTORY/job-${job}/src/HBT_event_generator
 	
-	executableString="./driver_pbs.sh chosen_Pythia_walltime=$chosen_Pythia_walltime chosen_HBT_walltime_per_centrality=$chosen_HBT_walltime_per_centrality ${specs[i]} &> driver_pbs.out"
+	executableString="./driver_pbs.sh chosen_Pythia_walltime=$chosen_Pythia_walltime chosen_HBT_walltime_per_event_class=$chosen_HBT_walltime_per_event_class ${specs[i]} &> driver_pbs.out"
 	generate_pbs $chosen_Pythia_walltime $chosen_OMP_NUM_THREADS $executableString > $HOME_RESULTS_DIRECTORY/job-${job}/submit.pbs
 	
 	cp $SCRIPTS_DIRECTORY/driver_pbs.sh			$HOME_RESULTS_DIRECTORY/job-${job}

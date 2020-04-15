@@ -13,8 +13,6 @@ echo 'OMP_NUM_THREADS =' $OMP_NUM_THREADS
 
 # Load PBS script defaults
 source scripts/pbs_env.sh
-#export HBT_walltime_per_centrality=$chosen_HBT_walltime_per_centrality
-#echo 'HBT_walltime_per_centrality =' $HBT_walltime_per_centrality
 
 # Update any variables set from the command line
 for var in "$@"
@@ -31,15 +29,16 @@ output_settings > settings.sh
 ./run_Pythia.sh
 
 
-
-for centralityCutString in "0-100%" "0-10%" "10-20%" "20-40%" "40-60%" "60-100%"
+# apply HBT analysis to each chosen event class
+#for eventClassCutString in "0-100%" "0-0.1%" "0-1%" "0-5%" "5-10%" "0-10%" "10-20%" "20-30%" "30-40%" "40-50%" "50-60%" "60-70%" "70-80%" "80-90%" "90-100%"
+for eventClassCutString in "1-11" "12-16" "17-22" "23-28" "29-34" "35-41" "42-51" "52-151"
 do
-	echo "Submitting qsub -l walltime=$chosen_HBT_walltime_per_centrality -l nodes=1:ppn=$OMP_NUM_THREADS run_HBT_analysis.pbs"
-	qsub -l walltime=$chosen_HBT_walltime_per_centrality \
+	echo "Submitting qsub -l walltime=$chosen_HBT_walltime_per_event_class -l nodes=1:ppn=$OMP_NUM_THREADS run_HBT_analysis.pbs"
+	qsub -l walltime=$chosen_HBT_walltime_per_event_class \
 		-l nodes=1:ppn=$OMP_NUM_THREADS \
-		-v "centralityCutString=$centralityCutString" \
+		-v "eventClassCutString=$eventClassCutString" \
 		run_HBT_analysis.pbs
-done	# all centralities finished
+done	# all event classes finished
 
 
 #zipFilename=$CURRENT_RESULTS_DIRECTORY".zip"

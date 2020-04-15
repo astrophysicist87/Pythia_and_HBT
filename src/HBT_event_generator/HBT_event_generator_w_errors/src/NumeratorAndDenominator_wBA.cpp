@@ -27,8 +27,8 @@ void HBT_event_generator::Compute_numerator_and_denominator_methodMode2_q_mode_3
 	bool perform_random_shuffle = false;
 
 	int number_of_completed_events = 0;
-	cout << "In file: " << __FILE__ << " and function: " << __FUNCTION__ << " at line: " << __LINE__ << endl;
-	cout << "  * Computing numerator and denominator of correlation function with errors; qmode = 3D using bin-averaging" << endl;
+	//cout << "In file: " << __FILE__ << " and function: " << __FUNCTION__ << " at line: " << __LINE__ << endl;
+	//cout << "  * Computing numerator and denominator of correlation function with errors; qmode = 3D using bin-averaging" << endl;
 
 	double average_Npair_numerator = 0.0;
 	double average_Nmixed_denominator = 0.0;
@@ -42,10 +42,10 @@ void HBT_event_generator::Compute_numerator_and_denominator_methodMode2_q_mode_3
 	for (int iEvent = 0; iEvent < allEvents.size(); ++iEvent)
 	{
 		EventRecord event = allEvents[iEvent];
-		#pragma omp critical
+		/*#pragma omp critical
 		{
 			cout << "Now doing event = " << event.eventID << " of full ensemble" << endl;
-		}
+		}*/
 
 		vector<double> private_num(numerator.size(), 0.0);
 		vector<double> private_num2(numerator2.size(), 0.0);

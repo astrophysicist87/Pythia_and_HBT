@@ -67,44 +67,45 @@ output_settings () {
 
 echo '#! /usr/bin/env bash'
 echo
-echo 'runPythia='$runPythia
-#echo 'useParallel='$useParallel
-echo 'centralitySelectionInPythia='$centralitySelectionInPythia
-echo 'runHBTEG='$runHBTEG
-echo 'runFitCF='$runFitCF
-echo 'runSV='$runSV
-#echo 'runBF='$runBF
+echo 'export runPythia='$runPythia
+#echo 'export useParallel='$useParallel
+echo 'export eventClassSelectionInPythia='$eventClassSelectionInPythia
+echo 'export runHBTEG='$runHBTEG
+echo 'export runFitCF='$runFitCF
+echo 'export runSV='$runSV
+#echo 'export runBF='$runBF
 echo
-echo 'projectile='$projectile
-echo 'target='$target
-echo 'beamEnergy='$beamEnergy
-echo 'Nevents='$Nevents
-echo 'chosenHBTparticle='$chosenHBTparticle
-echo 'centralityClass='$centralityClass
-echo 'bMin='$bMin
-echo 'bMax='$bMax
+echo 'export projectile='$projectile
+echo 'export target='$target
+echo 'export beamEnergy='$beamEnergy
+echo 'export Nevents='$Nevents
+echo 'export chosenHBTparticle='$chosenHBTparticle
+echo 'export eventClassSelectionMode='$eventClassSelectionMode
+echo 'export eventClass='$eventClass
+echo 'export bMin='$bMin
+echo 'export bMax='$bMax
 echo
-echo 'QRefValue='$QRefValue
-echo 'BEeffects='$BEeffects
-echo 'BEEnhancementMode='$BEEnhancementMode
-echo 'SetFragmentationVertices='$SetFragmentationVertices
-echo 'SetPartonVertices='$SetPartonVertices
-echo 'ThermalOnly='$ThermalOnly
+echo 'export QRefValue='$QRefValue
+echo 'export BEeffects='$BEeffects
+echo 'export BEEnhancementMode='$BEEnhancementMode
+echo 'export SetFragmentationVertices='$SetFragmentationVertices
+echo 'export SetPartonVertices='$SetPartonVertices
+echo 'export ThermalOnly='$ThermalOnly
 echo
-echo 'useInvariantSourceSize='$useInvariantSourceSize
-echo 'useDistribution='$useDistribution
-echo 'useRelativeDistance='$useRelativeDistance
-echo 'useRestFrame='$useRestFrame
-echo 'includePhaseSpace='$includePhaseSpace
-echo 'linearInterpolateCDF='$linearInterpolateCDF
-echo 'usePositiveShiftsForCompensation='$usePositiveShiftsForCompensation
-echo 'computeBEEnhancementExactly='$computeBEEnhancementExactly
+echo 'export useInvariantSourceSize='$useInvariantSourceSize
+echo 'export useDistribution='$useDistribution
+echo 'export useRelativeDistance='$useRelativeDistance
+echo 'export useRestFrame='$useRestFrame
+echo 'export includePhaseSpace='$includePhaseSpace
+echo 'export linearInterpolateCDF='$linearInterpolateCDF
+echo 'export usePositiveShiftsForCompensation='$usePositiveShiftsForCompensation
+echo 'export computeBEEnhancementExactly='$computeBEEnhancementExactly
 echo
-echo 'UseColorReconnection='$UseColorReconnection
-echo 'UseRopeHadronization='$UseRopeHadronization
-echo 'IncludeStringShoving='$IncludeStringShoving
-echo 'IncludeFlavourRopesMechanism='$IncludeFlavourRopesMechanism
-echo 'storeBjorkenCoordinates='$storeBjorkenCoordinates
+echo 'export UseColorReconnection='$UseColorReconnection
+echo 'export UseRopeHadronization='$UseRopeHadronization
+echo 'export IncludeStringShoving='$IncludeStringShoving
+echo 'export IncludeFlavourRopesMechanism='$IncludeFlavourRopesMechanism
+echo 'export storeBjorkenCoordinates='$storeBjorkenCoordinates
 
 }
 

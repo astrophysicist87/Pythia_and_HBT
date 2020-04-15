@@ -7,7 +7,7 @@
 export runPythia=true
 #export useParallel=true
 export useArbitraryParticle=false
-export centralitySelectionInPythia=false
+export eventClassSelectionInPythia=false
 export runHBTEG=true
 export runFitCF=true
 export runSV=true
@@ -19,7 +19,8 @@ export target="p"
 export beamEnergy="13000.0"                     # GeV
 export Nevents="10"
 export chosenHBTparticle="211"                  # pion(+)
-export centralityClass="0-100%"
+export eventClassSelectionMode="centrality"
+export eventClass="0-100%"
 export bMin="0.0"
 export bMax="20.0"
 

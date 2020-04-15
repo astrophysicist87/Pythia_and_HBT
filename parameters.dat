@@ -107,9 +107,14 @@ file_mode = 1
 	#=======
 
 #===========
+selection_mode = 0
+column_to_read = 3	# column in multiplicities file to select on
+# 0: use centrality ranges
+# 1: use multiplicity ranges
+
 # minimum bias by default
-centrality_minimum = 0
-centrality_maximum = 100
+event_class_minimum = 0
+event_class_maximum = 100
 
 #===========
 # functional form for fitting correlation

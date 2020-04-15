@@ -29,24 +29,27 @@ CURRENT_RESULTS_DIRECTORY=$MAIN_RESULTS_DIRECTORY
 #=====================================
 
 #=================================================
-# Set centrality class from command-line argument
+# Set event class from command-line argument
 #=================================================
-centralityCutString=$1	# should be passed in as argument directly
+eventClassCutString=$1	# should be passed in as argument directly
 
 #=================================================
-# process centrality class information
+# process event class information
 success=0
 
-centralityCut=(`echo $centralityCutString | sed 's/-/ /g' | sed 's/%//g'`)
-thisCentrality="C"${centralityCut[0]}"_"${centralityCut[1]}
+declare -A selectionTokens=( ["centrality"]="C" ["multiplicity"]="N")
+selectionToken="${selectionTokens[$eventClassSelectionMode]}"
+
+eventClassCut=(`echo $eventClassCutString | sed 's/-/ /g' | sed 's/%//g'`)
+thisEventClass=${selectionToken}${eventClassCut[0]}"_"${eventClassCut[1]}
 
 
 #=================================================
-# if Pythia was minimum bias (default), do centrality selection in subsequent codes
+# if Pythia was minimum bias (default), do event class selection in subsequent codes
 # otherwise, just do whatever events have been produced
-lowerLimit=${centralityCut[0]}
-upperLimit=${centralityCut[1]}
-if $centralitySelectionInPythia
+lowerLimit=${eventClassCut[0]}
+upperLimit=${eventClassCut[1]}
+if $eventClassSelectionInPythia
 then
 	lowerLimit=0
 	upperLimit=100
@@ -56,7 +59,7 @@ fi
 #=================================================
 # set names of sub-directories
 HBT_RESULTS_DIRECTORY=$CURRENT_RESULTS_DIRECTORY/HBT_results
-HBT_CEN_RESULTS_DIRECTORY=$HBT_RESULTS_DIRECTORY/$thisCentrality
+HBT_CEN_RESULTS_DIRECTORY=$HBT_RESULTS_DIRECTORY/$thisEventClass
 
 # make sure HBT results directory exists
 if [ -d "$HBT_CEN_RESULTS_DIRECTORY" ]
@@ -82,7 +85,8 @@ collisionSystemStem=$projectile$target"_"`echo $beamEnergy`"GeV_Nev"$Nevents
 echo '| - '`basename "$0"`': Processing' \
 		$Nevents $projectile'+'$target \
 		'collisions at' $beamEnergy 'GeV' \
-		'in centrality class' $centralityCutString
+		'in event class' $eventClassCutString \
+		'(selection mode = '$eventClassSelectionMode')'
 
 
 # Run HBT_event_generator
@@ -120,8 +124,8 @@ then
 			$CF_RESULTS_DIRECTORY/particle_catalogue.dat \
 			$CF_RESULTS_DIRECTORY/catalogue.dat \
 			$CF_RESULTS_DIRECTORY/ensemble_catalogue.dat \
-			centrality_minimum=$lowerLimit \
-			centrality_maximum=$upperLimit \
+			event_class_minimum=$lowerLimit \
+			event_class_maximum=$upperLimit \
 			BE_mode=$chosen_BE_mode \
 			chosen_MCID=$chosenHBTparticle \
 			store_Bjorken_coordinates="${boolVal[$storeBjorkenCoordinates]}" \
@@ -219,8 +223,8 @@ then
 			$SV_RESULTS_DIRECTORY/particle_catalogue.dat \
 			$SV_RESULTS_DIRECTORY/catalogue.dat \
 			$SV_RESULTS_DIRECTORY/ensemble_catalogue.dat \
-			centrality_minimum=$lowerLimit \
-			centrality_maximum=$upperLimit \
+			event_class_minimum=$lowerLimit \
+			event_class_maximum=$upperLimit \
 			chosen_MCID=$chosenHBTparticle \
 			store_Bjorken_coordinates="${boolVal[$storeBjorkenCoordinates]}" \
 			1> $SV_RESULTS_DIRECTORY/SV_record.out \
@@ -242,7 +246,7 @@ fi
 # Overkill, but copy it over anyway
 cp $HBT_DIRECTORY/parameters.dat $HBT_CEN_RESULTS_DIRECTORY
 
-echo '| - '`basename "$0"`': Finished everything for centrality class =' $centralityCutString'!'
+echo '| - '`basename "$0"`': Finished everything for event class =' $eventClassCutString'!'
 echo '| ------------------------------------------------------------'
 
 

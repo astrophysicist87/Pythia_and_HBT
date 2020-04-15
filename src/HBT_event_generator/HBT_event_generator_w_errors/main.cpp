@@ -124,38 +124,57 @@ int main(int argc, char *argv[])
 		iss >> target_name
 			>> projectile_name
 			>> beam_energy
-			//>> centrality_minimum
-			//>> centrality_maximum
 			>> Nevents;
 
-		double centrality_minimum = paraRdr->getVal("centrality_minimum");
-		double centrality_maximum = paraRdr->getVal("centrality_maximum");
+		int selection_mode = paraRdr->getVal("selection_mode");
+		double event_class_minimum = paraRdr->getVal("event_class_minimum");
+		double event_class_maximum = paraRdr->getVal("event_class_maximum");
 
-		cout << "run_HBT_event_generator(): "
-				<< "Using centrality class: "
-				<< centrality_minimum << "-"
-				<< centrality_maximum << "%!" << endl;
+		if ( selection_mode == 0 )
+			cout << "run_HBT_event_generator(): "
+					<< "Using centrality class: "
+					<< event_class_minimum << "-"
+					<< event_class_maximum << "%!" << endl;
+		else
+			cout << "run_HBT_event_generator(): "
+					<< "Using multiplicity range: "
+					<< event_class_minimum << "-"
+					<< event_class_maximum << "!" << endl;
 	
 
 		// select only those events falling into specificed centrality range
 		string multiplicity_filename = ensemble_info[1];
 		cout << "Reading in " << multiplicity_filename << endl;
-		get_events_in_centrality_class(
+		const int column_to_read = paraRdr->getVal("column_to_read");
+		vector<string> selectionModes = { "centrality", "multiplicity" };
+		get_events_in_event_class(
 					multiplicity_filename, ensemble_multiplicites,
-					centrality_minimum, centrality_maximum );
+					event_class_minimum, event_class_maximum,
+					column_to_read, selectionModes[selection_mode] );
 
-		cout << "run_HBT_event_generator(): "
-				<< "Using " << ensemble_multiplicites.size()
-				<< " events in centrality class "
-				<< centrality_minimum << "-"
-				<< centrality_maximum << "%!" << endl;
+		if ( selection_mode == 0 )
+			cout << "run_HBT_event_generator(): "
+					<< "Using " << ensemble_multiplicites.size()
+					<< " events in centrality class "
+					<< event_class_minimum << "-"
+					<< event_class_maximum << "%!" << endl
+					<< "Check events in this centrality class: " << endl;
+		else
+			cout << "run_HBT_event_generator(): "
+					<< "Using " << ensemble_multiplicites.size()
+					<< " events in multiplicity range "
+					<< event_class_minimum << "-"
+					<< event_class_maximum << "!" << endl
+					<< "Check events in this multiplicity range: " << endl;
 
-		cout << "Check events in this centrality class: " << endl;
-		for (int iEvent = 0; iEvent < ensemble_multiplicites.size(); ++iEvent)
-			cout << ensemble_multiplicites[iEvent].eventID << "   "
-					<< ensemble_multiplicites[iEvent].total_multiplicity << "   "
-					<< ensemble_multiplicites[iEvent].particle_multiplicity << endl;
-
+		//for (int iEvent = 0; iEvent < ensemble_multiplicites.size(); ++iEvent)
+		//	cout << ensemble_multiplicites[iEvent].eventID << "   "
+		//			<< ensemble_multiplicites[iEvent].total_multiplicity << "   "
+		//			<< ensemble_multiplicites[iEvent].particle_multiplicity << endl;
+		for ( const auto & event : ensemble_multiplicites )
+		for ( const auto & field : event.fields )
+			cout << field << "   ";
+		cout << endl;
 
 		// Proceed with HBT calculations
 		string mode = "read stream";

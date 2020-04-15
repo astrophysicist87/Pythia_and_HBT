@@ -43,11 +43,12 @@ echo '| '`basename "$0"`': running Pythia!'
 
 
 
-# apply HBT analysis to each chosen centrality class
-for centralityCutString in "0-100%" "0-10%" "10-20%" "20-40%" "40-60%" "60-100%"
+# apply HBT analysis to each chosen event class
+#for eventClassCutString in "0-100%" "0-0.1%" "0-1%" "0-5%" "5-10%" "0-10%" "10-20%" "20-30%" "30-40%" "40-50%" "50-60%" "60-70%" "70-80%" "80-90%" "90-100%"
+for eventClassCutString in "1-11" "12-16" "17-22" "23-28" "29-34" "35-41" "42-51" "52-151"
 do
-	echo '| '`basename "$0"`': running HBT analysis for centrality class = '$centralityCutString'!'
-	./run_HBT_analysis.sh $centralityCutString	# do NOT submit Bash scripts in background
+	echo '| '`basename "$0"`': running HBT analysis for event class = '$eventClassCutString'!'
+	./run_HBT_analysis.sh $eventClassCutString	# do NOT submit Bash scripts in background
 done	# all centralities finished
 
 

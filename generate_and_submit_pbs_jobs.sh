@@ -3,14 +3,14 @@
 (
 	# info for this run
 	NTHREADS=40
-	DIRECTORY=RESULTS
+	DIRECTORY=RESULTS_pp_7TeV
 	PYTHIA_WALLTIME='24:00:00'
 	HBT_WALLTIME='72:00:00'
 
 	# Set job specifications here
 	declare -a specs=(
-		'useArbitraryParticle=true projectile="p" target="p" beamEnergy="7000.0" chosenHBTparticle="211" Nevents=10000000 storeBjorkenCoordinates="false" BEeffects="off"'
-		'useArbitraryParticle=true projectile="p" target="Pb" beamEnergy="5020.0" chosenHBTparticle="211" Nevents=1000000 storeBjorkenCoordinates="false" BEeffects="off"'
+		'useArbitraryParticle=true projectile="p" target="p" beamEnergy="7000.0" chosenHBTparticle="211" eventClassSelectionMode="multiplicity" Nevents=25000000 storeBjorkenCoordinates="false" BEeffects="off" runSV="false"'
+		#'useArbitraryParticle=true projectile="p" target="Pb" beamEnergy="5020.0" chosenHBTparticle="211" Nevents=1000000 storeBjorkenCoordinates="false" BEeffects="off" runSV="false'
 		#'useArbitraryParticle=true projectile="Pb" target="Pb" beamEnergy="2760.0" chosenHBTparticle="211" Nevents=10000 storeBjorkenCoordinates="false" BEeffects="off"'
 	)
 

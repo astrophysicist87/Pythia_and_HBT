@@ -586,11 +586,17 @@ if (false)
 	cout << "END EVENT LISTING" << endl;
 }
 
-			int event_multiplicity = 0, charged_multiplicity = 0,
-				hadron_multiplicity = 0, charged_hadron_multiplicity = 0;
+			int event_multiplicity = 0;
+			int charged_multiplicity = 0;
+			int hadron_multiplicity = 0;
+			int charged_hadron_multiplicity = 0;    // N_{ch}
+			int Nch_absEta_lt_0_5 = 0;              // N_{ch}|_{|\eta|<=0.5}
+			int Nch_absEta_lt_1_2 = 0;              // N_{ch}|_{|\eta|<=1.2}
 
 			// vector to hold number of each HBT particle species
 			vector<int> HBT_particle_multiplicities(HBT_particle_IDs.size(), 0);
+			vector<int> HBT_particle_multiplicities_absEta_lt_0_5(HBT_particle_IDs.size(), 0);
+			vector<int> HBT_particle_multiplicities_absEta_lt_1_2(HBT_particle_IDs.size(), 0);
 
 			vector<Particle> particles_to_output, unshifted_particles_to_output;
 			vector<int> particle_is_thermal_or_decay;
@@ -609,18 +615,37 @@ if (false)
 						//count all final hadrons in multiplicity
 						hadron_multiplicity++;
 						if ( p.isCharged() )
+						{
 							charged_hadron_multiplicity++;
+							const double abs_p_eta = abs(p.eta());
+							if ( abs_p_eta < 1.2 )
+							{
+								Nch_absEta_lt_1_2++;
+								if ( abs_p_eta < 0.5 )
+									Nch_absEta_lt_0_5++;
+							}
+						}
 
-				 		if ( HBT_particle_IDs.count( p.id() ) > 0 )	// i.e., is pion(+) or another HBT particle in the HBT_particle_IDs map
+						// i.e., is pion(+) or another HBT particle in the HBT_particle_IDs map
+				 		if ( HBT_particle_IDs.count( p.id() ) > 0 )
 						{
 
 							const int pmother1 = p.mother1();
 							const int pmother2 = p.mother2();
 
-							bool particle_is_decay = ( 	momentum_space_modifications
-														and p.status() != 99 )	// particle is decay not affected by modifications
-													or ( ( not momentum_space_modifications )
-														and p.status() >= 90 );	// particle is just a normal decay product
+							// particle is decay not affected by modifications
+							bool particle_is_decay_withMSM
+                                 = momentum_space_modifications
+                                   and p.status() != 99;
+
+							// particle is just a normal decay product
+							bool particle_is_decay_withoutMSM
+                                 = ( not momentum_space_modifications )
+                                   and p.status() >= 90;
+
+							bool particle_is_decay
+                                 = particle_is_decay_withMSM
+                                   or particle_is_decay_withoutMSM;	
 
 							// if only looking at thermal (i.e., non-decay) particles
 							if ( thermal_only and particle_is_decay )
@@ -651,7 +676,13 @@ if (false)
 							// Increment this particle count by 1
 							//pion_multiplicity++;
 							HBT_particle_multiplicities[ HBT_particle_IDs[ p.id() ] ]++;
-
+							const double abs_p_eta = abs(p.eta());
+							if ( abs_p_eta < 1.2 )
+							{
+								HBT_particle_multiplicities_absEta_lt_1_2[ HBT_particle_IDs[ p.id() ] ]++;
+								if ( abs_p_eta < 0.5 )
+									HBT_particle_multiplicities_absEta_lt_0_5[ HBT_particle_IDs[ p.id() ] ]++;
+							}
 						}
 					}
 				}
@@ -676,6 +707,17 @@ if (false)
 			// just pick something to guarantee large multiplicity
 			//if ( event_multiplicity < 70000 )
 			//	continue;
+
+			// Apply any additional cuts here
+			const int pion_multiplicity_absEta_lt_1_2
+                      = HBT_particle_multiplicities_absEta_lt_1_2[ HBT_particle_IDs[ 211 ] ];
+			const double dNch_deta_absEta_lt_0_5 = Nch_absEta_lt_0_5 / 1.0;   // dN_{ch}/d\eta|_{|\eta|<=0.5}
+			const double dNch_deta_absEta_lt_1_2 = Nch_absEta_lt_1_2 / 2.4;   // dN_{ch}/d\eta|_{|\eta|<=1.2}
+
+			// only keep events with at least two charged pions with |eta|<=1.2
+			// (only one will not contribute to final results)
+			if ( pion_multiplicity_absEta_lt_1_2 < 2 ) continue;
+
 
 			#pragma omp critical
 			{
@@ -728,21 +770,23 @@ if (false)
 	
 					bool verbose = false;
 
-					//outMultiplicities
-					//			<< iEvent << "   "
-					//			<< event_multiplicity << "   "
-					//			<< pion_multiplicity;
 					outMultiplicities
 								<< iEvent << "   "
-								<< event_multiplicity /*<< "   "
-								<< charged_multiplicity << "   "
-								<< hadron_multiplicity << "   "
-								<< charged_hadron_multiplicity*/;
+								<< charged_hadron_multiplicity;
 
 					// output particle multiplicities (order hardcoded for now)
 					for ( int iHBTParticle = 0; iHBTParticle < (int)HBT_particle_IDs.size(); ++iHBTParticle )
 						outMultiplicities
 								<< "   " << HBT_particle_multiplicities[ iHBTParticle ];
+
+					outMultiplicities
+								<< "   " << Nch_absEta_lt_1_2
+								<< "   " << dNch_deta_absEta_lt_0_5;
+
+					// output particle multiplicities with |eta|<=1.2
+					for ( int iHBTParticle = 0; iHBTParticle < (int)HBT_particle_IDs.size(); ++iHBTParticle )
+						outMultiplicities
+								<< "   " << HBT_particle_multiplicities_absEta_lt_1_2[ iHBTParticle ];
 
 					if ( verbose )
 						outMultiplicities

@@ -87,16 +87,6 @@ collisionSystemStem=$projectile$target"_"`echo $beamEnergy`"GeV_Nev"$Nevents
 
 	fi
 
-	# if Pythia was minimum bias (default), do centrality selection in subsequent codes
-	# otherwise, just do whatever events have been produced
-	#lowerLimit=${centralityCut[0]}
-	#upperLimit=${centralityCut[1]}
-	#if $centralitySelectionInPythia
-	#then
-	#	lowerLimit=0
-	#	upperLimit=100
-	#fi
-
 
 	# Get the filenames which need to be processed
 	recordOfOutputFilenames_Sxp=$PYTHIA_RESULTS_DIRECTORY/`echo $collisionSystemStem`"_S_x_p_filenames.dat"
