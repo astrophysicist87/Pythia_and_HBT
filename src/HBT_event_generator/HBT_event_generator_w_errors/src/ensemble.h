@@ -49,8 +49,8 @@ void read_in_multiplicities(string filename, int column_to_read, vector<EventMul
 		while ( iss >> field ) thisEvent.fields.push_back( field );
 
 		// if this line has three valid entries, store and move on
-		thisEvent.eventID = stoi( fields[0] );
-		thisEvent.chosen_multiplicity = stoi( fields[ column_to_read ] );
+		thisEvent.eventID = stoi( thisEvent.fields[0] );
+		thisEvent.chosen_multiplicity = stoi( thisEvent.fields[ column_to_read ] );
 		ensemble.push_back( thisEvent );
 	}
 
