@@ -172,9 +172,11 @@ int main(int argc, char *argv[])
 		//			<< ensemble_multiplicites[iEvent].total_multiplicity << "   "
 		//			<< ensemble_multiplicites[iEvent].particle_multiplicity << endl;
 		for ( const auto & event : ensemble_multiplicites )
-		for ( const auto & field : event.fields )
-			cout << field << "   ";
-		cout << endl;
+		{
+			for ( const auto & field : event.fields )
+				cout << field << "   ";
+			cout << endl;
+		}
 
 		// Proceed with HBT calculations
 		string mode = "read stream";

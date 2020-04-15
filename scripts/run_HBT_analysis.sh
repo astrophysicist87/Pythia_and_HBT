@@ -38,7 +38,9 @@ eventClassCutString=$1	# should be passed in as argument directly
 success=0
 
 declare -A selectionTokens=( ["centrality"]="C" ["multiplicity"]="N")
+declare -A selectionModes=( ["centrality"]="0" ["multiplicity"]="1")
 selectionToken="${selectionTokens[$eventClassSelectionMode]}"
+selectionMode="${selectionModes[$eventClassSelectionMode]}"
 
 eventClassCut=(`echo $eventClassCutString | sed 's/-/ /g' | sed 's/%//g'`)
 thisEventClass=${selectionToken}${eventClassCut[0]}"_"${eventClassCut[1]}
@@ -124,6 +126,7 @@ then
 			$CF_RESULTS_DIRECTORY/particle_catalogue.dat \
 			$CF_RESULTS_DIRECTORY/catalogue.dat \
 			$CF_RESULTS_DIRECTORY/ensemble_catalogue.dat \
+			selection_mode=$selectionMode \
 			event_class_minimum=$lowerLimit \
 			event_class_maximum=$upperLimit \
 			BE_mode=$chosen_BE_mode \
@@ -223,6 +226,7 @@ then
 			$SV_RESULTS_DIRECTORY/particle_catalogue.dat \
 			$SV_RESULTS_DIRECTORY/catalogue.dat \
 			$SV_RESULTS_DIRECTORY/ensemble_catalogue.dat \
+			selection_mode=$selectionMode \
 			event_class_minimum=$lowerLimit \
 			event_class_maximum=$upperLimit \
 			chosen_MCID=$chosenHBTparticle \
