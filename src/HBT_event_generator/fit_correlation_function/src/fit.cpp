@@ -509,11 +509,12 @@ void Correlation_function::find_minimum_chisq_CFerr_full_FR( int iKT, int iKphi,
 		double R2_o 	= results[1]*hbarC*hbarC;
 		double R2_s 	= results[2]*hbarC*hbarC;
 		double R2_l 	= results[3]*hbarC*hbarC;
+		double R2_os, R2_ol, R2_sl;
 		if ( include_cross_terms )
 		{
-			double R2_os 	= results[4]*hbarC*hbarC;
-			double R2_ol 	= results[5]*hbarC*hbarC;
-			double R2_sl 	= results[6]*hbarC*hbarC;
+			R2_os 		= results[4]*hbarC*hbarC;
+			R2_ol 		= results[5]*hbarC*hbarC;
+			R2_sl 		= results[6]*hbarC*hbarC;
 		}
 
 		const int iK3D = indexerK(iKT, iKphi, iKL);
