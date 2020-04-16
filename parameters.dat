@@ -16,9 +16,9 @@ KT_grid_mode = 0
 	#     (for integrating correlation function)
 
 # KT points
-n_KT_pts = 6
+n_KT_pts = 8
 KTmin = 0.0
-KTmax = 1.0
+KTmax = 0.8
 
 #=======
 # Kphi grid
@@ -41,12 +41,12 @@ KLmax = 1.0
 
 #===========
 # relative momenta (3D)
-n_qo_pts = 26
-n_qs_pts = 26
-n_ql_pts = 26
-delta_qo = 0.01
-delta_qs = 0.01
-delta_ql = 0.01
+n_qo_pts = 52
+n_qs_pts = 52
+n_ql_pts = 52
+delta_qo = 0.005
+delta_qs = 0.005
+delta_ql = 0.005
 
 # relative momentum (1D)
 n_Q_pts = 22
@@ -120,6 +120,7 @@ event_class_maximum = 100
 # functional form for fitting correlation
 # function: Gaussian (0) or exponential (1)
 fit_mode = 0
+include_cross_terms = 1
 
 
 #===========

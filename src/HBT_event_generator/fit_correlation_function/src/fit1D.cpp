@@ -116,7 +116,7 @@ void Correlation_function::find_minimum_chisq_correlationfunction_Q( int iKT, in
 
 		if (correl_local < 1.0e-15) continue;
 
-		bool ignore_central_point = true;
+		//bool ignore_central_point = true;
 		if ( 	ignore_central_point
 				and i==(n_Q_bins-1)/2)
 			continue;
@@ -198,7 +198,7 @@ void Correlation_function::find_minimum_chisq_correlationfunction_Q( int iKT, in
 
 			if(correl_local < 1.0e-15) continue;
 
-			bool ignore_central_point = true;
+			//bool ignore_central_point = true;
 			if ( 	ignore_central_point
 					and i==(n_Q_bins-1)/2)
 				continue;
@@ -248,7 +248,7 @@ void Correlation_function::find_minimum_chisq_correlationfunction_Q( int iKT, in
 
 			if (correl_local < 1.0e-15) continue;
 
-			bool ignore_central_point = true;
+			//bool ignore_central_point = true;
 			if ( 	ignore_central_point
 					and i==(n_Q_bins-1)/2)
 				continue;
@@ -377,7 +377,7 @@ void Correlation_function::find_minimum_chisq_CFerr_Q_FR( int iKT, int iKphi, in
 
 		if (correl_local < 1.0e-15) continue;
 
-		bool ignore_central_point = true;
+		//bool ignore_central_point = true;
 		if ( 	ignore_central_point
 				and i==(n_Q_bins-1)/2)
 			continue;

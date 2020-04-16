@@ -30,6 +30,8 @@ void Correlation_function::initialize_all(
 	bin_mode 		= paraRdr->getVal("bin_mode");
 	q_mode 			= paraRdr->getVal("q_mode");
 	fit_mode		= paraRdr->getVal("fit_mode");
+	include_cross_terms
+		= static_cast<bool>( paraRdr->getVal("include_cross_terms") );
 	// - pair momenta points at which to interpolate HBT results
 	n_KT_pts 		= paraRdr->getVal("n_KT_pts");
 	KT_min 			= paraRdr->getVal("KTmin");
@@ -58,7 +60,7 @@ void Correlation_function::initialize_all(
 	init_qo 		= -0.5*double(n_qo_pts-1)*delta_qo;
 	init_qs 		= -0.5*double(n_qs_pts-1)*delta_qs;
 	init_ql 		= -0.5*double(n_ql_pts-1)*delta_ql;
-	init_Q 		= -0.5*double(n_Q_pts-1)*delta_Q;
+	init_Q 			= -0.5*double(n_Q_pts-1)*delta_Q;
 
 	n_qo_bins 		= n_qo_pts - 1;
 	n_qs_bins 		= n_qs_pts - 1;

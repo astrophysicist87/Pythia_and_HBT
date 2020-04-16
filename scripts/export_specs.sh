@@ -4,8 +4,6 @@ function export_specs_array () {
 
 loc_specs=("$@")
 
-#echo 'loc_specs='$loc_specs
-
 echo 'declare -a specs=('
 for spec in "${loc_specs[@]}"
 do

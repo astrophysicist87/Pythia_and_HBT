@@ -21,6 +21,8 @@ using namespace std;
 const complex<double> i(0.0, 1.0);
 const double hbarC = 0.19733;	//GeV*fm
 
+constexpr bool ignore_central_point = true;
+
 class Correlation_function
 {
 	private:
@@ -31,6 +33,7 @@ class Correlation_function
 		double particle_mass;
 
 		int bin_mode, q_mode, fit_mode;
+		bool include_cross_terms;
 
 		int n_Q_pts;
 		int n_KT_pts, n_Kphi_pts, n_KL_pts;

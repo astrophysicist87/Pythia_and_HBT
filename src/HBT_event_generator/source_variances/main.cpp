@@ -31,6 +31,18 @@ int main(int argc, char *argv[])
 	string catalogueFilename         = string(argv[4]);	
 	string ensembleCatalogueFilename = string(argv[5]);	
 
+	// Check what was passed in
+	cout << "Command-line arguments: " << endl;
+	cout << " --> path for results: " << path << endl;
+	cout << " --> path to parameters.dat: "
+			<< parametersFilename << endl;
+	cout << " --> path to particle_catalogue.dat: "
+			<< particleCatalogueFilename << endl;
+	cout << " --> path to catalogue.dat: "
+			<< catalogueFilename << endl;
+	cout << " --> path to ensemble_catalogue.dat: "
+			<< ensembleCatalogueFilename << endl;
+
 	// Read-in free parameters
 	ParameterReader * paraRdr = new ParameterReader;
 	//paraRdr->readFromFile("./parameters.dat");

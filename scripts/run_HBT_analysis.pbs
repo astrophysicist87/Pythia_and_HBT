@@ -177,6 +177,7 @@ then
 	fi
 
 	#cp ../parameters.dat .
+	CF_RESULTS_DIRECTORY=$HBT_CEN_RESULTS_DIRECTORY/CF_results
 	readlink -f $CF_RESULTS_DIRECTORY/HBT_pipiCF.dat > $FIT_RESULTS_DIRECTORY/catalogue.dat
 	cp ../parameters.dat ./particle_catalogue.dat $FIT_RESULTS_DIRECTORY
 

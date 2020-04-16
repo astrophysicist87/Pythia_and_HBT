@@ -11,7 +11,6 @@
 #include "src/Stopwatch.h"
 #include "src/HBT_event_generator.h"
 #include "src/ParameterReader.h"
-//#include "/home/blixen/plumberg/src/ArsenalAndParameterReaderSource/ParameterReader.h"
 #include "src/EventRecord.h"
 #include "src/ParticleRecord.h"
 #include "src/random_events.h"
@@ -56,6 +55,18 @@ int main(int argc, char *argv[])
 	string particleCatalogueFilename = string(argv[3]);	
 	string catalogueFilename         = string(argv[4]);	
 	string ensembleCatalogueFilename = string(argv[5]);	
+
+	// Check what was passed in
+	cout << "Command-line arguments: " << endl;
+	cout << " --> path to results: " << path << endl;
+	cout << " --> path to parameters.dat: "
+			<< parametersFilename << endl;
+	cout << " --> path to particle_catalogue.dat: "
+			<< particleCatalogueFilename << endl;
+	cout << " --> path to catalogue.dat: "
+			<< catalogueFilename << endl;
+	cout << " --> path to ensemble_catalogue.dat: "
+			<< ensembleCatalogueFilename << endl;
 
 	// Read-in free parameters
 	ParameterReader * paraRdr = new ParameterReader;

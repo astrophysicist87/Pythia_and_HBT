@@ -29,6 +29,16 @@ int main(int argc, char *argv[])
 	string particleCatalogueFilename = string(argv[3]);	
 	string catalogueFilename         = string(argv[4]);	
 
+	// Check what was passed in
+	cout << "Command-line arguments: " << endl;
+	cout << " --> path to results: " << path << endl;
+	cout << " --> path to parameters.dat: "
+			<< parametersFilename << endl;
+	cout << " --> path to particle_catalogue.dat: "
+			<< particleCatalogueFilename << endl;
+	cout << " --> path to catalogue.dat: "
+			<< catalogueFilename << endl;
+
 	//===================================
 	// Read-in free parameters
 	ParameterReader * paraRdr

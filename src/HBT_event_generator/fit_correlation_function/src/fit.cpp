@@ -65,13 +65,13 @@ void Correlation_function::Fit_correlation_function()
 }
 
 
-void Correlation_function::find_minimum_chisq_correlationfunction_full( int iKT, int iKphi, int iKL )
+void Correlation_function::find_minimum_chisq_correlationfunction_full(	int iKT, int iKphi, int iKL )
 {
 
 	const size_t data_length = n_qo_bins*n_qs_bins*n_ql_bins;  // # of points
 
     double lambda, R_o, R_s, R_l, R_os, R_ol, R_sl;
-    int dim = 7;
+    int dim = include_cross_terms ? 7 : 4;
     int s_gsl;
 
     double * V = new double [dim];
@@ -106,7 +106,7 @@ void Correlation_function::find_minimum_chisq_correlationfunction_full( int iKT,
 
 		if (correl_local < 1.0e-15) continue;
 
-		bool ignore_central_point = true;
+		//bool ignore_central_point = true;
 		if ( 	ignore_central_point
 				and i==(n_qo_bins-1)/2
 				and j==(n_qs_bins-1)/2
@@ -115,7 +115,7 @@ void Correlation_function::find_minimum_chisq_correlationfunction_full( int iKT,
 //			correl_err_local = 1.0e10;	//ignore central point
         double sigma_k_prime = correl_err_local/correl_local;
 
-		if ( sigma_k_prime < 1.e-15 )	// too small
+		if ( sigma_k_prime < 1e-15 )	// too small
 			continue;
 
         double inv_sigma_k_prime_sq = 1./(sigma_k_prime*sigma_k_prime);
@@ -125,9 +125,12 @@ void Correlation_function::find_minimum_chisq_correlationfunction_full( int iKT,
 		qweight[1] = q_out_local*q_out_local;
 		qweight[2] = q_side_local*q_side_local;
 		qweight[3] = q_long_local*q_long_local;
-		qweight[4] = q_out_local*q_side_local;
-		qweight[5] = q_out_local*q_long_local;
-		qweight[6] = q_side_local*q_long_local;
+		if ( include_cross_terms )
+		{
+			qweight[4] = q_out_local*q_side_local;
+			qweight[5] = q_out_local*q_long_local;
+			qweight[6] = q_side_local*q_long_local;
+		}
 
         for(int ij = 0; ij < dim; ij++)
         {
@@ -181,9 +184,12 @@ void Correlation_function::find_minimum_chisq_correlationfunction_full( int iKT,
 		R2_out[indexerK(iKT, iKphi, iKL)] = results[1]*hbarC*hbarC;
 		R2_side[indexerK(iKT, iKphi, iKL)] = results[2]*hbarC*hbarC;
 		R2_long[indexerK(iKT, iKphi, iKL)] = results[3]*hbarC*hbarC;
-		R2_outside[indexerK(iKT, iKphi, iKL)] = results[4]*hbarC*hbarC;
-		R2_outlong[indexerK(iKT, iKphi, iKL)] = results[5]*hbarC*hbarC;
-		R2_sidelong[indexerK(iKT, iKphi, iKL)] = results[6]*hbarC*hbarC;
+		if ( include_cross_terms )
+		{
+			R2_outside[indexerK(iKT, iKphi, iKL)] = results[4]*hbarC*hbarC;
+			R2_outlong[indexerK(iKT, iKphi, iKL)] = results[5]*hbarC*hbarC;
+			R2_sidelong[indexerK(iKT, iKphi, iKL)] = results[6]*hbarC*hbarC;
+		}
 
 		// compute chi^2
 		double chi_sq = 0.0;
@@ -202,7 +208,7 @@ void Correlation_function::find_minimum_chisq_correlationfunction_full( int iKT,
 
 			if (correl_local < 1.0e-15) continue;
 
-			bool ignore_central_point = true;
+			//bool ignore_central_point = true;
 			if ( 	ignore_central_point
 					and i==(n_qo_bins-1)/2
 					and j==(n_qs_bins-1)/2
@@ -211,18 +217,19 @@ void Correlation_function::find_minimum_chisq_correlationfunction_full( int iKT,
 	//			correl_err_local = 1.0e10;	//ignore central point
 		    double sigma_k_prime = correl_err_local/correl_local;
 
-			if ( sigma_k_prime < 1.e-15 )	// too small
+			if ( sigma_k_prime < 1e-15 )	// too small
 				continue;
 
-		    chi_sq += pow( ( log(correl_local) - results[0] 
+			double this_residual = log(correl_local) - results[0] 
 							+ results[1]*q_out_local*q_out_local 
 							+ results[2]*q_side_local*q_side_local
-							+ results[3]*q_long_local*q_long_local
-							+ results[4]*q_out_local*q_side_local
-							+ results[5]*q_out_local*q_long_local
-							+ results[6]*q_side_local*q_long_local )
-							, 2 )
-		              /sigma_k_prime/sigma_k_prime;
+							+ results[3]*q_long_local*q_long_local;
+			if ( include_cross_terms )
+				this_residual += results[4]*q_out_local*q_side_local
+									+ results[5]*q_out_local*q_long_local
+									+ results[6]*q_side_local*q_long_local;
+
+		    chi_sq += this_residual*this_residual / (sigma_k_prime*sigma_k_prime);
 		}
 
 		double chi_sq_per_dof = chi_sq/(data_length - dim);
@@ -263,7 +270,7 @@ void Correlation_function::find_minimum_chisq_correlationfunction_full( int iKT,
 
 			if(correl_local < 1.0e-15) continue;
 
-			bool ignore_central_point = true;
+			//bool ignore_central_point = true;
 			if ( 	ignore_central_point
 					and i==(n_qo_bins-1)/2
 					and j==(n_qs_bins-1)/2
@@ -273,7 +280,7 @@ void Correlation_function::find_minimum_chisq_correlationfunction_full( int iKT,
 
 		    double sigma_k_prime = correl_err_local/correl_local;
 
-			if ( sigma_k_prime < 1.e-15 )	// too small
+			if ( sigma_k_prime < 1e-15 )	// too small
 				continue;
 
 		    double inv_sigma_k_prime_sq = 1./(sigma_k_prime*sigma_k_prime);
@@ -282,9 +289,12 @@ void Correlation_function::find_minimum_chisq_correlationfunction_full( int iKT,
 			qweight[1] = q_out_local*q_out_local;
 			qweight[2] = q_side_local*q_side_local;
 			qweight[3] = q_long_local*q_long_local;
-			qweight[4] = q_out_local*q_side_local;
-			qweight[5] = q_out_local*q_long_local;
-			qweight[6] = q_side_local*q_long_local;
+			if ( include_cross_terms )
+			{
+				qweight[4] = q_out_local*q_side_local;
+				qweight[5] = q_out_local*q_long_local;
+				qweight[6] = q_side_local*q_long_local;
+			}
 
 			for(int ij = 0; ij < dim; ij++)
 			for(int lm = 0; lm < dim; lm++)
@@ -303,9 +313,12 @@ void Correlation_function::find_minimum_chisq_correlationfunction_full( int iKT,
 		R2_out_err[indexerK(iKT, iKphi, iKL)] = sqrt(covariance_mat[1][1])*hbarC*hbarC;
 		R2_side_err[indexerK(iKT, iKphi, iKL)] = sqrt(covariance_mat[2][2])*hbarC*hbarC;
 		R2_long_err[indexerK(iKT, iKphi, iKL)] = sqrt(covariance_mat[3][3])*hbarC*hbarC;
-		R2_outside_err[indexerK(iKT, iKphi, iKL)] = sqrt(covariance_mat[4][4])*hbarC*hbarC;
-		R2_outlong_err[indexerK(iKT, iKphi, iKL)] = sqrt(covariance_mat[5][5])*hbarC*hbarC;
-		R2_sidelong_err[indexerK(iKT, iKphi, iKL)] = sqrt(covariance_mat[6][6])*hbarC*hbarC;
+		if ( include_cross_terms )
+		{
+			R2_outside_err[indexerK(iKT, iKphi, iKL)] = sqrt(covariance_mat[4][4])*hbarC*hbarC;
+			R2_outlong_err[indexerK(iKT, iKphi, iKL)] = sqrt(covariance_mat[5][5])*hbarC*hbarC;
+			R2_sidelong_err[indexerK(iKT, iKphi, iKL)] = sqrt(covariance_mat[6][6])*hbarC*hbarC;
+		}
 
 		for(int i = 0; i < dim; i++)
 		{
@@ -327,18 +340,24 @@ void Correlation_function::find_minimum_chisq_correlationfunction_full( int iKT,
 		R2_out[indexerK(iKT, iKphi, iKL)] 				= 0.0;
 		R2_side[indexerK(iKT, iKphi, iKL)] 				= 0.0;
 		R2_long[indexerK(iKT, iKphi, iKL)] 				= 0.0;
-		R2_outside[indexerK(iKT, iKphi, iKL)] 			= 0.0;
-		R2_outlong[indexerK(iKT, iKphi, iKL)] 			= 0.0;
-		R2_sidelong[indexerK(iKT, iKphi, iKL)] 			= 0.0;
+		if ( include_cross_terms )
+		{
+			R2_outside[indexerK(iKT, iKphi, iKL)] 		= 0.0;
+			R2_outlong[indexerK(iKT, iKphi, iKL)] 		= 0.0;
+			R2_sidelong[indexerK(iKT, iKphi, iKL)] 		= 0.0;
+		}
 
 		// store errors
 		lambda_Correl_err[indexerK(iKT, iKphi, iKL)] 	= 100000.0;
 		R2_out_err[indexerK(iKT, iKphi, iKL)] 			= 100000.0;
 		R2_side_err[indexerK(iKT, iKphi, iKL)] 			= 100000.0;
 		R2_long_err[indexerK(iKT, iKphi, iKL)] 			= 100000.0;
-		R2_outside_err[indexerK(iKT, iKphi, iKL)] 		= 100000.0;
-		R2_outlong_err[indexerK(iKT, iKphi, iKL)] 		= 100000.0;
-		R2_sidelong_err[indexerK(iKT, iKphi, iKL)] 		= 100000.0;
+		if ( include_cross_terms )
+		{
+			R2_outside_err[indexerK(iKT, iKphi, iKL)] 	= 100000.0;
+			R2_outlong_err[indexerK(iKT, iKphi, iKL)] 	= 100000.0;
+			R2_sidelong_err[indexerK(iKT, iKphi, iKL)] 	= 100000.0;
+		}
 	}
 
 	//=============================
@@ -377,7 +396,7 @@ void Correlation_function::find_minimum_chisq_CFerr_full_FR( int iKT, int iKphi,
 
 	const size_t data_length = n_qo_bins*n_qs_bins*n_ql_bins;  // # of points
 
-    int dim = 7;
+    int dim = include_cross_terms ? 7 : 4;
     int s_gsl;
 
     double * V = new double [dim];
@@ -417,7 +436,7 @@ void Correlation_function::find_minimum_chisq_CFerr_full_FR( int iKT, int iKphi,
 
 		if (correl_local < 1.0e-15) continue;
 
-		bool ignore_central_point = true;
+		//bool ignore_central_point = true;
 		if ( 	ignore_central_point
 				and i==(n_qo_bins-1)/2
 				and j==(n_qs_bins-1)/2
@@ -433,9 +452,12 @@ void Correlation_function::find_minimum_chisq_CFerr_full_FR( int iKT, int iKphi,
 		qweight[1] = q_out_local*q_out_local;
 		qweight[2] = q_side_local*q_side_local;
 		qweight[3] = q_long_local*q_long_local;
-		qweight[4] = q_out_local*q_side_local;
-		qweight[5] = q_out_local*q_long_local;
-		qweight[6] = q_side_local*q_long_local;
+		if ( include_cross_terms )
+		{
+			qweight[4] = q_out_local*q_side_local;
+			qweight[5] = q_out_local*q_long_local;
+			qweight[6] = q_side_local*q_long_local;
+		}
 
         for(int ij = 0; ij < dim; ij++)
         {
@@ -487,9 +509,12 @@ void Correlation_function::find_minimum_chisq_CFerr_full_FR( int iKT, int iKphi,
 		double R2_o 	= results[1]*hbarC*hbarC;
 		double R2_s 	= results[2]*hbarC*hbarC;
 		double R2_l 	= results[3]*hbarC*hbarC;
-		double R2_os 	= results[4]*hbarC*hbarC;
-		double R2_ol 	= results[5]*hbarC*hbarC;
-		double R2_sl 	= results[6]*hbarC*hbarC;
+		if ( include_cross_terms )
+		{
+			double R2_os 	= results[4]*hbarC*hbarC;
+			double R2_ol 	= results[5]*hbarC*hbarC;
+			double R2_sl 	= results[6]*hbarC*hbarC;
+		}
 
 		const int iK3D = indexerK(iKT, iKphi, iKL);
 
@@ -498,9 +523,12 @@ void Correlation_function::find_minimum_chisq_CFerr_full_FR( int iKT, int iKphi,
 		R2_out_FRerr[iK3D] 			= max( abs( R2_o - R2_out[iK3D] ), R2_out_FRerr[iK3D] );
 		R2_side_FRerr[iK3D] 		= max( abs( R2_s - R2_side[iK3D] ), R2_side_FRerr[iK3D] );
 		R2_long_FRerr[iK3D] 		= max( abs( R2_l - R2_long[iK3D] ), R2_long_FRerr[iK3D] );
-		R2_outside_FRerr[iK3D] 		= max( abs( R2_os - R2_outside[iK3D] ), R2_outside_FRerr[iK3D] );
-		R2_outlong_FRerr[iK3D] 		= max( abs( R2_ol - R2_outlong[iK3D] ), R2_outlong_FRerr[iK3D] );
-		R2_sidelong_FRerr[iK3D] 	= max( abs( R2_sl - R2_sidelong[iK3D] ), R2_sidelong_FRerr[iK3D] );
+		if ( include_cross_terms )
+		{
+			R2_outside_FRerr[iK3D] 		= max( abs( R2_os - R2_outside[iK3D] ), R2_outside_FRerr[iK3D] );
+			R2_outlong_FRerr[iK3D] 		= max( abs( R2_ol - R2_outlong[iK3D] ), R2_outlong_FRerr[iK3D] );
+			R2_sidelong_FRerr[iK3D] 	= max( abs( R2_sl - R2_sidelong[iK3D] ), R2_sidelong_FRerr[iK3D] );
+		}
 
 		//=============================
 		// clean up
@@ -520,18 +548,24 @@ void Correlation_function::find_minimum_chisq_CFerr_full_FR( int iKT, int iKphi,
 		R2_out[indexerK(iKT, iKphi, iKL)] 				= 0.0;
 		R2_side[indexerK(iKT, iKphi, iKL)] 				= 0.0;
 		R2_long[indexerK(iKT, iKphi, iKL)] 				= 0.0;
-		R2_outside[indexerK(iKT, iKphi, iKL)] 			= 0.0;
-		R2_outlong[indexerK(iKT, iKphi, iKL)] 			= 0.0;
-		R2_sidelong[indexerK(iKT, iKphi, iKL)] 			= 0.0;
+		if ( include_cross_terms )
+		{
+			R2_outside[indexerK(iKT, iKphi, iKL)] 		= 0.0;
+			R2_outlong[indexerK(iKT, iKphi, iKL)] 		= 0.0;
+			R2_sidelong[indexerK(iKT, iKphi, iKL)] 		= 0.0;
+		}
 
 		// store errors
 		lambda_Correl_err[indexerK(iKT, iKphi, iKL)] 	= 100000.0;
 		R2_out_err[indexerK(iKT, iKphi, iKL)] 			= 100000.0;
 		R2_side_err[indexerK(iKT, iKphi, iKL)] 			= 100000.0;
 		R2_long_err[indexerK(iKT, iKphi, iKL)] 			= 100000.0;
-		R2_outside_err[indexerK(iKT, iKphi, iKL)] 		= 100000.0;
-		R2_outlong_err[indexerK(iKT, iKphi, iKL)] 		= 100000.0;
-		R2_sidelong_err[indexerK(iKT, iKphi, iKL)] 		= 100000.0;
+		if ( include_cross_terms )
+		{
+			R2_outside_err[indexerK(iKT, iKphi, iKL)] 	= 100000.0;
+			R2_outlong_err[indexerK(iKT, iKphi, iKL)] 	= 100000.0;
+			R2_sidelong_err[indexerK(iKT, iKphi, iKL)] 	= 100000.0;
+		}
 	}*/
 
 	//=============================
