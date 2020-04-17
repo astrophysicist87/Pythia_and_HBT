@@ -31,6 +31,10 @@ collisionSystemStem=$projectile$target"_"`echo $beamEnergy`"GeV_Nev"$Nevents
 	echo '| - '`basename "$0"`':     Now entering '`realpath --relative-to="${PWD}" "$PYTHIA_DIRECTORY"`
 	cd $PYTHIA_DIRECTORY
 
+	#----------------------------------------------------
+	# If false, no Pythia settings or code run, but still
+	# export appropriate directories and file paths to
+	# other directories for post-processing
 	if $runPythia
 	then
 
@@ -74,7 +78,7 @@ collisionSystemStem=$projectile$target"_"`echo $beamEnergy`"GeV_Nev"$Nevents
 		upperLimit=100
 
 		# time and run
-		./run_BEeffects_arbtryParticle_OpenMP.sh \
+		./run_BEeffects_OpenMP.sh \
 							$projectile $target $beamEnergy \
 							$Nevents $chosenHBTparticle \
 							$PYTHIA_RESULTS_DIRECTORY \

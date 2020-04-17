@@ -2,16 +2,15 @@
 
 source ../../../scripts/omp_env.sh
 export OMP_NUM_THREADS=$chosen_OMP_NUM_THREADS
-#export OMP_NUM_THREADS=1
-echo 'OMP_NUM_THREADS =' $OMP_NUM_THREADS
+echo '| -- '`basename "$0"`': OMP_NUM_THREADS =' $OMP_NUM_THREADS
 
 # make sure results directory exists
-DIRECTORY="$5"
+DIRECTORY="$6"
 if [ ! -d "$DIRECTORY" ]; then
 	mkdir -p $DIRECTORY
 fi
 
-echo 'Running ./main_BEeffects_OpenMP' $@
+echo '| | - '`basename "$0"`': Running ./main_BEeffects_OpenMP' $@
 
 # time and run
 nohup time ./main_BEeffects_OpenMP $@\

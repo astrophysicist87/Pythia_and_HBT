@@ -10,7 +10,7 @@ export SCRIPTS_DIRECTORY=$HOME_DIRECTORY/scripts
 export SOURCE_DIRECTORY=$HOME_DIRECTORY/src
 # Pythia
 export versionNumber=8243
-export PYTHIA_DIRECTORY=$SOURCE_DIRECTORY/pythia${versionNumber}/examples
+export PYTHIA_DIRECTORY=$SOURCE_DIRECTORY/pythia${versionNumber}/pythiaHBT
 # HBT event generator
 export HBT_DIRECTORY=$SOURCE_DIRECTORY/HBT_event_generator
 # HBT event generator

@@ -5,8 +5,6 @@
 #=====================================
 # Options for codes
 export runPythia=true
-#export useParallel=true
-export useArbitraryParticle=false
 export eventClassSelectionInPythia=false
 export runHBTEG=true
 export runFitCF=true

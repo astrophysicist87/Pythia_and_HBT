@@ -133,13 +133,13 @@ int main(int argc, char *argv[])
 	{
 		cerr << "Incorrect number of arguments!" << endl;
 		cerr << "Usage: " << endl
-				<< "    ./main_BEeffects_arbtryParticle_OpenMP"
+				<< "    ./main_BEeffects_OpenMP"
 				<< " [Projectile nucleus] [Target nucleus]"
 				<< " [Beam energy in GeV] [Number of events]"
 				<< " [HBT particle ID] [Results directory]"
 				<< " [Lower centrality %] [Upper centrality %]" << endl
 				<< "  <<< OR >>> " << endl
-				<< "    ./main_BEeffects_arbtryParticle_OpenMP"
+				<< "    ./main_BEeffects_OpenMP"
 				<< " [Projectile nucleus] [Target nucleus]"
 				<< " [Beam energy in GeV] [Number of events]"
 				<< " [HBT particle ID] [Results directory]"
