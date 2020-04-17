@@ -15,7 +15,7 @@ RM				=	rm -f
 O               =   .o
 SRCDIR			=	src
 INCDIR			=	include
-OBJDIR			=	obj
+OBJDIR			=	.
 
 # --------------- Files involved ------------------
 
