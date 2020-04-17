@@ -18,6 +18,8 @@
 // HeavyIons.
 #include "Pythia8/HeavyIons.h"
 
+#include "./include/ParameterReader.h"
+
 using namespace Pythia8;
 using namespace std;
 
@@ -148,6 +150,8 @@ int main(int argc, char *argv[])
 				
 		exit(8);
 	}
+
+	ParameterReader * paraRdr = new ParameterReader;
 
 	// Use this to convert boolean variables
 	// to appropriate flag toggles in Pythia.
