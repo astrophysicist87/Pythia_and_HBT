@@ -131,7 +131,7 @@ void print_particle_record(
 int main(int argc, char *argv[])
 {
 	// Check number of command-line arguments.
-	if (argc != 9 and argc != 12)
+	/*if (argc != 9 and argc != 12)
 	{
 		cerr << "Incorrect number of arguments!" << endl;
 		cerr << "Usage: " << endl
@@ -149,9 +149,45 @@ int main(int argc, char *argv[])
 				<< " [Minimum b] [Maximum b] [Output Bjorken variables]" << endl;
 				
 		exit(8);
+	}*/
+	if ( argc < 4 )
+	{
+		cerr << "Incorrect number of arguments!" << endl;
+		cerr << "Usage: " << endl
+				<< "    ./main_BEeffects_OpenMP"
+				<< " [Projectile nucleus] [Target nucleus]"
+				<< " [Results directory] [[Miscellaneous options]]"
+				<< endl;
+		exit(8);
 	}
 
 	ParameterReader * paraRdr = new ParameterReader;
+
+	paraRdr->readFromFile( "./parameters.dat" );
+	paraRdr->readFromArguments( argc, argv, (string)("#"), 4 );
+	paraRdr->echo();
+
+	// Initialize needed command-line arguments and parameters here
+	string projectile_name 				= string(argv[1]);
+	string target_name 					= string(argv[2]);
+	string results_directory			= string(argv[3]);
+
+	int chosen_HBT_particle_ID 			= paraRdr->getVal("pythiaHBT::chosenParticleID");
+	const int total_number_of_events 	= paraRdr->getVal("pythiaHBT::number_of_events");
+	const int max_events_per_file 		= paraRdr->getVal("pythiaHBT::max_events_per_file");
+	double beam_energy 					= paraRdr->getVal("pythiaHBT::beam_energy");
+	int event_selection_mode			= paraRdr->getVal("pythiaHBT::event_selection_mode");
+	double event_class_lowerLimit		= paraRdr->getVal("pythiaHBT::lowerLimit");
+	double event_class_upperLimit		= paraRdr->getVal("pythiaHBT::upperLimit");
+	double b_min						= paraRdr->getVal("pythiaHBT::bmin");
+	double b_max						= paraRdr->getVal("pythiaHBT::bmax");
+
+	// thermal particles only or resonance decays included
+	bool thermal_only 					= static_cast<bool>( paraRdr->getVal("pythiaHBT::thermal_only") );
+	bool track_unshifted_particles 		= static_cast<bool>( paraRdr->getVal("pythiaHBT::track_unshifted_particles") );
+	bool store_Bjorken_coordinates 		= static_cast<bool>( paraRdr->getVal("pythiaHBT::output_Bjorken_variables") );
+	bool printing_particle_records 		= static_cast<bool>( paraRdr->getVal("pythiaHBT::printing_particle_records") );
+
 
 	// Use this to convert boolean variables
 	// to appropriate flag toggles in Pythia.
@@ -188,12 +224,7 @@ int main(int argc, char *argv[])
 			{ -321 , 3 }	// Kaon(-)
 		  };*/
 	std::unordered_map<int, int> HBT_particle_IDs;
-	HBT_particle_IDs.insert ( { { atoi(argv[5]), 0 } } );
-
-	// thermal particles only or resonance decays included
-	bool thermal_only = false;	// could make this command line
-	bool track_unshifted_particles = true;
-	bool store_Bjorken_coordinates = false;	// tau, eta_s, y, and m
+	HBT_particle_IDs.insert ( { { chosen_HBT_particle_ID, 0 } } );
 
 	// Some Bose-Einstein options (add to *.cmnd file eventually)
 	bool useInvariantSourceSize             = false;     // Lorentz-invariant size vs. spatial size only
@@ -216,17 +247,10 @@ int main(int argc, char *argv[])
 	else
 		cout << "Using all particles!" << endl;
 
-	// allowed to be set from command line (default: false)
-	if ( argc > 9 )
-		store_Bjorken_coordinates = static_cast<bool>( string(argv[11]) == "true" ); 
+	cout << "Set " << "Beams:idA = " + particle_IDs[projectile_name]
+		<< " and " << "Beams:idB = " + particle_IDs[target_name]
+		<< " and " << "Beams:eCM = " << beam_energy << endl;
 
-	cout << "Set " << "Beams:idA = " + particle_IDs[string(argv[1])]
-		<< " and " << "Beams:idB = " + particle_IDs[string(argv[2])]
-		<< " and " << "Beams:eCM = " + string(argv[3]) << endl;
-
-	//const int total_number_of_events = 100000;
-	const int total_number_of_events = atoi(argv[4]);
-	const int max_events_per_file = 10000;
 	int current_file_index = 0;
 	string file_index_string = "";
 	if (total_number_of_events > max_events_per_file)
@@ -234,11 +258,8 @@ int main(int argc, char *argv[])
 		file_index_string = "_" + to_string(current_file_index);
 	}
 
-	//string systemSpecs = string(argv[1]) + string(argv[2]) + "_" + string(argv[3]) + "GeV_"
-	//						+ "C" + string(argv[4]) + "_" + string(argv[5]) + "_Nev" + string(argv[4]);
-	string systemSpecs = string(argv[1]) + string(argv[2]) + "_" + string(argv[3]) + "GeV_Nev" + string(argv[4]);
-
-	string path = string(argv[6]) + "/";
+	string systemSpecs = projectile_name + target_name + "_" + string(beam_energy) + "GeV_Nev" + string(total_number_of_events);
+	string path = results_directory + "/";
 
 
 	//====================================
@@ -287,7 +308,6 @@ int main(int argc, char *argv[])
 	outmult_filenames.close();
 
 
-	bool printing_particle_records = true;
 	if ( not printing_particle_records )
 	{
 		outmain << "Not printing particle records!" << endl;
@@ -296,28 +316,46 @@ int main(int argc, char *argv[])
 
 	//int count = 0;
 
-	// Estimate centrality class limits
-	//const int n_events_to_use = 10000;
-	const double centrality_class_lower_limit = atof( argv[7] );
-	const double centrality_class_upper_limit = atof( argv[8] );
+	int multiplicity_lower_limit = -1;
+	int multiplicity_upper_limit = -1;
 
-	cout << "Read in these centrality limits: "
-			<< centrality_class_lower_limit << " to "
-			<< centrality_class_upper_limit << endl;
-
-	/*vector<int> centrality_limits
-		= get_centrality_limits(
-			centrality_class_lower_limit,
-			centrality_class_upper_limit,
-			n_events_to_use, pythia );*/
-	cout << "Only minimum bias supported at the moment!  Using these centrality limits: "
-			<< 0 << " to " << 1e+9 << endl;
+	// select by centrality class, convert to multiplicity range
+	if ( event_selection_mode == 0 )
+	{
+		// Estimate centrality class limits
+		//const int n_events_to_use = 10000;
+		const double centrality_class_lower_limit = event_class_lowerLimit;
+		const double centrality_class_upper_limit = event_class_upperLimit;
 	
-	vector<int> centrality_limits = { 0, 1000000000 };
-	//vector<int> centrality_limits = { 90, 110 };
-
-	const int multiplicity_lower_limit = centrality_limits[0];
-	const int multiplicity_upper_limit = centrality_limits[1];
+		cout << "Read in these centrality limits: "
+				<< centrality_class_lower_limit << " to "
+				<< centrality_class_upper_limit << endl;
+	
+		/*vector<int> centrality_limits
+			= get_centrality_limits(
+				centrality_class_lower_limit,
+				centrality_class_upper_limit,
+				n_events_to_use, pythia );*/
+		cout << "Only minimum bias supported at the moment!  Using these centrality limits: "
+				<< 0 << " to " << 1e+9 << endl;
+		
+		vector<int> centrality_limits = { 0, 1000000000 };
+		//vector<int> centrality_limits = { 90, 110 };
+	
+		multiplicity_lower_limit = centrality_limits[0];
+		multiplicity_upper_limit = centrality_limits[1];
+	}
+	// Set multiplicity range directly
+	else if ( event_selection_mode == 1)
+	{
+		multiplicity_lower_limit = event_class_lowerLimit;
+		multiplicity_upper_limit = event_class_upperLimit;
+	}
+	else
+	{
+		cerr << "event_selection_mode == " << event_selection_mode << " not supported!  Exiting..." << endl;
+		exit(8);
+	}
 
 	cout << "Accepted multiplicity range: "
 			<< multiplicity_lower_limit << " to "
@@ -398,9 +436,9 @@ int main(int argc, char *argv[])
 
 		// ==============================================
 		// Setup the beams.
-		pythiaVector[iThread].readString("Beams:idA = " + particle_IDs[string(argv[1])]);
-		pythiaVector[iThread].readString("Beams:idB = " + particle_IDs[string(argv[2])]);
-		pythiaVector[iThread].readString("Beams:eCM = " + string(argv[3]));
+		pythiaVector[iThread].readString("Beams:idA = " + particle_IDs[ projectile_name ]);
+		pythiaVector[iThread].readString("Beams:idB = " + particle_IDs[ target_name ]);
+		pythiaVector[iThread].readString("Beams:eCM = " + string( beam_energy ));
 		pythiaVector[iThread].readString("Beams:frameType = 1");
 
 
@@ -491,10 +529,7 @@ int main(int argc, char *argv[])
 		// Initialize impact parameter selection over
 		// finite, user-defined range.
 		MyHIUserHooks* myHIUserHooks;
-		if ( argc > 9 )
-			myHIUserHooks = new MyHIUserHooks( atof(argv[9]), atof(argv[10]) );
-		else
-			myHIUserHooks = new MyHIUserHooks();
+		myHIUserHooks = new MyHIUserHooks( b_min, b_max );
 		pythiaVector[iThread].setHIHooks( myHIUserHooks );
 
 
@@ -733,8 +768,8 @@ if (false)
 				// allow this thread to terminate
 				if ( need_to_continue )
 				{
-					//const double phi_to_use = ( particle_IDs[string(argv[1])] == "p"
-					//							and particle_IDs[string(argv[2])] == "p" ) ?
+					//const double phi_to_use = ( particle_IDs[ projectile_name ] == "p"
+					//							and particle_IDs[ target_name ] == "p" ) ?
 					//							0.0 : pythiaVector[iThread].info.hiinfo->phi();
 					const double phi_to_use = 0.0;
 
@@ -847,7 +882,9 @@ if (false)
 
 	outmain.close();
 	outMultiplicities.close();
-	outfilenames.close(); 
+	outfilenames.close();
+
+	delete ParameterReader;
 
 	// And we're done!
 	return 0;
