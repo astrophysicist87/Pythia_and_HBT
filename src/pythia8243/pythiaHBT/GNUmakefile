@@ -33,7 +33,7 @@ INC			= 	$(INCDIR)/Arsenal.h \
 
 # -------------------------------------------------
 
-OBJDIR			=	.
+#OBJDIR			=	.
 #SRCFILES 		= 	$(SRC) $(INC) GNUmakefile
 OBJECTS			=	$(addprefix $(OBJDIR)/, $(addsuffix $O, \
 					$(basename $(SRC))))
@@ -65,7 +65,7 @@ mkobjdir:
 #$(TARGET):	$(OBJECTS)
 #		$(CC) $(OBJECTS) -o $(TARGET) $(LDFLAGS)
 $(TARGET): $(MAINSRC) $(OBJECTS) $(PREFIX_LIB)/libpythia8.a
-	$(CXX) $< -o $@ -std=c++11 -fopenmp -g $(CXX_COMMON)
+	$(CXX) $< $(OBJECTS) -o $@ -std=c++11 -fopenmp -g $(CXX_COMMON)
 #	@echo 'Inside new GNUmakefile'
 
 clean:		
