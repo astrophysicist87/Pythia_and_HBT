@@ -15,7 +15,7 @@ RM				=	rm -f
 O               =   .o
 SRCDIR			=	src
 INCDIR			=	include
-OBJDIR			=	.
+OBJDIR			=	obj
 
 # --------------- Files involved ------------------
 
@@ -33,10 +33,11 @@ INC			= 	$(INCDIR)/Arsenal.h \
 
 # -------------------------------------------------
 
-#OBJDIR			=	.
-#SRCFILES 		= 	$(SRC) $(INC) GNUmakefile
-OBJECTS			=	$(addprefix $(OBJDIR)/, $(addsuffix $O, \
-					$(basename $(SRC))))
+#OBJECTS			=	$(addprefix $(OBJDIR)/, $(addsuffix $O, \
+#					$(basename $(SRC))))
+OBJECTS				=	$(addprefix $(OBJDIR)/, $(addsuffix $O, \
+						$(notdir $(basename $(SRC)))))
+
 TARGET			=	$(MAIN)
 INSTPATH		=	..
 
