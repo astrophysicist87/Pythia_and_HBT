@@ -65,6 +65,7 @@ mkobjdir:
 #		$(CC) $(OBJECTS) -o $(TARGET) $(LDFLAGS)
 $(TARGET): $(MAINSRC) $(PREFIX_LIB)/libpythia8.a
 	$(CXX) $< -o $@ -std=c++11 -fopenmp -g $(CXX_COMMON)
+	@echo 'Inside new GNUmakefile'
 
 clean:		
 		-rm -f $(OBJECTS)
