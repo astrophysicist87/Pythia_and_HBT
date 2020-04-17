@@ -13,8 +13,9 @@ CXX := g++
 
 RM				=	rm -f
 O               =   .o
-LDFLAGS         =   $(CFLAGS)
 SRCDIR			=	src
+INCDIR			=	include
+OBJDIR			=	obj
 
 # --------------- Files involved ------------------
 
@@ -27,8 +28,8 @@ MAINSRC		=	main_BEeffects_OpenMP.cpp
 SRC			=	$(SRCDIR)/Arsenal.cpp \
 				$(SRCDIR)/ParameterReader.cpp
 
-INC			= 	$(SRCDIR)/Arsenal.h \
-				$(SRCDIR)/ParameterReader.h
+INC			= 	$(INCDIR)/Arsenal.h \
+				$(INCDIR)/ParameterReader.h
 
 # -------------------------------------------------
 
@@ -63,9 +64,9 @@ mkobjdir:
 
 #$(TARGET):	$(OBJECTS)
 #		$(CC) $(OBJECTS) -o $(TARGET) $(LDFLAGS)
-$(TARGET): $(MAINSRC) $(PREFIX_LIB)/libpythia8.a
+$(TARGET): $(MAINSRC) $(OBJECTS) $(PREFIX_LIB)/libpythia8.a
 	$(CXX) $< -o $@ -std=c++11 -fopenmp -g $(CXX_COMMON)
-	@echo 'Inside new GNUmakefile'
+#	@echo 'Inside new GNUmakefile'
 
 clean:		
 		-rm -f $(OBJECTS)
@@ -78,8 +79,8 @@ install:	$(TARGET)
 		cp $(TARGET) $(INSTPATH)
 
 # --------------- Dependencies -------------------
-$(SRCDIR)/Arsenal.cpp: 				$(SRCDIR)/Arsenal.h
-$(SRCDIR)/ParameterReader.cpp: 		$(SRCDIR)/ParameterReader.h \
-									$(SRCDIR)/Arsenal.h
-main_BEeffects_OpenMP.cpp: 			$(SRCDIR)/ParameterReader.h \
-									$(SRCDIR)/Arsenal.h
+$(SRCDIR)/Arsenal.cpp: 				$(INCDIR)/Arsenal.h
+$(SRCDIR)/ParameterReader.cpp: 		$(INCDIR)/ParameterReader.h \
+									$(INCDIR)/Arsenal.h
+main_BEeffects_OpenMP.cpp: 			$(INCDIR)/ParameterReader.h \
+									$(INCDIR)/Arsenal.h
