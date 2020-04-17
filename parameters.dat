@@ -16,7 +16,7 @@ KT_grid_mode = 0
 	#     (for integrating correlation function)
 
 # KT points
-n_KT_pts = 8
+n_KT_pts = 9
 KTmin = 0.0
 KTmax = 0.8
 
@@ -120,7 +120,8 @@ event_class_maximum = 100
 # functional form for fitting correlation
 # function: Gaussian (0) or exponential (1)
 fit_mode = 0
-include_cross_terms = 1
+# whether to include R2os, R2ol, and R2sl in fit
+include_cross_terms = 0
 
 
 #===========
