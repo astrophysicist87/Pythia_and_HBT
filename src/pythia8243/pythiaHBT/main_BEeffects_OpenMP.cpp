@@ -258,7 +258,7 @@ int main(int argc, char *argv[])
 		file_index_string = "_" + to_string(current_file_index);
 	}
 
-	string systemSpecs = projectile_name + target_name + "_" + string(beam_energy) + "GeV_Nev" + string(total_number_of_events);
+	string systemSpecs = projectile_name + target_name + "_" + to_string(beam_energy) + "GeV_Nev" + string(total_number_of_events);
 	string path = results_directory + "/";
 
 
@@ -438,7 +438,7 @@ int main(int argc, char *argv[])
 		// Setup the beams.
 		pythiaVector[iThread].readString("Beams:idA = " + particle_IDs[ projectile_name ]);
 		pythiaVector[iThread].readString("Beams:idB = " + particle_IDs[ target_name ]);
-		pythiaVector[iThread].readString("Beams:eCM = " + string( beam_energy ));
+		pythiaVector[iThread].readString("Beams:eCM = " + to_string( beam_energy ));
 		pythiaVector[iThread].readString("Beams:frameType = 1");
 
 
