@@ -182,11 +182,15 @@ int main(int argc, char *argv[])
 		//	cout << ensemble_multiplicites[iEvent].eventID << "   "
 		//			<< ensemble_multiplicites[iEvent].total_multiplicity << "   "
 		//			<< ensemble_multiplicites[iEvent].particle_multiplicity << endl;
-		for ( const auto & event : ensemble_multiplicites )
 		{
-			for ( const auto & field : event.fields )
-				cout << field << "   ";
-			cout << endl;
+			ofstream output_multiplicities( path + "/event_class_multiplicities.dat" );
+			for ( const auto & event : ensemble_multiplicites )
+			{
+				for ( const auto & field : event.fields )
+					output_multiplicities << field << "   ";
+				output_multiplicities << endl;
+			}
+			output_multiplicities.close();
 		}
 
 		// Proceed with HBT calculations
