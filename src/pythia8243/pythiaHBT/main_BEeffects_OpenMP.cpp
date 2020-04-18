@@ -884,7 +884,7 @@ if (false)
 	outMultiplicities.close();
 	outfilenames.close();
 
-	//delete [] ParameterReader;
+	delete ParameterReader;
 
 	// And we're done!
 	return 0;
