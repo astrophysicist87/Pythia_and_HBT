@@ -8,6 +8,9 @@ columnLabels = ['dNdeta','KT',\
 multLabels = [r'$N_{ch}=1-11$', r'$N_{ch}=12-16$', r'$N_{ch}=17-22$', \
               r'$N_{ch}=23-28$', r'$N_{ch}=29-34$', r'$N_{ch}=35-41$', \
               r'$N_{ch}=42-51$', r'$N_{ch}=52-151$']
+KTLabels = [r'$K_T=0-100$ MeV', r'$K_T=100-200$ MeV', r'$K_T=200-300$ MeV', \
+            r'$K_T=300-400$ MeV', r'$K_T=400-500$ MeV', r'$K_T=500-600$ MeV', \
+            r'$K_T=600-700$ MeV', r'$K_T=700-800$ MeV']
 
 cols = dict(zip(columnLabels,range(len(columnLabels))))
 colors = ['blue','red','green','purple','cyan','magenta','orange','yellow']
@@ -27,15 +30,25 @@ def plot_R2i_vs_KT(data, R2i):
     fig, ax = plt.subplots()
     for multIndex in range(len(data)):
         dataSlice=data[multIndex]
-        #print(dataSlice.shape)
-        #print(cols['KT'])
-        #print(cols[R2i])
-        #print(dataSlice[:,cols['KT']])
-        #print(dataSlice[:,cols[R2i]])
         ax.plot(dataSlice[:,cols['KT']], \
                 dataSlice[:,cols[R2i]], \
-                '-'+styles[multIndex], color=colors[multIndex])
+                '-'+styles[multIndex], \
+                color=colors[multIndex])
     fig.savefig("./"+R2i+"_vs_KT.pdf")
+    return None
+
+def plot_R2i_vs_KT_dummy(data):
+    fig, ax = plt.subplots()
+    for multIndex in range(len(data)):
+        dataSlice=data[multIndex]
+        ax.plot(dataSlice[:,cols['KT']], \
+                -1.0+0.0*dataSlice[:,cols['KT']], \
+                '-'+styles[multIndex], \
+                color=colors[multIndex], \
+                label=multLabels[multIndex])
+    ax.ylim(bottom=0.0)
+    ax.legend(ncol=2,loc='best')
+    fig.savefig("./"+R2i+"_vs_KT_dummy.pdf")
     return None
 
 def plot_R2i_vs_mult(data, R2i):
@@ -45,8 +58,22 @@ def plot_R2i_vs_mult(data, R2i):
         dataTSlice=data[KTIndex]
         ax.plot(dataTSlice[:,cols['dNdeta']]**(1.0/3.0), \
                 dataTSlice[:,cols[R2i]], \
-                '-'+styles[KTIndex], color=colors[KTIndex])
+                '-'+styles[KTIndex], \
+                color=colors[KTIndex])
     fig.savefig("./"+R2i+"_vs_dNdeta.pdf")
+    return None
+
+def plot_R2i_vs_mult_dummy(data):
+    dataT = np.swapaxes(data,0,1)
+    fig, ax = plt.subplots()
+    for KTIndex in range(len(dataT)):
+        dataTSlice=data[KTIndex]
+        ax.plot(dataTSlice[:,cols['dNdeta']]**(1.0/3.0), \
+                -1.0+0.0*dataTSlice[:,cols[R2i]], \
+                '-'+styles[KTIndex], \
+                color=colors[KTIndex], \
+                label=KTLabels[KTIndex])
+    fig.savefig("./"+R2i+"_vs_dNdeta_dummy.pdf")
     return None
 
 if __name__ == "__main__":
@@ -54,9 +81,11 @@ if __name__ == "__main__":
     plot_R2i_vs_KT(data,'R2o')
     plot_R2i_vs_KT(data,'R2s')
     plot_R2i_vs_KT(data,'R2l')
+    plot_R2i_vs_KT_dummy(data)
     plot_R2i_vs_mult(data,'R2o')
     plot_R2i_vs_mult(data,'R2s')
     plot_R2i_vs_mult(data,'R2l')
+    plot_R2i_vs_mult_dummy(data)
     #print(data.shape)
 
 # End of file
