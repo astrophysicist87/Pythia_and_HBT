@@ -25,7 +25,13 @@ def get_directory_data(directory):
 
 def plot_R2i_vs_KT(data, R2i):
     fig, ax = plt.subplots()
-    for multIndex, dataSlice in np.ndenumerate(data):
+    for multIndex in range(len(data)):
+        dataSlice=data[multIndex]
+        #print(dataSlice.shape)
+        #print(cols['KT'])
+        #print(cols[R2i])
+        #print(dataSlice[:,cols['KT']])
+        #print(dataSlice[:,cols[R2i]])
         ax.plot(dataSlice[:,cols['KT']], \
                 dataSlice[:,cols[R2i]], \
                 '-'+styles[multIndex], color=colors[multIndex])
@@ -35,7 +41,8 @@ def plot_R2i_vs_KT(data, R2i):
 def plot_R2i_vs_mult(data, R2i):
     dataT = np.swapaxes(data,0,1)
     fig, ax = plt.subplots()
-    for KTIndex, dataTSlice in np.ndenumerate(dataT):
+    for KTIndex in range(len(dataT)):
+        dataTSlice=data[KTIndex]
         ax.plot(dataTSlice[:,cols['dNdeta']]**(1.0/3.0), \
                 dataTSlice[:,cols[R2i]], \
                 '-'+styles[KTIndex], color=colors[KTIndex])
