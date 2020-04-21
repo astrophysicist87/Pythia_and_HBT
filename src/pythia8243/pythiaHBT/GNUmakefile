@@ -44,7 +44,7 @@ INSTPATH		=	..
 # --------------- Pattern rules -------------------
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.cpp
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CXX) $(CFLAGS) -c $< -o $@
 
 #%.cpp:
 #	if [ -f $@ ] ; then touch $@ ; else false ; fi
