@@ -13,6 +13,10 @@
 #include "Arsenal.h"
 #include "Stopwatch.h"
 
+#ifndef M_PI
+    #define M_PI 3.14159265358979323846
+#endif
+
 using namespace std;
 
 void Correlation_function::initialize_all(
@@ -32,6 +36,8 @@ void Correlation_function::initialize_all(
 	fit_mode		= paraRdr->getVal("fit_mode");
 	include_cross_terms
 		= static_cast<bool>( paraRdr->getVal("include_cross_terms") );
+	use_slices_only
+		= static_cast<bool>( paraRdr->getVal("use_slices_only") );
 	// - pair momenta points at which to interpolate HBT results
 	n_KT_pts 		= paraRdr->getVal("n_KT_pts");
 	KT_min 			= paraRdr->getVal("KTmin");

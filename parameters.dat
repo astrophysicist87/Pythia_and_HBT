@@ -177,6 +177,11 @@ fit_mode 										= 0
 include_cross_terms 							= 0
 
 # --
+# whether to include full CF
+# or only CF along axes in fit
+use_slices_only 								= 0
+
+# --
 # source_variances parameters
 # maximum invariant tau to consider
 # for source variances (in fm)

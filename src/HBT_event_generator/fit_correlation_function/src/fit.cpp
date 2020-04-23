@@ -95,6 +95,16 @@ void Correlation_function::find_minimum_chisq_correlationfunction_full(	int iKT,
 	for (int j = 0; j < n_qs_bins; j++)
 	for (int k = 0; k < n_ql_bins; k++)
     {
+		bool use_this_bin = true;
+		if ( use_slices_only )
+		{
+			int i_in_center = int(i==(n_qo_bins-1)/2);
+			int j_in_center = int(j==(n_qs_bins-1)/2);
+			int k_in_center = int(k==(n_ql_bins-1)/2);
+			use_this_bin = bool( i_in_center + j_in_center + k_in_center <= 1 );
+		}
+		if ( not use_this_bin ) continue;
+
 		int idx = indexer(iKT, iKphi, iKL, i, j, k);
 
         double q_out_local = 0.5*(qo_pts[i]+qo_pts[i+1]);
@@ -197,6 +207,16 @@ void Correlation_function::find_minimum_chisq_correlationfunction_full(	int iKT,
 		for (int j = 0; j < n_qs_bins; j++)
 		for (int k = 0; k < n_ql_bins; k++)
 		{
+			bool use_this_bin = true;
+			if ( use_slices_only )
+			{
+				int i_in_center = int(i==(n_qo_bins-1)/2);
+				int j_in_center = int(j==(n_qs_bins-1)/2);
+				int k_in_center = int(k==(n_ql_bins-1)/2);
+				use_this_bin = bool( i_in_center + j_in_center + k_in_center <= 1 );
+			}
+			if ( not use_this_bin ) continue;
+
 			int idx = indexer(iKT, iKphi, iKL, i, j, k);
 
 		    double q_out_local = 0.5*(qo_pts[i]+qo_pts[i+1]);
@@ -214,7 +234,7 @@ void Correlation_function::find_minimum_chisq_correlationfunction_full(	int iKT,
 					and j==(n_qs_bins-1)/2
 					and k==(n_ql_bins-1)/2)
 				continue;
-	//			correl_err_local = 1.0e10;	//ignore central point
+			//	correl_err_local = 1.0e10;	//ignore central point
 		    double sigma_k_prime = correl_err_local/correl_local;
 
 			if ( sigma_k_prime < 1e-15 )	// too small
@@ -259,6 +279,16 @@ void Correlation_function::find_minimum_chisq_correlationfunction_full(	int iKT,
 		for (int j = 0; j < n_qs_bins; j++)
 		for (int k = 0; k < n_ql_bins; k++)
 		{
+			bool use_this_bin = true;
+			if ( use_slices_only )
+			{
+				int i_in_center = int(i==(n_qo_bins-1)/2);
+				int j_in_center = int(j==(n_qs_bins-1)/2);
+				int k_in_center = int(k==(n_ql_bins-1)/2);
+				use_this_bin = bool( i_in_center + j_in_center + k_in_center <= 1 );
+			}
+			if ( not use_this_bin ) continue;
+
 			int idx = indexer(iKT, iKphi, iKL, i, j, k);
 
 		    double q_out_local = 0.5*(qo_pts[i]+qo_pts[i+1]);
@@ -420,6 +450,16 @@ void Correlation_function::find_minimum_chisq_CFerr_full_FR( int iKT, int iKphi,
 	for (int j = 0; j < n_qs_bins; j++)
 	for (int k = 0; k < n_ql_bins; k++)
     {
+		bool use_this_bin = true;
+		if ( use_slices_only )
+		{
+			int i_in_center = int(i==(n_qo_bins-1)/2);
+			int j_in_center = int(j==(n_qs_bins-1)/2);
+			int k_in_center = int(k==(n_ql_bins-1)/2);
+			use_this_bin = bool( i_in_center + j_in_center + k_in_center <= 1 );
+		}
+		if ( not use_this_bin ) continue;
+
 		int idx = indexer(iKT, iKphi, iKL, i, j, k);
 
         double q_out_local = 0.5*(qo_pts[i]+qo_pts[i+1]);
