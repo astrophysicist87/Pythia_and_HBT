@@ -13,6 +13,9 @@
 	#-----------------------------------------------------
 	# Shouldn't have to change anything below this point
 	#-----------------------------------------------------
+	# Make sure all scripts are executable!
+	find . -name "*.sh" | xargs chmod 755
+
 	# Compile source code
 	./compile_all.sh $NTHREADS &> compile_all.out
 
