@@ -5,3 +5,5 @@
 *.inc
 *.out
 RESULTS*/*
+*.err
+src/HBT_event_generator/fit_correlation_function/results*/*
