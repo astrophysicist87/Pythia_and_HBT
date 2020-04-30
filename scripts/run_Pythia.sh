@@ -31,6 +31,8 @@ collisionSystemStem=$projectile$target"_"`echo $beamEnergy`"GeV_Nev"$Nevents
 	echo '| - '`basename "$0"`':     Now entering '`realpath --relative-to="${PWD}" "$PYTHIA_DIRECTORY"`
 	cd $PYTHIA_DIRECTORY
 
+	cp $HOME_DIRECTORY/parameters.dat .
+
 	#----------------------------------------------------
 	# If false, no Pythia settings or code run, but still
 	# export appropriate directories and file paths to
