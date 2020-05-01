@@ -6,7 +6,6 @@ echo '#! /usr/bin/env bash
 
 #PBS -l walltime='$1'
 #PBS -l nodes=1:ppn='$2'
-#PBS -A PAS0254
 #PBS -j oe
 
 cd "$PBS_O_WORKDIR" || exit $?
