@@ -5,7 +5,7 @@ export OMP_NUM_THREADS=$chosen_OMP_NUM_THREADS
 echo '| -- '`basename "$0"`': OMP_NUM_THREADS =' $OMP_NUM_THREADS
 
 # make sure results directory exists
-DIRECTORY="$6"
+DIRECTORY="$3"
 if [ ! -d "$DIRECTORY" ]; then
 	mkdir -p $DIRECTORY
 fi

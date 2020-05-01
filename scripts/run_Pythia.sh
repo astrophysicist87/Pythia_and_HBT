@@ -6,6 +6,9 @@ echo '| ------------------------------------------------------------'
 echo '| - '`basename "$0"`': Executing this script in the following directory:'
 echo '| | '$CWD
 
+# convenient toggle
+declare -A boolVal=( ["true"]="1" ["false"]="0")
+
 # make sure main results directory exists
 if [ ! -d "$MAIN_RESULTS_DIRECTORY" ]
 then
@@ -81,11 +84,16 @@ collisionSystemStem=$projectile$target"_"`echo $beamEnergy`"GeV_Nev"$Nevents
 
 		# time and run
 		./run_BEeffects_OpenMP.sh \
-							$projectile $target $beamEnergy \
-							$Nevents $chosenHBTparticle \
+							$projectile $target \
 							$PYTHIA_RESULTS_DIRECTORY \
-							$lowerLimit $upperLimit \
-							$bMin $bMax $storeBjorkenCoordinates
+							pythiaHBT::beam_energy=$beamEnergy \
+							pythiaHBT::number_of_events=$Nevents \
+							pythiaHBT::chosenParticleID=$chosenHBTparticle \
+							pythiaHBT::lowerLimit=$lowerLimit \
+							pythiaHBT::upperLimit=$upperLimit \
+							pythiaHBT::bmin=$bMin \
+							pythiaHBT::bmax=$bMax \
+							pythiaHBT::output_Bjorken_variables="${boolVal[$storeBjorkenCoordinates]}"
 
 		# check and report whether run was successful
 		runSuccess=`echo $?`
