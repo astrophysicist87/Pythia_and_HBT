@@ -2,10 +2,10 @@
 
 (
 	# info for this run
-	NTHREADS=40
+	NTHREADS=24
 	DIRECTORY=RESULTS_pPb_5.02TeV
-	PYTHIA_WALLTIME='24:00:00'
-	HBT_WALLTIME='72:00:00'
+	PYTHIA_WALLTIME='36:00:00'
+	HBT_WALLTIME='96:00:00'
 
 	# Set job specifications here
 	declare -a specs=(
