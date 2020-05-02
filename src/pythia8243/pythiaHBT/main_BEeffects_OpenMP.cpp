@@ -258,7 +258,7 @@ int main(int argc, char *argv[])
 		file_index_string = "_" + to_string(current_file_index);
 	}
 
-	string systemSpecs = projectile_name + target_name + "_" + to_string(beam_energy) + "GeV_Nev" + to_string(total_number_of_events);
+	string systemSpecs = projectile_name + target_name + "_" + to_string(int(beam_energy)) + "GeV_Nev" + to_string(total_number_of_events);
 	string path = results_directory + "/";
 
 
