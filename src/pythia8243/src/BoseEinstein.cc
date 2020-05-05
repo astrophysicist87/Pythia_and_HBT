@@ -999,6 +999,7 @@ printf("Made it to %s::%d\n",__FUNCTION__, __LINE__);
 				// make this a global variable
 				const double Qmin = 0.0;
 				const long iQ = static_cast<long>( (thisQ - Qmin) / dQ );
+cout << thisQ << "   " << Qmin << "   " << dQ << "   " << (thisQ - Qmin) / dQ << endl;
 				if ( iQ + 1 >= (long)Qgrid.size() )
 					continue;
 				const long jQ = static_cast<long>( (nextQ - Qmin) / dQ );
