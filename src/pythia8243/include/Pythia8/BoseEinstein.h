@@ -160,7 +160,8 @@ private:
 
   // Define effective source used to accelerate
   // evaluation of BE enhancement
-  void Set_effective_source();
+  void Set_effective_source(
+			vector< pair< double, pair <int,int> > > & sortedPairs, int iTab );
 
   ///===CJP(end)===
 

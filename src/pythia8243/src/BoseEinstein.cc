@@ -922,7 +922,7 @@ void BoseEinstein::set_LHS(
 
 
 	//if (not compute_BE_enhancement_exactly)
-		Set_effective_source();
+		Set_effective_source( sortedPairs, iTab );
 
 	return;
 }
@@ -1549,7 +1549,8 @@ void BoseEinstein::shiftPairs_mode1(
 
 
 
-void BoseEinstein::Set_effective_source()
+void BoseEinstein::Set_effective_source(
+			vector< pair< double, pair <int,int> > > & sortedPairs, int iTab )
 {
 	
 	// estimate scale for Q sampling
