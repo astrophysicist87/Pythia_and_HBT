@@ -422,9 +422,9 @@ void Vec4::rotbst(const RotBstMatrix& M) {
 // Print a four-vector: also operator overloading with friend.
 
 ostream& operator<<(ostream& os, const Vec4& v) {
-  os << fixed << setprecision(3) << " " << setw(9) << v.xx << " "
-     << setw(9) << v.yy << " " << setw(9) << v.zz << " " << setw(9)
-     << v.tt << " (" << setw(9) << v.mCalc() << ")\n";
+  os << fixed << setprecision(15) << " " << setw(18) << v.xx << " "
+     << setw(18) << v.yy << " " << setw(18) << v.zz << " " << setw(18)
+     << v.tt << " (" << setw(18) << v.mCalc() << ")\n";
   return os;
 }
 
