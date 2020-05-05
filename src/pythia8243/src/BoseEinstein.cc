@@ -391,16 +391,24 @@ bool BoseEinstein::shiftEvent( Event& event )
 	double eSumOriginal = 0.;
 	double eSumShifted  = 0.;
 	double eDiffByComp  = 0.;
-	cout << "CHECK SIZES: " << nStored[9] << " vs. " << hadronBE.size();
-	for (int i = 0; i < nStored[9]; ++i)
+	//cout << "CHECK SIZES: " << nStored[9] << " vs. " << hadronBE.size() << endl;
+	/*for (int i = 0; i < nStored[9]; ++i)
 	{
 		eSumOriginal     += hadronBE.at(i).p.e();
 		hadronBE.at(i).p += hadronBE.at(i).pShift;
 		hadronBE.at(i).p.e( sqrt( hadronBE.at(i).p.pAbs2() + hadronBE.at(i).m2 ) );
 		eSumShifted      += hadronBE.at(i).p.e();
 		eDiffByComp      += dot3( hadronBE.at(i).pComp, hadronBE.at(i).p) / hadronBE.at(i).p.e();
+	}*/
+	for ( auto & pHad : hadronBE )
+	{
+		eSumOriginal += pHad.p.e();
+		pHad.p       += pHad.pShift;
+		pHad.p.e( sqrt( pHad.p.pAbs2() + pHad.m2 ) );
+		eSumShifted  += pHad.p.e();
+		eDiffByComp  += dot3( pHad.pComp, pHad.p) / pHad.p.e();
 	}
-		
+
 	constexpr bool perform_compensation = true;
 	
 	// Iterate compensation shift until convergence.
@@ -414,12 +422,19 @@ bool BoseEinstein::shiftEvent( Event& event )
 		double compFac   = (eSumOriginal - eSumShifted) / eDiffByComp;
 		eSumShifted      = 0.;
 		eDiffByComp      = 0.;
-		for (int i = 0; i < nStored[9]; ++i)
+		/*for (int i = 0; i < nStored[9]; ++i)
 		{
 			hadronBE.at(i).p      += compFac * hadronBE.at(i).pComp;
 			hadronBE.at(i).p.e( sqrt( hadronBE.at(i).p.pAbs2() + hadronBE.at(i).m2 ) );
 			eSumShifted           += hadronBE.at(i).p.e();
 			eDiffByComp           += dot3( hadronBE.at(i).pComp, hadronBE.at(i).p) / hadronBE.at(i).p.e();
+		}*/
+		for ( auto & pHad : hadronBE )
+		{
+			pHad.p      += compFac * pHad.pComp;
+			pHad.p.e( sqrt( pHad.p.pAbs2() + pHad.m2 ) );
+			eSumShifted += pHad.p.e();
+			eDiffByComp += dot3( pHad.pComp, pHad.p) / pHad.p.e();
 		}
 	}
 		
@@ -447,10 +462,15 @@ bool BoseEinstein::shiftEvent( Event& event )
 	
 	
 	// Store new particle copies with shifted momenta.
-	for (int i = 0; i < nStored[9]; ++i)
+	/*for (int i = 0; i < nStored[9]; ++i)
 	{
 		int iNew = event.copy( hadronBE.at(i).iPos, 99);
 		event[ iNew ].p( hadronBE.at(i).p );
+	}*/
+	for ( auto & pHad : hadronBE )
+	{
+		int iNew = event.copy( pHad.iPos, 99);
+		event[ iNew ].p( pHad.p );
 	}
 	
 	auto end = std::chrono::system_clock::now();
@@ -526,13 +546,14 @@ if (1) exit(8);
 
 //---------------------------------------------------------------------------
 // Calculate shift and (unnormalized) compensation for pair using fixed QRef.
-
-void BoseEinstein::shiftPair_fixedQRef( int i1, int i2, int iTab) {
+//
+void BoseEinstein::shiftPair_fixedQRef( int i1, int i2, int iTab )
+{
 
 	//======================================
 	// Start of initializations
 
-  // Set relevant scales.
+	// Set relevant scales.
 	// Multiples and inverses (= "radii") of distance parameters in Q-space.
 	QRef2    = 2. * QRef;
 	QRef3    = 3. * QRef;
@@ -540,8 +561,9 @@ void BoseEinstein::shiftPair_fixedQRef( int i1, int i2, int iTab) {
 	R2Ref2   = 1. / (QRef2 * QRef2);
 	R2Ref3   = 1. / (QRef3 * QRef3);
 
-  // Set various tables on a per-pair basis.
-  double Qnow, Q2now, centerCorr;
+	// Set various tables on a per-pair basis.
+	double Qnow, Q2now, centerCorr;
+
     // Step size and number of steps in normal table.
     deltaQ[iTab]      = STEPSIZE * min(mPair[iTab], QRef);
     nStep[iTab]       = min( 199, 1 + int(3. * QRef / deltaQ[iTab]) );
