@@ -234,7 +234,7 @@ int main(int argc, char *argv[])
 	bool includePhaseSpace					= true;		// Include phase-space factor
 	bool linearInterpolateCDF				= false;     // Estimate pair density via linear interpolation
 	bool usePositiveShiftsForCompensation	= true;		// Pairs shifted apart used to compensate pairs shifted together
-	bool computeBEEnhancementExactly		= true;     // Whether to evaluate BE enhancement approximately or exactly
+	bool computeBEEnhancementExactly		= false;     // Whether to evaluate BE enhancement approximately or exactly
 
 
 	//if ( momentum_space_modifications )
@@ -912,8 +912,8 @@ vector<int> get_centrality_limits(
 	vector<int> results(2);
 
 	// if we're just doing all the events, no matter what
-	if ( centrality_class_lower_limit < 1.e-6
-			and 100.0 - centrality_class_upper_limit < 1.e-6 )
+	if ( centrality_class_lower_limit < 1e-6
+			and 100.0 - centrality_class_upper_limit < 1e-6 )
 	{
 		cout << "main_BEeffects(): setting default centralities" << endl;
 		results[0] = 0;
@@ -949,10 +949,10 @@ vector<int> get_centrality_limits(
 
 		int lower_index = max( 0, (int)floor( 0.01*centrality_class_lower_limit*n_events_to_use+0.5 ) );
 		int upper_index = min( n_events_to_use - 1, (int)floor( 0.01*centrality_class_upper_limit*n_events_to_use+0.5 ) );
-		results[0] = ( 100.0 - centrality_class_upper_limit < 1.e-6 ) ?
+		results[0] = ( 100.0 - centrality_class_upper_limit < 1e-6 ) ?
 						0 : 
 						event_multiplicities[upper_index];	//smaller multiplicity limit first
-		results[1] = ( centrality_class_lower_limit < 1.e-6 ) ?
+		results[1] = ( centrality_class_lower_limit < 1e-6 ) ?
 						1e+9 : 
 						event_multiplicities[lower_index];	//larger multiplicity limit second
 	}
