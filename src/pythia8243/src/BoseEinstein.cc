@@ -1003,6 +1003,7 @@ cout << thisQ << "   " << Qmin << "   " << dQ << "   " << (thisQ - Qmin) / dQ <<
 				if ( iQ + 1 >= (long)Qgrid.size() )
 					continue;
 				const long jQ = static_cast<long>( (nextQ - Qmin) / dQ );
+cout << nextQ << "   " << Qmin << "   " << dQ << "   " << (nextQ - Qmin) / dQ << endl;
 				
 				// interpolate running effective source integral and take difference
 
