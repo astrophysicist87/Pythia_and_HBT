@@ -211,7 +211,7 @@ double BoseEinstein::get_1D_source_size(int iSpecies)
 			}
 	}
 
-	double RMSsize = sqrt(result / (count+1.e-100)) * MM2FM / HBARC;
+	double RMSsize = sqrt(result / (count+1e-100)) * MM2FM / HBARC;
 
 	// return RMS source size
 	return ( 1.0 / RMSsize );
@@ -1369,7 +1369,7 @@ void BoseEinstein::shiftPairs_mode1(
 
 		//------------------------------------------
 		// Estimate pair shift using Newton-Raphson.
-		constexpr double ACCURACY = 1.e-6;
+		constexpr double ACCURACY = 1e-6;
 		constexpr int MAXTRIES    = 10;
 		const double c0           = thisPairLHS;	// The target value
 		double Qlower             = leftQ;
@@ -1390,7 +1390,7 @@ void BoseEinstein::shiftPairs_mode1(
 		// Initialize to closest endpoint.
 		double Qnew = Qlower;
 		double RHSnew = RHS_lower;
-		if ( abs(c0-RHS_lower) > abs(c0-RHS_upper) or Qnew < 1.e-10 )
+		if ( abs(c0-RHS_lower) > abs(c0-RHS_upper) or Qnew < 1e-10 )
 		{
 			Qnew   = Qupper;
 			RHSnew = RHS_upper;
@@ -1498,7 +1498,7 @@ void BoseEinstein::shiftPairs_mode1(
 				Qnew -= (RHSnew - c0) / deriv;
 
 				// If it went out of range, give up.
-				if ( Qnew < 1.e-10 or Qnew >= sortedPairs.back().first )
+				if ( Qnew < 1e-10 or Qnew >= sortedPairs.back().first )
 				{
 					success = false;
 					break;

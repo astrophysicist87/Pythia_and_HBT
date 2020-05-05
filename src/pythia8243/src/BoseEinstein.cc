@@ -211,7 +211,7 @@ double BoseEinstein::get_1D_source_size(int iSpecies)
 			}
 	}
 
-	double RMSsize = sqrt(result / (count+1.e-100)) * MM2FM / HBARC;
+	double RMSsize = sqrt(result / (count+1e-100)) * MM2FM / HBARC;
 
 	// return RMS source size
 	return ( 1.0 / RMSsize );
@@ -233,7 +233,7 @@ bool BoseEinstein::shiftEvent( Event& event) {
 //===========Added by Chris Plumberg================
 	// if using debugging version, reset pion momentum to random value
 	///*
-	constexpr bool debugging = true;
+	constexpr bool debugging = false;
 	if ( debugging )
 	{
 		//unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
@@ -431,7 +431,7 @@ cout 	<< setprecision(8)
 		<< "TEST: " << abs(eSumShifted - eSumOriginal) << " < " << COMPFACMAX * abs(eDiffByComp) << endl;
 //*/
 
-constexpr bool perform_compensation = false;
+constexpr bool perform_compensation = true;
 
   // Iterate compensation shift until convergence.
   int iStep = 0;
@@ -467,7 +467,7 @@ cout 	<< setprecision(8)
 
 //cout << "Made it here (3)" << endl;
 
-constexpr bool check_for_bad_events = false;
+constexpr bool check_for_bad_events = true;
 
   // Error if no convergence, and then return without doing BE shift.
   // However, not grave enough to kill event, so return true.
@@ -1369,7 +1369,7 @@ void BoseEinstein::shiftPairs_mode1(
 
 		//------------------------------------------
 		// Estimate pair shift using Newton-Raphson.
-		constexpr double ACCURACY = 1.e-6;
+		constexpr double ACCURACY = 1e-6;
 		constexpr int MAXTRIES    = 10;
 		const double c0           = thisPairLHS;	// The target value
 		double Qlower             = leftQ;
@@ -1390,7 +1390,7 @@ void BoseEinstein::shiftPairs_mode1(
 		// Initialize to closest endpoint.
 		double Qnew = Qlower;
 		double RHSnew = RHS_lower;
-		if ( abs(c0-RHS_lower) > abs(c0-RHS_upper) or Qnew < 1.e-10 )
+		if ( abs(c0-RHS_lower) > abs(c0-RHS_upper) or Qnew < 1e-10 )
 		{
 			Qnew   = Qupper;
 			RHSnew = RHS_upper;
@@ -1498,7 +1498,7 @@ void BoseEinstein::shiftPairs_mode1(
 				Qnew -= (RHSnew - c0) / deriv;
 
 				// If it went out of range, give up.
-				if ( Qnew < 1.e-10 or Qnew >= sortedPairs.back().first )
+				if ( Qnew < 1e-10 or Qnew >= sortedPairs.back().first )
 				{
 					success = false;
 					break;

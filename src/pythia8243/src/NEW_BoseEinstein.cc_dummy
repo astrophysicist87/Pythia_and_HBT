@@ -669,7 +669,7 @@ void BoseEinstein::evaluate_shift_relation_at_pair(
 
 double BoseEinstein::Newtons_Method( const double a, const double b )
 {
-	const double ACCURACY = 1.e-6;
+	const double ACCURACY = 1e-6;
 	const int MAXTRIES = 100;
 
 	/*const double guess1 = -1.0/b;
@@ -708,7 +708,7 @@ double BoseEinstein::Newtons_Method( const double a, const double b )
 	{
 		double fp = b*(1.0 + cos(b*(a+x)));
 		//cout << setprecision(24) << "ntries = " << ntries << ": " << x << "   " << f << "   " << fp << endl;
-		if ( abs(fp) < 1.e-100 ) break;
+		if ( abs(fp) < 1e-100 ) break;
 		f = x*b + sin(b*(a+x));
 		x -= f / fp;
 		ntries++;
