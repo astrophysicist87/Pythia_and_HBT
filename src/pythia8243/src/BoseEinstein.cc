@@ -498,8 +498,10 @@ bool BoseEinstein::getSortedPairs(
 
 ///*
 cout << "Check sortedPairs: " << endl;
+int thisCount = 0;
 for (const auto & iPair : sortedPairs)
 {
+	if (0==thisCount++) continue;
 	const int i1 = iPair.second.first;
 	const int i2 = iPair.second.second;
 	Vec4 xDiffPRF = ( hadronBE.at(i1).x - hadronBE.at(i2).x ) * MM2FM / HBARC;
