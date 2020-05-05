@@ -974,7 +974,7 @@ printf("Made it to %s::%d\n",__FUNCTION__, __LINE__);
 						or &eachPair == &sortedPairs.back() )
 						continue;
 				
-printf("Made it to %s::%d\n",__FUNCTION__, __LINE__);
+//printf("Made it to %s::%d\n",__FUNCTION__, __LINE__);
 
 					const double xDiffPRFVal = sorted_xDiffs.at(eachPairIndex++);
 
@@ -989,7 +989,7 @@ printf("Made it to %s::%d\n",__FUNCTION__, __LINE__);
 							<< result << "   " << compute_integral_with_phasespace(
 													thisQ, nextQ, xDiffPRFVal, m2Pair[iTab]) << endl;
 					*/
-printf("Made it to %s::%d\n",__FUNCTION__, __LINE__);
+//printf("Made it to %s::%d\n",__FUNCTION__, __LINE__);
 				}
 			}
 			// use effective source if within Qgrid, use exact calculation otherwise
