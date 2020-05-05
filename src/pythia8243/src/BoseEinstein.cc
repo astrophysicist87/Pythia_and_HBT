@@ -595,7 +595,7 @@ void BoseEinstein::shiftPair_fixedQRef( int i1, int i2, int iTab )
 
   // Calculate old relative momentum.
   double Q2old = m2(hadronBE.at(i1).p, hadronBE.at(i2).p) - m2Pair[iTab];
-  if (Q2old < Q2MIN) return;
+  if (Q2old < Q2MIN) {cout << "WARNING: Q2old = " << Q2old << " < Q2MIN = " << Q2MIN << endl; return;}
   double Qold  = sqrt(Q2old);
   double psFac = sqrt(Q2old + m2Pair[iTab]) / Q2old;
 
