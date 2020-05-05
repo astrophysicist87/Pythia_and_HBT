@@ -476,12 +476,17 @@ bool BoseEinstein::getSortedPairs(
 	// get all values in vector first
 	for (int i1 = nStored[iSpecies]; i1 < nStored[iSpecies+1] - 1; ++i1)
 	for (int i2 = i1 + 1; i2 < nStored[iSpecies+1]; ++i2)
+	{
+		cout << hadronBE.at(i1).p;
+		cout << hadronBE.at(i2).p;
+		cout << m2(hadronBE.at(i1).p, hadronBE.at(i2).p) << "   " << m2Pair[iTab] << endl;
 		sortedPairs.push_back(
 			std::make_pair(
 				sqrt( m2(hadronBE.at(i1).p, hadronBE.at(i2).p) - m2Pair[iTab] ),
 				std::make_pair(i1, i2)
 			)
 		);
+	}
 
 	// check if there are enough pairs of this species to do shift
 	if (sortedPairs.size() < 2)
@@ -496,12 +501,13 @@ bool BoseEinstein::getSortedPairs(
 	// add fake first "pair"
 	sortedPairs.insert(sortedPairs.begin(), std::make_pair( 0.0, std::make_pair(-1, -1) ) );
 
-///*
+/*
 cout << "Check sortedPairs: " << endl;
 int thisCount = 0;
 for (const auto & iPair : sortedPairs)
 {
 	if (0==thisCount++) continue;
+	thisCount++;
 	const int i1 = iPair.second.first;
 	const int i2 = iPair.second.second;
 	Vec4 xDiffPRF = ( hadronBE.at(i1).x - hadronBE.at(i2).x ) * MM2FM / HBARC;
@@ -514,7 +520,7 @@ for (const auto & iPair : sortedPairs)
 }
 
 //if (1) exit(8);
-//*/
+*/
 
 	// add fake last "pair" (new QVal is 10% larger than last one, just for definiteness)
 	sortedPairs.push_back( std::make_pair( 1.1*sortedPairs.back().first, std::make_pair(-1, -1) ) );
