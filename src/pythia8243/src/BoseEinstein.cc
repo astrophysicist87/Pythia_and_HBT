@@ -1067,7 +1067,7 @@ for (int iQ = 0; iQ < (int)Qgrid.size(); iQ++)
 	currentQ += dQ;
 }
 //if (1) return;
-if (1) exit (8);
+//if (1) exit (8);
 
 }
 	return;
