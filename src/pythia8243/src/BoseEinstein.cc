@@ -482,7 +482,7 @@ bool BoseEinstein::getSortedPairs(
 			cout << "Check pair:" << i1 << "   " << i2 << endl;
 			cout << hadronBE.at(i1).p;
 			cout << hadronBE.at(i2).p;
-			cout << m2(hadronBE.at(i1).p, hadronBE.at(i2).p) << "   " << m2Pair[iTab] << endl;
+			cout << setprecision(16) << m2(hadronBE.at(i1).p, hadronBE.at(i2).p) << "   " << m2Pair[iTab] << endl;
 		}
 		sortedPairs.push_back(
 			std::make_pair(
