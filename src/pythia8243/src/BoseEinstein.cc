@@ -941,12 +941,12 @@ void BoseEinstein::set_RHS(
 	int pairCount = 0;
 	double result = 0.0;
 
-printf("Made it to %d::%d\n",__FUNCTION__, __LINE__);
+printf("Made it to %s::%d\n",__FUNCTION__, __LINE__);
 
 	if ( include_phase_space )
 		for (const auto & thisPair : sortedPairs)
 		{
-printf("Made it to %d::%d\n",__FUNCTION__, __LINE__);
+printf("Made it to %s::%d\n",__FUNCTION__, __LINE__);
 			auto nextPair = ( pairCount == (int)sortedPairs.size()-1 ) ? thisPair : *(&thisPair+1);
 			const double thisQ = thisPair.first;
 			const double nextQ = nextPair.first;
@@ -958,14 +958,14 @@ printf("Made it to %d::%d\n",__FUNCTION__, __LINE__);
 
 			if ( BE_VERBOSE )
 				cout << "Obtained RHS for pair #" << pairCount << " of " << -2 + (int)sorted_xDiffs.size() << endl;
-printf("Made it to %d::%d\n",__FUNCTION__, __LINE__);
+printf("Made it to %s::%d\n",__FUNCTION__, __LINE__);
 
 			//--------------------------------------
 			// Decide how to compute BE enhancement.
 			const double one_by_N = 1.0 / static_cast<double>(sortedPairs.size() - 2);
 			if ( compute_BE_enhancement_exactly or thisQ >= Qgrid.back() )
 			{
-printf("Made it to %d::%d\n",__FUNCTION__, __LINE__);
+printf("Made it to %s::%d\n",__FUNCTION__, __LINE__);
 				int eachPairIndex = 0;
 				for (const auto & eachPair : sortedPairs)
 				{
@@ -974,7 +974,7 @@ printf("Made it to %d::%d\n",__FUNCTION__, __LINE__);
 						or &eachPair == &sortedPairs.back() )
 						continue;
 				
-printf("Made it to %d::%d\n",__FUNCTION__, __LINE__);
+printf("Made it to %s::%d\n",__FUNCTION__, __LINE__);
 
 					const double xDiffPRFVal = sorted_xDiffs.at(eachPairIndex++);
 
@@ -989,13 +989,13 @@ printf("Made it to %d::%d\n",__FUNCTION__, __LINE__);
 							<< result << "   " << compute_integral_with_phasespace(
 													thisQ, nextQ, xDiffPRFVal, m2Pair[iTab]) << endl;
 					*/
-printf("Made it to %d::%d\n",__FUNCTION__, __LINE__);
+printf("Made it to %s::%d\n",__FUNCTION__, __LINE__);
 				}
 			}
 			// use effective source if within Qgrid, use exact calculation otherwise
 			else if ( thisQ < Qgrid.back() )
 			{
-printf("Made it to %d::%d\n",__FUNCTION__, __LINE__);
+printf("Made it to %s::%d\n",__FUNCTION__, __LINE__);
 				// make this a global variable
 				const double Qmin = 0.0;
 				const int iQ = static_cast<int>( (thisQ - Qmin) / dQ );
@@ -1010,7 +1010,7 @@ printf("Made it to %d::%d\n",__FUNCTION__, __LINE__);
 										* ( integrated_effective_source.at(iQ+1) - EiQ ) / dQ;
 
 
-printf("Made it to %d::%d\n",__FUNCTION__, __LINE__);
+printf("Made it to %s::%d\n",__FUNCTION__, __LINE__);
 				double EnextQ = integrated_effective_source.back();
 				if ( jQ + 1 < (int)Qgrid.size() )
 				{
@@ -1022,12 +1022,12 @@ printf("Made it to %d::%d\n",__FUNCTION__, __LINE__);
 				}
 				
 
-printf("Made it to %d::%d\n",__FUNCTION__, __LINE__);
+printf("Made it to %s::%d\n",__FUNCTION__, __LINE__);
 				result += denBar.at(pairCount) * ( EnextQ - EthisQ );	// factor of 1/N already included!!!
 
 			}
 
-printf("Made it to %d::%d\n",__FUNCTION__, __LINE__);
+printf("Made it to %s::%d\n",__FUNCTION__, __LINE__);
 			pairCount++;
 		}
 	else
@@ -1066,13 +1066,13 @@ printf("Made it to %d::%d\n",__FUNCTION__, __LINE__);
 			pairCount++;
 		}
 
-printf("Made it to %d::%d\n",__FUNCTION__, __LINE__);
+printf("Made it to %s::%d\n",__FUNCTION__, __LINE__);
 	// Add in constant piece to RHS result.
 	for (int iPair = 0; iPair < (int)LHS.size(); ++iPair)
 		RHS.at(iPair).second += LHS.at(iPair).second;
 
 
-printf("Made it to %d::%d\n",__FUNCTION__, __LINE__);
+printf("Made it to %s::%d\n",__FUNCTION__, __LINE__);
 	// check LHS and RHS at this point
 	//cout << "Line = " << __LINE__ << endl;
 	/*cout << "Sizes: " << sortedPairs.size() << "   "
@@ -1087,7 +1087,7 @@ printf("Made it to %d::%d\n",__FUNCTION__, __LINE__);
 
 	//if (1) exit(8);
 
-printf("Made it to %d::%d\n",__FUNCTION__, __LINE__);
+printf("Made it to %s::%d\n",__FUNCTION__, __LINE__);
 	return;
 }
 
