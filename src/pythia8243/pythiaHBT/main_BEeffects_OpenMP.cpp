@@ -616,7 +616,10 @@ int main(int argc, char *argv[])
 			// was shifted successfully.
 			if ( momentum_space_modifications
 					and not pythiaVector[iThread].info.hasBECShifts() )
+			{
+				cout << "WARNING: event not shifted correctly!  Trying again..." << endl;
 				continue;
+			}
 
 if (false)
 {
