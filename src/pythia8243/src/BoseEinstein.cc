@@ -998,10 +998,10 @@ printf("Made it to %s::%d\n",__FUNCTION__, __LINE__);
 printf("Made it to %s::%d\n",__FUNCTION__, __LINE__);
 				// make this a global variable
 				const double Qmin = 0.0;
-				const int iQ = static_cast<int>( (thisQ - Qmin) / dQ );
-				if ( iQ + 1 >= (int)Qgrid.size() )
+				const long iQ = static_cast<long>( (thisQ - Qmin) / dQ );
+				if ( iQ + 1 >= (long)Qgrid.size() )
 					continue;
-				const int jQ = static_cast<int>( (nextQ - Qmin) / dQ );
+				const long jQ = static_cast<long>( (nextQ - Qmin) / dQ );
 				
 				// interpolate running effective source integral and take difference
 
@@ -1012,7 +1012,7 @@ printf("Made it to %s::%d\n",__FUNCTION__, __LINE__);
 
 printf("Made it to %s::%d\n",__FUNCTION__, __LINE__);
 				double EnextQ = integrated_effective_source.back();
-				if ( jQ + 1 < (int)Qgrid.size() )
+				if ( jQ + 1 < (long)Qgrid.size() )
 				{
 
 cout << jQ << "   " << Qgrid.size() << "   " << integrated_effective_source.size() << endl;
