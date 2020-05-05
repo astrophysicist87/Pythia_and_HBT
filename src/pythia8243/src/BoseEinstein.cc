@@ -511,7 +511,7 @@ for (const auto & iPair : sortedPairs)
 	cout << setprecision(12) << thisQ << "   " << nextQ - thisQ << "   " << xDiffPRF.pAbs() * HBARC << "   " << xDiffPRF.pAbs() << "   " << m2Pair[iTab] << endl;
 }
 
-if (1) exit(8);
+//if (1) exit(8);
 //*/
 
 	// add fake last "pair" (new QVal is 10% larger than last one, just for definiteness)
@@ -1665,11 +1665,11 @@ void BoseEinstein::Set_effective_source(
 		currentIntegrand = phase_space[iQ] * effSource[iQ];
 		runningIntegral += 0.5*dQ*(currentIntegrand + previousIntegrand);
 		integrated_effective_source[iQ] = runningIntegral;
-		cout << "effSource: " << setprecision(12)
+		/*cout << "effSource: " << setprecision(12)
 				<< currentQ << "   "
 				<< phase_space[iQ] << "   "
 				<< effSource[iQ] << "   "
-				<< integrated_effective_source[iQ] << endl;
+				<< integrated_effective_source[iQ] << endl;*/
 		currentQ += dQ;
 	}
 	//if (1) exit (8);
