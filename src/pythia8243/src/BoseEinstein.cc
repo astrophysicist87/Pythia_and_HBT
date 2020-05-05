@@ -156,19 +156,16 @@ void BoseEinstein::set_QRef(int iSpecies)
 	{
 		// Reverting to minimum
 		QRef = 0.05;
-		//cout << "failed!  Reverting to minimum QRef = " << QRef << "!" << endl;
 		infoPtr->errorMsg("failed!  Reverting to minimum QRef" + std::to_string(QRef) + "!");
 	}
 	else if ( QRef > 1.0 )
 	{
 		// Reverting to maximum
 		QRef = 1.0;
-		//cout << "failed!  Reverting to maximum QRef = " << QRef << "!" << endl;
-		infoPtr->errorMsg("failed!  Reverting to maximum QRef!" + std::to_string(QRef) + "");
+		infoPtr->errorMsg("failed!  Reverting to maximum QRef" + std::to_string(QRef) + "!");
 	}
 	else
 	{
-		//cout << "success!  Using QRef = " << QRef << "!" << endl;
 		infoPtr->errorMsg("success!  Using QRef = " + std::to_string(QRef) + "!");
 	}
 }
@@ -335,9 +332,9 @@ bool BoseEinstein::shiftEvent( Event& event )
 	for (int iSpecies = 0; iSpecies < 9; ++iSpecies)
 	{
 		nStored[iSpecies + 1] = nStored[iSpecies];
-		if (!doPion && iSpecies <= 2) continue;
-		if (!doKaon && iSpecies >= 3 && iSpecies <= 6) continue;
-		if (!doEta  && iSpecies >= 7) continue;
+		if (!doPion and iSpecies <= 2) continue;
+		if (!doKaon and iSpecies >= 3 and iSpecies <= 6) continue;
+		if (!doEta  and iSpecies >= 7) continue;
 		
 		// Properties of current hadron species.
 		int idNow = IDHADRON[ iSpecies ];
@@ -346,10 +343,7 @@ bool BoseEinstein::shiftEvent( Event& event )
 		// Loop through event record to store copies of current species.
 		for (int i = 0; i < event.size(); ++i)
 			if ( event[i].id() == idNow and (event[i].isFinal() or debugging) )
-			{
-				hadronBE.push_back(
-				BoseEinsteinHadron( idNow, i, event[i].p(), event[i].m(), event[i].vProd() ) );
-			}
+				hadronBE.push_back( BoseEinsteinHadron( idNow, i, event[i].p(), event[i].m(), event[i].vProd() ) );
 		nStored[iSpecies + 1] = hadronBE.size();
 		
 		// ======================================================
@@ -369,12 +363,15 @@ bool BoseEinstein::shiftEvent( Event& event )
 				break;
 			case 1:	// use a new cos(q*x) enhancement based on space-time interval between production points (mode 2)
 				{
-					bool enoughPairsToProceed = getSortedPairs( sortedPairs, iSpecies );
+					bool enoughPairsToProceed
+                         = getSortedPairs( sortedPairs, iSpecies );
 					if ( enoughPairsToProceed )
 					{
-						cout << "BoseEinsteinCheck: NPair = " << sortedPairs.size()-2
+						cout << "BoseEinsteinCheck: NPair = "
+                             << sortedPairs.size()-2
                              << " in iSpecies = " << iSpecies << endl;
-						shiftPairs_mode1( sortedPairs, pairShifts, pairCompensationShifts, iTab );
+						shiftPairs_mode1( sortedPairs, pairShifts,
+                                          pairCompensationShifts, iTab );
 					}
 				}
 				break;
@@ -392,14 +389,6 @@ bool BoseEinstein::shiftEvent( Event& event )
 	double eSumShifted  = 0.;
 	double eDiffByComp  = 0.;
 	//cout << "CHECK SIZES: " << nStored[9] << " vs. " << hadronBE.size() << endl;
-	/*for (int i = 0; i < nStored[9]; ++i)
-	{
-		eSumOriginal     += hadronBE.at(i).p.e();
-		hadronBE.at(i).p += hadronBE.at(i).pShift;
-		hadronBE.at(i).p.e( sqrt( hadronBE.at(i).p.pAbs2() + hadronBE.at(i).m2 ) );
-		eSumShifted      += hadronBE.at(i).p.e();
-		eDiffByComp      += dot3( hadronBE.at(i).pComp, hadronBE.at(i).p) / hadronBE.at(i).p.e();
-	}*/
 	for ( auto & pHad : hadronBE )
 	{
 		eSumOriginal += pHad.p.e();
@@ -422,13 +411,6 @@ bool BoseEinstein::shiftEvent( Event& event )
 		double compFac   = (eSumOriginal - eSumShifted) / eDiffByComp;
 		eSumShifted      = 0.;
 		eDiffByComp      = 0.;
-		/*for (int i = 0; i < nStored[9]; ++i)
-		{
-			hadronBE.at(i).p      += compFac * hadronBE.at(i).pComp;
-			hadronBE.at(i).p.e( sqrt( hadronBE.at(i).p.pAbs2() + hadronBE.at(i).m2 ) );
-			eSumShifted           += hadronBE.at(i).p.e();
-			eDiffByComp           += dot3( hadronBE.at(i).pComp, hadronBE.at(i).p) / hadronBE.at(i).p.e();
-		}*/
 		for ( auto & pHad : hadronBE )
 		{
 			pHad.p      += compFac * pHad.pComp;
@@ -462,11 +444,6 @@ bool BoseEinstein::shiftEvent( Event& event )
 	
 	
 	// Store new particle copies with shifted momenta.
-	/*for (int i = 0; i < nStored[9]; ++i)
-	{
-		int iNew = event.copy( hadronBE.at(i).iPos, 99);
-		event[ iNew ].p( hadronBE.at(i).p );
-	}*/
 	for ( auto & pHad : hadronBE )
 	{
 		int iNew = event.copy( pHad.iPos, 99);
@@ -944,109 +921,9 @@ void BoseEinstein::set_LHS(
 		}
 
 
-//if (not compute_BE_enhancement_exactly)
-{
+	//if (not compute_BE_enhancement_exactly)
+		Set_effective_source();
 
-// estimate scale for Q sampling
-double size_estimate_sum = 0.0, size_estimate_sqsum = 0.0, size_estimate_cubsum = 0.0;
-double mean = 0.0, rms = 0.0, avg_log = 0.0;
-
-//const double npairs = sortedPairs.size()-2;
-
-// set grids
-//const double Qmaximum = sortedPairs.back().first;
-//const double Qmaximum = 0.1;	// GeV
-const int Qgridsize = static_cast<int>(Qmaximum / dQ) + 1;
-Qgrid.assign( Qgridsize, 0.0 );
-phase_space.assign( Qgridsize, 0.0 );
-effSource.assign( Qgridsize, 0.0 );
-integrated_effective_source.assign( Qgridsize, 0.0 );
-
-//cout << "npairs = " << (int)npairs << endl;
-
-//for (const auto & eachPair : sortedPairs)
-for (int iPair = 1; iPair < (int)sortedPairs.size()-1; iPair++)
-{
-	//cerr << "iPair = " << iPair << " of " << (int)sortedPairs.size() << "\n";
-
-	auto eachPair = sortedPairs.at(iPair);
-
-	// Skip unphysical dummy pairs.
-	//if (   &eachPair == &sortedPairs.front()
-	//	or &eachPair == &sortedPairs.back() )
-	//	continue;
-
-	const int i1 = eachPair.second.first;
-	const int i2 = eachPair.second.second;
-	Vec4 xDiffPRF = ( hadronBE.at(i1).x - hadronBE.at(i2).x ) * MM2FM / HBARC;
-	xDiffPRF.bstback( 0.5*(hadronBE.at(i1).p + hadronBE.at(i2).p) );
-
-	const double xDiffval = xDiffPRF.pAbs();
-
-//cout << setprecision(12) << "sortedPairs.at(" << iPair << ").first = " << eachPair.first << endl;
-
-	size_estimate_sum += 1.0 / xDiffval;
-	size_estimate_sqsum += 1.0 / (xDiffval*xDiffval);
-	size_estimate_cubsum += 1.0 / (xDiffval*xDiffval*xDiffval);
-	mean += xDiffval;
-	rms += xDiffval*xDiffval;
-	avg_log += log(1.0 / xDiffval);
-
-	///*
-	double currentQ = 0.0;
-	for (int iQ = 0; iQ < (int)effSource.size(); iQ++)
-	{
-		//effSource[iQ] += sphericalbesselj0(currentQ * xDiffval);
-		effSource[iQ] += cos(currentQ * xDiffval);
-		currentQ += dQ;
-	}
-//cout << setprecision(12) << "effSource[0] = " << effSource[0] << endl;
-	//*/
-}
-
-/*
-cout << setprecision(12) << "size estimate (linear halfwidth) = " << 2.0 * size_estimate_sqsum / (M_PI * size_estimate_sum) << endl;
-cout << setprecision(12) << "size estimate (gaussian approximation / 2) = " << 0.5 * sqrt(3.0 * size_estimate_cubsum / size_estimate_sum) << endl;
-cout << setprecision(12) << "size estimate (geometric mean) = " << exp(avg_log / npairs) << endl;
-*/
-
-//if (1) exit (8);
-//cout << "<<<============================================>>>" << endl;
-//*/
-double currentQ = 0.0;
-if (include_phase_space)
-	for (int iQ = 0; iQ < (int)Qgrid.size(); iQ++)
-	{
-		phase_space[iQ] = currentQ*currentQ / sqrt(currentQ*currentQ + m2Pair[iTab]);
-		currentQ += dQ;
-	}
-else
-	for (int iQ = 0; iQ < (int)Qgrid.size(); iQ++)
-		phase_space[iQ] = 1.0;
-
-//reset
-double previousIntegrand = 0.0, currentIntegrand = 0.0;
-currentQ = 0.0;
-double runningIntegral = 0.0;
-for (int iQ = 0; iQ < (int)Qgrid.size(); iQ++)
-{
-	Qgrid[iQ] = currentQ;
-	effSource[iQ] /= (double)(sortedPairs.size()-2);
-	previousIntegrand = currentIntegrand;
-	currentIntegrand = phase_space[iQ] * effSource[iQ];
-	runningIntegral += 0.5*dQ*(currentIntegrand + previousIntegrand);
-	integrated_effective_source[iQ] = runningIntegral;
-	cout << "effSource: " << setprecision(12)
-			<< currentQ << "   "
-			<< phase_space[iQ] << "   "
-			<< effSource[iQ] << "   "
-			<< integrated_effective_source[iQ] << endl;
-	currentQ += dQ;
-}
-//if (1) return;
-//if (1) exit (8);
-
-}
 	return;
 }
 
@@ -1669,6 +1546,119 @@ void BoseEinstein::shiftPairs_mode1(
 	return;
 }
 //*/
+
+
+
+void BoseEinstein::Set_effective_source()
+{
+	
+	// estimate scale for Q sampling
+	double size_estimate_sum = 0.0;
+	double size_estimate_sqsum = 0.0;
+	double size_estimate_cubsum = 0.0;
+	double mean = 0.0, rms = 0.0, avg_log = 0.0;
+	
+	//const double npairs = sortedPairs.size()-2;
+	
+	// set grids
+	//const double Qmaximum = sortedPairs.back().first;
+	//const double Qmaximum = 0.1;	// GeV
+	const int Qgridsize = static_cast<int>(Qmaximum / dQ) + 1;
+	Qgrid.assign( Qgridsize, 0.0 );
+	phase_space.assign( Qgridsize, 0.0 );
+	effSource.assign( Qgridsize, 0.0 );
+	integrated_effective_source.assign( Qgridsize, 0.0 );
+	
+	//cout << "npairs = " << (int)npairs << endl;
+	
+	//for (const auto & eachPair : sortedPairs)
+	for (int iPair = 1; iPair < (int)sortedPairs.size()-1; iPair++)
+	{
+		//cerr << "iPair = " << iPair << " of "
+		//     << (int)sortedPairs.size() << "\n";
+	
+		auto eachPair = sortedPairs.at(iPair);
+	
+		// Skip unphysical dummy pairs.
+		//if (   &eachPair == &sortedPairs.front()
+		//	or &eachPair == &sortedPairs.back() )
+		//	continue;
+	
+		const int i1 = eachPair.second.first;
+		const int i2 = eachPair.second.second;
+		Vec4 xDiffPRF = ( hadronBE.at(i1).x - hadronBE.at(i2).x )
+                        * MM2FM / HBARC;
+		xDiffPRF.bstback( 0.5*(hadronBE.at(i1).p + hadronBE.at(i2).p) );
+	
+		const double xDiffval = xDiffPRF.pAbs();
+	
+		//cout << setprecision(12)
+        //     << "sortedPairs.at(" << iPair << ").first = "
+        //     << eachPair.first << endl;
+	
+		size_estimate_sum += 1.0 / xDiffval;
+		size_estimate_sqsum += 1.0 / (xDiffval*xDiffval);
+		size_estimate_cubsum += 1.0 / (xDiffval*xDiffval*xDiffval);
+		mean += xDiffval;
+		rms += xDiffval*xDiffval;
+		avg_log += log(1.0 / xDiffval);
+	
+		///*
+		double currentQ = 0.0;
+		for (int iQ = 0; iQ < (int)effSource.size(); iQ++)
+		{
+			//effSource[iQ] += sphericalbesselj0(currentQ * xDiffval);
+			effSource[iQ] += cos(currentQ * xDiffval);
+			currentQ += dQ;
+		}
+		//cout << setprecision(12) << "effSource[0] = " << effSource[0] << endl;
+		//*/
+	}
+	
+	/*
+	cout << setprecision(12) << "size estimate (linear halfwidth) = " << 2.0 * size_estimate_sqsum / (M_PI * size_estimate_sum) << endl;
+	cout << setprecision(12) << "size estimate (gaussian approximation / 2) = " << 0.5 * sqrt(3.0 * size_estimate_cubsum / size_estimate_sum) << endl;
+	cout << setprecision(12) << "size estimate (geometric mean) = " << exp(avg_log / npairs) << endl;
+	*/
+	
+	//if (1) exit (8);
+	//cout << "<<<============================================>>>" << endl;
+	//*/
+	double currentQ = 0.0;
+	if (include_phase_space)
+		for (int iQ = 0; iQ < (int)Qgrid.size(); iQ++)
+		{
+			phase_space[iQ] = currentQ*currentQ / sqrt(currentQ*currentQ + m2Pair[iTab]);
+			currentQ += dQ;
+		}
+	else
+		for (int iQ = 0; iQ < (int)Qgrid.size(); iQ++)
+			phase_space[iQ] = 1.0;
+	
+	//reset
+	double previousIntegrand = 0.0, currentIntegrand = 0.0;
+	currentQ = 0.0;
+	double runningIntegral = 0.0;
+	for (int iQ = 0; iQ < (int)Qgrid.size(); iQ++)
+	{
+		Qgrid[iQ] = currentQ;
+		effSource[iQ] /= (double)(sortedPairs.size()-2);
+		previousIntegrand = currentIntegrand;
+		currentIntegrand = phase_space[iQ] * effSource[iQ];
+		runningIntegral += 0.5*dQ*(currentIntegrand + previousIntegrand);
+		integrated_effective_source[iQ] = runningIntegral;
+		cout << "effSource: " << setprecision(12)
+				<< currentQ << "   "
+				<< phase_space[iQ] << "   "
+				<< effSource[iQ] << "   "
+				<< integrated_effective_source[iQ] << endl;
+		currentQ += dQ;
+	}
+	//if (1) exit (8);
+
+	return;
+}
+
 
 
 //==========================================================================

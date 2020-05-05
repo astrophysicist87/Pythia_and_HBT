@@ -158,6 +158,10 @@ private:
 			vector< pair< double, double > > & RHS,
 			vector<double> & denBar, int iTab );
 
+  // Define effective source used to accelerate
+  // evaluation of BE enhancement
+  void Set_effective_source();
+
   ///===CJP(end)===
 
 };
