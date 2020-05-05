@@ -87,7 +87,7 @@ bool BoseEinstein::init(Info* infoPtrIn, Settings& settings,
   ParticleData& particleData) {
 
   // Save pointer.
-  infoPtr                = infoPtrIn;
+  infoPtr                         = infoPtrIn;
 
   // Main flags.
   doPion 				          = settings.flag("BoseEinstein:Pion");
@@ -103,10 +103,10 @@ bool BoseEinstein::init(Info* infoPtrIn, Settings& settings,
   compute_BE_enhancement_exactly  = settings.flag("BoseEinstein:computeBEEnhancementExactly");
 
   // Shape of Bose-Einstein enhancement/suppression.
-  lambda 				= settings.parm("BoseEinstein:lambda");
-  QRef 					= settings.parm("BoseEinstein:QRef");
-  sourceDimension 		= settings.parm("BoseEinstein:sourceDimension");
-  enhanceMode 			= settings.parm("BoseEinstein:enhanceMode");
+  lambda                          = settings.parm("BoseEinstein:lambda");
+  QRef                            = settings.parm("BoseEinstein:QRef");
+  sourceDimension                 = settings.parm("BoseEinstein:sourceDimension");
+  enhanceMode                     = settings.parm("BoseEinstein:enhanceMode");
 
   // Masses of particles with Bose-Einstein implemented.
   for (int iSpecies = 0; iSpecies < 9; ++iSpecies)
@@ -120,11 +120,11 @@ bool BoseEinstein::init(Info* infoPtrIn, Settings& settings,
 
   // Loop over the four required tables. Local variables.
   for (int iTab = 0; iTab < 4; ++iTab)
-    m2Pair[iTab]      = mPair[iTab] * mPair[iTab];
+    m2Pair[iTab] = mPair[iTab] * mPair[iTab];
 
-  number_of_pairs = 0;
-  number_of_shifted_pairs = 0;
-  number_of_too_close_pairs = 0;
+  number_of_pairs               = 0;
+  number_of_shifted_pairs       = 0;
+  number_of_too_close_pairs     = 0;
   number_of_too_separated_pairs = 0;
 
   // Done.
@@ -136,7 +136,7 @@ void BoseEinstein::set_QRef(int iSpecies)
 {
 	if ( useDistribution )
 	{
-		cout << "Attempting to fix QRef from source distribution...";
+		//cout << "Attempting to fix QRef from source distribution...";
 		switch ( sourceDimension )
 		{
 			case 1:
@@ -144,7 +144,8 @@ void BoseEinstein::set_QRef(int iSpecies)
 				break;
 			default:
 				infoPtr->errorMsg("Warning in BoseEinstein::set_QRef: "
-      "choice of QRef makes no sense, defaulting to 1D source size");
+                                  "choice of QRef makes no sense, "
+                                  "defaulting to 1D source size");
 				QRef = get_1D_source_size(iSpecies);
 				break;
 		}
@@ -155,16 +156,21 @@ void BoseEinstein::set_QRef(int iSpecies)
 	{
 		// Reverting to minimum
 		QRef = 0.05;
-		cout << "failed!  Reverting to minimum QRef = " << QRef << "!" << endl;
+		//cout << "failed!  Reverting to minimum QRef = " << QRef << "!" << endl;
+		infoPtr->errorMsg("failed!  Reverting to minimum QRef" + std::to_string(QRef) + "!");
 	}
 	else if ( QRef > 1.0 )
 	{
 		// Reverting to maximum
 		QRef = 1.0;
-		cout << "failed!  Reverting to maximum QRef = " << QRef << "!" << endl;
+		//cout << "failed!  Reverting to maximum QRef = " << QRef << "!" << endl;
+		infoPtr->errorMsg("failed!  Reverting to maximum QRef!" + std::to_string(QRef) + "");
 	}
 	else
-		cout << "success!  Using QRef = " << QRef << "!" << endl;
+	{
+		//cout << "success!  Using QRef = " << QRef << "!" << endl;
+		infoPtr->errorMsg("success!  Using QRef = " + std::to_string(QRef) + "!");
+	}
 }
 
 double BoseEinstein::get_1D_source_size(int iSpecies)
@@ -221,16 +227,13 @@ double BoseEinstein::get_1D_source_size(int iSpecies)
 //--------------------------------------------------------------------------
 // Perform Bose-Einstein corrections on an event.
 
-bool BoseEinstein::shiftEvent( Event& event) {
-  // Reset list of identical particles.
-  hadronBE.resize(0);
+bool BoseEinstein::shiftEvent( Event& event )
+{
+	// Reset list of identical particles.
+	hadronBE.resize(0);
 
 
-
-
-
-
-//===========Added by Chris Plumberg================
+	//===========Added by Chris Plumberg================
 	// if using debugging version, reset pion momentum to random value
 	///*
 	constexpr bool debugging = false;
@@ -321,191 +324,143 @@ bool BoseEinstein::shiftEvent( Event& event) {
 	}
 
 	//*/
-//===========End of Chris Plumberg's addition================
+	//===========End of Chris Plumberg's addition================
 
 
-
-
-
-
+	// Start timing	
 	auto start = std::chrono::system_clock::now();
-
-  // Loop over all hadron species with BE effects.
-  nStored[0] = 0;
-  for (int iSpecies = 0; iSpecies < 9; ++iSpecies) {
-    nStored[iSpecies + 1] = nStored[iSpecies];
-    if (!doPion && iSpecies <= 2) continue;
-    if (!doKaon && iSpecies >= 3 && iSpecies <= 6) continue;
-    if (!doEta  && iSpecies >= 7) continue;
-
-    // Properties of current hadron species.
-    int idNow = IDHADRON[ iSpecies ];
-    int iTab  = ITABLE[ iSpecies ];
-
-    // Loop through event record to store copies of current species.
-    for (int i = 0; i < event.size(); ++i)
-      if ( event[i].id() == idNow && (event[i].isFinal() or debugging) )
-		{
-        hadronBE.push_back(
-          BoseEinsteinHadron( idNow, i, event[i].p(), event[i].m(), event[i].vProd() ) );
-		}
-    nStored[iSpecies + 1] = hadronBE.size();
-
-	// ======================================================
-	// Define these to estimate pair shift using pair density
-	vector< pair< double, pair <int,int> > > sortedPairs;
-	vector<double> pairShifts, pairCompensationShifts;
-	// ======================================================
-
-    // Loop through pairs of identical particles and find shifts.
-	switch ( enhanceMode )
+	
+	// Loop over all hadron species with BE effects.
+	nStored[0] = 0;
+	for (int iSpecies = 0; iSpecies < 9; ++iSpecies)
 	{
-		case 0: // the original and the default
-			set_QRef(iSpecies);
-			for (int i1 = nStored[iSpecies]; i1 < nStored[iSpecies+1] - 1; ++i1)
-			for (int i2 = i1 + 1; i2 < nStored[iSpecies+1]; ++i2)
-			  shiftPair_fixedQRef( i1, i2, iTab );
-			break;
-		case 1:	// use a new cos(q*x) enhancement based on space-time interval between production points (mode 2)
+		nStored[iSpecies + 1] = nStored[iSpecies];
+		if (!doPion && iSpecies <= 2) continue;
+		if (!doKaon && iSpecies >= 3 && iSpecies <= 6) continue;
+		if (!doEta  && iSpecies >= 7) continue;
+		
+		// Properties of current hadron species.
+		int idNow = IDHADRON[ iSpecies ];
+		int iTab  = ITABLE[ iSpecies ];
+		
+		// Loop through event record to store copies of current species.
+		for (int i = 0; i < event.size(); ++i)
+			if ( event[i].id() == idNow and (event[i].isFinal() or debugging) )
 			{
-				bool enoughPairsToProceed = getSortedPairs( sortedPairs, iSpecies );
-				if ( enoughPairsToProceed )
-				{
-					cout << "BoseEinsteinCheck: NPair = " << sortedPairs.size()-2 << " in iSpecies = " << iSpecies << endl;
-//if (1) exit(0);
-					shiftPairs_mode1( sortedPairs, pairShifts, pairCompensationShifts, iTab );
-				}
+				hadronBE.push_back(
+				BoseEinsteinHadron( idNow, i, event[i].p(), event[i].m(), event[i].vProd() ) );
 			}
-			break;
-		default:
-			// Do nothing.
-			break;
+		nStored[iSpecies + 1] = hadronBE.size();
+		
+		// ======================================================
+		// Define these to estimate pair shift using pair density
+		vector< pair< double, pair <int,int> > > sortedPairs;
+		vector<double> pairShifts, pairCompensationShifts;
+		// ======================================================
+		
+		// Loop through pairs of identical particles and find shifts.
+		switch ( enhanceMode )
+		{
+			case 0: // the original and the default
+				set_QRef(iSpecies);
+				for (int i1 = nStored[iSpecies]; i1 < nStored[iSpecies+1] - 1; ++i1)
+				for (int i2 = i1 + 1; i2 < nStored[iSpecies+1]; ++i2)
+					shiftPair_fixedQRef( i1, i2, iTab );
+				break;
+			case 1:	// use a new cos(q*x) enhancement based on space-time interval between production points (mode 2)
+				{
+					bool enoughPairsToProceed = getSortedPairs( sortedPairs, iSpecies );
+					if ( enoughPairsToProceed )
+					{
+						cout << "BoseEinsteinCheck: NPair = " << sortedPairs.size()-2
+                             << " in iSpecies = " << iSpecies << endl;
+						shiftPairs_mode1( sortedPairs, pairShifts, pairCompensationShifts, iTab );
+					}
+				}
+				break;
+			default:
+				// Do nothing.
+				break;
+		}
 	}
-  }
-
-//cout << "Made it here (1)" << endl;
-
-  // Must have at least two pairs to carry out compensation.
-  if (nStored[9] < 2) return true;
-
-  // Shift momenta and recalculate energies.
-  double eSumOriginal = 0.;
-  double eSumShifted  = 0.;
-  double eDiffByComp  = 0.;
-  for (int i = 0; i < nStored[9]; ++i) {
-//cout << "(particle#=" << i << "): p = " << hadronBE.at(i).p;
-//cout << "(particle#=" << i << "): pShift = " << hadronBE.at(i).pShift;
-    eSumOriginal  += hadronBE.at(i).p.e();
-/*cout    << setprecision(12) << setw(16)
-                << "Original p and pShift: " << i
-                << " (id=" << hadronBE.at(i).id << ")" << endl
-                << "p=" << hadronBE.at(i).p
-                << "pShift=" << hadronBE.at(i).pShift;*/
-    hadronBE.at(i).p += hadronBE.at(i).pShift;
-    hadronBE.at(i).p.e( sqrt( hadronBE.at(i).p.pAbs2() + hadronBE.at(i).m2 ) );
-    eSumShifted   += hadronBE.at(i).p.e();
-    eDiffByComp   += dot3( hadronBE.at(i).pComp, hadronBE.at(i).p)
-                     / hadronBE.at(i).p.e();
-/*
-cout << "eDiffByComp at this step = " << eDiffByComp << endl;
-cout << "pComp at this step = " << hadronBE.at(i).pComp;
-cout << "p at this step = " << hadronBE.at(i).p;
-cout << "e at this step = " << hadronBE.at(i).p.e() << endl;
-cout 	<< setprecision(8)
-		<< "Getting ready to balance energy budget (particle#=" << i << "): "
-		<< eSumOriginal << "   " << eSumShifted << "   " << eDiffByComp << "   "
-		<< COMPRELERR * eSumOriginal << "   " << COMPFACMAX * abs(eDiffByComp) << endl;
-*/
-
-  }
-
-//cout << "Made it here (2)" << endl;
-
-
-///*
-cout 	<< setprecision(8)
-		<< "Balancing energy budget: "
-		<< eSumOriginal << "   " << eSumShifted << "   " << eDiffByComp << "   "
-		<< COMPRELERR * eSumOriginal << "   " << COMPFACMAX * abs(eDiffByComp) << endl
-		<< "TEST: " << abs(eSumShifted - eSumOriginal) << " > " << COMPRELERR * eSumOriginal << endl
-		<< "TEST: " << abs(eSumShifted - eSumOriginal) << " < " << COMPFACMAX * abs(eDiffByComp) << endl;
-//*/
-
-constexpr bool perform_compensation = true;
-
-  // Iterate compensation shift until convergence.
-  int iStep = 0;
-  while ( perform_compensation
-    && abs(eSumShifted - eSumOriginal) > COMPRELERR * eSumOriginal
-    && abs(eSumShifted - eSumOriginal) < COMPFACMAX * abs(eDiffByComp)
-    && iStep < NCOMPSTEP ) {
-    ++iStep;
-    double compFac   = (eSumOriginal - eSumShifted) / eDiffByComp;
-///*
-cout 	<< setprecision(8)
-		<< "Balancing energy budget(2): "
-		<< compFac << "   " << eSumOriginal << "   " << eSumShifted << "   " << eDiffByComp << "   "
-		<< COMPRELERR * eSumOriginal << "   " << COMPFACMAX * abs(eDiffByComp) << endl
-		<< "TEST: " << abs(eSumShifted - eSumOriginal) << " > " << COMPRELERR * eSumOriginal << endl
-		<< "TEST: " << abs(eSumShifted - eSumOriginal) << " < " << COMPFACMAX * abs(eDiffByComp) << endl;
-//*/
-    eSumShifted      = 0.;
-    eDiffByComp      = 0.;
-    for (int i = 0; i < nStored[9]; ++i) {
-      hadronBE.at(i).p += compFac * hadronBE.at(i).pComp;
-///*
-      hadronBE.at(i).pShift += compFac * hadronBE.at(i).pComp;
-cout 	<< setprecision(8)
-		<< "Net shift at this point: " << i << "   " << hadronBE.at(i).pShift;
-//*/
-      hadronBE.at(i).p.e( sqrt( hadronBE.at(i).p.pAbs2() + hadronBE.at(i).m2 ) );
-      eSumShifted   += hadronBE.at(i).p.e();
-      eDiffByComp   += dot3( hadronBE.at(i).pComp, hadronBE.at(i).p)
-                       / hadronBE.at(i).p.e();
-    }
-  }
-
-//cout << "Made it here (3)" << endl;
-
-constexpr bool check_for_bad_events = true;
-
-  // Error if no convergence, and then return without doing BE shift.
-  // However, not grave enough to kill event, so return true.
-  if ( perform_compensation
+	
+	// Must have at least two pairs to carry out compensation.
+	if (nStored[9] < 2) return true;
+	
+	// Shift momenta and recalculate energies.
+	double eSumOriginal = 0.;
+	double eSumShifted  = 0.;
+	double eDiffByComp  = 0.;
+	cout << "CHECK SIZES: " << nStored[9] << " vs. " << hadronBE.size();
+	for (int i = 0; i < nStored[9]; ++i)
+	{
+		eSumOriginal     += hadronBE.at(i).p.e();
+		hadronBE.at(i).p += hadronBE.at(i).pShift;
+		hadronBE.at(i).p.e( sqrt( hadronBE.at(i).p.pAbs2() + hadronBE.at(i).m2 ) );
+		eSumShifted      += hadronBE.at(i).p.e();
+		eDiffByComp      += dot3( hadronBE.at(i).pComp, hadronBE.at(i).p) / hadronBE.at(i).p.e();
+	}
+		
+	constexpr bool perform_compensation = true;
+	
+	// Iterate compensation shift until convergence.
+	int iStep = 0;
+	while ( perform_compensation
+			and abs(eSumShifted - eSumOriginal) > COMPRELERR * eSumOriginal
+			and abs(eSumShifted - eSumOriginal) < COMPFACMAX * abs(eDiffByComp)
+			and iStep < NCOMPSTEP )
+	{
+		++iStep;
+		double compFac   = (eSumOriginal - eSumShifted) / eDiffByComp;
+		eSumShifted      = 0.;
+		eDiffByComp      = 0.;
+		for (int i = 0; i < nStored[9]; ++i)
+		{
+			hadronBE.at(i).p      += compFac * hadronBE.at(i).pComp;
+			hadronBE.at(i).p.e( sqrt( hadronBE.at(i).p.pAbs2() + hadronBE.at(i).m2 ) );
+			eSumShifted           += hadronBE.at(i).p.e();
+			eDiffByComp           += dot3( hadronBE.at(i).pComp, hadronBE.at(i).p) / hadronBE.at(i).p.e();
+		}
+	}
+		
+	constexpr bool check_for_bad_events = true;
+	
+	// Error if no convergence, and then return without doing BE shift.
+	// However, not grave enough to kill event, so return true.
+	if ( perform_compensation
 	and check_for_bad_events
 	and abs(eSumShifted - eSumOriginal) > COMPRELERR * eSumOriginal )
-  {
-    infoPtr->errorMsg("Warning in BoseEinstein::shiftEvent: "
-      "no consistent BE shift topology found, so skip BE");
-	cout << setprecision(16) << "BoseEinsteinCheck: This event did not pass! Check: "
-			<< abs(eSumShifted - eSumOriginal) << " < " << COMPRELERR * eSumOriginal << "\n";
-	infoPtr->setBECShifts( false );
-//if (1) exit(8);
-    return true;
-  }
-  else
-  {
-	cout << setprecision(16) << "BoseEinsteinCheck: This event passes! Check: "
-			<< abs(eSumShifted - eSumOriginal) << " < " << COMPRELERR * eSumOriginal << "\n";
-	infoPtr->setBECShifts( true );
-//if (1) exit(8);
-  }
-
-
-  // Store new particle copies with shifted momenta.
-  for (int i = 0; i < nStored[9]; ++i) {
-    int iNew = event.copy( hadronBE.at(i).iPos, 99);
-    event[ iNew ].p( hadronBE.at(i).p );
-  }
-
-    auto end = std::chrono::system_clock::now();
-
-    std::chrono::duration<double> elapsed_seconds = end-start;
-std::cout << "BoseEinsteinCheck: elapsed time: " << elapsed_seconds.count() << " s" << "\n";
-
-  // Done.
-  return true;
-
+	{
+		infoPtr->errorMsg("Warning in BoseEinstein::shiftEvent: "
+                          "no consistent BE shift topology found, so skip BE");
+		cout << setprecision(16) << "BoseEinsteinCheck: This event did not pass! Check: "
+             << abs(eSumShifted - eSumOriginal) << " < " << COMPRELERR * eSumOriginal << "\n";
+		infoPtr->setBECShifts( false );
+		return true;
+	}
+	else
+	{
+		cout << setprecision(16) << "BoseEinsteinCheck: This event passes! Check: "
+             << abs(eSumShifted - eSumOriginal) << " < " << COMPRELERR * eSumOriginal << "\n";
+		infoPtr->setBECShifts( true );
+	}
+	
+	
+	// Store new particle copies with shifted momenta.
+	for (int i = 0; i < nStored[9]; ++i)
+	{
+		int iNew = event.copy( hadronBE.at(i).iPos, 99);
+		event[ iNew ].p( hadronBE.at(i).p );
+	}
+	
+	auto end = std::chrono::system_clock::now();
+	
+	std::chrono::duration<double> elapsed_seconds = end-start;
+	std::cout << "BoseEinsteinCheck: elapsed time: " << elapsed_seconds.count() << " s" << "\n";
+	
+	// Done.
+	return true;
+	
 }
 
 

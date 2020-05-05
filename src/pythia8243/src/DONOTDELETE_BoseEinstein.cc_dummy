@@ -233,7 +233,7 @@ bool BoseEinstein::shiftEvent( Event& event) {
 //===========Added by Chris Plumberg================
 	// if using debugging version, reset pion momentum to random value
 	///*
-	constexpr bool debugging = true;
+	constexpr bool debugging = false;
 	if ( debugging )
 	{
 		//unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
@@ -431,7 +431,7 @@ cout 	<< setprecision(8)
 		<< "TEST: " << abs(eSumShifted - eSumOriginal) << " < " << COMPFACMAX * abs(eDiffByComp) << endl;
 //*/
 
-constexpr bool perform_compensation = false;
+constexpr bool perform_compensation = true;
 
   // Iterate compensation shift until convergence.
   int iStep = 0;
@@ -467,7 +467,7 @@ cout 	<< setprecision(8)
 
 //cout << "Made it here (3)" << endl;
 
-constexpr bool check_for_bad_events = false;
+constexpr bool check_for_bad_events = true;
 
   // Error if no convergence, and then return without doing BE shift.
   // However, not grave enough to kill event, so return true.
@@ -1067,7 +1067,7 @@ for (int iQ = 0; iQ < (int)Qgrid.size(); iQ++)
 	currentQ += dQ;
 }
 //if (1) return;
-if (1) exit (8);
+//if (1) exit (8);
 
 }
 	return;
