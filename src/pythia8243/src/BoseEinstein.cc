@@ -326,6 +326,8 @@ bool BoseEinstein::shiftEvent( Event& event )
 
 	// Start timing	
 	auto start = std::chrono::system_clock::now();
+
+cout << "check particles: the beginning" << endl;
 	
 	// Loop over all hadron species with BE effects.
 	nStored[0] = 0;
@@ -343,7 +345,10 @@ bool BoseEinstein::shiftEvent( Event& event )
 		// Loop through event record to store copies of current species.
 		for (int i = 0; i < event.size(); ++i)
 			if ( event[i].id() == idNow and (event[i].isFinal() or debugging) )
+			{
+				cout << "check particles: " << idNow << "   " << i << "   " << event[i].m() << "   " << event[i].p();
 				hadronBE.push_back( BoseEinsteinHadron( idNow, i, event[i].p(), event[i].m(), event[i].vProd() ) );
+			}
 		nStored[iSpecies + 1] = hadronBE.size();
 		
 		// ======================================================
@@ -380,6 +385,8 @@ bool BoseEinstein::shiftEvent( Event& event )
 				break;
 		}
 	}
+
+cout << "check particles: the ending" << endl;
 	
 	// Must have at least two pairs to carry out compensation.
 	if (nStored[9] < 2) return true;
