@@ -1015,10 +1015,10 @@ printf("Made it to %s::%d\n",__FUNCTION__, __LINE__);
 				if ( jQ + 1 < (int)Qgrid.size() )
 				{
 
+cout << jQ << "   " << Qgrid.size() << "   " << integrated_effective_source.size() << endl;
 					const double EjQ = integrated_effective_source.at(jQ);
 					EnextQ = EjQ + ( nextQ - Qgrid.at(jQ) )
 										* ( integrated_effective_source.at(jQ+1) - EjQ ) / dQ;
-cout << jQ << "   " << Qgrid.size() << "   " << integrated_effective_source.size() << endl;
 
 				}
 				
