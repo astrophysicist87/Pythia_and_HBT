@@ -496,7 +496,7 @@ bool BoseEinstein::getSortedPairs(
 	// add fake first "pair"
 	sortedPairs.insert(sortedPairs.begin(), std::make_pair( 0.0, std::make_pair(-1, -1) ) );
 
-/*
+///*
 cout << "Check sortedPairs: " << endl;
 for (const auto & iPair : sortedPairs)
 {
@@ -512,7 +512,7 @@ for (const auto & iPair : sortedPairs)
 }
 
 if (1) exit(8);
-*/
+//*/
 
 	// add fake last "pair" (new QVal is 10% larger than last one, just for definiteness)
 	sortedPairs.push_back( std::make_pair( 1.1*sortedPairs.back().first, std::make_pair(-1, -1) ) );
