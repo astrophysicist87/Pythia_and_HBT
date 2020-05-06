@@ -484,13 +484,13 @@ bool BoseEinstein::getSortedPairs(
 	for (int i1 = nStored[iSpecies]; i1 < nStored[iSpecies+1] - 1; ++i1)
 	for (int i2 = i1 + 1; i2 < nStored[iSpecies+1]; ++i2)
 	{
-		if (m2(hadronBE.at(i1).p, hadronBE.at(i2).p) - m2Pair[iTab] < 0.0)
+		if (m2(hadronBE.at(i1).p, hadronBE.at(i2).p) - m2Pair[iTab] < dQ)
 		{
-			/*cout << "Check pair:" << i1 << "   " << i2 << endl;
+			cout << "Check pair:" << i1 << "   " << i2 << endl;
 			cout << hadronBE.at(i1).p;
 			cout << hadronBE.at(i2).p;
 			cout << setprecision(16) << m2(hadronBE.at(i1).p, hadronBE.at(i2).p) << "   " << m2Pair[iTab]
-				<< "   " << m2(hadronBE.at(i1).p, hadronBE.at(i2).p) - m2Pair[iTab] << endl;*/
+				<< "   " << m2(hadronBE.at(i1).p, hadronBE.at(i2).p) - m2Pair[iTab] << endl;
 			continue;
 		}
 		sortedPairs.push_back(
