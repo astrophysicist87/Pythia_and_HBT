@@ -74,8 +74,8 @@ const double BoseEinstein::COMPRELERR = 1e-10;
 const double BoseEinstein::COMPFACMAX = 1000.;
 const int    BoseEinstein::NCOMPSTEP  = 10;
 
-const double BoseEinstein::dQ = 1e-3;
-const double BoseEinstein::Qmaximum = 1.0;
+const double BoseEinstein::dQ = 1e-6;
+const double BoseEinstein::Qmaximum = 1e-5;
 
 const bool BoseEinstein::BE_VERBOSE = false;
 
@@ -1278,7 +1278,7 @@ void BoseEinstein::shiftPairs_mode1(
 
 
 		// If Qlower is too large, skip this pair.
-		if ( Qlower >= Qmaximum )
+		if ( !compute_BE_enhancement_exactly and Qlower >= Qmaximum )
 		{
 			n_skipped_pairs++;
 			pairShifts.push_back( 0.0 );
