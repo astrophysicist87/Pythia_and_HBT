@@ -75,7 +75,7 @@ const double BoseEinstein::COMPFACMAX = 1000.;
 const int    BoseEinstein::NCOMPSTEP  = 10;
 
 const double BoseEinstein::dQ = 1e-2;
-const double BoseEinstein::Qmaximum = 10000.0;
+const double BoseEinstein::Qmaximum = 100000.0;
 
 const bool BoseEinstein::BE_VERBOSE = false;
 
@@ -510,6 +510,8 @@ bool BoseEinstein::getSortedPairs(
 
 	// THEN sort them (sorts on first column in ascending order automatically)
 	sort( sortedPairs.begin(), sortedPairs.end() );
+
+cout << "LARGEST Q2: " << sortedPairs.back().first << endl;
 
 	// add fake first "pair"
 	sortedPairs.insert(sortedPairs.begin(), std::make_pair( 0.0, std::make_pair(-1, -1) ) );
