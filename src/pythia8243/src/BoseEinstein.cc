@@ -461,6 +461,8 @@ bool BoseEinstein::shiftEvent( Event& event )
 	
 	std::chrono::duration<double> elapsed_seconds = end-start;
 	std::cout << "BoseEinsteinCheck: elapsed time: " << elapsed_seconds.count() << " s" << "\n";
+
+if (1) exit(8);
 	
 	// Done.
 	return true;
