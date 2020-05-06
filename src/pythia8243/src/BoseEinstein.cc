@@ -680,6 +680,8 @@ double BoseEinstein::compute_integral_with_phasespace(double a_in, double b_in, 
 	}
 	double result = 0.0;
 
+cout << setprecision(16);
+
 	///*
 	//---------
 	// Check 0.
