@@ -234,7 +234,7 @@ int main(int argc, char *argv[])
 	bool includePhaseSpace					= true;		// Include phase-space factor
 	bool linearInterpolateCDF				= false;     // Estimate pair density via linear interpolation
 	bool usePositiveShiftsForCompensation	= true;		// Pairs shifted apart used to compensate pairs shifted together
-	bool computeBEEnhancementExactly		= false;     // Whether to evaluate BE enhancement approximately or exactly
+	bool computeBEEnhancementExactly		= true;     // Whether to evaluate BE enhancement approximately or exactly
 
 
 	//if ( momentum_space_modifications )
