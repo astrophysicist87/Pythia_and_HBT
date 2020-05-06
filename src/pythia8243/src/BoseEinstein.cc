@@ -74,8 +74,8 @@ const double BoseEinstein::COMPRELERR = 1e-10;
 const double BoseEinstein::COMPFACMAX = 1000.;
 const int    BoseEinstein::NCOMPSTEP  = 10;
 
-const double BoseEinstein::dQ = 1e-2;
-const double BoseEinstein::Qmaximum = 100000.0;
+const double BoseEinstein::dQ = 1e-3;
+const double BoseEinstein::Qmaximum = 1000.0;
 
 const bool BoseEinstein::BE_VERBOSE = false;
 
