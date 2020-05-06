@@ -976,6 +976,12 @@ void BoseEinstein::set_RHS(
 
 			RHS.push_back( std::make_pair( thisQ, result ) );
 
+			if ( pairCount == 0 )
+			{
+				pairCount++;
+				continue;
+			}
+
 			if ( pairCount == (int)sorted_xDiffs.size() )
 				continue;
 
