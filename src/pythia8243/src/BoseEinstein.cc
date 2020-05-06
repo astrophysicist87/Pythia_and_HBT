@@ -709,6 +709,14 @@ double BoseEinstein::compute_integral_with_phasespace(double a_in, double b_in, 
 			const double c2 = c_in*c_in;
 			const double c4 = c2*c2;
 
+cout << "CHECK INTEGRAL: " << a_in << "   " << b_in << "   " << c_in << "   " << d_in << "   "
+		<< overallSign *
+			 ( 1.0/(2.0*c4*sqrt_cen2_plus_d_5) )
+			*(    ( 6.0*cen*d + c2*( 2.0*cen5 - cen*(3.0*a2 - 8.0*a*cen + cen2)*d + 2.0*a*d2) )*cos(a*c)
+				+ (-6.0*cen*d + c2*(-2.0*cen5 + cen*(3.0*b2 - 8.0*b*cen + cen2)*d - 2.0*b*d2) )*cos(b*c)
+				+ 2.0*c*d*( - (-3.0*a*cen + 4.0*cen2 + d)*sin(a*c)
+							+ (-3.0*b*cen + 4.0*cen2 + d)*sin(b*c) ) ) << endl;
+
 			return ( overallSign *
 								 ( 1.0/(2.0*c4*sqrt_cen2_plus_d_5) )
 								*(    ( 6.0*cen*d + c2*( 2.0*cen5 - cen*(3.0*a2 - 8.0*a*cen + cen2)*d + 2.0*a*d2) )*cos(a*c)
@@ -734,7 +742,12 @@ double BoseEinstein::compute_integral_with_phasespace(double a_in, double b_in, 
 							/ ( 24.0*cen*cen2_plus_d*cen2_plus_d );
 
 		if ( abs(eps) < 0.00001 )
+		{
+cout << "CHECK INTEGRAL: " << a_in << "   " << b_in << "   " << c_in << "   " << d_in << "   "
+		<< overallSign * delta * cen * cen * sphericalbesselj0(c*cen) / sqrt(cen * cen + d) << endl;
+
 			return ( overallSign * delta * cen * cen * sphericalbesselj0(c*cen) / sqrt(cen * cen + d) );
+		}
 	}
 
 	//---------
@@ -742,6 +755,7 @@ double BoseEinstein::compute_integral_with_phasespace(double a_in, double b_in, 
 	if ( a > 1000.0*d )	// do the integral approximately here
 	{
 		result = ( cos(a*c) - cos(b*c) ) / (c*c);
+cout << "CHECK INTEGRAL: " << a_in << "   " << b_in << "   " << c_in << "   " << d_in << "   " << overallSign*result << endl;
 		return ( overallSign*result );
 	}
 	
@@ -759,6 +773,8 @@ double BoseEinstein::compute_integral_with_phasespace(double a_in, double b_in, 
 		const double term1 =  ( a * c * cos_ac - sin_ac ) / sq_ad;
 		const double term2 = -( b * c * cos_bc - sin_bc ) / sq_bd;
 		result = ( term1 + term2 ) / (c*c*c);
+cout << "CHECK INTEGRAL: " << a_in << "   " << b_in << "   " << c_in << "   " << d_in << "   " << overallSign*result << endl;
+
 		return ( overallSign*result );
 	}
 	else
@@ -790,6 +806,8 @@ double BoseEinstein::compute_integral_with_phasespace(double a_in, double b_in, 
 			}
 		}
 	}
+
+cout << "CHECK INTEGRAL: " << a_in << "   " << b_in << "   " << c_in << "   " << d_in << "   " << overallSign*result << endl;
 
 	return ( overallSign*result );
 }
