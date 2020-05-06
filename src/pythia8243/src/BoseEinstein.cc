@@ -1278,7 +1278,7 @@ void BoseEinstein::shiftPairs_mode1(
 
 
 		// If Qlower is too large, skip this pair.
-		if ( !compute_BE_enhancement_exactly and Qlower >= Qmaximum )
+		if ( /*!compute_BE_enhancement_exactly and*/ Qlower >= Qmaximum )
 		{
 			n_skipped_pairs++;
 			pairShifts.push_back( 0.0 );
