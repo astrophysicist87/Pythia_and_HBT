@@ -1694,8 +1694,8 @@ void BoseEinstein::Set_effective_source(
 		double currentQ = 0.0;
 		for (int iQ = 0; iQ < (int)effSource.size(); iQ++)
 		{
-			//effSource[iQ] += sphericalbesselj0(currentQ * xDiffval);
-			effSource[iQ] += cos(currentQ * xDiffval);
+			effSource[iQ] += sphericalbesselj0(currentQ * xDiffval);
+			//effSource[iQ] += cos(currentQ * xDiffval);
 			currentQ += dQ;
 		}
 		//cout << setprecision(12) << "effSource[0] = " << effSource[0] << endl;
