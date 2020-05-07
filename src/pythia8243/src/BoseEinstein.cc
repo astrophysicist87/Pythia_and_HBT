@@ -1046,7 +1046,7 @@ void BoseEinstein::set_RHS(
 			// use effective source if within Qgrid, use exact calculation otherwise
 			else if ( thisQ < Qgrid.back() )
 			{
-//cout << "USING EFFECTIVE SOURCE (1)!  " << thisQ << "   " << Qgrid.back() << endl;
+cout << "USING EFFECTIVE SOURCE (1)!  " << thisQ << "   " << Qgrid.back() << endl;
 //printf("Made it to %s::%d\n",__FUNCTION__, __LINE__);
 				// make this a global variable
 				const double Qmin = 0.0;
