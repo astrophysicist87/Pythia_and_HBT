@@ -462,7 +462,7 @@ bool BoseEinstein::shiftEvent( Event& event )
 	std::chrono::duration<double> elapsed_seconds = end-start;
 	std::cout << "BoseEinsteinCheck: elapsed time: " << elapsed_seconds.count() << " s" << "\n";
 
-if (1) exit(8);
+//if (1) exit(8);
 	
 	// Done.
 	return true;
@@ -684,7 +684,7 @@ double BoseEinstein::compute_integral_with_phasespace(double a_in, double b_in, 
 
 cout << setprecision(16);
 
-	/*
+	///*
 	//---------
 	// Check 0.
 	// Taylor expand part of phase space to second order
@@ -781,7 +781,7 @@ cout << "CHECK INTEGRAL: " << a_in << "   " << b_in << "   " << c_in << "   " <<
 
 		return ( overallSign*result );
 	}
-	else*/
+	else
 	{
 		const double period = 2.0*M_PI/c;
 
@@ -811,7 +811,7 @@ cout << "CHECK INTEGRAL: " << a_in << "   " << b_in << "   " << c_in << "   " <<
 		}
 	}
 
-cout << "CHECK INTEGRAL: " << a_in << "   " << b_in << "   " << c_in << "   " << d_in << "   " << overallSign*result << endl;
+//cout << "CHECK INTEGRAL: " << a_in << "   " << b_in << "   " << c_in << "   " << d_in << "   " << overallSign*result << endl;
 
 	return ( overallSign*result );
 }
