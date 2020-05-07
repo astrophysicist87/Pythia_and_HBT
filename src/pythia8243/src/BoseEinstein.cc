@@ -684,7 +684,7 @@ double BoseEinstein::compute_integral_with_phasespace(double a_in, double b_in, 
 
 cout << setprecision(16);
 
-	/*
+	///*
 	//---------
 	// Check 0.
 	// Taylor expand part of phase space to second order
@@ -781,7 +781,7 @@ cout << setprecision(16);
 
 		return ( overallSign*result );
 	}
-	else*/
+	else
 	{
 		const double period = 2.0*M_PI/c;
 
