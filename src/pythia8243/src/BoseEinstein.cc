@@ -1014,7 +1014,7 @@ void BoseEinstein::set_RHS(
 			//--------------------------------------
 			// Decide how to compute BE enhancement.
 			const double one_by_N = 1.0 / static_cast<double>(sortedPairs.size() - 2);
-			if ( compute_BE_enhancement_exactly or thisQ >= Qgrid.back() )
+			if ( compute_BE_enhancement_exactly or thisQ < dQ or thisQ >= Qgrid.back() )
 			{
 //printf("Made it to %s::%d\n",__FUNCTION__, __LINE__);
 				int eachPairIndex = 0;
@@ -1040,36 +1040,29 @@ void BoseEinstein::set_RHS(
 							<< result << "   " << compute_integral_with_phasespace(
 													thisQ, nextQ, xDiffPRFVal, m2Pair[iTab]) << endl;
 					*/
-//printf("Made it to %s::%d\n",__FUNCTION__, __LINE__);
 				}
 			}
 			// use effective source if within Qgrid, use exact calculation otherwise
 			else if ( thisQ < Qgrid.back() )
 			{
 //cout << "USING EFFECTIVE SOURCE (1)!  " << thisQ << "   " << Qgrid.back() << endl;
-//printf("Made it to %s::%d\n",__FUNCTION__, __LINE__);
 				// make this a global variable
 				const double Qmin = 0.0;
 				const long iQ = static_cast<long>( (thisQ - Qmin) / dQ );
-//cout << thisQ << "   " << Qmin << "   " << dQ << "   " << (thisQ - Qmin) / dQ << endl;
 				if ( iQ + 1 >= (long)Qgrid.size() )
 					continue;
 				const long jQ = static_cast<long>( (nextQ - Qmin) / dQ );
-//cout << nextQ << "   " << Qmin << "   " << dQ << "   " << (nextQ - Qmin) / dQ << endl;
 				
 				// interpolate running effective source integral and take difference
-
 				const double EiQ = integrated_effective_source.at(iQ);
 				const double EthisQ = EiQ + ( thisQ - Qgrid.at(iQ) )
 										* ( integrated_effective_source.at(iQ+1) - EiQ ) / dQ;
 
 
-//printf("Made it to %s::%d\n",__FUNCTION__, __LINE__);
 				double EnextQ = integrated_effective_source.back();
 				if ( jQ + 1 < (long)Qgrid.size() )
 				{
 
-//cout << jQ << "   " << Qgrid.size() << "   " << integrated_effective_source.size() << endl;
 					const double EjQ = integrated_effective_source.at(jQ);
 					EnextQ = EjQ + ( nextQ - Qgrid.at(jQ) )
 										* ( integrated_effective_source.at(jQ+1) - EjQ ) / dQ;
@@ -1077,7 +1070,6 @@ void BoseEinstein::set_RHS(
 				}
 				
 
-//printf("Made it to %s::%d\n",__FUNCTION__, __LINE__);
 				result += denBar.at(pairCount) * ( EnextQ - EthisQ );	// factor of 1/N already included!!!
 
 //				int eachPairIndex = 0;
@@ -1366,7 +1358,7 @@ void BoseEinstein::shiftPairs_mode1(
 					//---------------------------------
 					// Add in the BE enhancement piece.
 					///*
-					if ( compute_BE_enhancement_exactly or Qlower >= Qgrid.back() )
+					if ( compute_BE_enhancement_exactly or Qlower < dQ or Qlower >= Qgrid.back() )
 					{
 						int eachPairIndex = 0;
 						for (const auto & eachPair : sortedPairs)
