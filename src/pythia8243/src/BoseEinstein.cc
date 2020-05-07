@@ -1080,6 +1080,22 @@ cout << "USING EFFECTIVE SOURCE (1)!  " << thisQ << "   " << Qgrid.back() << end
 //printf("Made it to %s::%d\n",__FUNCTION__, __LINE__);
 				result += denBar.at(pairCount) * ( EnextQ - EthisQ );	// factor of 1/N already included!!!
 
+				int eachPairIndex = 0;
+				double exact_result = 0.0;
+				for (const auto & eachPair : sortedPairs)
+				{
+					// Skip unphysical dummy pairs.
+					if (   &eachPair == &sortedPairs.front()
+						or &eachPair == &sortedPairs.back() )
+						continue;
+
+					const double xDiffPRFVal = sorted_xDiffs.at(eachPairIndex++);
+					exact_result += one_by_N * denBar.at(pairCount)
+								* compute_integral_with_phasespace(
+									thisQ, nextQ, xDiffPRFVal, m2Pair[iTab]);
+				}
+cout << "Compare approximate to exact: " << denBar.at(pairCount) * ( EnextQ - EthisQ ) << "   " << exact_result << endl;
+
 			}
 
 //printf("Made it to %s::%d\n",__FUNCTION__, __LINE__);
