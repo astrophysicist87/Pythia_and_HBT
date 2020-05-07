@@ -74,8 +74,8 @@ const double BoseEinstein::COMPRELERR = 1e-10;
 const double BoseEinstein::COMPFACMAX = 1000.;
 const int    BoseEinstein::NCOMPSTEP  = 10;
 
-const double BoseEinstein::dQ = 1e-7;
-const double BoseEinstein::Qmaximum = 1.0;
+const double BoseEinstein::dQ = 1e-1;
+const double BoseEinstein::Qmaximum = 100.0;
 
 const bool BoseEinstein::BE_VERBOSE = false;
 
@@ -1046,7 +1046,7 @@ void BoseEinstein::set_RHS(
 			// use effective source if within Qgrid, use exact calculation otherwise
 			else if ( thisQ < Qgrid.back() )
 			{
-cout << "USING EFFECTIVE SOURCE (1)!  " << thisQ << "   " << Qgrid.back() << endl;
+//cout << "USING EFFECTIVE SOURCE (1)!  " << thisQ << "   " << Qgrid.back() << endl;
 //printf("Made it to %s::%d\n",__FUNCTION__, __LINE__);
 				// make this a global variable
 				const double Qmin = 0.0;
@@ -1080,21 +1080,21 @@ cout << "USING EFFECTIVE SOURCE (1)!  " << thisQ << "   " << Qgrid.back() << end
 //printf("Made it to %s::%d\n",__FUNCTION__, __LINE__);
 				result += denBar.at(pairCount) * ( EnextQ - EthisQ );	// factor of 1/N already included!!!
 
-				int eachPairIndex = 0;
-				double exact_result = 0.0;
-				for (const auto & eachPair : sortedPairs)
-				{
-					// Skip unphysical dummy pairs.
-					if (   &eachPair == &sortedPairs.front()
-						or &eachPair == &sortedPairs.back() )
-						continue;
-
-					const double xDiffPRFVal = sorted_xDiffs.at(eachPairIndex++);
-					exact_result += one_by_N * denBar.at(pairCount)
-								* compute_integral_with_phasespace(
-									thisQ, nextQ, xDiffPRFVal, m2Pair[iTab]);
-				}
-cout << "Compare approximate to exact: " << denBar.at(pairCount) * ( EnextQ - EthisQ ) << "   " << exact_result << endl;
+//				int eachPairIndex = 0;
+//				double exact_result = 0.0;
+//				for (const auto & eachPair : sortedPairs)
+//				{
+//					// Skip unphysical dummy pairs.
+//					if (   &eachPair == &sortedPairs.front()
+//						or &eachPair == &sortedPairs.back() )
+//						continue;
+//
+//					const double xDiffPRFVal = sorted_xDiffs.at(eachPairIndex++);
+//					exact_result += one_by_N * denBar.at(pairCount)
+//								* compute_integral_with_phasespace(
+//									thisQ, nextQ, xDiffPRFVal, m2Pair[iTab]);
+//				}
+//cout << "Compare approximate to exact: " << denBar.at(pairCount) * ( EnextQ - EthisQ ) << "   " << exact_result << endl;
 
 			}
 
@@ -1389,7 +1389,7 @@ void BoseEinstein::shiftPairs_mode1(
 					// use effective source if within Qgrid, use exact calculation otherwise
 					else if ( Qlower < Qgrid.back() )
 					{
-cout << "USING EFFECTIVE SOURCE (2)!  " << Qlower << "   " << Qgrid.back() << endl;
+//cout << "USING EFFECTIVE SOURCE (2)!  " << Qlower << "   " << Qgrid.back() << endl;
 						// make this a global variable
 						const double Qmin = 0.0;
 						const int iQ = static_cast<int>( (Qlower - Qmin) / dQ );
