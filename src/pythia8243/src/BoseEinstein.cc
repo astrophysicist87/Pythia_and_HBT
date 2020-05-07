@@ -1734,11 +1734,11 @@ void BoseEinstein::Set_effective_source(
 		currentIntegrand = phase_space[iQ] * effSource[iQ];
 		runningIntegral += 0.5*dQ*(currentIntegrand + previousIntegrand);
 		integrated_effective_source[iQ] = runningIntegral;
-		cout << "effSource: " << setprecision(12)
+		/*cout << "effSource: " << setprecision(12)
 				<< currentQ << "   "
 				<< phase_space[iQ] << "   "
 				<< effSource[iQ] << "   "
-				<< integrated_effective_source[iQ] << endl;
+				<< integrated_effective_source[iQ] << endl;*/
 		currentQ += dQ;
 	}
 	//if (1) exit (8);
