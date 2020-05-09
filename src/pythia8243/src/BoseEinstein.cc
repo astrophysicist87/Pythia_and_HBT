@@ -1584,11 +1584,10 @@ void BoseEinstein::shiftPairs_mode1(
 		constexpr bool rescale_pair_momenta = true;
 
 		// Get the computed shifts
-		const double Qold   = iPair.first;
-		const double deltaQ = pairShifts.at(pairIndex);
-		double Qnew         = Qold + deltaQ;
-		const double Q2old  = Qold * Qold;
-		double Q2new        = Qnew * Qnew;
+		const double Qold  = iPair.first;
+		double Qnew        = Qold + pairShifts.at(pairIndex);
+		const double Q2old = Qold * Qold;
+		double Q2new       = Qnew * Qnew;
 
 		// Calculate corresponding three-momentum shift.
 		double Q2Diff    = Q2new          - Q2old;
