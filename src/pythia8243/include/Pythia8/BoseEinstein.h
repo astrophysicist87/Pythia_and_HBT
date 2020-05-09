@@ -79,7 +79,9 @@ private:
   bool   doPion, doKaon, doEta, useInvariantSize,
          useDistribution, useRelativeDistance, useRestFrame,
 		 include_phase_space, linear_interpolate_CDF,
+		 include_posDelQ_in_shifting,
 		 include_posDelQ_in_compensation,
+		 rescale_pair_momenta,
 		 compute_BE_enhancement_exactly;
   ///===CJP(begin)===
   int sourceDimension;
@@ -103,7 +105,7 @@ private:
 
   ///===CJP(begin)===
   int enhanceMode;
-  int number_of_pairs, number_of_shifted_pairs, number_of_too_close_pairs, number_of_too_separated_pairs;
+  //int number_of_pairs, number_of_shifted_pairs, number_of_too_close_pairs, number_of_too_separated_pairs;
 
   // Some functions to get source sizes
   void set_QRef( int iSpecies );

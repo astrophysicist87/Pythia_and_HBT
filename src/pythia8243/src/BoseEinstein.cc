@@ -102,6 +102,33 @@ bool BoseEinstein::init(Info* infoPtrIn, Settings& settings,
   include_posDelQ_in_compensation = settings.flag("BoseEinstein:usePositiveShiftsForCompensation");
   compute_BE_enhancement_exactly  = settings.flag("BoseEinstein:computeBEEnhancementExactly");
 
+// set parameters here during initial debugging phase
+  rescale_pair_momenta            = true;
+  include_posDelQ_in_shifting     = true;
+  include_posDelQ_in_compensation = false;
+
+	// Make sure we don't end up with incompatible flags
+	bool include_posdelQ_in_both_shifting_and_compensation
+			= include_posDelQ_in_shifting and include_posDelQ_in_compensation;
+	bool exclude_posdelQ_from_both_shifting_and_compensation
+			= !include_posDelQ_in_shifting and !include_posDelQ_in_compensation;
+	if ( ( include_posdelQ_in_both_shifting_and_compensation 
+			or exclude_posdelQ_from_both_shifting_and_compensation )
+			and !rescale_pair_momenta
+		)
+	{
+		// In this case, same pDiff is used for both shifting and 
+		// compensation for each pair
+		// ==> compensation undoes shifting completely!
+		// ==> This may be overridden in future updates if pDiff for
+		//     compensation is computed differently from pDiff for shifting,
+		//     as in original version
+		infoPtr->errorMsg("Error in BoseEinstein::init: "
+		                  "incompatible flags selected, so skip BE");
+		infoPtr->setBECShifts( false );
+		return false;
+	}
+
   // Shape of Bose-Einstein enhancement/suppression.
   lambda                          = settings.parm("BoseEinstein:lambda");
   QRef                            = settings.parm("BoseEinstein:QRef");
@@ -122,10 +149,10 @@ bool BoseEinstein::init(Info* infoPtrIn, Settings& settings,
   for (int iTab = 0; iTab < 4; ++iTab)
     m2Pair[iTab] = mPair[iTab] * mPair[iTab];
 
-  number_of_pairs               = 0;
-  number_of_shifted_pairs       = 0;
-  number_of_too_close_pairs     = 0;
-  number_of_too_separated_pairs = 0;
+//  number_of_pairs               = 0;
+//  number_of_shifted_pairs       = 0;
+//  number_of_too_close_pairs     = 0;
+//  number_of_too_separated_pairs = 0;
 
   // Done.
   return true;
@@ -1240,7 +1267,7 @@ void BoseEinstein::shiftPairs_mode1(
 
 
 	// keep track of which pairs are shifted
-	int n_skipped_pairs = 0;
+//	int n_skipped_pairs = 0;
 	vector<bool> this_pair_shifted(sortedPairs.size()-2, false);
 
 
@@ -1261,7 +1288,7 @@ void BoseEinstein::shiftPairs_mode1(
 		// If thisPairLHS < 0, skip this pair.
 		if ( thisPairLHS < 0.0 )
 		{
-			n_skipped_pairs++;
+//			n_skipped_pairs++;
 			pairShifts.push_back( 0.0 );
 			pairCompensationShifts.push_back( 0.0 );
 			continue;
@@ -1304,7 +1331,7 @@ void BoseEinstein::shiftPairs_mode1(
 				or RHS_lower > thisPairLHS
 				or RHS_upper < thisPairLHS )
 		{
-			n_skipped_pairs++;
+//			n_skipped_pairs++;
 			pairShifts.push_back( 0.0 );
 			pairCompensationShifts.push_back( 0.0 );
 			continue;
@@ -1329,7 +1356,7 @@ void BoseEinstein::shiftPairs_mode1(
 		// If Qlower is too large, skip this pair.
 		if ( !compute_BE_enhancement_exactly and Qlower >= Qmaximum )
 		{
-			n_skipped_pairs++;
+//			n_skipped_pairs++;
 			pairShifts.push_back( 0.0 );
 			pairCompensationShifts.push_back( 0.0 );
 			continue;
@@ -1516,7 +1543,7 @@ void BoseEinstein::shiftPairs_mode1(
 		// If shifting this pair was unsuccessful, move on.
 		if ( not success )
 		{
-			n_skipped_pairs++;
+//			n_skipped_pairs++;
 			pairShifts.push_back( 0.0 );
 			pairCompensationShifts.push_back( 0.0 );
 			continue;
@@ -1525,16 +1552,36 @@ void BoseEinstein::shiftPairs_mode1(
 
 		//-------------------------------------------
 		// Store results based on size of BE effects.
-		Vec4 p1 = hadronBE.at(iPair1).p;
-		Vec4 p2 = hadronBE.at(iPair2).p;
-		Vec4 x1 = hadronBE.at(iPair1).x;
-		Vec4 x2 = hadronBE.at(iPair2).x;
-		Vec4 xDiffPRF = ( x1 - x2 ) * MM2FM / HBARC;
-		xDiffPRF.bstback( 0.5*(p1 + p2) );
+//		Vec4 p1 = hadronBE.at(iPair1).p;
+//		Vec4 p2 = hadronBE.at(iPair2).p;
+//		Vec4 x1 = hadronBE.at(iPair1).x;
+//		Vec4 x2 = hadronBE.at(iPair2).x;
+//		Vec4 xDiffPRF = ( x1 - x2 ) * MM2FM / HBARC;
+//		xDiffPRF.bstback( 0.5*(p1 + p2) );
 
 
-		pairShifts.push_back( Qnew - Q0 );
-		pairCompensationShifts.push_back( 0.0 );
+//		pairShifts.push_back( Qnew - Q0 );
+//		pairCompensationShifts.push_back( 0.0 );
+
+		if ( Qnew > Q0 )
+		{
+			// Set pair shift
+			if ( include_posDelQ_in_shifting )
+				pairShifts.push_back( Qnew - Q0 );
+			else
+				pairShifts.push_back( 0.0 );
+
+			// Set compensation shift
+			if ( include_posDelQ_in_compensation )
+				pairCompensationShifts.push_back( Qnew - Q0 );
+			else
+				pairCompensationShifts.push_back( 0.0 );
+		}
+		else
+		{
+			pairShifts.push_back( Qnew - Q0 );
+			pairCompensationShifts.push_back( Qnew - Q0 );
+		}
 
 		if ( BE_VERBOSE )
 			cout << "BoseEinsteinCheck: CHECK shift is "
@@ -1548,15 +1595,15 @@ void BoseEinstein::shiftPairs_mode1(
 		//       these for compensation, or
 		// (2) - the magnitude of the shift was larger than
 		//       some % of the original Q0
-		bool shift_failure = ( include_posDelQ_in_compensation and Qnew > Q0 )
-								//or abs(Qnew - Q0) > 0.05 * Q0
-								;
-
-		bool shift_success = not shift_failure;
-
-		//if ( not include_posDelQ_in_compensation or Qnew <= Q0 )
-		if ( shift_success )
-			this_pair_shifted.at(iPair-1) = true;
+//		bool shift_failure = ( include_posDelQ_in_compensation and Qnew > Q0 )
+//								//or abs(Qnew - Q0) > 0.05 * Q0
+//								;
+//
+//		bool shift_success = not shift_failure;
+//
+//		//if ( not include_posDelQ_in_compensation or Qnew <= Q0 )
+//		if ( shift_success )
+//			this_pair_shifted.at(iPair-1) = true;
 
 	}
 
@@ -1565,7 +1612,7 @@ void BoseEinstein::shiftPairs_mode1(
 	// Discard fake pairs at beginning and end of sortedPairs,
 	// since they are no longer needed
 	sortedPairs.erase ( sortedPairs.begin() );
-	sortedPairs.erase ( sortedPairs.end() );
+	sortedPairs.erase ( sortedPairs.end()   );
 
 
 	// Finally, implement all shifts and compensations
@@ -1574,108 +1621,132 @@ void BoseEinstein::shiftPairs_mode1(
 	for (const auto & iPair : sortedPairs)
 	{
 
-		const bool shift_this_pair
-							= this_pair_shifted.at(pairIndex);
-		const int i1        = iPair.second.first;
-		const int i2        = iPair.second.second;
-		auto & had1         = hadronBE.at(i1);
-		auto & had2         = hadronBE.at(i2);
+		const int i1 = iPair.second.first;
+		const int i2 = iPair.second.second;
+		auto & had1  = hadronBE.at(i1);
+		auto & had2  = hadronBE.at(i2);
 
-		constexpr bool rescale_pair_momenta = true;
-
-		// Get the computed shifts
-		const double Qold  = iPair.first;
-		double Qnew        = Qold + pairShifts.at(pairIndex);
-		const double Q2old = Qold * Qold;
-		double Q2new       = Qnew * Qnew;
-
-		// Calculate corresponding three-momentum shift.
-		double Q2Diff    = Q2new          - Q2old;
-		double p2DiffAbs = (had1.p        - had2.p).pAbs2();
-		double p2AbsDiff = had1.p.pAbs2() - had2.p.pAbs2();
-		double eSum      = had1.p.e()     + had2.p.e();
-		double eDiff     = had1.p.e()     - had2.p.e();
-		double sumQ2E    = Q2Diff         + eSum * eSum;
-		double rootA     = eSum * eDiff * p2AbsDiff - p2DiffAbs * sumQ2E;
-		double rootB     = p2DiffAbs * sumQ2E       - p2AbsDiff * p2AbsDiff;
-		double factor    = 0.5 * ( rootA + sqrtpos(rootA * rootA
-							+ Q2Diff * (sumQ2E - eDiff * eDiff) * rootB) )
-						   / rootB;
-
-		// Add shifts to sum. (Energy component dummy.)
-		Vec4   pDiff     = factor * (had1.p - had2.p);
-
-
-		/*if ( rescale_pair_momenta or this_pair_shifted.at(pairIndex) )
+		// ------------------------------------------
+		// EVALUATE PAIR SHIFTS HERE
 		{
-			// Compute appropriate shift for pair
-			number_of_pairs_shifted++;
-
+	
+			// Get the computed shifts
+			const double Qold  = iPair.first;
+			double Qnew        = Qold + pairShifts.at(pairIndex);
+			const double Q2old = Qold * Qold;
+			double Q2new       = Qnew * Qnew;
+	
+			// Calculate corresponding three-momentum shift.
+			double Q2Diff    = Q2new          - Q2old;
+			double p2DiffAbs = (had1.p        - had2.p).pAbs2();
+			double p2AbsDiff = had1.p.pAbs2() - had2.p.pAbs2();
+			double eSum      = had1.p.e()     + had2.p.e();
+			double eDiff     = had1.p.e()     - had2.p.e();
+			double sumQ2E    = Q2Diff         + eSum * eSum;
+			double rootA     = eSum * eDiff * p2AbsDiff - p2DiffAbs * sumQ2E;
+			double rootB     = p2DiffAbs * sumQ2E       - p2AbsDiff * p2AbsDiff;
+			double factor    = 0.5 * ( rootA + sqrtpos(rootA * rootA
+								+ Q2Diff * (sumQ2E - eDiff * eDiff) * rootB) )
+							   / rootB;
+	
+			// Add shifts to sum. (Energy component dummy.)
+			Vec4   pDiff     = factor * (had1.p - had2.p);
+	
+	
+			/*if ( rescale_pair_momenta or this_pair_shifted.at(pairIndex) )
+			{
+				// Compute appropriate shift for pair
+				number_of_pairs_shifted++;
+	
+				had1.pShift += pDiff;
+				had2.pShift -= pDiff;
+	
+				if ( rescale_pair_momenta )
+				{
+					// add symmetrically to both momenta
+					pDiff = factor * (had1.p + had2.p);
+					//pDiff = 0.5 * (had1.p + had2.p);
+					// WARNING: PREFACTOR MAKES A DIFFERENCE!!!
+					had1.pComp += pDiff;
+					had2.pComp += pDiff;
+				}
+			}
+			else
+			{
+				// Use computed shift for compensation
+				number_of_pairs_not_shifted++;
+	
+				//Vec4 pDiff = hadronBE.at(i1).p - hadronBE.at(i2).p;
+				had1.pComp += pDiff;
+				had2.pComp -= pDiff;
+			}*/
+	
+	
+			// Get the shift for this pair, if
+			// it was computed successfully
+			//number_of_pairs_shifted++;
+	
 			had1.pShift += pDiff;
 			had2.pShift -= pDiff;
+		}
 
+
+		// ------------------------------------------
+		// EVALUATE COMPENSATION SHIFTS HERE
+		{
+	
+			// Get the computed shifts
+			const double Qold  = iPair.first;
+			double Qnew        = Qold + pairCompensationShifts.at(pairIndex);
+			const double Q2old = Qold * Qold;
+			double Q2new       = Qnew * Qnew;
+	
+			// Calculate corresponding three-momentum shift.
+			double Q2Diff    = Q2new          - Q2old;
+			double p2DiffAbs = (had1.p        - had2.p).pAbs2();
+			double p2AbsDiff = had1.p.pAbs2() - had2.p.pAbs2();
+			double eSum      = had1.p.e()     + had2.p.e();
+			double eDiff     = had1.p.e()     - had2.p.e();
+			double sumQ2E    = Q2Diff         + eSum * eSum;
+			double rootA     = eSum * eDiff * p2AbsDiff - p2DiffAbs * sumQ2E;
+			double rootB     = p2DiffAbs * sumQ2E       - p2AbsDiff * p2AbsDiff;
+			double factor    = 0.5 * ( rootA + sqrtpos(rootA * rootA
+								+ Q2Diff * (sumQ2E - eDiff * eDiff) * rootB) )
+							   / rootB;
+	
 			if ( rescale_pair_momenta )
 			{
-				// add symmetrically to both momenta
-				pDiff = factor * (had1.p + had2.p);
+				// compensation momentum is just the pair momentum;
+				// --> reduce pair's energy in lab to conserve total
+				// Add shifts to sum. (Energy component dummy.)
+				Vec4 pDiff  = factor * (had1.p + had2.p);
 				//pDiff = 0.5 * (had1.p + had2.p);
 				// WARNING: PREFACTOR MAKES A DIFFERENCE!!!
+	
 				had1.pComp += pDiff;
 				had2.pComp += pDiff;
 			}
-		}
-		else
-		{
-			// Use computed shift for compensation
-			number_of_pairs_not_shifted++;
-
-			//Vec4 pDiff = hadronBE.at(i1).p - hadronBE.at(i2).p;
-			had1.pComp += pDiff;
-			had2.pComp -= pDiff;
-		}*/
-
-
-		// Get the shift for this pair, if
-		// it was computed successfully
-		if ( shift_this_pair )
-		{
-			number_of_pairs_shifted++;
-
-			had1.pShift += pDiff;
-			had2.pShift -= pDiff;
-		}
-
-		// Get the compensation for this pair
-		if ( rescale_pair_momenta )
-		{
-			// compensation momentum is just the pair momentum;
-			// --> reduce pair's energy in lab to conserve total
-			pDiff = factor * (had1.p + had2.p);
-			//pDiff = 0.5 * (had1.p + had2.p);
-			// WARNING: PREFACTOR MAKES A DIFFERENCE!!!
-
-			had1.pComp += pDiff;
-			had2.pComp += pDiff;
-		}
-		else
-		{
-			// compensation momentum is pDiff
-			// --> undo shift to conserve total energy
-			number_of_pairs_not_shifted++;
-
-			had1.pComp += pDiff;
-			had2.pComp -= pDiff;
+			else
+			{
+				// compensation momentum is pDiff
+				// --> undo shift to conserve total energy
+				// Add shifts to sum. (Energy component dummy.)
+				Vec4 pDiff  = factor * (had1.p - had2.p);
+		
+				had1.pComp += pDiff;
+				had2.pComp -= pDiff;
+			}
 		}
 
 		pairIndex++;
 
 	}
 
-	if ( BE_VERBOSE or true )
-	{
-		cout << "number_of_pairs_shifted = " << number_of_pairs_shifted << endl;
-		cout << "number_of_pairs_not_shifted = " << number_of_pairs_not_shifted << endl;
-	}
+//	if ( BE_VERBOSE or true )
+//	{
+//		cout << "number_of_pairs_shifted = " << number_of_pairs_shifted << endl;
+//		cout << "number_of_pairs_not_shifted = " << number_of_pairs_not_shifted << endl;
+//	}
 
 	//cout << "Finished here" << endl;
 	//	auto end = std::chrono::system_clock::now();
