@@ -1612,7 +1612,8 @@ void BoseEinstein::shiftPairs_mode1(
 			if ( rescale_pair_momenta )
 			{
 				// add symmetrically to both momenta
-				pDiff = factor * (hadronBE.at(i1).p + hadronBE.at(i2).p);
+				//pDiff = factor * (hadronBE.at(i1).p + hadronBE.at(i2).p);
+				pDiff = 0.5 * (hadronBE.at(i1).p + hadronBE.at(i2).p);
 				hadronBE.at(i1).pComp += pDiff;
 				hadronBE.at(i2).pComp += pDiff;
 			}
