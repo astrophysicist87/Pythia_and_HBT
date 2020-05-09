@@ -81,12 +81,12 @@ KLmax 											= 1.0
 
 # --
 # relative momenta (3D)
-n_qo_pts 										= 52
-n_qs_pts 										= 52
-n_ql_pts 										= 52
-delta_qo 										= 0.005
-delta_qs 										= 0.005
-delta_ql 										= 0.005
+n_qo_pts 										= 26
+n_qs_pts 										= 26
+n_ql_pts 										= 26
+delta_qo 										= 0.01
+delta_qs 										= 0.01
+delta_ql 										= 0.01
 
 # --
 # relative momentum (1D)

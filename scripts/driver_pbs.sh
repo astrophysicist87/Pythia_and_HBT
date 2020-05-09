@@ -31,7 +31,8 @@ output_settings > settings.sh
 
 # apply HBT analysis to each chosen event class
 #for eventClassCutString in "1-11" "12-16" "17-22" "23-28" "29-34" "35-41" "42-51" "52-151" "152-1000000"
-for eventClassCutString in "0-20%" "20-40%" "40-60%" "60-90%"
+#for eventClassCutString in "0-20%" "20-40%" "40-60%" "60-90%"
+for eventClassCutString in "0-100%"
 do
 	echo "Submitting qsub -l walltime=$chosen_HBT_walltime_per_event_class -l nodes=1:ppn=$OMP_NUM_THREADS run_HBT_analysis.pbs"
 	qsub -l walltime=$chosen_HBT_walltime_per_event_class \
