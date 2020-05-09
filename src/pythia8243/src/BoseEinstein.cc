@@ -1585,14 +1585,14 @@ void BoseEinstein::shiftPairs_mode1(
 		double Q2new = Qnew*Qnew;
 
 		// Calculate corresponding three-momentum shift.
-		double Q2Diff    = Q2new - Q2old;
-		double p2DiffAbs = (had1.p - had2.p).pAbs2();
+		double Q2Diff    = Q2new          - Q2old;
+		double p2DiffAbs = (had1.p        - had2.p).pAbs2();
 		double p2AbsDiff = had1.p.pAbs2() - had2.p.pAbs2();
-		double eSum      = had1.p.e() + had2.p.e();
-		double eDiff     = had1.p.e() - had2.p.e();
-		double sumQ2E    = Q2Diff + eSum * eSum;
+		double eSum      = had1.p.e()     + had2.p.e();
+		double eDiff     = had1.p.e()     - had2.p.e();
+		double sumQ2E    = Q2Diff         + eSum * eSum;
 		double rootA     = eSum * eDiff * p2AbsDiff - p2DiffAbs * sumQ2E;
-		double rootB     = p2DiffAbs * sumQ2E - p2AbsDiff * p2AbsDiff;
+		double rootB     = p2DiffAbs * sumQ2E       - p2AbsDiff * p2AbsDiff;
 		double factor    = 0.5 * ( rootA + sqrtpos(rootA * rootA
 							+ Q2Diff * (sumQ2E - eDiff * eDiff) * rootB) )
 						   / rootB;
@@ -1606,16 +1606,17 @@ void BoseEinstein::shiftPairs_mode1(
 			// Compute appropriate shift for pair
 			number_of_pairs_shifted++;
 
-			hadronBE.at(i1).pShift += pDiff;
-			hadronBE.at(i2).pShift -= pDiff;
+			had1.pShift += pDiff;
+			had2.pShift -= pDiff;
 
 			if ( rescale_pair_momenta )
 			{
 				// add symmetrically to both momenta
-				//pDiff = factor * (hadronBE.at(i1).p + hadronBE.at(i2).p);
-				pDiff = 0.5 * (hadronBE.at(i1).p + hadronBE.at(i2).p);
-				hadronBE.at(i1).pComp += pDiff;
-				hadronBE.at(i2).pComp += pDiff;
+				pDiff = factor * (had1.p + had2.p);
+				//pDiff = 0.5 * (had1.p + had2.p);
+				// WARNING: PREFACTOR MAKES A DIFFERENCE!!!
+				had1.pComp += pDiff;
+				had2.pComp += pDiff;
 			}
 		}
 		else
@@ -1625,8 +1626,8 @@ void BoseEinstein::shiftPairs_mode1(
 
 			//*/
 			//Vec4 pDiff = hadronBE.at(i1).p - hadronBE.at(i2).p;
-			hadronBE.at(i1).pComp += pDiff;
-			hadronBE.at(i2).pComp -= pDiff;
+			had1.pComp += pDiff;
+			had2.pComp -= pDiff;
 		}
 
 		pairIndex++;
