@@ -40,8 +40,8 @@ export linearInterpolateCDF='on'                # Estimate pair density via line
 export computeBEEnhancementExactly='on'         # Whether to evaluate BE enhancement approximately or exactly
 
 export shiftingSet='1'							# Which pairs to shift
-export CompensationSet='0'						# Which pairs to use in compensation
-export CompensationMode='1'						# How to compute compensation
+export compensationSet='0'						# Which pairs to use in compensation
+export compensationMode='1'						# How to compute compensation
 
 # other flags
 export UseColorReconnection='off'

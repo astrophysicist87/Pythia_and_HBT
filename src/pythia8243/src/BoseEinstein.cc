@@ -102,18 +102,18 @@ bool BoseEinstein::init(Info* infoPtrIn, Settings& settings,
   compute_BE_enhancement_exactly  = settings.flag("BoseEinstein:computeBEEnhancementExactly");
 
   int shiftingSet                 = settings.mode("BoseEinstein:shiftingSet");
-  int CompensationSet             = settings.mode("BoseEinstein:CompensationSet");
-  int CompensationMode            = settings.mode("BoseEinstein:CompensationMode");
+  int compensationSet             = settings.mode("BoseEinstein:compensationSet");
+  int compensationMode            = settings.mode("BoseEinstein:compensationMode");
 
-  rescale_pair_momenta            =  ( CompensationMode == 1 );
+  rescale_pair_momenta            =  ( compensationMode == 1 );
 
-  include_negDelQ_in_compensation =  ( CompensationSet  == 0
-                                    or CompensationSet  == 2 );
+  include_negDelQ_in_compensation =  ( compensationSet  == 0
+                                    or compensationSet  == 2 );
 
   include_posDelQ_in_shifting     =  ( shiftingSet      == 1 );
 
-  include_posDelQ_in_compensation =  ( CompensationSet  == 1
-                                    or CompensationSet  == 2 );
+  include_posDelQ_in_compensation =  ( compensationSet  == 1
+                                    or compensationSet  == 2 );
 
 	// Make sure we don't end up with incompatible flags
 	bool include_posdelQ_in_both_shifting_and_compensation
@@ -1073,7 +1073,7 @@ void BoseEinstein::set_RHS(
 			//--------------------------------------
 			// Decide how to compute BE enhancement.
 			const double one_by_N = 1.0 / static_cast<double>(sortedPairs.size() - 2);
-			if ( compute_BE_enhancement_exactly or thisQ < dQ or thisQ >= Qgrid.back() )
+			if ( compute_BE_enhancement_exactly or thisQ < dQ /*or thisQ >= Qgrid.back()*/ )
 			{
 //printf("Made it to %s::%d\n",__FUNCTION__, __LINE__);
 				int eachPairIndex = 0;
@@ -1413,7 +1413,7 @@ void BoseEinstein::shiftPairs_mode1(
 					//---------------------------------
 					// Add in the BE enhancement piece.
 					///*
-					if ( compute_BE_enhancement_exactly or Qlower < dQ or Qlower >= Qgrid.back() )
+					if ( compute_BE_enhancement_exactly or Qlower < dQ /*or Qlower >= Qgrid.back()*/ )
 					{
 						int eachPairIndex = 0;
 						for (const auto & eachPair : sortedPairs)

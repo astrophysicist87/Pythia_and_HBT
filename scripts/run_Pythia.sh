@@ -52,18 +52,18 @@ collisionSystemStem=$projectile$target"_"`echo $beamEnergy`"GeV_Nev"$Nevents
 		# set some options for Pythia to run on
 		rm main_BEeffects.cmnd 2>/dev/null
 		# Turn on tracking of space-time information
-		echo 'Fragmentation:setVertices =' $SetFragmentationVertices >> main_BEeffects.cmnd
-		echo 'PartonVertex:setVertex =' $SetPartonVertices >> main_BEeffects.cmnd
+		echo 'Fragmentation:setVertices ='    $SetFragmentationVertices     >> main_BEeffects.cmnd
+		echo 'PartonVertex:setVertex ='       $SetPartonVertices            >> main_BEeffects.cmnd
 
 		# turn on and set Bose-Einstein effects
-		echo 'HadronLevel:BoseEinstein =' $BEeffects >> main_BEeffects.cmnd
-		echo 'BoseEinstein:QRef =' $QRefValue >> main_BEeffects.cmnd
+		echo 'HadronLevel:BoseEinstein ='     $BEeffects                    >> main_BEeffects.cmnd
+		echo 'BoseEinstein:QRef ='            $QRefValue                    >> main_BEeffects.cmnd
 
 		# turn on/off other interesting mechanisms to test
-		echo 'ColourReconnection:reconnect = ' $UseColorReconnection         >> main_BEeffects.cmnd
-		echo 'Ropewalk:RopeHadronization = '   $UseRopeHadronization         >> main_BEeffects.cmnd
-		echo 'Ropewalk:doShoving = '           $IncludeStringShoving         >> main_BEeffects.cmnd
-		echo 'Ropewalk:doFlavour = '           $IncludeFlavourRopesMechanism >> main_BEeffects.cmnd
+		echo 'ColourReconnection:reconnect =' $UseColorReconnection         >> main_BEeffects.cmnd
+		echo 'Ropewalk:RopeHadronization ='   $UseRopeHadronization         >> main_BEeffects.cmnd
+		echo 'Ropewalk:doShoving ='           $IncludeStringShoving         >> main_BEeffects.cmnd
+		echo 'Ropewalk:doFlavour ='           $IncludeFlavourRopesMechanism >> main_BEeffects.cmnd
 
 		# New Pythia options, flags, parameters, etc.
 		# which I've added myself (not generally compatible yet)
@@ -77,8 +77,8 @@ collisionSystemStem=$projectile$target"_"`echo $beamEnergy`"GeV_Nev"$Nevents
 		echo 'BoseEinstein:linearInterpolateCDF ='        $linearInterpolateCDF        >> main_BEeffects.cmnd
 		echo 'BoseEinstein:computeBEEnhancementExactly =' $computeBEEnhancementExactly >> main_BEeffects.cmnd
 		echo 'BoseEinstein:shiftingSet ='                 $shiftingSet                 >> main_BEeffects.cmnd
-		echo 'BoseEinstein:CompensationSet ='             $CompensationSet             >> main_BEeffects.cmnd
-		echo 'BoseEinstein:CompensationMode ='            $CompensationMode            >> main_BEeffects.cmnd
+		echo 'BoseEinstein:compensationSet ='             $compensationSet             >> main_BEeffects.cmnd
+		echo 'BoseEinstein:compensationMode ='            $compensationMode            >> main_BEeffects.cmnd
 
 		# Default is now to compute all events in Pythia from the get-go
 		lowerLimit=0

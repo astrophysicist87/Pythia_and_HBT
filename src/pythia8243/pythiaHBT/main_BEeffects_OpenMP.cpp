@@ -403,12 +403,12 @@ int main(int argc, char *argv[])
 		//----------------------------------------------
 		// N.B.: THESE OPTIONS MAY BE OVERWRITTEN BY
 		//       OPTIONS PASSED IN THROUGH *.CMND FILES.
-		pythia.readString("BoseEinstein:useInvariantSourceSize = " 	   + boolean_toggle[useInvariantSourceSize]);
-		pythia.readString("BoseEinstein:useDistribution = " 			   + boolean_toggle[useDistribution]);
-		pythia.readString("BoseEinstein:useRelativeDistance = " 		   + boolean_toggle[useRelativeDistance]);
-		pythia.readString("BoseEinstein:useRestFrame = " 			   + boolean_toggle[useRestFrame]);
-		pythia.readString("BoseEinstein:includePhaseSpace = " 		   + boolean_toggle[includePhaseSpace]);
-		pythia.readString("BoseEinstein:linearInterpolateCDF = " 	   + boolean_toggle[linearInterpolateCDF]);
+		pythia.readString("BoseEinstein:useInvariantSourceSize = "      + boolean_toggle[useInvariantSourceSize]);
+		pythia.readString("BoseEinstein:useDistribution = "             + boolean_toggle[useDistribution]);
+		pythia.readString("BoseEinstein:useRelativeDistance = "         + boolean_toggle[useRelativeDistance]);
+		pythia.readString("BoseEinstein:useRestFrame = "                + boolean_toggle[useRestFrame]);
+		pythia.readString("BoseEinstein:includePhaseSpace = "           + boolean_toggle[includePhaseSpace]);
+		pythia.readString("BoseEinstein:linearInterpolateCDF = "        + boolean_toggle[linearInterpolateCDF]);
 		pythia.readString("BoseEinstein:computeBEEnhancementExactly = " + boolean_toggle[computeBEEnhancementExactly]);
 
 		pythia.readString("BoseEinstein:shiftingSet = "      + std::to_string(shiftingSet));

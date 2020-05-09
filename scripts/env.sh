@@ -101,8 +101,8 @@ echo 'export linearInterpolateCDF='$linearInterpolateCDF
 echo 'export computeBEEnhancementExactly='$computeBEEnhancementExactly
 echo
 echo 'export shiftingSet='$shiftingSet
-echo 'export CompensationSet='$CompensationSet
-echo 'export CompensationMode='$CompensationMode
+echo 'export compensationSet='$compensationSet
+echo 'export compensationMode='$compensationMode
 echo
 echo 'export UseColorReconnection='$UseColorReconnection
 echo 'export UseRopeHadronization='$UseRopeHadronization
