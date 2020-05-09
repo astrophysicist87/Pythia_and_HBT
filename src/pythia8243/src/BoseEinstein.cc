@@ -181,7 +181,7 @@ double BoseEinstein::get_1D_source_size(int iSpecies)
 	if ( useInvariantSize )
 	{
 		if ( useRelativeDistance )
-			for (int i1 = nStored[iSpecies]; i1 < nStored[iSpecies+1] - 1; ++i1)
+			for (int i1 = nStored[iSpecies]; i1 < nStored[iSpecies+1]-1; ++i1)
 			for (int i2 = i1 + 1; i2 < nStored[iSpecies+1]; ++i2)
 			{
 				Vec4 xDiff = hadronBE.at(i1).x - hadronBE.at(i2).x;
@@ -199,7 +199,7 @@ double BoseEinstein::get_1D_source_size(int iSpecies)
 	else
 	{
 		if ( useRelativeDistance )
-			for (int i1 = nStored[iSpecies]; i1 < nStored[iSpecies+1] - 1; ++i1)
+			for (int i1 = nStored[iSpecies]; i1 < nStored[iSpecies+1]-1; ++i1)
 			for (int i2 = i1 + 1; i2 < nStored[iSpecies+1]; ++i2)
 			{
 				Vec4 xDiff = hadronBE.at(i1).x - hadronBE.at(i2).x;
@@ -1538,14 +1538,16 @@ void BoseEinstein::shiftPairs_mode1(
 
 		if ( BE_VERBOSE )
 			cout << "BoseEinsteinCheck: CHECK shift is "
-					<< Qnew - Q0 /*<< " vs. " << Qnew_LININT - Q0*/ << " of " << Q0 << endl;
+				 << Qnew - Q0 << " of " << Q0 << endl;
 
 		// Shift pairs closer together; use pairs
 		// shifted further away to compensate.
 
 		// Use this pair in compensation instead if, either
-		// (1) - the shift was positive and we want to use these for compensation, or
-		// (2) - the magnitude of the shift was larger than some % of the original Q0
+		// (1) - the shift was positive and we want to use
+		//       these for compensation, or
+		// (2) - the magnitude of the shift was larger than
+		//       some % of the original Q0
 		bool shift_failure = ( include_posDelQ_in_compensation and Qnew > Q0 )
 								//or abs(Qnew - Q0) > 0.05 * Q0
 								;
@@ -1571,6 +1573,8 @@ void BoseEinstein::shiftPairs_mode1(
 
 		const int i1 = iPair.second.first;
 		const int i2 = iPair.second.second;
+		auto & had1 = hadronBE.at(i1);
+		auto & had2 = hadronBE.at(i2);
 
 		constexpr bool rescale_pair_momenta = true;
 
@@ -1582,18 +1586,19 @@ void BoseEinstein::shiftPairs_mode1(
 
 		// Calculate corresponding three-momentum shift.
 		double Q2Diff    = Q2new - Q2old;
-		double p2DiffAbs = (hadronBE.at(i1).p - hadronBE.at(i2).p).pAbs2();
-		double p2AbsDiff = hadronBE.at(i1).p.pAbs2() - hadronBE.at(i2).p.pAbs2();
-		double eSum      = hadronBE.at(i1).p.e() + hadronBE.at(i2).p.e();
-		double eDiff     = hadronBE.at(i1).p.e() - hadronBE.at(i2).p.e();
+		double p2DiffAbs = (had1.p - had2.p).pAbs2();
+		double p2AbsDiff = had1.p.pAbs2() - had2.p.pAbs2();
+		double eSum      = had1.p.e() + had2.p.e();
+		double eDiff     = had1.p.e() - had2.p.e();
 		double sumQ2E    = Q2Diff + eSum * eSum;
 		double rootA     = eSum * eDiff * p2AbsDiff - p2DiffAbs * sumQ2E;
 		double rootB     = p2DiffAbs * sumQ2E - p2AbsDiff * p2AbsDiff;
 		double factor    = 0.5 * ( rootA + sqrtpos(rootA * rootA
-							+ Q2Diff * (sumQ2E - eDiff * eDiff) * rootB) ) / rootB;
+							+ Q2Diff * (sumQ2E - eDiff * eDiff) * rootB) )
+						   / rootB;
 
 		// Add shifts to sum. (Energy component dummy.)
-		Vec4   pDiff     = factor * (hadronBE.at(i1).p - hadronBE.at(i2).p);
+		Vec4   pDiff     = factor * (had1.p - had2.p);
 
 
 		if ( rescale_pair_momenta or this_pair_shifted.at(pairIndex) )
