@@ -1315,7 +1315,7 @@ void BoseEinstein::shiftPairs_mode1(
 		const double rightQ       = sortedPairs.at(thisPair+1).first;
 
 		const double thisdenBar   = ( linear_interpolate_CDF ) ? 1.0 / ( rightQ - leftQ ) : 1.0;
-		const double one_by_N     = 1.0 / static_cast<double>(sortedPairs.size() - 2);
+		const double one_by_N     = 1.0 / static_cast<double>( sortedPairs.size() - 2 );
 
 		//------------------------------------------
 		// Estimate pair shift using Newton-Raphson.
@@ -1562,27 +1562,33 @@ void BoseEinstein::shiftPairs_mode1(
 
 
 
-	// Finally, discard fake pairs at beginning and end of sortedPairs
+	// Discard fake pairs at beginning and end of sortedPairs,
+	// since they are no longer needed
 	sortedPairs.erase ( sortedPairs.begin() );
 	sortedPairs.erase ( sortedPairs.end() );
 
+
+	// Finally, implement all shifts and compensations
 	int pairIndex = 0;
 	int number_of_pairs_shifted = 0, number_of_pairs_not_shifted = 0;
 	for (const auto & iPair : sortedPairs)
 	{
 
-		const int i1 = iPair.second.first;
-		const int i2 = iPair.second.second;
-		auto & had1 = hadronBE.at(i1);
-		auto & had2 = hadronBE.at(i2);
+		const bool shift_this_pair
+							= this_pair_shifted.at(pairIndex);
+		const int i1        = iPair.second.first;
+		const int i2        = iPair.second.second;
+		auto & had1         = hadronBE.at(i1);
+		auto & had2         = hadronBE.at(i2);
 
 		constexpr bool rescale_pair_momenta = true;
 
 		// Get the computed shifts
-		const double Qold  = iPair.first;
-		double Qnew  = Qold + pairShifts.at(pairIndex);
-		const double Q2old = Qold*Qold;
-		double Q2new = Qnew*Qnew;
+		const double Qold   = iPair.first;
+		const double deltaQ = pairShifts.at(pairIndex);
+		double Qnew         = Qold + deltaQ;
+		const double Q2old  = Qold * Qold;
+		double Q2new        = Qnew * Qnew;
 
 		// Calculate corresponding three-momentum shift.
 		double Q2Diff    = Q2new          - Q2old;
@@ -1601,7 +1607,7 @@ void BoseEinstein::shiftPairs_mode1(
 		Vec4   pDiff     = factor * (had1.p - had2.p);
 
 
-		if ( rescale_pair_momenta or this_pair_shifted.at(pairIndex) )
+		/*if ( rescale_pair_momenta or this_pair_shifted.at(pairIndex) )
 		{
 			// Compute appropriate shift for pair
 			number_of_pairs_shifted++;
@@ -1624,8 +1630,40 @@ void BoseEinstein::shiftPairs_mode1(
 			// Use computed shift for compensation
 			number_of_pairs_not_shifted++;
 
-			//*/
 			//Vec4 pDiff = hadronBE.at(i1).p - hadronBE.at(i2).p;
+			had1.pComp += pDiff;
+			had2.pComp -= pDiff;
+		}*/
+
+
+		// Get the shift for this pair, if
+		// it was computed successfully
+		if ( shift_this_pair or true )
+		{
+			number_of_pairs_shifted++;
+
+			had1.pShift += pDiff;
+			had2.pShift -= pDiff;
+		}
+
+		// Get the compensation for this pair
+		if ( rescale_pair_momenta )
+		{
+			// compensation momentum is just the pair momentum;
+			// --> reduce pair's energy in lab to conserve total
+			pDiff = factor * (had1.p + had2.p);
+			//pDiff = 0.5 * (had1.p + had2.p);
+			// WARNING: PREFACTOR MAKES A DIFFERENCE!!!
+
+			had1.pComp += pDiff;
+			had2.pComp += pDiff;
+		}
+		else
+		{
+			// compensation momentum is pDiff
+			// --> undo shift to conserve total energy
+			number_of_pairs_not_shifted++;
+
 			had1.pComp += pDiff;
 			had2.pComp -= pDiff;
 		}
