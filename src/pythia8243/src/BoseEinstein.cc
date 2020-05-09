@@ -1637,7 +1637,7 @@ void BoseEinstein::shiftPairs_mode1(
 
 		// Get the shift for this pair, if
 		// it was computed successfully
-		if ( shift_this_pair or true )
+		if ( shift_this_pair )
 		{
 			number_of_pairs_shifted++;
 
