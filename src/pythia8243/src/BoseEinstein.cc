@@ -1278,8 +1278,8 @@ void BoseEinstein::shiftPairs_mode1(
 		int thisPair = iPair;
 
 		const double Q0          = sortedPairs.at(iPair).first;          // original Q
-		const int iPair1         = sortedPairs.at(iPair).second.first;   // first hadron
-		const int iPair2         = sortedPairs.at(iPair).second.second;	 // second hadron
+		//const int iPair1         = sortedPairs.at(iPair).second.first;   // first hadron
+		//const int iPair2         = sortedPairs.at(iPair).second.second;	 // second hadron
 		const double thisPairLHS = LHS.at(thisPair).second;              // > 0
 		double RHS_lower         = RHS.at(thisPair).second;
 		double RHS_upper         = RHS.at(thisPair+1).second;
@@ -1617,7 +1617,7 @@ void BoseEinstein::shiftPairs_mode1(
 
 	// Finally, implement all shifts and compensations
 	int pairIndex = 0;
-	int number_of_pairs_shifted = 0, number_of_pairs_not_shifted = 0;
+	//int number_of_pairs_shifted = 0, number_of_pairs_not_shifted = 0;
 	for (const auto & iPair : sortedPairs)
 	{
 
