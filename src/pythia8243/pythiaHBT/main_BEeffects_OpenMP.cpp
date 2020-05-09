@@ -233,9 +233,11 @@ int main(int argc, char *argv[])
 	bool useRestFrame 						= true;		// Use rest frame vs. lab frame
 	bool includePhaseSpace					= true;		// Include phase-space factor
 	bool linearInterpolateCDF				= false;     // Estimate pair density via linear interpolation
-	bool usePositiveShiftsForCompensation	= true;		// Pairs shifted apart used to compensate pairs shifted together
 	bool computeBEEnhancementExactly		= false;     // Whether to evaluate BE enhancement approximately or exactly
 
+	int shiftingSet      = 1;
+	int compensationSet  = 0;
+	int compensationMode = 1;
 
 	//if ( momentum_space_modifications )
 	//	cout << "Using momentum space modifications!" << endl;
@@ -371,9 +373,11 @@ int main(int argc, char *argv[])
 	// Loop over OpenMP threads.
 	for (int iThread = 0; iThread < omp_get_max_threads(); iThread++)
 	{
+		auto & pythia = pythiaVector[iThread];
+
 		// ==============================================
 		// Turn off printing inside parallel region
-		if ( omp_get_max_threads() > 1 ) pythiaVector[iThread].readString("Print:quiet = off");
+		if ( omp_get_max_threads() > 1 ) pythia.readString("Print:quiet = off");
 
 
 		// ==============================================
@@ -381,74 +385,77 @@ int main(int argc, char *argv[])
 		bool use_random_time = false;
  		if ( omp_get_max_threads() > 1 )
 		{
-			pythiaVector[iThread].readString("Random:setSeed = on");
- 			pythiaVector[iThread].readString("Random:seed = " + to_string(iThread+1));
+			pythia.readString("Random:setSeed = on");
+ 			pythia.readString("Random:seed = " + to_string(iThread+1));
 		}
  		else if ( use_random_time )
 		{
-			pythiaVector[iThread].readString("Random:setSeed = on");
- 			pythiaVector[iThread].readString("Random:seed = 0");
+			pythia.readString("Random:setSeed = on");
+ 			pythia.readString("Random:seed = 0");
 		}
  		/*else
 		{
-			pythiaVector[iThread].readString("Random:setSeed = on");
- 			pythiaVector[iThread].readString("Random:seed = -1");
+			pythia.readString("Random:setSeed = on");
+ 			pythia.readString("Random:seed = -1");
 		}*/
 
 
 		//----------------------------------------------
 		// N.B.: THESE OPTIONS MAY BE OVERWRITTEN BY
 		//       OPTIONS PASSED IN THROUGH *.CMND FILES.
-		pythiaVector[iThread].readString("BoseEinstein:useInvariantSourceSize = " 			+ boolean_toggle[useInvariantSourceSize]);
-		pythiaVector[iThread].readString("BoseEinstein:useDistribution = " 					+ boolean_toggle[useDistribution]);
-		pythiaVector[iThread].readString("BoseEinstein:useRelativeDistance = " 				+ boolean_toggle[useRelativeDistance]);
-		pythiaVector[iThread].readString("BoseEinstein:useRestFrame = " 					+ boolean_toggle[useRestFrame]);
-		pythiaVector[iThread].readString("BoseEinstein:includePhaseSpace = " 				+ boolean_toggle[includePhaseSpace]);
-		pythiaVector[iThread].readString("BoseEinstein:linearInterpolateCDF = " 			+ boolean_toggle[linearInterpolateCDF]);
-		pythiaVector[iThread].readString("BoseEinstein:usePositiveShiftsForCompensation = " + boolean_toggle[usePositiveShiftsForCompensation]);
-		pythiaVector[iThread].readString("BoseEinstein:computeBEEnhancementExactly = " 		+ boolean_toggle[computeBEEnhancementExactly]);
+		pythia.readString("BoseEinstein:useInvariantSourceSize = " 	   + boolean_toggle[useInvariantSourceSize]);
+		pythia.readString("BoseEinstein:useDistribution = " 			   + boolean_toggle[useDistribution]);
+		pythia.readString("BoseEinstein:useRelativeDistance = " 		   + boolean_toggle[useRelativeDistance]);
+		pythia.readString("BoseEinstein:useRestFrame = " 			   + boolean_toggle[useRestFrame]);
+		pythia.readString("BoseEinstein:includePhaseSpace = " 		   + boolean_toggle[includePhaseSpace]);
+		pythia.readString("BoseEinstein:linearInterpolateCDF = " 	   + boolean_toggle[linearInterpolateCDF]);
+		pythia.readString("BoseEinstein:computeBEEnhancementExactly = " + boolean_toggle[computeBEEnhancementExactly]);
+
+		pythia.readString("BoseEinstein:shiftingSet = "      + std::to_string(shiftingSet));
+		pythia.readString("BoseEinstein:compensationSet = "  + std::to_string(compensationSet));
+		pythia.readString("BoseEinstein:compensationMode = " + std::to_string(compensationMode));
 
 
 		// For now.
-		//pythiaVector[iThread].readString("BoseEinstein:Kaon = off");
-		//pythiaVector[iThread].readString("BoseEinstein:Eta = off");
+		//pythia.readString("BoseEinstein:Kaon = off");
+		//pythia.readString("BoseEinstein:Eta = off");
 
 
 		//========================================
 		// Read in any standard Pythia options
-		pythiaVector[iThread].readFile( "main_BEeffects.cmnd" );
+		pythia.readFile( "main_BEeffects.cmnd" );
 
 
 		// ==============================================
 		// use this to turn off energy-momentum
 		// conservation, etc. for debugging purposes
-		//pythiaVector[iThread].readString("Check:event = off");
+		//pythia.readString("Check:event = off");
 
 
 		// ==============================================
 		// Further BE options
 		// if true, consider BE effects only for directly
 		// (i.e., thermally) produced particles
-		bool momentum_space_modifications = pythiaVector[iThread].settings.flag("HadronLevel:BoseEinstein");
+		bool momentum_space_modifications = pythia.settings.flag("HadronLevel:BoseEinstein");
 		if ( thermal_only and momentum_space_modifications )
-			pythiaVector[iThread].readString("BoseEinstein:widthSep = 1.0");	// allows to shift only "thermal" particles
+			pythia.readString("BoseEinstein:widthSep = 1.0");	// allows to shift only "thermal" particles
 
 
 		// ==============================================
 		// Setup the beams.
-		pythiaVector[iThread].readString("Beams:idA = " + particle_IDs[ projectile_name ]);
-		pythiaVector[iThread].readString("Beams:idB = " + particle_IDs[ target_name ]);
-		pythiaVector[iThread].readString("Beams:eCM = " + to_string( beam_energy ));
-		pythiaVector[iThread].readString("Beams:frameType = 1");
+		pythia.readString("Beams:idA = " + particle_IDs[ projectile_name ]);
+		pythia.readString("Beams:idB = " + particle_IDs[ target_name ]);
+		pythia.readString("Beams:eCM = " + to_string( beam_energy ));
+		pythia.readString("Beams:frameType = 1");
 
 
 		// ==============================================
 		// Setup the processes.
-		pythiaVector[iThread].readString("SoftQCD:all = on");
-		//pythiaVector[iThread].readString("SoftQCD:nonDiffractive = on");
-		//pythiaVector[iThread].readString("PhaseSpace:pTHatMax = 10.0");
-		//pythiaVector[iThread].readString("HardQCD:all = on");
-		//pythiaVector[iThread].readString("Angantyr:CollisionModel = 0");
+		pythia.readString("SoftQCD:all = on");
+		//pythia.readString("SoftQCD:nonDiffractive = on");
+		//pythia.readString("PhaseSpace:pTHatMax = 10.0");
+		//pythia.readString("HardQCD:all = on");
+		//pythia.readString("Angantyr:CollisionModel = 0");
 
 
 		// ==============================================
@@ -458,28 +465,28 @@ int main(int argc, char *argv[])
 
 			// Initialize the Angantyr model to fit the total and semi-inclusive
 			// cross sections in Pythia within some tolerance.
-			pythiaVector[iThread].readString("HeavyIon:SigFitErr = "
+			pythia.readString("HeavyIon:SigFitErr = "
 								"0.02,0.02,0.1,0.05,0.05,0.0,0.1,0.0");
 			// These parameters are typically suitable for sqrt(S_NN)=5 TeV
-			pythiaVector[iThread].readString("HeavyIon:SigFitDefPar = "
+			pythia.readString("HeavyIon:SigFitDefPar = "
 				            "17.24,2.15,0.33,0.0,0.0,0.0,0.0,0.0");
 			// A simple genetic algorithm is run for 20 generations to fit the
 			// parameters.
-			pythiaVector[iThread].readString("HeavyIon:SigFitNGen = 20");
+			pythia.readString("HeavyIon:SigFitNGen = 20");
 
-			/*pythiaVector[iThread].readString("HeavyIon:SigFitDefPar = "
+			/*pythia.readString("HeavyIon:SigFitDefPar = "
 							"13.91,1.78,0.22,0.0,0.0,0.0,0.0,0.0" );
-			pythiaVector[iThread].readString("HeavyIon:SigFitErr = "
+			pythia.readString("HeavyIon:SigFitErr = "
 								"0.02,0.02,0.1,0.05,0.05,0.0,0.1,0.0");
-			pythiaVector[iThread].readString("HeavyIon:SigFitNGen = 0");*/
+			pythia.readString("HeavyIon:SigFitNGen = 0");*/
 		}
 		else
 		{
 			// use results of previous fit
-			pythiaVector[iThread].readString("HeavyIon:SigFitNGen = 0");
-			pythiaVector[iThread].readString("HeavyIon:SigFitErr = "
+			pythia.readString("HeavyIon:SigFitNGen = 0");
+			pythia.readString("HeavyIon:SigFitErr = "
 								"0.02,0.02,0.1,0.05,0.05,0.0,0.1,0.0");
-			pythiaVector[iThread].readString("HeavyIon:SigFitDefPar = "
+			pythia.readString("HeavyIon:SigFitDefPar = "
 												+ fittedHI_SigFitDefPar );
 		}
 
@@ -491,37 +498,37 @@ int main(int argc, char *argv[])
 			///*
 			//const double longest_permitted_proper_lifetime = 100.0; //fm/c
 			//const double longest_permitted_radius = 100.0; //fm
-			pythiaVector[iThread].readString("ParticleDecays:limitTau0 = on");
+			pythia.readString("ParticleDecays:limitTau0 = on");
 			if ( thermal_only )
-				pythiaVector[iThread].readString("ParticleDecays:tau0Max = 0.0");
+				pythia.readString("ParticleDecays:tau0Max = 0.0");
 			else
-				pythiaVector[iThread].readString("ParticleDecays:tau0Max = 0.000001");
-			//pythiaVector[iThread].readString("331:mayDecay = off");		//eta'
-			//pythiaVector[iThread].readString("ParticleDecays:limitTau = on");
-			//pythiaVector[iThread].readString("ParticleDecays:tauMax = 1.0");
-			//pythiaVector[iThread].readString("ParticleDecays:limitRadius = on");
-			//pythiaVector[iThread].readString("ParticleDecays:rMax = " + to_string( 1.e-12*longest_permitted_radius ) );
-			//pythiaVector[iThread].readString("ParticleDecays:limitCylinder = off");
-			//pythiaVector[iThread].readString("ParticleDecays:xyMax");
-			//pythiaVector[iThread].readString("ParticleDecays:zMax");
+				pythia.readString("ParticleDecays:tau0Max = 0.000001");
+			//pythia.readString("331:mayDecay = off");		//eta'
+			//pythia.readString("ParticleDecays:limitTau = on");
+			//pythia.readString("ParticleDecays:tauMax = 1.0");
+			//pythia.readString("ParticleDecays:limitRadius = on");
+			//pythia.readString("ParticleDecays:rMax = " + to_string( 1.e-12*longest_permitted_radius ) );
+			//pythia.readString("ParticleDecays:limitCylinder = off");
+			//pythia.readString("ParticleDecays:xyMax");
+			//pythia.readString("ParticleDecays:zMax");
 			//*/
 			/*
 			// try turning off specific decays instead
-			pythiaVector[iThread].readString("310:mayDecay = off");		//K_S0
-			pythiaVector[iThread].readString("3112:mayDecay = off");	//Sigma-
-			pythiaVector[iThread].readString("3122:mayDecay = off");	//Lambda0
-			pythiaVector[iThread].readString("3222:mayDecay = off");	//Sigma+
-			pythiaVector[iThread].readString("3312:mayDecay = off");	//Xi-
-			//pythiaVector[iThread].readString("3322:mayDecay = off");	//Xi0
-			pythiaVector[iThread].readString("3334:mayDecay = off");	//Omega-
+			pythia.readString("310:mayDecay = off");		//K_S0
+			pythia.readString("3112:mayDecay = off");	//Sigma-
+			pythia.readString("3122:mayDecay = off");	//Lambda0
+			pythia.readString("3222:mayDecay = off");	//Sigma+
+			pythia.readString("3312:mayDecay = off");	//Xi-
+			//pythia.readString("3322:mayDecay = off");	//Xi0
+			pythia.readString("3334:mayDecay = off");	//Omega-
 			// next tier down in decay length
-			pythiaVector[iThread].readString("411:mayDecay = off");		//D+
-			pythiaVector[iThread].readString("421:mayDecay = off");		//D0
-			pythiaVector[iThread].readString("431:mayDecay = off");		//D_s+
-			pythiaVector[iThread].readString("511:mayDecay = off");		//B0
-			pythiaVector[iThread].readString("521:mayDecay = off");		//B+
-			pythiaVector[iThread].readString("531:mayDecay = off");		//B_s0
-			pythiaVector[iThread].readString("541:mayDecay = off");		//B_c+
+			pythia.readString("411:mayDecay = off");		//D+
+			pythia.readString("421:mayDecay = off");		//D0
+			pythia.readString("431:mayDecay = off");		//D_s+
+			pythia.readString("511:mayDecay = off");		//B0
+			pythia.readString("521:mayDecay = off");		//B+
+			pythia.readString("531:mayDecay = off");		//B_s0
+			pythia.readString("541:mayDecay = off");		//B_c+
 			*/
 		}
 
@@ -531,12 +538,12 @@ int main(int argc, char *argv[])
 		// finite, user-defined range.
 		MyHIUserHooks* myHIUserHooks;
 		myHIUserHooks = new MyHIUserHooks( b_min, b_max );
-		pythiaVector[iThread].setHIHooks( myHIUserHooks );
+		pythia.setHIHooks( myHIUserHooks );
 
 
 		// ==============================================
 		// Initialise Pythia.
-		pythiaVector[iThread].init();
+		pythia.init();
 
 
 		// ======================================================
@@ -545,7 +552,7 @@ int main(int argc, char *argv[])
 		if ( iThread == 0 )
 		{
 			vector<double> result_fittedHI_SigFitDefPar
-							= pythiaVector[iThread].settings.pvec("HeavyIon:SigFitDefPar");
+							= pythia.settings.pvec("HeavyIon:SigFitDefPar");
 
 			fittedHI_SigFitDefPar
 				 = to_string( result_fittedHI_SigFitDefPar[0] );
@@ -599,9 +606,10 @@ int main(int argc, char *argv[])
 	#pragma omp parallel for
 	for (int iThread = 0; iThread < omp_get_max_threads(); iThread++)
 	{
+		auto & pythia = pythiaVector[iThread];
 
 		// needed below
-		bool momentum_space_modifications = pythiaVector[iThread].settings.flag("HadronLevel:BoseEinstein");
+		bool momentum_space_modifications = pythia.settings.flag("HadronLevel:BoseEinstein");
 
 		// break the loop when enough events have been generated
 		bool need_to_continue = true;
@@ -610,13 +618,13 @@ int main(int argc, char *argv[])
 		do
 		{
 			// Generate next Pythia event in this thread.
-			if ( not pythiaVector[iThread].next() )
+			if ( not pythia.next() )
 				continue;
 
 			// If using BE shifts, check that this event
 			// was shifted successfully.
 			if ( momentum_space_modifications
-					and not pythiaVector[iThread].info.hasBECShifts() )
+					and not pythia.info.hasBECShifts() )
 			{
 				cout << "WARNING: event not shifted correctly!  Trying again..." << endl;
 				continue;
@@ -625,7 +633,7 @@ int main(int argc, char *argv[])
 if (false)
 {
 	cout << "START EVENT LISTING" << endl;
-	pythiaVector[iThread].event.list(true, true, 8);
+	pythia.event.list(true, true, 8);
 	cout << "END EVENT LISTING" << endl;
 }
 
@@ -644,9 +652,9 @@ if (false)
 			vector<Particle> particles_to_output, unshifted_particles_to_output;
 			vector<int> particle_is_thermal_or_decay;
 
-			for (int i = 0; i < pythiaVector[iThread].event.size(); ++i)
+			for (int i = 0; i < pythia.event.size(); ++i)
 			{
-				Particle & p = pythiaVector[iThread].event[i];
+				Particle & p = pythia.event[i];
 				if ( p.isFinal() )
 				{
 					event_multiplicity++;
@@ -700,7 +708,7 @@ if (false)
 									and track_unshifted_particles )
 							{
 								if ( pmother1 == pmother2 )
-									unshifted_particles_to_output.push_back( pythiaVector[iThread].event[pmother1] );
+									unshifted_particles_to_output.push_back( pythia.event[pmother1] );
 								/*else
 								{
 									cerr << "Encountered a problem!  Exiting..." << endl;
@@ -774,7 +782,7 @@ if (false)
 				{
 					//const double phi_to_use = ( particle_IDs[ projectile_name ] == "p"
 					//							and particle_IDs[ target_name ] == "p" ) ?
-					//							0.0 : pythiaVector[iThread].info.hiinfo->phi();
+					//							0.0 : pythia.info.hiinfo->phi();
 					const double phi_to_use = 0.0;
 
 					//========================================
@@ -834,40 +842,40 @@ if (false)
 					if ( verbose )
 						outMultiplicities
 								<< "   "
-								<< pythiaVector[iThread].info.hiinfo->b() << "   "
+								<< pythia.info.hiinfo->b() << "   "
 								<< phi_to_use;
-								//<< pythiaVector[iThread].info.hiinfo->phi();// << "   "
-								/*<< pythiaVector[iThread].info.hiinfo->nPartProj() << "   "
-								<< pythiaVector[iThread].info.hiinfo->nPartTarg() << "   "*/
-								//<< pythiaVector[iThread].info.hiinfo->nCollTot() << "   "
-								/*<< pythiaVector[iThread].info.hiinfo->nCollND() << "   "
-								<< pythiaVector[iThread].info.hiinfo->nCollNDTot() << "   "
-								<< pythiaVector[iThread].info.hiinfo->nCollSDP() << "   "
-								<< pythiaVector[iThread].info.hiinfo->nCollSDT() << "   "
-								<< pythiaVector[iThread].info.hiinfo->nCollDD() << "   "
-								<< pythiaVector[iThread].info.hiinfo->nCollCD() << "   "
-								<< pythiaVector[iThread].info.hiinfo->nCollEL() << "   "
-								<< pythiaVector[iThread].info.hiinfo->nAbsProj() << "   "
-								<< pythiaVector[iThread].info.hiinfo->nDiffProj() << "   "
-								<< pythiaVector[iThread].info.hiinfo->nElProj() << "   "
-								<< pythiaVector[iThread].info.hiinfo->nAbsTarg() << "   "
-								<< pythiaVector[iThread].info.hiinfo->nDiffTarg() << "   "
-								<< pythiaVector[iThread].info.hiinfo->nElTarg() << "   "*/
-								//<< pythiaVector[iThread].info.nMPI() << "   "
-								//<< pythiaVector[iThread].info.hiinfo->sigmaTotThisEvent() << "   "
-								//<< pythiaVector[iThread].info.hiinfo->sigmaNDThisEvent() << "   "
-								//<< pythiaVector[iThread].info.hiinfo->sigmaTot() << "   "
-								//<< pythiaVector[iThread].info.hiinfo->sigmaTotErr() << "   "
-								//<< pythiaVector[iThread].info.hiinfo->sigmaND() << "   "
-								//<< pythiaVector[iThread].info.hiinfo->sigmaNDErr();
-								//<< pythiaVector[iThread].info.hiinfo->sigTot() << "   "
-								//<< pythiaVector[iThread].info.hiinfo->sigEl() << "   "
-								//<< pythiaVector[iThread].info.hiinfo->sigCDE() << "   "
-								//<< pythiaVector[iThread].info.hiinfo->sigSDE() << "   "
-								//<< pythiaVector[iThread].info.hiinfo->sigSDEP() << "   "
-								//<< pythiaVector[iThread].info.hiinfo->sigSDET() << "   "
-								//<< pythiaVector[iThread].info.hiinfo->sigDDE() << "   "
-								//<< pythiaVector[iThread].info.hiinfo->sigND();
+								//<< pythia.info.hiinfo->phi();// << "   "
+								/*<< pythia.info.hiinfo->nPartProj() << "   "
+								<< pythia.info.hiinfo->nPartTarg() << "   "*/
+								//<< pythia.info.hiinfo->nCollTot() << "   "
+								/*<< pythia.info.hiinfo->nCollND() << "   "
+								<< pythia.info.hiinfo->nCollNDTot() << "   "
+								<< pythia.info.hiinfo->nCollSDP() << "   "
+								<< pythia.info.hiinfo->nCollSDT() << "   "
+								<< pythia.info.hiinfo->nCollDD() << "   "
+								<< pythia.info.hiinfo->nCollCD() << "   "
+								<< pythia.info.hiinfo->nCollEL() << "   "
+								<< pythia.info.hiinfo->nAbsProj() << "   "
+								<< pythia.info.hiinfo->nDiffProj() << "   "
+								<< pythia.info.hiinfo->nElProj() << "   "
+								<< pythia.info.hiinfo->nAbsTarg() << "   "
+								<< pythia.info.hiinfo->nDiffTarg() << "   "
+								<< pythia.info.hiinfo->nElTarg() << "   "*/
+								//<< pythia.info.nMPI() << "   "
+								//<< pythia.info.hiinfo->sigmaTotThisEvent() << "   "
+								//<< pythia.info.hiinfo->sigmaNDThisEvent() << "   "
+								//<< pythia.info.hiinfo->sigmaTot() << "   "
+								//<< pythia.info.hiinfo->sigmaTotErr() << "   "
+								//<< pythia.info.hiinfo->sigmaND() << "   "
+								//<< pythia.info.hiinfo->sigmaNDErr();
+								//<< pythia.info.hiinfo->sigTot() << "   "
+								//<< pythia.info.hiinfo->sigEl() << "   "
+								//<< pythia.info.hiinfo->sigCDE() << "   "
+								//<< pythia.info.hiinfo->sigSDE() << "   "
+								//<< pythia.info.hiinfo->sigSDEP() << "   "
+								//<< pythia.info.hiinfo->sigSDET() << "   "
+								//<< pythia.info.hiinfo->sigDDE() << "   "
+								//<< pythia.info.hiinfo->sigND();
 
 					outMultiplicities
 								<< endl;

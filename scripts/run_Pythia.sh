@@ -60,23 +60,25 @@ collisionSystemStem=$projectile$target"_"`echo $beamEnergy`"GeV_Nev"$Nevents
 		echo 'BoseEinstein:QRef =' $QRefValue >> main_BEeffects.cmnd
 
 		# turn on/off other interesting mechanisms to test
-		echo 'ColourReconnection:reconnect = ' $UseColorReconnection >> main_BEeffects.cmnd
-		echo 'Ropewalk:RopeHadronization = ' $UseRopeHadronization >> main_BEeffects.cmnd
-		echo 'Ropewalk:doShoving = ' $IncludeStringShoving >> main_BEeffects.cmnd
-		echo 'Ropewalk:doFlavour = ' $IncludeFlavourRopesMechanism >> main_BEeffects.cmnd
+		echo 'ColourReconnection:reconnect = ' $UseColorReconnection         >> main_BEeffects.cmnd
+		echo 'Ropewalk:RopeHadronization = '   $UseRopeHadronization         >> main_BEeffects.cmnd
+		echo 'Ropewalk:doShoving = '           $IncludeStringShoving         >> main_BEeffects.cmnd
+		echo 'Ropewalk:doFlavour = '           $IncludeFlavourRopesMechanism >> main_BEeffects.cmnd
 
 		# New Pythia options, flags, parameters, etc.
 		# which I've added myself (not generally compatible yet)
 		# Comment out lines below this one if running on unmodified Pythia
-		echo 'BoseEinstein:enhanceMode =' $BEEnhancementMode >> main_BEeffects.cmnd
-		echo 'BoseEinstein:useInvariantSourceSize =' $useInvariantSourceSize >> main_BEeffects.cmnd
-		echo 'BoseEinstein:useDistribution =' $useDistribution >> main_BEeffects.cmnd
-		echo 'BoseEinstein:useRelativeDistance =' $useRelativeDistance >> main_BEeffects.cmnd
-		echo 'BoseEinstein:useRestFrame =' $useRestFrame >> main_BEeffects.cmnd
-		echo 'BoseEinstein:includePhaseSpace =' $includePhaseSpace >> main_BEeffects.cmnd
-		echo 'BoseEinstein:linearInterpolateCDF =' $linearInterpolateCDF >> main_BEeffects.cmnd
-		echo 'BoseEinstein:usePositiveShiftsForCompensation =' $usePositiveShiftsForCompensation >> main_BEeffects.cmnd
+		echo 'BoseEinstein:enhanceMode ='                 $BEEnhancementMode           >> main_BEeffects.cmnd
+		echo 'BoseEinstein:useInvariantSourceSize ='      $useInvariantSourceSize      >> main_BEeffects.cmnd
+		echo 'BoseEinstein:useDistribution ='             $useDistribution             >> main_BEeffects.cmnd
+		echo 'BoseEinstein:useRelativeDistance ='         $useRelativeDistance         >> main_BEeffects.cmnd
+		echo 'BoseEinstein:useRestFrame ='                $useRestFrame                >> main_BEeffects.cmnd
+		echo 'BoseEinstein:includePhaseSpace ='           $includePhaseSpace           >> main_BEeffects.cmnd
+		echo 'BoseEinstein:linearInterpolateCDF ='        $linearInterpolateCDF        >> main_BEeffects.cmnd
 		echo 'BoseEinstein:computeBEEnhancementExactly =' $computeBEEnhancementExactly >> main_BEeffects.cmnd
+		echo 'BoseEinstein:shiftingSet ='                 $shiftingSet                 >> main_BEeffects.cmnd
+		echo 'BoseEinstein:CompensationSet ='             $CompensationSet             >> main_BEeffects.cmnd
+		echo 'BoseEinstein:CompensationMode ='            $CompensationMode            >> main_BEeffects.cmnd
 
 		# Default is now to compute all events in Pythia from the get-go
 		lowerLimit=0

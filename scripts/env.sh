@@ -98,8 +98,11 @@ echo 'export useRelativeDistance='$useRelativeDistance
 echo 'export useRestFrame='$useRestFrame
 echo 'export includePhaseSpace='$includePhaseSpace
 echo 'export linearInterpolateCDF='$linearInterpolateCDF
-echo 'export usePositiveShiftsForCompensation='$usePositiveShiftsForCompensation
 echo 'export computeBEEnhancementExactly='$computeBEEnhancementExactly
+echo
+echo 'export shiftingSet='$shiftingSet
+echo 'export CompensationSet='$CompensationSet
+echo 'export CompensationMode='$CompensationMode
 echo
 echo 'export UseColorReconnection='$UseColorReconnection
 echo 'export UseRopeHadronization='$UseRopeHadronization

@@ -128,10 +128,10 @@ Whether to include the estimated pair density when evaluating
 the BE shift relation.
 </flag>
 
-<flag name="BoseEinstein:usePositiveShiftsForCompensation" default="on"> 
+<!--<flag name="BoseEinstein:usePositiveShiftsForCompensation" default="on"> 
 Uses particle pairs shifted apart to balance particle pairs shifted
 together.
-</flag>
+</flag>-->
 
 <flag name="BoseEinstein:computeBEEnhancementExactly" default="on"> 
 Whether to evaluate be enhancement exactly or using an approximation 
@@ -177,6 +177,27 @@ decay products thus can obtain shifted momenta, in the latter not.
 The default has been picked such that both <ei>rho</ei> and 
 <ei>K^*</ei> decay products would be modified. 
 </parm> 
+
+
+<mode name="BoseEinstein:shiftingSet" default="1" min="0" max="1"> 
+Which pairs to shift:
+0 - shift pairs with negative <ei>\delta Q</ei>, but not those with positive
+<ei>\delta Q</ei>
+1 - shift pairs with both negative and positive <ei>\delta Q</ei>
+</mode> 
+
+<mode name="BoseEinstein:compensationSet" default="0" min="0" max="2"> 
+Which pairs to use in compensation:
+0 - use only pairs with negative <ei>\delta Q</ei> in compensation
+1 - use only pairs with positive <ei>\delta Q</ei> in compensation
+2 - use pairs with both positive and negative <ei>\delta Q</ei> in compensation
+</mode>
+
+<mode name="BoseEinstein:compensationMode" default="1" min="0" max="1"> 
+How to perform compensation:
+0 - take pComp from same pDiff as used for shifting
+1 - rescale pair momenta
+</mode> 
  
 </chapter> 
  

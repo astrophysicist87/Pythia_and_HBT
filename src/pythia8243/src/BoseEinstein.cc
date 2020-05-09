@@ -99,22 +99,35 @@ bool BoseEinstein::init(Info* infoPtrIn, Settings& settings,
   useRestFrame 			          = settings.flag("BoseEinstein:useRestFrame");
   include_phase_space	          = settings.flag("BoseEinstein:includePhaseSpace");
   linear_interpolate_CDF          = settings.flag("BoseEinstein:linearInterpolateCDF");
-  include_posDelQ_in_compensation = settings.flag("BoseEinstein:usePositiveShiftsForCompensation");
   compute_BE_enhancement_exactly  = settings.flag("BoseEinstein:computeBEEnhancementExactly");
 
-// set parameters here during initial debugging phase
-  rescale_pair_momenta            = true;
-  include_posDelQ_in_shifting     = true;
-  include_posDelQ_in_compensation = false;
+  int shiftingSet                 = settings.mode("BoseEinstein:shiftingSet");
+  int CompensationSet             = settings.mode("BoseEinstein:CompensationSet");
+  int CompensationMode            = settings.mode("BoseEinstein:CompensationMode");
+
+  rescale_pair_momenta            =  ( CompensationMode == 1 );
+
+  include_negDelQ_in_compensation =  ( CompensationSet  == 0
+                                    or CompensationSet  == 2 );
+
+  include_posDelQ_in_shifting     =  ( shiftingSet      == 1 );
+
+  include_posDelQ_in_compensation =  ( CompensationSet  == 1
+                                    or CompensationSet  == 2 );
 
 	// Make sure we don't end up with incompatible flags
 	bool include_posdelQ_in_both_shifting_and_compensation
 			= include_posDelQ_in_shifting and include_posDelQ_in_compensation;
 	bool exclude_posdelQ_from_both_shifting_and_compensation
 			= !include_posDelQ_in_shifting and !include_posDelQ_in_compensation;
+
+	// If negative delta Q used in compensation, positive delta Q included or
+	// excluded in both shifting and compensation, and using pDiff comp.,
+	// then give up!  Negative delta Q used in shifting by default
 	if ( ( include_posdelQ_in_both_shifting_and_compensation 
 			or exclude_posdelQ_from_both_shifting_and_compensation )
 			and !rescale_pair_momenta
+			and include_negDelQ_in_compensation
 		)
 	{
 		// In this case, same pDiff is used for both shifting and 
@@ -1561,8 +1574,14 @@ void BoseEinstein::shiftPairs_mode1(
 		}
 		else
 		{
+			// Set pair shift
 			pairShifts.push_back( Qnew - Q0 );
-			pairCompensationShifts.push_back( Qnew - Q0 );
+
+			// Set compensation shift
+			if ( include_negDelQ_in_compensation )
+				pairCompensationShifts.push_back( Qnew - Q0 );
+			else
+				pairCompensationShifts.push_back( 0.0 );
 		}
 
 		if ( BE_VERBOSE )
@@ -1675,7 +1694,6 @@ void BoseEinstein::shiftPairs_mode1(
 
 	return;
 }
-
 
 
 void BoseEinstein::Set_effective_source(
