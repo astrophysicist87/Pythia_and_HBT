@@ -479,7 +479,8 @@ int main(int argc, char *argv[])
 			pythiaVector[iThread].readString("HeavyIon:SigFitNGen = 0");
 			pythiaVector[iThread].readString("HeavyIon:SigFitErr = "
 								"0.02,0.02,0.1,0.05,0.05,0.0,0.1,0.0");
-			pythiaVector[iThread].readString("HeavyIon:SigFitDefPar = " + fittedHI_SigFitDefPar );
+			pythiaVector[iThread].readString("HeavyIon:SigFitDefPar = "
+												+ fittedHI_SigFitDefPar );
 		}
 
 		// ==============================================

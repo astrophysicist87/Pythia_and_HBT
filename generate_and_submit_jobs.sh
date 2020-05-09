@@ -7,7 +7,7 @@
 
 	# Set job specifications here
 	declare -a specs=(
-		'projectile="Pb" target="Pb" beamEnergy="2760" chosenHBTparticle="211" Nevents=25000 storeBjorkenCoordinates="false" BEeffects="off" runSV="false"'
+		'projectile="Pb" target="Pb" beamEnergy="2760" chosenHBTparticle="211" eventClassSelectionMode="centrality" Nevents=25000 storeBjorkenCoordinates="false" BEeffects="off" runSV="false"'
 	)
 
 	#-----------------------------------------------------

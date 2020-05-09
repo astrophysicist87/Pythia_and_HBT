@@ -156,17 +156,20 @@ void BoseEinstein::set_QRef(int iSpecies)
 	{
 		// Reverting to minimum
 		QRef = 0.05;
-		infoPtr->errorMsg("failed!  Reverting to minimum QRef" + std::to_string(QRef) + "!");
+		infoPtr->errorMsg("failed!  Reverting to minimum QRef"
+							+ std::to_string(QRef) + "!");
 	}
 	else if ( QRef > 1.0 )
 	{
 		// Reverting to maximum
 		QRef = 1.0;
-		infoPtr->errorMsg("failed!  Reverting to maximum QRef" + std::to_string(QRef) + "!");
+		infoPtr->errorMsg("failed!  Reverting to maximum QRef"
+							+ std::to_string(QRef) + "!");
 	}
 	else
 	{
-		infoPtr->errorMsg("success!  Using QRef = " + std::to_string(QRef) + "!");
+		infoPtr->errorMsg("success!  Using QRef = "
+							+ std::to_string(QRef) + "!");
 	}
 }
 
@@ -200,7 +203,9 @@ double BoseEinstein::get_1D_source_size(int iSpecies)
 			for (int i2 = i1 + 1; i2 < nStored[iSpecies+1]; ++i2)
 			{
 				Vec4 xDiff = hadronBE.at(i1).x - hadronBE.at(i2).x;
-				if ( useRestFrame ) xDiff.bstback( 0.5*(hadronBE.at(i1).p + hadronBE.at(i2).p) );
+				if ( useRestFrame )
+					xDiff.bstback( 0.5*( hadronBE.at(i1).p
+											+ hadronBE.at(i2).p ) );
 				result += xDiff.pAbs2();
 				count += 1.0;
 			}
@@ -366,7 +371,7 @@ bool BoseEinstein::shiftEvent( Event& event )
 				for (int i2 = i1 + 1; i2 < nStored[iSpecies+1]; ++i2)
 					shiftPair_fixedQRef( i1, i2, iTab );
 				break;
-			case 1:	// use a new cos(q*x) enhancement based on space-time interval between production points (mode 2)
+			case 1:	// use a new j0(q*x) enhancement based on space-time interval between production points (mode 2)
 				{
 					bool enoughPairsToProceed
                          = getSortedPairs( sortedPairs, iSpecies );
@@ -437,15 +442,19 @@ bool BoseEinstein::shiftEvent( Event& event )
 	{
 		infoPtr->errorMsg("Warning in BoseEinstein::shiftEvent: "
                           "no consistent BE shift topology found, so skip BE");
-		cout << setprecision(16) << "BoseEinsteinCheck: This event did not pass! Check: "
-             << abs(eSumShifted - eSumOriginal) << " < " << COMPRELERR * eSumOriginal << "\n";
+		cout << setprecision(16)
+             << "BoseEinsteinCheck: This event did not pass! Check: "
+             << abs(eSumShifted - eSumOriginal) << " < "
+             << COMPRELERR * eSumOriginal << "\n";
 		infoPtr->setBECShifts( false );
 		return true;
 	}
 	else
 	{
-		cout << setprecision(16) << "BoseEinsteinCheck: This event passes! Check: "
-             << abs(eSumShifted - eSumOriginal) << " < " << COMPRELERR * eSumOriginal << "\n";
+		cout << setprecision(16)
+             << "BoseEinsteinCheck: This event passes! Check: "
+             << abs(eSumShifted - eSumOriginal) << " < "
+             << COMPRELERR * eSumOriginal << "\n";
 		infoPtr->setBECShifts( true );
 	}
 	
@@ -457,12 +466,13 @@ bool BoseEinstein::shiftEvent( Event& event )
 		event[ iNew ].p( pHad.p );
 	}
 	
+	// Report the time to complete
 	auto end = std::chrono::system_clock::now();
-	
-	std::chrono::duration<double> elapsed_seconds = end-start;
-	std::cout << "BoseEinsteinCheck: elapsed time: " << elapsed_seconds.count() << " s" << "\n";
+	std::chrono::duration<double> elapsed_seconds = end - start;
+	std::cout << "BoseEinsteinCheck: elapsed time: "
+              << elapsed_seconds.count() << " s" << "\n";
 
-//if (1) exit(8);
+	//if (1) exit(8);
 	
 	// Done.
 	return true;
@@ -491,8 +501,11 @@ bool BoseEinstein::getSortedPairs(
 			cout << "Check pair:" << i1 << "   " << i2 << endl;
 			cout << hadronBE.at(i1).p;
 			cout << hadronBE.at(i2).p;
-			cout << setprecision(16) << m2(hadronBE.at(i1).p, hadronBE.at(i2).p) << "   " << m2Pair[iTab]
-				<< "   " << m2(hadronBE.at(i1).p, hadronBE.at(i2).p) - m2Pair[iTab] << endl;
+			cout << setprecision(16)
+					<< m2(hadronBE.at(i1).p, hadronBE.at(i2).p) << "   "
+					<< m2Pair[iTab] << "   "
+					<< m2(hadronBE.at(i1).p, hadronBE.at(i2).p)
+						- m2Pair[iTab] << endl;
 			continue;
 		}
 		sortedPairs.push_back(
@@ -516,7 +529,8 @@ bool BoseEinstein::getSortedPairs(
 cout << "LARGEST Q2: " << sortedPairs.back().first << endl;
 
 	// add fake first "pair"
-	sortedPairs.insert(sortedPairs.begin(), std::make_pair( 0.0, std::make_pair(-1, -1) ) );
+	sortedPairs.insert( sortedPairs.begin(), std::make_pair( 0.0,
+												std::make_pair(-1, -1) ) );
 
 /*
 cout << "Check sortedPairs: " << endl;
@@ -531,16 +545,21 @@ for (const auto & iPair : sortedPairs)
 	xDiffPRF.bstback( 0.5*(hadronBE.at(i1).p + hadronBE.at(i2).p) );
 
 	double thisQ = iPair.first;
-	double nextQ = (&iPair == &sortedPairs.back() ) ? 1.1*iPair.first : (*(&iPair+1)).first;
+	double nextQ = (&iPair == &sortedPairs.back() ) ?
+					1.1*iPair.first : (*(&iPair+1)).first;
 
-	cout << setprecision(12) << thisQ << "   " << nextQ - thisQ << "   " << xDiffPRF.pAbs() * HBARC << "   " << xDiffPRF.pAbs() << "   " << m2Pair[iTab] << endl;
+	cout << setprecision(12) << thisQ << "   " << nextQ - thisQ << "   "
+			<< xDiffPRF.pAbs() * HBARC << "   " << xDiffPRF.pAbs() << "   "
+			<< m2Pair[iTab] << endl;
 }
 
 //if (1) exit(8);
 */
 
-	// add fake last "pair" (new QVal is 10% larger than last one, just for definiteness)
-	sortedPairs.push_back( std::make_pair( 1.1*sortedPairs.back().first, std::make_pair(-1, -1) ) );
+	// add fake last "pair" (new QVal is 10% larger
+	// than last one, just for definiteness)
+	sortedPairs.push_back( std::make_pair( 1.1*sortedPairs.back().first,
+											std::make_pair(-1, -1) ) );
 
 	return true;
 }
