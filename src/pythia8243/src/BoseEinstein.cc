@@ -1267,7 +1267,6 @@ void BoseEinstein::shiftPairs_mode1(
 
 
 	// keep track of which pairs are shifted
-//	int n_skipped_pairs = 0;
 	vector<bool> this_pair_shifted(sortedPairs.size()-2, false);
 
 
@@ -1288,7 +1287,6 @@ void BoseEinstein::shiftPairs_mode1(
 		// If thisPairLHS < 0, skip this pair.
 		if ( thisPairLHS < 0.0 )
 		{
-//			n_skipped_pairs++;
 			pairShifts.push_back( 0.0 );
 			pairCompensationShifts.push_back( 0.0 );
 			continue;
@@ -1331,7 +1329,6 @@ void BoseEinstein::shiftPairs_mode1(
 				or RHS_lower > thisPairLHS
 				or RHS_upper < thisPairLHS )
 		{
-//			n_skipped_pairs++;
 			pairShifts.push_back( 0.0 );
 			pairCompensationShifts.push_back( 0.0 );
 			continue;
@@ -1356,7 +1353,6 @@ void BoseEinstein::shiftPairs_mode1(
 		// If Qlower is too large, skip this pair.
 		if ( !compute_BE_enhancement_exactly and Qlower >= Qmaximum )
 		{
-//			n_skipped_pairs++;
 			pairShifts.push_back( 0.0 );
 			pairCompensationShifts.push_back( 0.0 );
 			continue;
@@ -1543,26 +1539,12 @@ void BoseEinstein::shiftPairs_mode1(
 		// If shifting this pair was unsuccessful, move on.
 		if ( not success )
 		{
-//			n_skipped_pairs++;
 			pairShifts.push_back( 0.0 );
 			pairCompensationShifts.push_back( 0.0 );
 			continue;
 		}
 
-
-		//-------------------------------------------
-		// Store results based on size of BE effects.
-//		Vec4 p1 = hadronBE.at(iPair1).p;
-//		Vec4 p2 = hadronBE.at(iPair2).p;
-//		Vec4 x1 = hadronBE.at(iPair1).x;
-//		Vec4 x2 = hadronBE.at(iPair2).x;
-//		Vec4 xDiffPRF = ( x1 - x2 ) * MM2FM / HBARC;
-//		xDiffPRF.bstback( 0.5*(p1 + p2) );
-
-
-//		pairShifts.push_back( Qnew - Q0 );
-//		pairCompensationShifts.push_back( 0.0 );
-
+		// If pair was shifted apart, decide how to use it
 		if ( Qnew > Q0 )
 		{
 			// Set pair shift
@@ -1587,24 +1569,6 @@ void BoseEinstein::shiftPairs_mode1(
 			cout << "BoseEinsteinCheck: CHECK shift is "
 				 << Qnew - Q0 << " of " << Q0 << endl;
 
-		// Shift pairs closer together; use pairs
-		// shifted further away to compensate.
-
-		// Use this pair in compensation instead if, either
-		// (1) - the shift was positive and we want to use
-		//       these for compensation, or
-		// (2) - the magnitude of the shift was larger than
-		//       some % of the original Q0
-//		bool shift_failure = ( include_posDelQ_in_compensation and Qnew > Q0 )
-//								//or abs(Qnew - Q0) > 0.05 * Q0
-//								;
-//
-//		bool shift_success = not shift_failure;
-//
-//		//if ( not include_posDelQ_in_compensation or Qnew <= Q0 )
-//		if ( shift_success )
-//			this_pair_shifted.at(iPair-1) = true;
-
 	}
 
 
@@ -1617,7 +1581,6 @@ void BoseEinstein::shiftPairs_mode1(
 
 	// Finally, implement all shifts and compensations
 	int pairIndex = 0;
-	//int number_of_pairs_shifted = 0, number_of_pairs_not_shifted = 0;
 	for (const auto & iPair : sortedPairs)
 	{
 
@@ -1652,42 +1615,10 @@ void BoseEinstein::shiftPairs_mode1(
 			// Add shifts to sum. (Energy component dummy.)
 			Vec4   pDiff     = factor * (had1.p - had2.p);
 	
-	
-			/*if ( rescale_pair_momenta or this_pair_shifted.at(pairIndex) )
-			{
-				// Compute appropriate shift for pair
-				number_of_pairs_shifted++;
-	
-				had1.pShift += pDiff;
-				had2.pShift -= pDiff;
-	
-				if ( rescale_pair_momenta )
-				{
-					// add symmetrically to both momenta
-					pDiff = factor * (had1.p + had2.p);
-					//pDiff = 0.5 * (had1.p + had2.p);
-					// WARNING: PREFACTOR MAKES A DIFFERENCE!!!
-					had1.pComp += pDiff;
-					had2.pComp += pDiff;
-				}
-			}
-			else
-			{
-				// Use computed shift for compensation
-				number_of_pairs_not_shifted++;
-	
-				//Vec4 pDiff = hadronBE.at(i1).p - hadronBE.at(i2).p;
-				had1.pComp += pDiff;
-				had2.pComp -= pDiff;
-			}*/
-	
-	
 			// Get the shift for this pair, if
-			// it was computed successfully
-			//number_of_pairs_shifted++;
-	
-			had1.pShift += pDiff;
-			had2.pShift -= pDiff;
+			// it was computed successfully	
+			had1.pShift     += pDiff;
+			had2.pShift     -= pDiff;
 		}
 
 
@@ -1742,22 +1673,8 @@ void BoseEinstein::shiftPairs_mode1(
 
 	}
 
-//	if ( BE_VERBOSE or true )
-//	{
-//		cout << "number_of_pairs_shifted = " << number_of_pairs_shifted << endl;
-//		cout << "number_of_pairs_not_shifted = " << number_of_pairs_not_shifted << endl;
-//	}
-
-	//cout << "Finished here" << endl;
-	//	auto end = std::chrono::system_clock::now();
-
-	//    std::chrono::duration<double> elapsed_seconds = end-start;
-	//	std::cout << "BoseEinsteinCheck: spent " << elapsed_seconds.count() << "s in " << __FUNCTION__ << endl;
-
-
 	return;
 }
-//*/
 
 
 
