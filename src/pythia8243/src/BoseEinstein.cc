@@ -417,6 +417,7 @@ bool BoseEinstein::shiftEvent( Event& event )
                          = getSortedPairs( sortedPairs, iSpecies );
 					if ( enoughPairsToProceed )
 					{
+						if ( BE_VERBOSE )
 						cout << "BoseEinsteinCheck: NPair = "
                              << sortedPairs.size()-2
                              << " in iSpecies = " << iSpecies << endl;
@@ -482,6 +483,7 @@ bool BoseEinstein::shiftEvent( Event& event )
 	{
 		infoPtr->errorMsg("Warning in BoseEinstein::shiftEvent: "
                           "no consistent BE shift topology found, so skip BE");
+		if ( BE_VERBOSE )
 		cout << setprecision(16)
              << "BoseEinsteinCheck: This event did not pass! Check: "
              << abs(eSumShifted - eSumOriginal) << " < "
@@ -491,6 +493,7 @@ bool BoseEinstein::shiftEvent( Event& event )
 	}
 	else
 	{
+		if ( BE_VERBOSE )
 		cout << setprecision(16)
              << "BoseEinsteinCheck: This event passes! Check: "
              << abs(eSumShifted - eSumOriginal) << " < "
@@ -509,6 +512,7 @@ bool BoseEinstein::shiftEvent( Event& event )
 	// Report the time to complete
 	auto end = std::chrono::system_clock::now();
 	std::chrono::duration<double> elapsed_seconds = end - start;
+	//if ( BE_VERBOSE )
 	std::cout << "BoseEinsteinCheck: elapsed time: "
               << elapsed_seconds.count() << " s" << "\n";
 
@@ -538,14 +542,17 @@ bool BoseEinstein::getSortedPairs(
 	{
 		if (m2(hadronBE.at(i1).p, hadronBE.at(i2).p) - m2Pair[iTab] < 0.0)
 		{
-			cout << "Check pair:" << i1 << "   " << i2 << endl;
-			cout << hadronBE.at(i1).p;
-			cout << hadronBE.at(i2).p;
-			cout << setprecision(16)
-					<< m2(hadronBE.at(i1).p, hadronBE.at(i2).p) << "   "
-					<< m2Pair[iTab] << "   "
-					<< m2(hadronBE.at(i1).p, hadronBE.at(i2).p)
-						- m2Pair[iTab] << endl;
+			if ( BE_VERBOSE )
+			{
+				cout << "Check pair:" << i1 << "   " << i2 << endl;
+				cout << hadronBE.at(i1).p;
+				cout << hadronBE.at(i2).p;
+				cout << setprecision(16)
+						<< m2(hadronBE.at(i1).p, hadronBE.at(i2).p) << "   "
+						<< m2Pair[iTab] << "   "
+						<< m2(hadronBE.at(i1).p, hadronBE.at(i2).p)
+							- m2Pair[iTab] << endl;
+			}
 			continue;
 		}
 		sortedPairs.push_back(
@@ -566,7 +573,7 @@ bool BoseEinstein::getSortedPairs(
 	// THEN sort them (sorts on first column in ascending order automatically)
 	sort( sortedPairs.begin(), sortedPairs.end() );
 
-cout << "LARGEST Q2: " << sortedPairs.back().first << endl;
+if ( BE_VERBOSE ) cout << "LARGEST Q2: " << sortedPairs.back().first << endl;
 
 	// add fake first "pair"
 	sortedPairs.insert( sortedPairs.begin(), std::make_pair( 0.0,
@@ -660,7 +667,7 @@ void BoseEinstein::shiftPair_fixedQRef( int i1, int i2, int iTab )
 
   // Calculate old relative momentum.
   double Q2old = m2(hadronBE.at(i1).p, hadronBE.at(i2).p) - m2Pair[iTab];
-  if (Q2old < Q2MIN) {cout << "WARNING: Q2old = " << Q2old << " < Q2MIN = " << Q2MIN << endl; return;}
+  if (Q2old < Q2MIN) {if ( BE_VERBOSE ) cout << "WARNING: Q2old = " << Q2old << " < Q2MIN = " << Q2MIN << endl; return;}
   double Qold  = sqrt(Q2old);
   double psFac = sqrt(Q2old + m2Pair[iTab]) / Q2old;
 
@@ -741,7 +748,7 @@ double BoseEinstein::compute_integral_with_phasespace(double a_in, double b_in, 
 	}
 	double result = 0.0;
 
-cout << setprecision(16);
+if ( BE_VERBOSE ) cout << setprecision(16);
 
 	///*
 	//---------
