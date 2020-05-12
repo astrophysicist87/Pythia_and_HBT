@@ -86,16 +86,16 @@ collisionSystemStem=$projectile$target"_"`echo $beamEnergy`"GeV_Nev"$Nevents
 
 		# time and run
 		./run_BEeffects_OpenMP.sh \
-							$projectile $target \
-							$PYTHIA_RESULTS_DIRECTORY \
-							pythiaHBT::beam_energy=$beamEnergy \
-							pythiaHBT::number_of_events=$Nevents \
-							pythiaHBT::chosenParticleID=$chosenHBTparticle \
-							pythiaHBT::lowerLimit=$lowerLimit \
-							pythiaHBT::upperLimit=$upperLimit \
-							pythiaHBT::bmin=$bMin \
-							pythiaHBT::bmax=$bMax \
-							pythiaHBT::output_Bjorken_variables="${boolVal[$storeBjorkenCoordinates]}"
+			$projectile $target \
+			$PYTHIA_RESULTS_DIRECTORY \
+			pythiaHBT::beam_energy=$beamEnergy \
+			pythiaHBT::number_of_events=$Nevents \
+			pythiaHBT::chosenParticleID=$chosenHBTparticle \
+			pythiaHBT::lowerLimit=$lowerLimit \
+			pythiaHBT::upperLimit=$upperLimit \
+			pythiaHBT::bmin=$bMin \
+			pythiaHBT::bmax=$bMax \
+			pythiaHBT::output_Bjorken_variables="${boolVal[$storeBjorkenCoordinates]}"
 
 		# check and report whether run was successful
 		runSuccess=`echo $?`

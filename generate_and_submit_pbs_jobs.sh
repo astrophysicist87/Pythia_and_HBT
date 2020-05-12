@@ -3,6 +3,7 @@
 (
 	# info for this run
 	NTHREADS=128
+	NDATASETS=1
 	DIRECTORY=RESULTS_pp_2.76TeV_pairShifting
 	PYTHIA_WALLTIME='24:00:00'
 	HBT_WALLTIME='03:00:00'
