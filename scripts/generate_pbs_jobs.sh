@@ -36,9 +36,14 @@ do
 	cp $HOME_DIRECTORY/parameters.dat $HOME_RESULTS_DIRECTORY/job-${job}
 	cp $HOME_DIRECTORY/parameters.dat $PYTHIA_DIRECTORY
 
-	executableString="./driver_pbs.sh chosen_Pythia_walltime=$chosen_Pythia_walltime chosen_HBT_walltime_per_event_class=$chosen_HBT_walltime_per_event_class ${specs[i]} &> driver_pbs.out"
-	generate_pbs $chosen_Pythia_walltime $chosen_OMP_NUM_THREADS $executableString > $HOME_RESULTS_DIRECTORY/job-${job}/submit.pbs
+	#executableString="./driver_pbs.sh chosen_Pythia_walltime=$chosen_Pythia_walltime chosen_HBT_walltime_per_event_class=$chosen_HBT_walltime_per_event_class ${specs[i]} &> driver_pbs.out"
+	#generate_pbs $chosen_Pythia_walltime $chosen_OMP_NUM_THREADS $executableString > $HOME_RESULTS_DIRECTORY/job-${job}/submit.pbs
 	
+	for iDataset in $(seq 0 $[NDATASETS-1])
+	do
+		executableString="./driver_pbs.sh seed=$iDataset chosen_Pythia_walltime=$chosen_Pythia_walltime chosen_HBT_walltime_per_event_class=$chosen_HBT_walltime_per_event_class ${specs[i]} &> driver_pbs_${iDataset}.out"
+		generate_pbs $chosen_Pythia_walltime $chosen_OMP_NUM_THREADS $executableString > $HOME_RESULTS_DIRECTORY/job-${job}/submit_${iDataset}.pbs
+
 	cp $SCRIPTS_DIRECTORY/driver_pbs.sh			$HOME_RESULTS_DIRECTORY/job-${job}
 	cp $SCRIPTS_DIRECTORY/run_Pythia.sh			$HOME_RESULTS_DIRECTORY/job-${job}
 	cp $SCRIPTS_DIRECTORY/run_HBT_analysis.pbs	$HOME_RESULTS_DIRECTORY/job-${job}

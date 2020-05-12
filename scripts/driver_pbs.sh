@@ -26,7 +26,7 @@ output_settings > settings.sh
 
 
 # truth value of $runPythia evaluated inside
-./run_Pythia.sh
+./run_Pythia.sh $seed
 
 
 # apply HBT analysis to each chosen event class

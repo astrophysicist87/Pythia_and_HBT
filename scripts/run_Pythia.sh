@@ -17,6 +17,8 @@ then
 fi
 CURRENT_RESULTS_DIRECTORY=$MAIN_RESULTS_DIRECTORY
 
+# only command-line argument is dataset seed
+datasetSeed=$1
 
 echo '| - '`basename "$0"`': Processing' \
 		$Nevents $projectile'+'$target \
@@ -24,7 +26,8 @@ echo '| - '`basename "$0"`': Processing' \
 
 
 clean_directory $PYTHIA_DIRECTORY
-PYTHIA_RESULTS_DIRECTORY=$CURRENT_RESULTS_DIRECTORY/Pythia_results
+#PYTHIA_RESULTS_DIRECTORY=$CURRENT_RESULTS_DIRECTORY/Pythia_results
+PYTHIA_RESULTS_DIRECTORY=$CURRENT_RESULTS_DIRECTORY/Pythia_results/dataset_${datasetSeed}
 
 collisionSystemStem=$projectile$target"_"`echo $beamEnergy`"GeV_Nev"$Nevents
 
@@ -95,6 +98,7 @@ collisionSystemStem=$projectile$target"_"`echo $beamEnergy`"GeV_Nev"$Nevents
 			pythiaHBT::upperLimit=$upperLimit \
 			pythiaHBT::bmin=$bMin \
 			pythiaHBT::bmax=$bMax \
+			pythiaHBT::seed=$datasetSeed \
 			pythiaHBT::output_Bjorken_variables="${boolVal[$storeBjorkenCoordinates]}"
 
 		# check and report whether run was successful
@@ -107,22 +111,24 @@ collisionSystemStem=$projectile$target"_"`echo $beamEnergy`"GeV_Nev"$Nevents
 	# Get the filenames which need to be processed
 	recordOfOutputFilenames_Sxp=$PYTHIA_RESULTS_DIRECTORY/`echo $collisionSystemStem`"_S_x_p_filenames.dat"
 	recordOfOutputFilename_mult=$PYTHIA_RESULTS_DIRECTORY/`echo $collisionSystemStem`"_total_N_filename.dat"
-	\rm -f $HBT_EVENT_GEN_DIRECTORY/catalogue.dat
-	\rm -f $HBT_SV_DIRECTORY/catalogue.dat
+
+	#\rm -f $HBT_EVENT_GEN_DIRECTORY/catalogue.dat
+	#\rm -f $HBT_SV_DIRECTORY/catalogue.dat
+
 	for line in `cat $recordOfOutputFilenames_Sxp`
 	do
 		readlink -f $PYTHIA_RESULTS_DIRECTORY/$line >> $HBT_EVENT_GEN_DIRECTORY/catalogue.dat
 		readlink -f $PYTHIA_RESULTS_DIRECTORY/$line >> $HBT_SV_DIRECTORY/catalogue.dat
 	done
+
 	# Set particle catalogue
 	readlink -f $PYTHIA_RESULTS_DIRECTORY/HBT_particle_0.dat > $HBT_EVENT_GEN_DIRECTORY/particle_catalogue.dat
 	readlink -f $PYTHIA_RESULTS_DIRECTORY/HBT_particle_0.dat > $HBT_FITCF_DIRECTORY/particle_catalogue.dat
 	readlink -f $PYTHIA_RESULTS_DIRECTORY/HBT_particle_0.dat > $HBT_SV_DIRECTORY/particle_catalogue.dat
+
 	# Set ensemble catalogue
-	#echo $projectile $target $beamEnergy $lowerLimit $upperLimit $Nevents > $HBT_EVENT_GEN_DIRECTORY/ensemble_catalogue.dat
 	echo $projectile $target $beamEnergy $Nevents > $HBT_EVENT_GEN_DIRECTORY/ensemble_catalogue.dat
 	readlink -f $PYTHIA_RESULTS_DIRECTORY/`cat $recordOfOutputFilename_mult` >> $HBT_EVENT_GEN_DIRECTORY/ensemble_catalogue.dat
-	#echo $projectile $target $beamEnergy $lowerLimit $upperLimit $Nevents > $HBT_SV_DIRECTORY/ensemble_catalogue.dat
 	echo $projectile $target $beamEnergy $Nevents > $HBT_SV_DIRECTORY/ensemble_catalogue.dat
 	readlink -f $PYTHIA_RESULTS_DIRECTORY/`cat $recordOfOutputFilename_mult` >> $HBT_SV_DIRECTORY/ensemble_catalogue.dat
 
