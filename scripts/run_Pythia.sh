@@ -63,7 +63,8 @@ collisionSystemStem=$projectile$target"_"`echo $beamEnergy`"GeV_Nev"$Nevents
 		
 		# Set random seed
 		echo 'Random:setSeed = on'                                                      >> main_BEeffects.cmnd
-		echo 'Random:seed ='                              $datasetSeed                  >> main_BEeffects.cmnd
+		#echo 'Random:seed ='                              $[datasetSeed+1]              >> main_BEeffects.cmnd
+		echo 'Random:seed = 0'                                                          >> main_BEeffects.cmnd
 
 		# Turn on tracking of space-time information
 		echo 'Fragmentation:setVertices ='                $SetFragmentationVertices     >> main_BEeffects.cmnd
