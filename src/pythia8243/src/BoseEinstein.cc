@@ -512,7 +512,7 @@ bool BoseEinstein::shiftEvent( Event& event )
 	// Report the time to complete
 	auto end = std::chrono::system_clock::now();
 	std::chrono::duration<double> elapsed_seconds = end - start;
-	//if ( BE_VERBOSE )
+	if ( BE_VERBOSE )
 	std::cout << "BoseEinsteinCheck: elapsed time: "
               << elapsed_seconds.count() << " s" << "\n";
 
