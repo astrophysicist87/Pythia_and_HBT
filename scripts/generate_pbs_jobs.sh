@@ -39,6 +39,7 @@ do
 	#executableString="./driver_pbs.sh chosen_Pythia_walltime=$chosen_Pythia_walltime chosen_HBT_walltime_per_event_class=$chosen_HBT_walltime_per_event_class ${specs[i]} &> driver_pbs.out"
 	#generate_pbs $chosen_Pythia_walltime $chosen_OMP_NUM_THREADS $executableString > $HOME_RESULTS_DIRECTORY/job-${job}/submit.pbs
 	
+	# Loop over datasets and assign appropriate random seeds
 	if [[ "$NDATASETS" -eq 1 ]]
 	then
 		executableString="./driver_pbs.sh seed=-1 chosen_Pythia_walltime=$chosen_Pythia_walltime chosen_HBT_walltime_per_event_class=$chosen_HBT_walltime_per_event_class ${specs[i]} &> driver_pbs.out"
