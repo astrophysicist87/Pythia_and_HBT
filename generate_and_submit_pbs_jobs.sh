@@ -35,6 +35,6 @@
 	# Submit generated jobs
 	./scripts/submit_pbs_jobs.sh $DIRECTORY_FULL_PATH
 
-) &> /dev/null &
+) &
 
 # End of file
