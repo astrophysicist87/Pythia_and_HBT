@@ -1,7 +1,5 @@
 #! /usr/bin/env bash
 
-echo 'Made into generate_pbs_jobs'
-
 source $SCRIPTS_DIRECTORY/pbs_env.sh
 
 # Set PBS walltime directives
@@ -27,7 +25,6 @@ then
 	#echo 'Created' $HOME_RESULTS_DIRECTORY
 fi
 
-echo 'Made to job creation'
 # fix number of datasets to use
 NDATASETS=$2
 
@@ -45,9 +42,6 @@ do
 	#executableString="./driver_pbs.sh chosen_Pythia_walltime=$chosen_Pythia_walltime chosen_HBT_walltime_per_event_class=$chosen_HBT_walltime_per_event_class ${specs[i]} &> driver_pbs.out"
 	#generate_pbs $chosen_Pythia_walltime $chosen_OMP_NUM_THREADS $executableString > $HOME_RESULTS_DIRECTORY/job-${job}/submit.pbs
 	
-	echo 'Creating job' $i
-	echo 'N.B. - NDATASETS = ' $NDATASETS
-
 	# Loop over datasets and assign appropriate random seeds
 	if [[ "$NDATASETS" -eq 1 ]]
 	then
