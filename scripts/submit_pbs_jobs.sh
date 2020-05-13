@@ -1,10 +1,11 @@
 #! /usr/bin/env bash
 
-for file in "$1"/job-*/submit.pbs
+for file in "$1"/job-*/submit*.pbs
 do
 	cd `dirname $file`
 	pwd
-	qsub submit.pbs
+	#qsub submit.pbs
+	qsub `basename $file`
 	cd -
 done
 

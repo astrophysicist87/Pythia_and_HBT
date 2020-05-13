@@ -38,8 +38,9 @@ output_settings > settings.sh
 
 
 # truth value of $runPythia evaluated inside
+# note command-line argument corresponding to seed=0
 echo '| '`basename "$0"`': running Pythia!'
-./run_Pythia.sh
+./run_Pythia.sh 0
 
 
 

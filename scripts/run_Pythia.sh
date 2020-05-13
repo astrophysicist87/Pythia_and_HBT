@@ -26,8 +26,13 @@ echo '| - '`basename "$0"`': Processing' \
 
 
 clean_directory $PYTHIA_DIRECTORY
+datasetIndex="_${datasetSeed}"
+if [ "$datasetSeed" -lt 0 ]; then
+	datasetIndex=""
+fi
 #PYTHIA_RESULTS_DIRECTORY=$CURRENT_RESULTS_DIRECTORY/Pythia_results
-PYTHIA_RESULTS_DIRECTORY=$CURRENT_RESULTS_DIRECTORY/Pythia_results/dataset_${datasetSeed}
+#PYTHIA_RESULTS_DIRECTORY=$CURRENT_RESULTS_DIRECTORY/Pythia_results/dataset_${datasetSeed}
+PYTHIA_RESULTS_DIRECTORY=$CURRENT_RESULTS_DIRECTORY/Pythia_results/dataset${datasetIndex}
 
 collisionSystemStem=$projectile$target"_"`echo $beamEnergy`"GeV_Nev"$Nevents
 
@@ -52,36 +57,42 @@ collisionSystemStem=$projectile$target"_"`echo $beamEnergy`"GeV_Nev"$Nevents
 			mkdir $PYTHIA_RESULTS_DIRECTORY
 		fi
 
+		#--------------------------
 		# set some options for Pythia to run on
 		rm main_BEeffects.cmnd 2>/dev/null
+		
+		# Set random seed
+		echo 'Random:setSeed = on'                                                      >> main_BEeffects.cmnd
+		echo 'Random:seed ='                              $datasetSeed                  >> main_BEeffects.cmnd
+
 		# Turn on tracking of space-time information
-		echo 'Fragmentation:setVertices ='    $SetFragmentationVertices     >> main_BEeffects.cmnd
-		echo 'PartonVertex:setVertex ='       $SetPartonVertices            >> main_BEeffects.cmnd
+		echo 'Fragmentation:setVertices ='                $SetFragmentationVertices     >> main_BEeffects.cmnd
+		echo 'PartonVertex:setVertex ='                   $SetPartonVertices            >> main_BEeffects.cmnd
 
 		# turn on and set Bose-Einstein effects
-		echo 'HadronLevel:BoseEinstein ='     $BEeffects                    >> main_BEeffects.cmnd
-		echo 'BoseEinstein:QRef ='            $QRefValue                    >> main_BEeffects.cmnd
+		echo 'HadronLevel:BoseEinstein ='                 $BEeffects                    >> main_BEeffects.cmnd
+		echo 'BoseEinstein:QRef ='                        $QRefValue                    >> main_BEeffects.cmnd
 
 		# turn on/off other interesting mechanisms to test
-		echo 'ColourReconnection:reconnect =' $UseColorReconnection         >> main_BEeffects.cmnd
-		echo 'Ropewalk:RopeHadronization ='   $UseRopeHadronization         >> main_BEeffects.cmnd
-		echo 'Ropewalk:doShoving ='           $IncludeStringShoving         >> main_BEeffects.cmnd
-		echo 'Ropewalk:doFlavour ='           $IncludeFlavourRopesMechanism >> main_BEeffects.cmnd
+		echo 'ColourReconnection:reconnect ='             $UseColorReconnection         >> main_BEeffects.cmnd
+		echo 'Ropewalk:RopeHadronization ='               $UseRopeHadronization         >> main_BEeffects.cmnd
+		echo 'Ropewalk:doShoving ='                       $IncludeStringShoving         >> main_BEeffects.cmnd
+		echo 'Ropewalk:doFlavour ='                       $IncludeFlavourRopesMechanism >> main_BEeffects.cmnd
 
 		# New Pythia options, flags, parameters, etc.
 		# which I've added myself (not generally compatible yet)
 		# Comment out lines below this one if running on unmodified Pythia
-		echo 'BoseEinstein:enhanceMode ='                 $BEEnhancementMode           >> main_BEeffects.cmnd
-		echo 'BoseEinstein:useInvariantSourceSize ='      $useInvariantSourceSize      >> main_BEeffects.cmnd
-		echo 'BoseEinstein:useDistribution ='             $useDistribution             >> main_BEeffects.cmnd
-		echo 'BoseEinstein:useRelativeDistance ='         $useRelativeDistance         >> main_BEeffects.cmnd
-		echo 'BoseEinstein:useRestFrame ='                $useRestFrame                >> main_BEeffects.cmnd
-		echo 'BoseEinstein:includePhaseSpace ='           $includePhaseSpace           >> main_BEeffects.cmnd
-		echo 'BoseEinstein:linearInterpolateCDF ='        $linearInterpolateCDF        >> main_BEeffects.cmnd
-		echo 'BoseEinstein:computeBEEnhancementExactly =' $computeBEEnhancementExactly >> main_BEeffects.cmnd
-		echo 'BoseEinstein:shiftingSet ='                 $shiftingSet                 >> main_BEeffects.cmnd
-		echo 'BoseEinstein:compensationSet ='             $compensationSet             >> main_BEeffects.cmnd
-		echo 'BoseEinstein:compensationMode ='            $compensationMode            >> main_BEeffects.cmnd
+		echo 'BoseEinstein:enhanceMode ='                 $BEEnhancementMode            >> main_BEeffects.cmnd
+		echo 'BoseEinstein:useInvariantSourceSize ='      $useInvariantSourceSize       >> main_BEeffects.cmnd
+		echo 'BoseEinstein:useDistribution ='             $useDistribution              >> main_BEeffects.cmnd
+		echo 'BoseEinstein:useRelativeDistance ='         $useRelativeDistance          >> main_BEeffects.cmnd
+		echo 'BoseEinstein:useRestFrame ='                $useRestFrame                 >> main_BEeffects.cmnd
+		echo 'BoseEinstein:includePhaseSpace ='           $includePhaseSpace            >> main_BEeffects.cmnd
+		echo 'BoseEinstein:linearInterpolateCDF ='        $linearInterpolateCDF         >> main_BEeffects.cmnd
+		echo 'BoseEinstein:computeBEEnhancementExactly =' $computeBEEnhancementExactly  >> main_BEeffects.cmnd
+		echo 'BoseEinstein:shiftingSet ='                 $shiftingSet                  >> main_BEeffects.cmnd
+		echo 'BoseEinstein:compensationSet ='             $compensationSet              >> main_BEeffects.cmnd
+		echo 'BoseEinstein:compensationMode ='            $compensationMode             >> main_BEeffects.cmnd
 
 		# Default is now to compute all events in Pythia from the get-go
 		lowerLimit=0
@@ -98,7 +109,6 @@ collisionSystemStem=$projectile$target"_"`echo $beamEnergy`"GeV_Nev"$Nevents
 			pythiaHBT::upperLimit=$upperLimit \
 			pythiaHBT::bmin=$bMin \
 			pythiaHBT::bmax=$bMax \
-			pythiaHBT::seed=$datasetSeed \
 			pythiaHBT::output_Bjorken_variables="${boolVal[$storeBjorkenCoordinates]}"
 
 		# check and report whether run was successful
