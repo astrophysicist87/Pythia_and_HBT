@@ -5,8 +5,8 @@ echo 'Made into generate_pbs_jobs'
 source $SCRIPTS_DIRECTORY/pbs_env.sh
 
 # Set PBS walltime directives
-export chosen_Pythia_walltime=$3
-export chosen_HBT_walltime_per_event_class=$4
+export chosen_Pythia_walltime=$4
+export chosen_HBT_walltime_per_event_class=$5
 
 ########################################
 # Fix OpenMP settings and compile
@@ -20,14 +20,16 @@ source $SCRIPTS_DIRECTORY/specs.sh
 nJobs=${#specs[@]}
 
 # make sure main results directory exists
-HOME_RESULTS_DIRECTORY=$2
+HOME_RESULTS_DIRECTORY=$3
 if [ ! -d "$HOME_RESULTS_DIRECTORY" ]
 then
 	mkdir $HOME_RESULTS_DIRECTORY
 	#echo 'Created' $HOME_RESULTS_DIRECTORY
 fi
 
-echo 'Made to ob creation'
+echo 'Made to job creation'
+# fix number of datasets to use
+NDATASETS=$2
 
 # loop over jobs
 for ((i=0; i<$nJobs; i++))

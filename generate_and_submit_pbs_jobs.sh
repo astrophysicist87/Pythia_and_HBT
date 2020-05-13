@@ -23,7 +23,7 @@ echo 'Compiling...'
 	# Compile source code
 	./compile_all.sh $NTHREADS &> compile_all.out
 
-echo 'Passing ob specifications...'
+echo 'Passing job specifications...'
 	# Export job specifications
 	source scripts/env.sh
 	source scripts/export_specs.sh
@@ -33,7 +33,7 @@ echo 'Passing ob specifications...'
 echo 'Generating jobs...'
 	# Generate jobs for these specifications
 	DIRECTORY_FULL_PATH=`readlink -f $DIRECTORY`
-	./scripts/generate_pbs_jobs.sh $NTHREADS $DIRECTORY_FULL_PATH $PYTHIA_WALLTIME $HBT_WALLTIME
+	./scripts/generate_pbs_jobs.sh $NTHREADS $NDATASETS $DIRECTORY_FULL_PATH $PYTHIA_WALLTIME $HBT_WALLTIME
 
 echo 'Submitting generated jobs...'
 	# Submit generated jobs
