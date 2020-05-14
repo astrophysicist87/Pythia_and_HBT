@@ -27,8 +27,7 @@ output_settings > settings.sh
 # Total number of events = NDATASETS * Nevents
 NTotalEvents=$[NDATASETS*Nevents]
 
-# truth value of $runPythia evaluated inside
-#./run_Pythia.sh $seed
+# N.B. - truth value of $runPythia evaluated inside run_Pythia.pbs
 
 #------------------------
 # Submit all Pythia datasets
@@ -45,7 +44,6 @@ done
 
 echo
 echo
-echo
 
 #------------------------
 # Wait until Pythia jobs finish, then post-process before running HBT analyses
@@ -56,10 +54,6 @@ echo 'jobid =' $jobid
 
 echo
 echo
-echo
-
-#if false
-#then
 
 #------------------------
 # apply HBT analysis to each chosen event class after 
@@ -69,17 +63,14 @@ echo
 for eventClassCutString in "0-50%" "50-100%"
 do
 	echo "Submitting qsub -l walltime=$chosen_HBT_walltime_per_event_class -l nodes=1:ppn=$OMP_NUM_THREADS -v eventClassCutString=$eventClassCutString -W depend=afterok:${jobid} run_HBT_analysis.pbs"
-	ls *.pbs
 	qsub -l walltime=$chosen_HBT_walltime_per_event_class \
 		-l nodes=1:ppn=$OMP_NUM_THREADS                   \
-		-V
-		-W depend=afterok:${jobid}
+		-v "eventClassCutString=$eventClassCutString"     \
+		-W depend=afterok:${jobid}                        \
 		run_HBT_analysis.pbs
 	echo '--------'
-	#		-v "eventClassCutString=$eventClassCutString"     \
 done	# all event classes finished
 
-#fi
 
 #zipFilename=$CURRENT_RESULTS_DIRECTORY".zip"
 
