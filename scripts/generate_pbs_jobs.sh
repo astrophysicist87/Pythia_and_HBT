@@ -68,6 +68,7 @@ do
 	#cp $SCRIPTS_DIRECTORY/run_Pythia.sh           $HOME_RESULTS_DIRECTORY/job-${job}
 	cp $SCRIPTS_DIRECTORY/run_Pythia.pbs          $HOME_RESULTS_DIRECTORY/job-${job}
 	cp $SCRIPTS_DIRECTORY/run_HBT_analysis.pbs    $HOME_RESULTS_DIRECTORY/job-${job}
+	cp $SCRIPTS_DIRECTORY/post_process_Pythia.pbs $HOME_RESULTS_DIRECTORY/job-${job}
 	cp $SCRIPTS_DIRECTORY/rerun_pbs.sh            $HOME_RESULTS_DIRECTORY/job-${job}
 	cp $SCRIPTS_DIRECTORY/defaults.sh \
        $SCRIPTS_DIRECTORY/specs.sh    \
