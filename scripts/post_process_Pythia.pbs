@@ -38,7 +38,7 @@ do
 		readlink -f $PYTHIA_DATASET_RESULTS_DIRECTORY/$line >> $HBT_SV_DIRECTORY/catalogue.dat
 	done
 
-	cat `cat $PYTHIA_DATASET_RESULTS_DIRECTORY/$recordOfOutputFilename_mult` >> $PYTHIA_HEAD_RESULTS_DIRECTORY/all_event_multiplicites.dat
+	cat $PYTHIA_DATASET_RESULTS_DIRECTORY/`cat $recordOfOutputFilename_mult` >> $PYTHIA_HEAD_RESULTS_DIRECTORY/all_event_multiplicites.dat
 done
 
 
