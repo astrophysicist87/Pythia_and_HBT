@@ -49,12 +49,17 @@ echo
 
 #------------------------
 # Wait until Pythia jobs finish, then post-process before running HBT analyses
-echo "Submitting qsub -l walltime='00:15:00' -l nodes=1:ppn=$OMP_NUM_THREADS -W depend=afterok:${jobids} -V post_process_Pythia.pbs"
-jobid=`qsub -l walltime='00:15:00' -l nodes=1:ppn=$OMP_NUM_THREADS -W depend=afterok:${jobids} -V post_process_Pythia.pbs`
+echo "Submitting qsub -l walltime=00:15:00 -l nodes=1:ppn=$OMP_NUM_THREADS -W depend=afterok:${jobids} -V post_process_Pythia.pbs"
+jobid=`qsub -l walltime=00:15:00 -l nodes=1:ppn=$OMP_NUM_THREADS -W depend=afterok:${jobids} -V post_process_Pythia.pbs`
+
+echo 'jobid =' $jobid
 
 echo
 echo
 echo
+
+if false
+then
 
 #------------------------
 # apply HBT analysis to each chosen event class after 
@@ -71,6 +76,8 @@ do
 		run_HBT_analysis.pbs
 	echo '--------'
 done	# all event classes finished
+
+fi
 
 #zipFilename=$CURRENT_RESULTS_DIRECTORY".zip"
 
