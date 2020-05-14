@@ -47,7 +47,7 @@ do
 
 	# Generate submission scripts
 	executableString="./driver_pbs.sh NDATASETS=$NDATASETS chosen_Pythia_walltime=$chosen_Pythia_walltime chosen_HBT_walltime_per_event_class=$chosen_HBT_walltime_per_event_class ${specs[i]} &> driver_pbs.out"
-	generate_sh $chosen_Pythia_walltime $chosen_OMP_NUM_THREADS $executableString > $HOME_RESULTS_DIRECTORY/job-${job}/submit.sh
+	generate_sh $executableString > $HOME_RESULTS_DIRECTORY/job-${job}/submit.sh
 	
 	# Loop over datasets and assign appropriate random seeds
 	#if [[ "$NDATASETS" -eq 1 ]]
