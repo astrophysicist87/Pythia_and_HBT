@@ -25,7 +25,7 @@ done
 output_settings > settings.sh
 
 # Total number of events = NDATASETS * Nevents
-NTotalEvents=$[NDATASETS*Nevents]
+export NTotalEvents=$[NDATASETS*Nevents]
 
 # N.B. - truth value of $runPythia evaluated inside run_Pythia.pbs
 

@@ -17,7 +17,7 @@ declare -A boolVal=( ["true"]="1" ["false"]="0")
 # make sure main results directory exists
 if [ ! -d "$MAIN_RESULTS_DIRECTORY" ]
 then
-	mkdir $MAIN_RESULTS_DIRECTORY
+	mkdir -p $MAIN_RESULTS_DIRECTORY
 	echo '| - '$PBS_JOBNAME': Created directory:' `realpath --relative-to="${PWD}" "$MAIN_RESULTS_DIRECTORY"`
 fi
 CURRENT_RESULTS_DIRECTORY=$MAIN_RESULTS_DIRECTORY
@@ -36,7 +36,7 @@ datasetIndex="_${datasetSeed}"
 #PYTHIA_RESULTS_DIRECTORY=$CURRENT_RESULTS_DIRECTORY/Pythia_results/dataset_${datasetSeed}
 PYTHIA_RESULTS_DIRECTORY=$CURRENT_RESULTS_DIRECTORY/Pythia_results/dataset${datasetIndex}
 
-collisionSystemStem=$projectile$target"_"`echo $beamEnergy`"GeV_Nev"$Nevents
+#collisionSystemStem=$projectile$target"_"`echo $beamEnergy`"GeV_Nev"$Nevents
 
 #=================
 # Run Pythia here
@@ -56,7 +56,7 @@ collisionSystemStem=$projectile$target"_"`echo $beamEnergy`"GeV_Nev"$Nevents
 		# make sure results directory exists
 		if [ ! -d "$PYTHIA_RESULTS_DIRECTORY" ]
 		then
-			mkdir $PYTHIA_RESULTS_DIRECTORY
+			mkdir -p $PYTHIA_RESULTS_DIRECTORY
 		fi
 
 		#--------------------------

@@ -18,8 +18,11 @@ echo 'Using $PYTHIA_RESULTS_DIRECTORY = '$PYTHIA_RESULTS_DIRECTORY
 echo 'Working with this ensemble information:'
 echo $projectile $target $beamEnergy $NTotalEvents
 
+collisionSystemStem=$projectile$target"_"`echo $beamEnergy`"GeV_Nev"$Nevents
 
+CURRENT_RESULTS_DIRECTORY=$MAIN_RESULTS_DIRECTORY
 PYTHIA_HEAD_RESULTS_DIRECTORY=$CURRENT_RESULTS_DIRECTORY/Pythia_results
+
 for iDataset in $(seq 0 $[NDATASETS-1])
 do
 	# IMPORTANT!!!!!
