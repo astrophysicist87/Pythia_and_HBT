@@ -55,6 +55,9 @@ echo 'jobid =' $jobid
 echo
 echo
 
+#if false
+#then
+
 #------------------------
 # apply HBT analysis to each chosen event class after 
 # post-processing of Pythia datasets is complete
@@ -70,6 +73,8 @@ do
 		run_HBT_analysis.pbs
 	echo '--------'
 done	# all event classes finished
+
+#fi
 
 
 #zipFilename=$CURRENT_RESULTS_DIRECTORY".zip"
