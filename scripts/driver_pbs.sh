@@ -58,8 +58,8 @@ echo
 echo
 echo
 
-if false
-then
+#if false
+#then
 
 #------------------------
 # apply HBT analysis to each chosen event class after 
@@ -69,15 +69,16 @@ then
 for eventClassCutString in "0-50%" "50-100%"
 do
 	echo "Submitting qsub -l walltime=$chosen_HBT_walltime_per_event_class -l nodes=1:ppn=$OMP_NUM_THREADS -v eventClassCutString=$eventClassCutString -W depend=afterok:${jobid} run_HBT_analysis.pbs"
-	qsub -l walltime=$chosen_HBT_walltime_per_event_class \
-		-l nodes=1:ppn=$OMP_NUM_THREADS                   \
-		-v "eventClassCutString=$eventClassCutString"     \
-		-W depend=afterok:${jobid}
-		run_HBT_analysis.pbs
+	ls *.pbs
+	#qsub -l walltime=$chosen_HBT_walltime_per_event_class \
+	#	-l nodes=1:ppn=$OMP_NUM_THREADS                   \
+	#	-v "eventClassCutString=$eventClassCutString"     \
+	#	-W depend=afterok:${jobid}
+	#	run_HBT_analysis.pbs
 	echo '--------'
 done	# all event classes finished
 
-fi
+#fi
 
 #zipFilename=$CURRENT_RESULTS_DIRECTORY".zip"
 
