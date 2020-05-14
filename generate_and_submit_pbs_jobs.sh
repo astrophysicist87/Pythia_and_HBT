@@ -2,19 +2,18 @@
 
 (
 	# info for this run
-	NTHREADS=12
-	NDATASETS=1
-	DIRECTORY=test_RESULTS
-	PYTHIA_WALLTIME='01:00:00'
-	HBT_WALLTIME='01:00:00'
+	NTHREADS=128
+	NDATASETS=10
+	DIRECTORY=RESULTS_test_pp_shifting_modes
+	PYTHIA_WALLTIME='96:00:00'
+	HBT_WALLTIME='72:00:00'
 
 	# Set job specifications here
 	declare -a specs=(
-		'projectile="p" target="p" beamEnergy="13000" Nevents=1000'
-		#'projectile="p" target="p" beamEnergy="13000" chosenHBTparticle="211" Nevents=100000 BEeffects="on" shiftingSet="1" compensationSet="0" compensationMode="1" runHBTEG="false" runFitCF="false" runSV="false"'
-		#'projectile="p" target="p" beamEnergy="13000" chosenHBTparticle="211" Nevents=100000 BEeffects="on" shiftingSet="1" compensationSet="2" compensationMode="1" runHBTEG="false" runFitCF="false" runSV="false"'
-		#'projectile="p" target="p" beamEnergy="13000" chosenHBTparticle="211" Nevents=100000 BEeffects="on" shiftingSet="0" compensationSet="1" compensationMode="0" runHBTEG="false" runFitCF="false" runSV="false"'
-		#'projectile="p" target="p" beamEnergy="13000" chosenHBTparticle="211" Nevents=100000 BEeffects="on" shiftingSet="1" compensationSet="1" compensationMode="0" runHBTEG="false" runFitCF="false" runSV="false"'
+		'projectile="p" target="p" beamEnergy="13000" chosenHBTparticle="211" Nevents=1000000 BEeffects="on" shiftingSet="1" compensationSet="0" compensationMode="1" eventClassSelectionMode="multiplicity" runSV="false"'
+		'projectile="p" target="p" beamEnergy="13000" chosenHBTparticle="211" Nevents=1000000 BEeffects="on" shiftingSet="1" compensationSet="2" compensationMode="1" eventClassSelectionMode="multiplicity" runSV="false"'
+		'projectile="p" target="p" beamEnergy="13000" chosenHBTparticle="211" Nevents=1000000 BEeffects="on" shiftingSet="0" compensationSet="1" compensationMode="0" eventClassSelectionMode="multiplicity" runSV="false"'
+		'projectile="p" target="p" beamEnergy="13000" chosenHBTparticle="211" Nevents=1000000 BEeffects="on" shiftingSet="1" compensationSet="1" compensationMode="0" eventClassSelectionMode="multiplicity" runSV="false"'
 	)
 
 	#-----------------------------------------------------
