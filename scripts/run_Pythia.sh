@@ -27,9 +27,9 @@ echo '| - '`basename "$0"`': Processing' \
 
 clean_directory $PYTHIA_DIRECTORY
 datasetIndex="_${datasetSeed}"
-if [ "$datasetSeed" -lt 0 ]; then
-	datasetIndex=""
-fi
+#if [ "$datasetSeed" -lt 0 ]; then
+#	datasetIndex=""
+#fi
 #PYTHIA_RESULTS_DIRECTORY=$CURRENT_RESULTS_DIRECTORY/Pythia_results
 #PYTHIA_RESULTS_DIRECTORY=$CURRENT_RESULTS_DIRECTORY/Pythia_results/dataset_${datasetSeed}
 PYTHIA_RESULTS_DIRECTORY=$CURRENT_RESULTS_DIRECTORY/Pythia_results/dataset${datasetIndex}
@@ -62,9 +62,9 @@ collisionSystemStem=$projectile$target"_"`echo $beamEnergy`"GeV_Nev"$Nevents
 		rm main_BEeffects.cmnd 2>/dev/null
 		
 		# Set random seed
-		echo 'Random:setSeed = on'                                                      >> main_BEeffects.cmnd
+		#echo 'Random:setSeed = on'                                                      >> main_BEeffects.cmnd
 		#echo 'Random:seed ='                              $[datasetSeed+1]              >> main_BEeffects.cmnd
-		echo 'Random:seed = 0'                                                          >> main_BEeffects.cmnd
+		#echo 'Random:seed = 0'                                                          >> main_BEeffects.cmnd
 
 		# Turn on tracking of space-time information
 		echo 'Fragmentation:setVertices ='                $SetFragmentationVertices     >> main_BEeffects.cmnd
@@ -110,6 +110,7 @@ collisionSystemStem=$projectile$target"_"`echo $beamEnergy`"GeV_Nev"$Nevents
 			pythiaHBT::upperLimit=$upperLimit \
 			pythiaHBT::bmin=$bMin \
 			pythiaHBT::bmax=$bMax \
+			pythiaHBT::seed=$datasetSeed \
 			pythiaHBT::output_Bjorken_variables="${boolVal[$storeBjorkenCoordinates]}"
 
 		# check and report whether run was successful

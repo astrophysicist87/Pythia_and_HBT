@@ -9,7 +9,7 @@ source scripts/defaults.sh
 # Load OpenMP info
 source scripts/omp_env.sh
 export OMP_NUM_THREADS=$chosen_OMP_NUM_THREADS
-echo 'OMP_NUM_THREADS =' $OMP_NUM_THREADS
+echo 'driver_pbs.sh: OMP_NUM_THREADS =' $OMP_NUM_THREADS
 
 # Load PBS script defaults
 source scripts/pbs_env.sh
@@ -24,30 +24,46 @@ done
 # Save the settings this job was run with (for future defaults)
 output_settings > settings.sh
 
+# Total number of events = NDATASETS * Nevents
+NTotalEvents=$[NDATASETS*Nevents]
 
 # truth value of $runPythia evaluated inside
-./run_Pythia.sh $seed
+#./run_Pythia.sh $seed
 
+#------------------------
+# Submit all Pythia datasets
+jobids=`qsub -l walltime=$chosen_Pythia_walltime -l nodes=1:ppn=$OMP_NUM_THREADS -v datasetSeed=0 -V run_Pythia.pbs`
+for iDataset in $(seq 1 $[NDATASETS-1])
+do
+	jobid=`qsub -l walltime=$chosen_Pythia_walltime -l nodes=1:ppn=$OMP_NUM_THREADS -v datasetSeed=$iDataset -V run_Pythia.pbs`
+	jobids+=":${jobid}"
+done
 
-# apply HBT analysis to each chosen event class
+#------------------------
+# Wait until Pythia jobs finish, then post-process before running HBT analyses
+jobid=`qsub -l walltime='00:15:00' -l nodes=1:ppn=$OMP_NUM_THREADS -W depend=afterok:${jobids} -V post_process_Pythia.pbs`
+
+#------------------------
+# apply HBT analysis to each chosen event class after 
+# post-processing of Pythia datasets is complete
 #for eventClassCutString in "1-11" "12-16" "17-22" "23-28" "29-34" "35-41" "42-51" "52-151" "152-1000000"
 #for eventClassCutString in "0-20%" "20-40%" "40-60%" "60-90%"
-for eventClassCutString in "0-100%"
+for eventClassCutString in "0-50%" "50-100%"
 do
 	echo "Submitting qsub -l walltime=$chosen_HBT_walltime_per_event_class -l nodes=1:ppn=$OMP_NUM_THREADS run_HBT_analysis.pbs"
 	qsub -l walltime=$chosen_HBT_walltime_per_event_class \
-		-l nodes=1:ppn=$OMP_NUM_THREADS \
-		-v "eventClassCutString=$eventClassCutString" \
+		-l nodes=1:ppn=$OMP_NUM_THREADS                   \
+		-v "eventClassCutString=$eventClassCutString"     \
+		-W depend=afterok:${jobid}
 		run_HBT_analysis.pbs
 done	# all event classes finished
-
 
 #zipFilename=$CURRENT_RESULTS_DIRECTORY".zip"
 
 #zip -r $zipFilename $CURRENT_RESULTS_DIRECTORY
 
 
-echo 'Finished everything!'
+echo 'driver_pbs.sh: Finished everything!'
 
 
 # End of file

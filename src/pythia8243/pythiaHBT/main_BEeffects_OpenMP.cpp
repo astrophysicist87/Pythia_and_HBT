@@ -172,6 +172,8 @@ int main(int argc, char *argv[])
 	string target_name 					= string(argv[2]);
 	string results_directory			= string(argv[3]);
 
+	const int dataset_seed 				= paraRdr->getVal("pythiaHBT::seed");
+
 	int chosen_HBT_particle_ID 			= paraRdr->getVal("pythiaHBT::chosenParticleID");
 	const int total_number_of_events 	= paraRdr->getVal("pythiaHBT::number_of_events");
 	const int max_events_per_file 		= paraRdr->getVal("pythiaHBT::max_events_per_file");
@@ -370,6 +372,7 @@ int main(int argc, char *argv[])
 
 	vector<Pythia> pythiaVector( omp_get_max_threads() );
 
+
 	// Loop over OpenMP threads.
 	for (int iThread = 0; iThread < omp_get_max_threads(); iThread++)
 	{
@@ -385,8 +388,10 @@ int main(int argc, char *argv[])
 		bool use_random_time = false;
  		if ( omp_get_max_threads() > 1 )
 		{
+			const int seed_for_this_thread = dataset_seed*omp_get_max_threads()
+												+ iThread + 1;
 			pythia.readString("Random:setSeed = on");
- 			pythia.readString("Random:seed = " + to_string(iThread+1));
+ 			pythia.readString("Random:seed = " + to_string(seed_for_this_thread));
 		}
  		else if ( use_random_time )
 		{
@@ -423,7 +428,9 @@ int main(int argc, char *argv[])
 
 		//========================================
 		// Read in any standard Pythia options
-		pythia.readFile( "main_BEeffects.cmnd" );
+		//pythia.readFile( "main_BEeffects.cmnd" );
+		pythia.readFile( path + "main_BEeffects.cmnd" );
+
 
 
 		// ==============================================
@@ -613,6 +620,8 @@ int main(int argc, char *argv[])
 
 		// break the loop when enough events have been generated
 		bool need_to_continue = true;
+		const int seed_for_this_thread = dataset_seed*omp_get_max_threads()
+												+ iThread + 1;
 		//int this_thread_count = 0;
 
 		do
@@ -788,7 +797,8 @@ if (false)
 					//========================================
 					// output physical particles here
 					if ( printing_particle_records )
-						print_particle_record( iEvent, particles_to_output,
+						print_particle_record( dataset_seed * total_number_of_events + iEvent,
+												particles_to_output,
 												particle_is_thermal_or_decay, outmain,
 												phi_to_use, store_Bjorken_coordinates );
 	
@@ -798,7 +808,8 @@ if (false)
 					if ( momentum_space_modifications
 							and track_unshifted_particles
 							and printing_particle_records )
-						print_particle_record( iEvent, unshifted_particles_to_output,
+						print_particle_record( dataset_seed * total_number_of_events + iEvent,
+												unshifted_particles_to_output,
 												particle_is_thermal_or_decay, outmain_noShift,
 												phi_to_use, store_Bjorken_coordinates );
 	
@@ -822,7 +833,7 @@ if (false)
 					bool verbose = false;
 
 					outMultiplicities
-								<< iEvent << "   "
+								<< dataset_seed * total_number_of_events + iEvent << "   "
 								<< charged_hadron_multiplicity;
 
 					// output particle multiplicities (order hardcoded for now)

@@ -1,0 +1,53 @@
+#! /usr/bin/env bash
+#-------------------
+
+#PBS -l walltime=00:15:00
+#PBS -l nodes=1:ppn=1
+#PBS -j oe
+
+cd "$PBS_O_WORKDIR" || exit $?
+echo '| ------------------------------------------------------------'
+echo '| - '$PBS_JOBNAME': Executing this script in the following directory:'
+echo '| | '$PBS_O_WORKDIR
+
+echo 'Using $PYTHIA_RESULTS_DIRECTORY = '$PYTHIA_RESULTS_DIRECTORY
+#echo '| - '$PBS_JOBNAME':     Now entering '`realpath --relative-to="${PWD}" "$PYTHIA_RESULTS_DIRECTORY/../"`
+#cd $PYTHIA_RESULTS_DIRECTORY/../
+#echo 'Double check: pwd = ' `pwd`
+
+echo 'Working with this ensemble information:'
+echo $projectile $target $beamEnergy $NTotalEvents
+
+
+PYTHIA_HEAD_RESULTS_DIRECTORY=$CURRENT_RESULTS_DIRECTORY/Pythia_results
+for iDataset in $(seq 0 $[NDATASETS-1])
+do
+	# IMPORTANT!!!!!
+	# Be sure events are numbered IN PYTHIA via their position among all datasets!
+	PYTHIA_DATASET_RESULTS_DIRECTORY=$PYTHIA_HEAD_RESULTS_DIRECTORY/dataset_${iDataset}
+
+	recordOfOutputFilenames_Sxp=$PYTHIA_DATASET_RESULTS_DIRECTORY/`echo $collisionSystemStem`"_S_x_p_filenames.dat"
+	recordOfOutputFilename_mult=$PYTHIA_DATASET_RESULTS_DIRECTORY/`echo $collisionSystemStem`"_total_N_filename.dat"
+
+	for line in `cat $recordOfOutputFilenames_Sxp`
+	do
+		readlink -f $PYTHIA_DATASET_RESULTS_DIRECTORY/$line >> $HBT_EVENT_GEN_DIRECTORY/catalogue.dat
+		readlink -f $PYTHIA_DATASET_RESULTS_DIRECTORY/$line >> $HBT_SV_DIRECTORY/catalogue.dat
+	done
+
+	cat `cat $recordOfOutputFilename_mult` >> $PYTHIA_HEAD_RESULTS_DIRECTORY/all_event_multiplicites.dat
+done
+
+
+echo $projectile $target $beamEnergy $NTotalEvents > $HBT_EVENT_GEN_DIRECTORY/ensemble_catalogue.dat
+echo $projectile $target $beamEnergy $NTotalEvents > $HBT_SV_DIRECTORY/ensemble_catalogue.dat
+readlink -f $PYTHIA_HEAD_RESULTS_DIRECTORY/all_event_multiplicites.dat >> $HBT_EVENT_GEN_DIRECTORY/ensemble_catalogue.dat
+readlink -f $PYTHIA_HEAD_RESULTS_DIRECTORY/all_event_multiplicites.dat >> $HBT_SV_DIRECTORY/ensemble_catalogue.dat
+
+
+
+
+echo '| - '$PBS_JOBNAME': Finished everything!'
+echo '| ------------------------------------------------------------'
+
+# End of file

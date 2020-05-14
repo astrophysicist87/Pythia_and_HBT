@@ -23,4 +23,14 @@ echo 'echo '\''Finished everything'\'
 
 }
 
+generate_sh () {
+
+echo '#! /usr/bin/env bash
+'
+echo "$@"
+echo 'echo '\''Finished everything'\'
+
+}
+
 export -f generate_pbs
+export -f generate_sh

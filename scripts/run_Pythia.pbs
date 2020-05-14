@@ -1,0 +1,167 @@
+#! /usr/bin/env bash
+#-------------------
+
+#PBS -l walltime=01:00:00
+#PBS -l nodes=1:ppn=1
+#PBS -j oe
+
+cd "$PBS_O_WORKDIR" || exit $?
+echo '| ------------------------------------------------------------'
+echo '| - '$PBS_JOBNAME': Executing this script in the following directory:'
+echo '| | '$PBS_O_WORKDIR
+
+
+# convenient toggle
+declare -A boolVal=( ["true"]="1" ["false"]="0")
+
+# make sure main results directory exists
+if [ ! -d "$MAIN_RESULTS_DIRECTORY" ]
+then
+	mkdir $MAIN_RESULTS_DIRECTORY
+	echo '| - '$PBS_JOBNAME': Created directory:' `realpath --relative-to="${PWD}" "$MAIN_RESULTS_DIRECTORY"`
+fi
+CURRENT_RESULTS_DIRECTORY=$MAIN_RESULTS_DIRECTORY
+
+echo '| - '$PBS_JOBNAME': Processing' \
+		$Nevents $projectile'+'$target \
+		'collisions at' $beamEnergy 'GeV'
+
+
+clean_directory $PYTHIA_DIRECTORY
+datasetIndex="_${datasetSeed}"
+#if [ "$datasetSeed" -lt 0 ]; then
+#	datasetIndex=""
+#fi
+#PYTHIA_RESULTS_DIRECTORY=$CURRENT_RESULTS_DIRECTORY/Pythia_results
+#PYTHIA_RESULTS_DIRECTORY=$CURRENT_RESULTS_DIRECTORY/Pythia_results/dataset_${datasetSeed}
+PYTHIA_RESULTS_DIRECTORY=$CURRENT_RESULTS_DIRECTORY/Pythia_results/dataset${datasetIndex}
+
+collisionSystemStem=$projectile$target"_"`echo $beamEnergy`"GeV_Nev"$Nevents
+
+#=================
+# Run Pythia here
+(
+	echo '| - '$PBS_JOBNAME':     Now entering '`realpath --relative-to="${PWD}" "$PYTHIA_DIRECTORY"`
+	cd $PYTHIA_DIRECTORY
+
+	cp $HOME_DIRECTORY/parameters.dat .
+
+	#----------------------------------------------------
+	# If false, no Pythia settings or code run, but still
+	# export appropriate directories and file paths to
+	# other directories for post-processing
+	if $runPythia
+	then
+
+		# make sure results directory exists
+		if [ ! -d "$PYTHIA_RESULTS_DIRECTORY" ]
+		then
+			mkdir $PYTHIA_RESULTS_DIRECTORY
+		fi
+
+		#--------------------------
+		# set some options for Pythia to run on
+		CMND_FILENAME=$PYTHIA_RESULTS_DIRECTORY/main_BEeffects.cmnd
+		
+		# Set random seed
+		#echo 'Random:setSeed = on'                                                      >> $CMND_FILENAME
+		#echo 'Random:seed ='                              $[datasetSeed+1]              >> $CMND_FILENAME
+		#echo 'Random:seed = 0'                                                          >> $CMND_FILENAME
+
+		# Turn on tracking of space-time information
+		echo 'Fragmentation:setVertices ='                $SetFragmentationVertices     >> $CMND_FILENAME
+		echo 'PartonVertex:setVertex ='                   $SetPartonVertices            >> $CMND_FILENAME
+
+		# turn on and set Bose-Einstein effects
+		echo 'HadronLevel:BoseEinstein ='                 $BEeffects                    >> $CMND_FILENAME
+		echo 'BoseEinstein:QRef ='                        $QRefValue                    >> $CMND_FILENAME
+
+		# turn on/off other interesting mechanisms to test
+		echo 'ColourReconnection:reconnect ='             $UseColorReconnection         >> $CMND_FILENAME
+		echo 'Ropewalk:RopeHadronization ='               $UseRopeHadronization         >> $CMND_FILENAME
+		echo 'Ropewalk:doShoving ='                       $IncludeStringShoving         >> $CMND_FILENAME
+		echo 'Ropewalk:doFlavour ='                       $IncludeFlavourRopesMechanism >> $CMND_FILENAME
+
+		# New Pythia options, flags, parameters, etc.
+		# which I've added myself (not generally compatible yet)
+		# Comment out lines below this one if running on unmodified Pythia
+		echo 'BoseEinstein:enhanceMode ='                 $BEEnhancementMode            >> $CMND_FILENAME
+		echo 'BoseEinstein:useInvariantSourceSize ='      $useInvariantSourceSize       >> $CMND_FILENAME
+		echo 'BoseEinstein:useDistribution ='             $useDistribution              >> $CMND_FILENAME
+		echo 'BoseEinstein:useRelativeDistance ='         $useRelativeDistance          >> $CMND_FILENAME
+		echo 'BoseEinstein:useRestFrame ='                $useRestFrame                 >> $CMND_FILENAME
+		echo 'BoseEinstein:includePhaseSpace ='           $includePhaseSpace            >> $CMND_FILENAME
+		echo 'BoseEinstein:linearInterpolateCDF ='        $linearInterpolateCDF         >> $CMND_FILENAME
+		echo 'BoseEinstein:computeBEEnhancementExactly =' $computeBEEnhancementExactly  >> $CMND_FILENAME
+		echo 'BoseEinstein:shiftingSet ='                 $shiftingSet                  >> $CMND_FILENAME
+		echo 'BoseEinstein:compensationSet ='             $compensationSet              >> $CMND_FILENAME
+		echo 'BoseEinstein:compensationMode ='            $compensationMode             >> $CMND_FILENAME
+
+		# Default is now to compute all events in Pythia from the get-go
+		lowerLimit=0
+		upperLimit=100
+
+		# time and run
+		./run_BEeffects_OpenMP.sh \
+			$projectile $target \
+			$PYTHIA_RESULTS_DIRECTORY \
+			pythiaHBT::beam_energy=$beamEnergy \
+			pythiaHBT::number_of_events=$Nevents \
+			pythiaHBT::chosenParticleID=$chosenHBTparticle \
+			pythiaHBT::lowerLimit=$lowerLimit \
+			pythiaHBT::upperLimit=$upperLimit \
+			pythiaHBT::bmin=$bMin \
+			pythiaHBT::bmax=$bMax \
+			pythiaHBT::seed=$datasetSeed \
+			pythiaHBT::output_Bjorken_variables="${boolVal[$storeBjorkenCoordinates]}"
+
+		# check and report whether run was successful
+		runSuccess=`echo $?`
+		check_success 'Pythia' $runSuccess '-' '| | - '
+
+	fi
+
+
+	###################################
+	# NOW INCLUDED IN POST-PROCESSING #
+	###################################
+	# Get the filenames which need to be processed
+	#recordOfOutputFilenames_Sxp=$PYTHIA_RESULTS_DIRECTORY/`echo $collisionSystemStem`"_S_x_p_filenames.dat"
+	#recordOfOutputFilename_mult=$PYTHIA_RESULTS_DIRECTORY/`echo $collisionSystemStem`"_total_N_filename.dat"
+	#
+	#for line in `cat $recordOfOutputFilenames_Sxp`
+	#do
+	#	readlink -f $PYTHIA_RESULTS_DIRECTORY/$line >> $HBT_EVENT_GEN_DIRECTORY/catalogue.dat
+	#	readlink -f $PYTHIA_RESULTS_DIRECTORY/$line >> $HBT_SV_DIRECTORY/catalogue.dat
+	#done
+	###################################
+
+	# Set particle catalogue
+	#readlink -f $PYTHIA_RESULTS_DIRECTORY/HBT_particle_0.dat > $HBT_EVENT_GEN_DIRECTORY/particle_catalogue.dat
+	#readlink -f $PYTHIA_RESULTS_DIRECTORY/HBT_particle_0.dat > $HBT_FITCF_DIRECTORY/particle_catalogue.dat
+	#readlink -f $PYTHIA_RESULTS_DIRECTORY/HBT_particle_0.dat > $HBT_SV_DIRECTORY/particle_catalogue.dat
+
+	[ ! -f $HBT_EVENT_GEN_DIRECTORY/particle_catalogue.dat ] && \
+           readlink -f $PYTHIA_RESULTS_DIRECTORY/HBT_particle_0.dat > $HBT_EVENT_GEN_DIRECTORY/particle_catalogue.dat
+	[ ! -f $HBT_FITCF_DIRECTORY/particle_catalogue.dat ] && \
+           readlink -f $PYTHIA_RESULTS_DIRECTORY/HBT_particle_0.dat > $HBT_FITCF_DIRECTORY/particle_catalogue.dat
+	[ ! -f $HBT_SV_DIRECTORY/particle_catalogue.dat ] && \
+           readlink -f $PYTHIA_RESULTS_DIRECTORY/HBT_particle_0.dat > $HBT_SV_DIRECTORY/particle_catalogue.dat
+
+	###################################
+	# NOW INCLUDED IN POST-PROCESSING #
+	###################################
+	# Set ensemble catalogue
+	#echo $projectile $target $beamEnergy $Nevents > $HBT_EVENT_GEN_DIRECTORY/ensemble_catalogue.dat
+	#readlink -f $PYTHIA_RESULTS_DIRECTORY/`cat $recordOfOutputFilename_mult` >> $HBT_EVENT_GEN_DIRECTORY/ensemble_catalogue.dat
+	#echo $projectile $target $beamEnergy $Nevents > $HBT_SV_DIRECTORY/ensemble_catalogue.dat
+	#readlink -f $PYTHIA_RESULTS_DIRECTORY/`cat $recordOfOutputFilename_mult` >> $HBT_SV_DIRECTORY/ensemble_catalogue.dat
+	###################################
+
+)
+
+echo '| - '$PBS_JOBNAME': Finished everything!'
+echo '| ------------------------------------------------------------'
+
+
+# End of file
