@@ -63,7 +63,7 @@ echo
 # post-processing of Pythia datasets is complete
 #for eventClassCutString in "1-11" "12-16" "17-22" "23-28" "29-34" "35-41" "42-51" "52-151" "152-1000000"
 #for eventClassCutString in "0-20%" "20-40%" "40-60%" "60-90%"
-for eventClassCutString in "0-50%" "50-100%"
+for eventClassCutString in "0-100%"
 do
 	echo "Submitting qsub -l walltime=$chosen_HBT_walltime_per_event_class -l nodes=1:ppn=$OMP_NUM_THREADS -v eventClassCutString=$eventClassCutString -W depend=afterok:${jobid} run_HBT_analysis.pbs"
 	qsub -l walltime=$chosen_HBT_walltime_per_event_class \
