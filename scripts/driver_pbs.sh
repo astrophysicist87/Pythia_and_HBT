@@ -32,16 +32,29 @@ NTotalEvents=$[NDATASETS*Nevents]
 
 #------------------------
 # Submit all Pythia datasets
+echo "Submitting qsub -l walltime=$chosen_Pythia_walltime -l nodes=1:ppn=$OMP_NUM_THREADS -v datasetSeed=0 -V run_Pythia.pbs"
 jobids=`qsub -l walltime=$chosen_Pythia_walltime -l nodes=1:ppn=$OMP_NUM_THREADS -v datasetSeed=0 -V run_Pythia.pbs`
+echo '--------'
 for iDataset in $(seq 1 $[NDATASETS-1])
 do
+	echo "Submitting qsub -l walltime=$chosen_Pythia_walltime -l nodes=1:ppn=$OMP_NUM_THREADS -v datasetSeed=$iDataset -V run_Pythia.pbs"
 	jobid=`qsub -l walltime=$chosen_Pythia_walltime -l nodes=1:ppn=$OMP_NUM_THREADS -v datasetSeed=$iDataset -V run_Pythia.pbs`
 	jobids+=":${jobid}"
+	echo '--------'
 done
+
+echo
+echo
+echo
 
 #------------------------
 # Wait until Pythia jobs finish, then post-process before running HBT analyses
+echo "Submitting qsub -l walltime='00:15:00' -l nodes=1:ppn=$OMP_NUM_THREADS -W depend=afterok:${jobids} -V post_process_Pythia.pbs"
 jobid=`qsub -l walltime='00:15:00' -l nodes=1:ppn=$OMP_NUM_THREADS -W depend=afterok:${jobids} -V post_process_Pythia.pbs`
+
+echo
+echo
+echo
 
 #------------------------
 # apply HBT analysis to each chosen event class after 
@@ -50,18 +63,20 @@ jobid=`qsub -l walltime='00:15:00' -l nodes=1:ppn=$OMP_NUM_THREADS -W depend=aft
 #for eventClassCutString in "0-20%" "20-40%" "40-60%" "60-90%"
 for eventClassCutString in "0-50%" "50-100%"
 do
-	echo "Submitting qsub -l walltime=$chosen_HBT_walltime_per_event_class -l nodes=1:ppn=$OMP_NUM_THREADS run_HBT_analysis.pbs"
+	echo "Submitting qsub -l walltime=$chosen_HBT_walltime_per_event_class -l nodes=1:ppn=$OMP_NUM_THREADS -v eventClassCutString=$eventClassCutString -W depend=afterok:${jobid} run_HBT_analysis.pbs"
 	qsub -l walltime=$chosen_HBT_walltime_per_event_class \
 		-l nodes=1:ppn=$OMP_NUM_THREADS                   \
 		-v "eventClassCutString=$eventClassCutString"     \
 		-W depend=afterok:${jobid}
 		run_HBT_analysis.pbs
+	echo '--------'
 done	# all event classes finished
 
 #zipFilename=$CURRENT_RESULTS_DIRECTORY".zip"
 
 #zip -r $zipFilename $CURRENT_RESULTS_DIRECTORY
 
+echo
 
 echo 'driver_pbs.sh: Finished everything!'
 
