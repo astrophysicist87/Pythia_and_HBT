@@ -31,13 +31,13 @@ export NTotalEvents=$[NDATASETS*Nevents]
 
 #------------------------
 # Submit all Pythia datasets
-echo "Submitting qsub -l walltime=$chosen_Pythia_walltime -l nodes=1:ppn=$OMP_NUM_THREADS -v datasetSeed=0 -V run_Pythia.pbs"
-jobids=`qsub -l walltime=$chosen_Pythia_walltime -l nodes=1:ppn=$OMP_NUM_THREADS -v datasetSeed=0 -V run_Pythia.pbs`
+echo "Submitting qsub -q queuename=$chosen_QUEUENAME -l walltime=$chosen_Pythia_walltime -l nodes=1:ppn=$OMP_NUM_THREADS -v datasetSeed=0 -V run_Pythia.pbs"
+jobids=`qsub -q queuename=$chosen_QUEUENAME -l walltime=$chosen_Pythia_walltime -l nodes=1:ppn=$OMP_NUM_THREADS -v datasetSeed=0 -V run_Pythia.pbs`
 echo '--------'
 for iDataset in $(seq 1 $[NDATASETS-1])
 do
-	echo "Submitting qsub -l walltime=$chosen_Pythia_walltime -l nodes=1:ppn=$OMP_NUM_THREADS -v datasetSeed=$iDataset -V run_Pythia.pbs"
-	jobid=`qsub -l walltime=$chosen_Pythia_walltime -l nodes=1:ppn=$OMP_NUM_THREADS -v datasetSeed=$iDataset -V run_Pythia.pbs`
+	echo "Submitting qsub -q queuename=$chosen_QUEUENAME -l walltime=$chosen_Pythia_walltime -l nodes=1:ppn=$OMP_NUM_THREADS -v datasetSeed=$iDataset -V run_Pythia.pbs"
+	jobid=`qsub -q queuename=$chosen_QUEUENAME -l walltime=$chosen_Pythia_walltime -l nodes=1:ppn=$OMP_NUM_THREADS -v datasetSeed=$iDataset -V run_Pythia.pbs`
 	jobids+=":${jobid}"
 	echo '--------'
 done
@@ -48,7 +48,7 @@ echo
 #------------------------
 # Wait until Pythia jobs finish, then post-process before running HBT analyses
 echo "Submitting qsub -l walltime=00:15:00 -l nodes=1:ppn=$OMP_NUM_THREADS -W depend=afterok:${jobids} -V post_process_Pythia.pbs"
-jobid=`qsub -l walltime=00:15:00 -l nodes=1:ppn=$OMP_NUM_THREADS -W depend=afterok:${jobids} -V post_process_Pythia.pbs`
+jobid=`qsub -q queuename=$chosen_QUEUENAME -l walltime=00:15:00 -l nodes=1:ppn=$OMP_NUM_THREADS -W depend=afterok:${jobids} -V post_process_Pythia.pbs`
 
 echo 'jobid =' $jobid
 
@@ -62,11 +62,12 @@ echo
 # apply HBT analysis to each chosen event class after 
 # post-processing of Pythia datasets is complete
 #for eventClassCutString in "0-20%" "20-40%" "40-60%" "60-90%"
-#for eventClassCutString in "1-11" "12-16" "17-22" "23-28" "29-34" "35-41" "42-51" "52-151" "152-1000000"
-for eventClassCutString in "0-100%"
+#for eventClassCutString in "0-100%"
+for eventClassCutString in "1-11" "12-16" "17-22" "23-28" "29-34" "35-41" "42-51" "52-151" "152-1000000"
 do
-	echo "Submitting qsub -l walltime=$chosen_HBT_walltime_per_event_class -l nodes=1:ppn=$OMP_NUM_THREADS -v eventClassCutString=$eventClassCutString -W depend=afterok:${jobid} run_HBT_analysis.pbs"
-	qsub -l walltime=$chosen_HBT_walltime_per_event_class \
+	echo "Submitting qsub -q queuename=$chosen_QUEUENAME -l walltime=$chosen_HBT_walltime_per_event_class -l nodes=1:ppn=$OMP_NUM_THREADS -v eventClassCutString=$eventClassCutString -W depend=afterok:${jobid} run_HBT_analysis.pbs"
+	qsub -q queuename=$chosen_QUEUENAME                   \
+		-l walltime=$chosen_HBT_walltime_per_event_class  \
 		-l nodes=1:ppn=$OMP_NUM_THREADS                   \
 		-v "eventClassCutString=$eventClassCutString"     \
 		-W depend=afterok:${jobid}                        \
