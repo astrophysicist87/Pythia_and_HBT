@@ -30,18 +30,18 @@
 	chosen_NTHREADS="${NTHREADS:-$def_nthreads}"
 	chosen_PYTHIA_WALLTIME="${PYTHIA_WALLTIME:-$def_pythia_walltime}"
 	chosen_HBT_WALLTIME="${HBT_WALLTIME:-$def_HBT_walltime}"
-	echo '-------------------------'
-	echo 'Working on' $CLUSTER
-	echo $CLUSTER': default number of threads =' $def_nthreads
-	echo $CLUSTER': chosen number of threads =' $chosen_NTHREADS
-	echo $CLUSTER': default Pythia walltime =' $def_pythia_walltime
-	echo $CLUSTER': chosen Pythia walltime =' $chosen_PYTHIA_WALLTIME
-	echo $CLUSTER': default HBT walltime =' $def_HBT_walltime
-	echo $CLUSTER': chosen HBT walltime =' $chosen_HBT_WALLTIME
-	echo '-------------------------'
+	echo '-------------------------' &> compile_all.out
+	echo 'Working on' $CLUSTER &>> compile_all.out
+	echo $CLUSTER': default number of threads =' $def_nthreads &>> compile_all.out
+	echo $CLUSTER': chosen number of threads =' $chosen_NTHREADS &>> compile_all.out
+	echo $CLUSTER': default Pythia walltime =' $def_pythia_walltime &>> compile_all.out
+	echo $CLUSTER': chosen Pythia walltime =' $chosen_PYTHIA_WALLTIME &>> compile_all.out
+	echo $CLUSTER': default HBT walltime =' $def_HBT_walltime &>> compile_all.out
+	echo $CLUSTER': chosen HBT walltime =' $chosen_HBT_WALLTIME &>> compile_all.out
+	echo '-------------------------' &>> compile_all.out
 
 	# Compile source code
-	./compile_all.sh $chosen_NTHREADS &> compile_all.out
+	./compile_all.sh $chosen_NTHREADS &>> compile_all.out
 
 	# Export job specifications
 	source scripts/env.sh
