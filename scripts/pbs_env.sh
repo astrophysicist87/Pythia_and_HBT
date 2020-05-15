@@ -32,5 +32,43 @@ echo 'echo '\''Finished everything'\'
 
 }
 
+setup_env () {
+
+case "$1" in
+	mangi)
+		export def_nthreads=128
+		export def_pythia_walltime='12:00:00'
+		export def_HBT_walltime='12:00:00'
+		export def_queuename='amdsmall'
+		;;
+
+	mesabi)
+		export def_nthreads=24
+		export def_pythia_walltime='12:00:00'
+		export def_HBT_walltime='12:00:00'
+		;;
+
+	pitzer)
+		export def_nthreads=40
+		export def_pythia_walltime='12:00:00'
+		export def_HBT_walltime='12:00:00'
+		export def_account_string='PAS0254'
+		;;
+
+	vishnu)
+		export def_nthreads=16
+		export def_pythia_walltime='12:00:00'
+		export def_HBT_walltime='12:00:00'
+		;;
+
+	*)
+	echo $"Usage: $0 {mangi|mesabi|pitzer|vishnu}"
+	exit 1
+ 
+esac
+
+}
+
 export -f generate_pbs
 export -f generate_sh
+export -f setup_env
