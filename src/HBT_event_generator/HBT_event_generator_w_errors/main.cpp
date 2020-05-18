@@ -50,7 +50,7 @@ int main(int argc, char *argv[])
 	cout << endl << "**********************************************************" << endl << endl;
    
 	// Set parameter and catalogue filenames and results directory name from command-line
-	string path                      = string(argv[1]);	// results directory
+	string path                      = string(argv[1]) + "/";	// results directory
 	string parametersFilename        = string(argv[2]);	
 	string particleCatalogueFilename = string(argv[3]);	
 	string catalogueFilename         = string(argv[4]);	
@@ -109,8 +109,6 @@ int main(int argc, char *argv[])
 						<< "CF.err";
 	ofstream outmain(out_filename_stream.str().c_str());
 	ofstream errmain(err_filename_stream.str().c_str());
-
-
 
 
 	if ( file_mode == 1 )	// default==1: read-in particles from file

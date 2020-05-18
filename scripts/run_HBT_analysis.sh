@@ -105,7 +105,8 @@ then
 	CF_RESULTS_DIRECTORY=$HBT_CEN_RESULTS_DIRECTORY/CF_results
 
 	if [ ! -d "$CF_RESULTS_DIRECTORY" ]; then
-		mkdir $CF_RESULTS_DIRECTORY
+		mkdir -p $CF_RESULTS_DIRECTORY
+		mkdir -p $CF_RESULTS_DIRECTORY/state
 		#echo '| - '`basename "$0"`': Created directory "results" in' `realpath --relative-to="${PWD}" "$HBT_EVENT_GEN_DIRECTORY"`
 		echo '| - '`basename "$0"`': Created directory "CF_results" in' `realpath --relative-to="${PWD}" "$HBT_CEN_RESULTS_DIRECTORY"`
 	fi
