@@ -52,7 +52,7 @@
 	source scripts/export_specs.sh
 	SPECS_FULL_PATH=`readlink -f scripts/specs.sh`
 	export_specs_array "${specs[@]}" > $SPECS_FULL_PATH
-	export_specs_array "${class_ranges[@]}" >> $SPECS_FULL_PATH
+	export_class_range_array "${class_ranges[@]}" >> $SPECS_FULL_PATH
 
 	# Generate jobs for these specifications
 	DIRECTORY_FULL_PATH=`readlink -f $DIRECTORY`
