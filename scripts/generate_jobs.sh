@@ -12,6 +12,7 @@ source $SCRIPTS_DIRECTORY/specs.sh
 ########################################
 # total number of jobs
 nJobs=${#specs[@]}
+echo $nJobs
 
 # make sure main results directory exists
 HOME_RESULTS_DIRECTORY=$2
