@@ -11,6 +11,11 @@
 
 void HBT_event_generator::Dump_state()
 {
+	const int q_space_size = ( q_mode == 0 ) ?
+								n_qo_bins*n_qs_bins*n_ql_bins :
+								n_Q_bins;
+	const int K_space_size = n_KT_bins*n_Kphi_bins*n_KL_bins;
+
 	ofstream outPairs( path + "state/pairs.dat" );
 	for ( int iK = 0; iK < K_space_size; iK++ )
 		outPairs
@@ -41,6 +46,11 @@ void HBT_event_generator::Dump_state()
 
 void HBT_event_generator::Load_state()
 {
+	const int q_space_size = ( q_mode == 0 ) ?
+								n_qo_bins*n_qs_bins*n_ql_bins :
+								n_Q_bins;
+	const int K_space_size = n_KT_bins*n_Kphi_bins*n_KL_bins;
+
 	ifstream inPairs( path + "state/pairs.dat" );
 	for ( int iK = 0; iK < K_space_size; iK++ )
 		inPairs
