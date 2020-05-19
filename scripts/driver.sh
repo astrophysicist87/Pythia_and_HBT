@@ -17,6 +17,10 @@ source scripts/omp_env.sh
 export OMP_NUM_THREADS=$chosen_OMP_NUM_THREADS
 echo '| '`basename "$0"`': OMP_NUM_THREADS =' $OMP_NUM_THREADS
 
+# Load job specifications and event class ranges
+echo '| '`basename "$0"`': loading scripts/specs.sh...'
+source scripts/specs.sh
+
 # Update any variables set from the command line
 echo '| '`basename "$0"`': loading settings from command-line...'
 for var in "$@"
@@ -47,7 +51,8 @@ echo '| '`basename "$0"`': running Pythia!'
 # apply HBT analysis to each chosen event class
 #for eventClassCutString in "1-11" "12-16" "17-22" "23-28" "29-34" "35-41" "42-51" "52-151" "152-1000000"
 #for eventClassCutString in "0-5%" "5-10%" "10-20%" "20-30%" "30-40%" "40-60%" "60-100%"
-for eventClassCutString in "0-100%"
+#for eventClassCutString in "0-100%"
+for eventClassCutString in "${class_ranges[@]}"
 do
 	echo '| '`basename "$0"`': running HBT analysis for event class = '$eventClassCutString'!'
 	./run_HBT_analysis.sh $eventClassCutString	# do NOT submit Bash scripts in background
