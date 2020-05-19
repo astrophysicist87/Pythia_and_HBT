@@ -230,6 +230,9 @@ class HBT_event_generator
 		void Output_correlation_function_q_mode_3D( string filename );
 		void Output_correlation_function_q_mode_1D( string filename );
 
+		void Dump_state();
+		void Load_state();
+
 };
 
 #endif

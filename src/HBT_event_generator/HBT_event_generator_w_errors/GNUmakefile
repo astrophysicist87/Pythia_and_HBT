@@ -56,7 +56,8 @@ SRC			=	main.cpp \
 				$(SRCDIR)/NumeratorAndDenominator_wBA.cpp \
 				$(SRCDIR)/NumeratorAndDenominator1D_wBA.cpp \
 				$(SRCDIR)/NumeratorAndDenominator1D_rotInv_wBA.cpp \
-				$(SRCDIR)/HBT_event_generator.cpp
+				$(SRCDIR)/HBT_event_generator.cpp \
+				$(SRCDIR)/StateInfo.cpp
 
 CHECKSRC	=	run_checks.cpp \
 				$(SRCDIR)/Arsenal.cpp \
@@ -68,7 +69,8 @@ CHECKSRC	=	run_checks.cpp \
 				$(SRCDIR)/NumeratorAndDenominator_wBA.cpp \
 				$(SRCDIR)/NumeratorAndDenominator1D_wBA.cpp \
 				$(SRCDIR)/NumeratorAndDenominator1D_rotInv_wBA.cpp \
-				$(SRCDIR)/HBT_event_generator.cpp
+				$(SRCDIR)/HBT_event_generator.cpp \
+				$(SRCDIR)/StateInfo.cpp
 
 INC			= 	main.h \
 				$(SRCDIR)/Arsenal.h \
