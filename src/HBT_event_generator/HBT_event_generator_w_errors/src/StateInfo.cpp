@@ -50,6 +50,7 @@ void HBT_event_generator::Load_state()
 			>> denPair2[iK];
 	inPairs.close();
 
+	double dummy = 0.0;
 	ifstream inDistributions( path + "state/distributions.dat" );
 	for ( int iqK = 0; iqK < K_space_size*q_space_size; iqK++ )
 		inDistributions
@@ -58,7 +59,8 @@ void HBT_event_generator::Load_state()
 			>> numerator2[iqK]
 			>> denominator2[iqK]
 			>> numerator_denominator[iqK]
-			>> denominator_cell_was_filled[iqK]
+			//>> denominator_cell_was_filled[iqK]
+			>> dummy
 			>> numerator_bin_count[iqK]
 			>> denominator_bin_count[iqK]
 			>> numerator_numPair[iqK]
