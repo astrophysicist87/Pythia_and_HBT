@@ -35,6 +35,7 @@
 	# Submit generated jobs
 	./scripts/submit_jobs.sh $DIRECTORY_FULL_PATH
 
-) &> /dev/null &
+) &
+#&> /dev/null &
 
 # End of file
