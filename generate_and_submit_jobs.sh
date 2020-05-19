@@ -2,7 +2,7 @@
 
 (
 	# info for this run
-	NTHREADS=12
+	NTHREADS=1
 	DIRECTORY=RESULTS_test_class_range_setting
 
 	# Set job specifications here
