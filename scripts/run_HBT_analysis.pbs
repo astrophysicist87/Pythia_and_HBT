@@ -69,10 +69,10 @@ HBT_CEN_RESULTS_DIRECTORY=$HBT_RESULTS_DIRECTORY/$thisEventClass
 CF_RESULTS_DIRECTORY=$HBT_CEN_RESULTS_DIRECTORY/CF_results/dataset_${datasetSeed}
 
 # make sure HBT results directory exists
-if [ -d "$HBT_CEN_RESULTS_DIRECTORY" ]
-then
-	rm -rf $HBT_CEN_RESULTS_DIRECTORY
-fi
+#if [ -d "$HBT_CEN_RESULTS_DIRECTORY" ]
+#then
+#	rm -rf $HBT_CEN_RESULTS_DIRECTORY
+#fi
 mkdir -p $HBT_CEN_RESULTS_DIRECTORY
 echo '| - '$PBS_JOBNAME': Created directory:' `realpath --relative-to="${PWD}" "$HBT_CEN_RESULTS_DIRECTORY"`
 #=================================================
