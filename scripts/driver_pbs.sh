@@ -60,7 +60,7 @@ echo
 
 usingFilemode1=false
 
-if $usingFilemode
+if $usingFilemode1
 then
 
 	#------------------------
