@@ -54,6 +54,7 @@ case "$1" in
 		export def_pythia_walltime='12:00:00'
 		export def_HBT_walltime='12:00:00'
 		export def_account_string='PAS0254'
+		export def_queuename='serial'
 		;;
 
 	vishnu)
