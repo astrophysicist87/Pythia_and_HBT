@@ -86,19 +86,17 @@ void get_events_in_event_class(
 		int lastEvent = static_cast<int>(x2);
 		//cout << ensemble.size() << "   " << x1 << "   " << x2 << "   " << firstEvent << "   " << lastEvent << endl;
 	
+		vector<EventMultiplicity>::const_iterator first = ensemble.begin() + firstEvent;
+		vector<EventMultiplicity>::const_iterator last = ensemble.begin() + lastEvent;
 		vector<EventMultiplicity> eventClass;
 		if ( dataset_to_use < 0 )
-		{
-			vector<EventMultiplicity>::const_iterator first = ensemble.begin() + firstEvent;
-			vector<EventMultiplicity>::const_iterator last = ensemble.begin() + lastEvent;
 			eventClass = vector<EventMultiplicity>(first, last);
-		}
 		else
 		{
-			//for (auto it = first; it != last; ++it)
-			std::for_each( first, last, [](const auto & event) )
-				if ( event.dataset == dataset_to_use )	// if event belongs to current dataset
-					eventClass.push_back( event );
+			//std::for_each( first, last, [](const auto & event) )
+			for (auto it = first; it != last; ++it)
+				if ( it->dataset == dataset_to_use )	// if event belongs to current dataset
+					eventClass.push_back( *it );
 		}
 	
 		ensemble = eventClass;
@@ -106,7 +104,7 @@ void get_events_in_event_class(
 	else if ( selection_mode == "multiplicity" )
 	{
 		vector<EventMultiplicity> eventClass;
-		if ( dataset < 0 )
+		if ( dataset_to_use < 0 )
 			for ( const auto & event : ensemble )
 				if (    event.chosen_multiplicity >= (int)minimum
 	                and event.chosen_multiplicity <= (int)maximum )
