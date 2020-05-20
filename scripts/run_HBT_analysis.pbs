@@ -118,10 +118,11 @@ then
 	#ls $CF_RESULTS_DIRECTORY
 
 	if [ ! -d "$CF_RESULTS_DIRECTORY" ]; then
-		mkdir -p $CF_RESULTS_DIRECTORY
+		mkdir -pv $CF_RESULTS_DIRECTORY
 		echo 'Check contents(dataseed='$datasetSeed'):'
+		readlink -f $CF_RESULTS_DIRECTORY
 		ls $CF_RESULTS_DIRECTORY
-		mkdir -p $CF_RESULTS_DIRECTORY/state
+		mkdir -vp $CF_RESULTS_DIRECTORY/state
 		#echo '| - '$PBS_JOBNAME': Created directory "results" in' `realpath --relative-to="${PWD}" "$HBT_EVENT_GEN_DIRECTORY"`
 		echo '| - '$PBS_JOBNAME': Created directory "CF_results" in' `realpath --relative-to="${PWD}" "$HBT_CEN_RESULTS_DIRECTORY"`
 	fi
