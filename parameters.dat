@@ -156,6 +156,8 @@ file_mode 										= 1
 	RNG_nLoops 									= 1
 	# ( if file_mode == 2 )
 	dataset_to_use								= -1
+	# ( if file_mode == 3 )
+	nDatasets									= 1
 	# --
 
 # --

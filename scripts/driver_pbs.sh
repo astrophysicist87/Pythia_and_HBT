@@ -58,27 +58,60 @@ echo 'jobid =' $jobid
 echo
 echo
 
-#if false
-#then
+usingFilemode1=false
 
-#------------------------
-# apply HBT analysis to each chosen event class after 
-# post-processing of Pythia datasets is complete
-for eventClassCutString in "${class_ranges[@]}"
-do
-	varString="eventClassCutString=${eventClassCutString},datasetSeed=0,HBTfilemode=1"
-	echo "varString =" $varString
-	echo "Submitting qsub -q $chosen_QUEUENAME -l walltime=$chosen_HBT_walltime_per_event_class -l nodes=1:ppn=$OMP_NUM_THREADS -v $varString -W depend=afterok:${jobid} run_HBT_analysis.pbs"
-	qsub -q $chosen_QUEUENAME                            \
-		-l walltime=$chosen_HBT_walltime_per_event_class \
-		-l nodes=1:ppn=$OMP_NUM_THREADS                  \
-		-v $varString                                    \
-		-W depend=afterok:${jobid}                       \
-		run_HBT_analysis.pbs
-	echo '--------'
-done	# all event classes finished
+if $usingFilemode
+then
 
-#fi
+	#------------------------
+	# apply HBT analysis to each chosen event class after 
+	# post-processing of Pythia datasets is complete
+	for eventClassCutString in "${class_ranges[@]}"
+	do
+		varString="eventClassCutString=${eventClassCutString},datasetSeed=0,HBTfilemode=1"
+		echo "varString =" $varString
+		echo "Submitting qsub -q $chosen_QUEUENAME -l walltime=$chosen_HBT_walltime_per_event_class -l nodes=1:ppn=$OMP_NUM_THREADS -v $varString -W depend=afterok:${jobid} run_HBT_analysis.pbs"
+		qsub -q $chosen_QUEUENAME                            \
+			-l walltime=$chosen_HBT_walltime_per_event_class \
+			-l nodes=1:ppn=$OMP_NUM_THREADS                  \
+			-v $varString                                    \
+			-W depend=afterok:${jobid}                       \
+			run_HBT_analysis.pbs
+		echo '--------'
+	done	# all event classes finished
+
+else
+
+	echo 'TESTING FILEMODE = 2'
+
+	#------------------------
+	# apply HBT analysis to each chosen event class after 
+	# post-processing of Pythia datasets is complete
+	for eventClassCutString in "${class_ranges[@]}"
+	do
+		varString="eventClassCutString=${eventClassCutString},datasetSeed=0,HBTfilemode=2"
+		jobids=`qsub -q $chosen_QUEUENAME                        \
+				-l walltime=$chosen_HBT_walltime_per_event_class \
+				-l nodes=1:ppn=$OMP_NUM_THREADS                  \
+				-v $varString                                    \
+				-W depend=afterok:${jobid}                       \
+				run_HBT_analysis.pbs`
+		echo '--------'
+		for iDataset in $(seq 1 $[NDATASETS-1])
+		do
+			varString="eventClassCutString=${eventClassCutString},datasetSeed=${iDataset},HBTfilemode=2"
+			newjobid=`qsub -q $chosen_QUEUENAME                          \
+						-l walltime=$chosen_HBT_walltime_per_event_class \
+						-l nodes=1:ppn=$OMP_NUM_THREADS                  \
+						-v $varString                                    \
+						-W depend=afterok:${jobid}                       \
+						run_HBT_analysis.pbs`
+			jobids+=":${newjobid}"
+			echo '--------'
+		done
+	done	# all event classes finished
+
+fi
 
 
 #zipFilename=$CURRENT_RESULTS_DIRECTORY".zip"

@@ -386,7 +386,7 @@ int main(int argc, char *argv[])
 		// ==============================================
 		// Seed RNG different for each thread to avoid redundant events
 		bool use_random_time = false;
- 		if ( omp_get_max_threads() > 1 )
+ 		if ( omp_get_max_threads() > 1 or dataset_seed > 0 )
 		{
 			const int seed_for_this_thread = dataset_seed*omp_get_max_threads()
 												+ iThread + 1;

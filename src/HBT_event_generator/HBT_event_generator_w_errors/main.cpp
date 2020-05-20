@@ -518,7 +518,11 @@ int main(int argc, char *argv[])
 	}
 	else if ( file_mode == 3 )
 	{
-		;	// This will handle post-processing of multiple datasets
+		;
+		// This will handle post-processing of multiple datasets
+//		int nDatasets = paraRdr->getVal("nDatasets");
+//		for ( int iDataset = 0; iDataset < nDatasets; iDataset++ )
+//			Load_state(path + "/dataset_" + std::to_string(iDataset));
 	}
 
 	// Print out run-time
