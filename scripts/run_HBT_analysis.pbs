@@ -65,6 +65,7 @@ fi
 # set names of sub-directories
 HBT_RESULTS_DIRECTORY=$CURRENT_RESULTS_DIRECTORY/HBT_results
 HBT_CEN_RESULTS_DIRECTORY=$HBT_RESULTS_DIRECTORY/$thisEventClass
+CF_RESULTS_DIRECTORY=$HBT_CEN_RESULTS_DIRECTORY/CF_results/dataset_${datasetSeed}
 
 # make sure HBT results directory exists
 if [ -d "$HBT_CEN_RESULTS_DIRECTORY" ]
@@ -92,8 +93,12 @@ echo '| - '$PBS_JOBNAME': Processing' \
 		'(selection mode = '$eventClassSelectionMode')'
 
 
-# Run HBT_event_generator
-if $runHBTEG
+#=====================================
+#=====================================
+#=====================================
+# Run HBT_event_generator if HBT file
+# mode is not RNG
+if $runHBTEG && [[ $HBTfilemode -gt 0 ]]
 then
 (
 
@@ -104,7 +109,7 @@ then
 	# using OpenMP (leave a couple cores free)
 	export OMP_NUM_THREADS=$chosen_OMP_NUM_THREADS
 
-	CF_RESULTS_DIRECTORY=$HBT_CEN_RESULTS_DIRECTORY/CF_results
+	#CF_RESULTS_DIRECTORY=$HBT_CEN_RESULTS_DIRECTORY/CF_results
 
 	if [ ! -d "$CF_RESULTS_DIRECTORY" ]; then
 		mkdir -p $CF_RESULTS_DIRECTORY
@@ -129,10 +134,11 @@ then
 			$CF_RESULTS_DIRECTORY/particle_catalogue.dat \
 			$CF_RESULTS_DIRECTORY/catalogue.dat \
 			$CF_RESULTS_DIRECTORY/ensemble_catalogue.dat \
+			file_mode=$HBTfilemode \
 			selection_mode=$selectionMode \
+			BE_mode=$chosen_BE_mode \
 			event_class_minimum=$lowerLimit \
 			event_class_maximum=$upperLimit \
-			BE_mode=$chosen_BE_mode \
 			chosen_MCID=$chosenHBTparticle \
 			store_Bjorken_coordinates="${boolVal[$storeBjorkenCoordinates]}" \
 			1> $CF_RESULTS_DIRECTORY/HBT_event_generator.out \
@@ -143,14 +149,6 @@ then
 	runSuccess=`echo $?`
 	check_success 'HBT_event_generator' $runSuccess '-' '| | - '
 
-	# copy results
-	#cp HBT_event_generator.[oe]* ./results
-	#mkdir $HBT_CEN_RESULTS_DIRECTORY/CF_results
-	#cp -r ./results/* $HBT_CEN_RESULTS_DIRECTORY/CF_results
-
-	# push below and copy directly to results directory
-	#readlink -f $CF_RESULTS_DIRECTORY/HBT_pipiCF.dat > $HBT_FITCF_DIRECTORY/catalogue.dat
-
 	#exit $runSuccess
 )
 fi
@@ -158,8 +156,10 @@ fi
 #=====================================
 #=====================================
 #=====================================
-# Run fit_correlation_function
-if $runFitCF
+# Run fit_correlation_function if HBT
+# file mode is not RNG or distributed
+# over datasets
+if $runFitCF && [[ $HBTfilemode -eq 1 ]]
 then
 (
 
@@ -177,7 +177,7 @@ then
 	fi
 
 	#cp ../parameters.dat .
-	CF_RESULTS_DIRECTORY=$HBT_CEN_RESULTS_DIRECTORY/CF_results
+	#CF_RESULTS_DIRECTORY=$HBT_CEN_RESULTS_DIRECTORY/CF_results
 	readlink -f $CF_RESULTS_DIRECTORY/HBT_pipiCF.dat > $FIT_RESULTS_DIRECTORY/catalogue.dat
 	cp ../parameters.dat ./particle_catalogue.dat $FIT_RESULTS_DIRECTORY
 
@@ -194,11 +194,6 @@ then
 	runSuccess=`echo $?`
 	check_success 'fit_correlation_function' $runSuccess '-' '| | - '
 
-	# copy results
-	#cp fit_correlation_function.[oe]* ./results
-	#mkdir $HBT_CEN_RESULTS_DIRECTORY/fit_results
-	#cp -r ./results/* $HBT_CEN_RESULTS_DIRECTORY/fit_results
-
 	#exit $runSuccess
 )
 fi
@@ -206,8 +201,9 @@ fi
 #=====================================
 #=====================================
 #=====================================
-# Run SV.e
-if $runSV
+# Run SV.e if HBT file mode is not RNG
+# or distributed over datasets
+if $runSV && [[ $HBTfilemode -eq 1 ]]
 then
 (
 
@@ -245,11 +241,6 @@ then
 	# check and report whether run was successful
 	runSuccess=`echo $?`
 	check_success 'source_variances' $runSuccess '-' '| | - '
-
-	# copy results
-	#cp SV_record.[oe]* ./results
-	#mkdir $HBT_CEN_RESULTS_DIRECTORY/SV_results
-	#cp -r ./results/* $HBT_CEN_RESULTS_DIRECTORY/SV_results
 
 	#exit $runSuccess
 )

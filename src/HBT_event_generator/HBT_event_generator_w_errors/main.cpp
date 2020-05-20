@@ -111,7 +111,101 @@ int main(int argc, char *argv[])
 	ofstream errmain(err_filename_stream.str().c_str());
 
 
-	if ( file_mode == 1 )	// default==1: read-in particles from file
+	if ( file_mode == 0 )	//use random number generation
+	{
+
+		// Vector to hold all event information
+		vector<EventRecord> allEvents;
+
+
+		// Read in the files
+		//generate_events(allEvents, paraRdr);
+		generate_events_v2(allEvents, paraRdr);
+
+
+		// Shift events here.
+		/*if ( shift_events )
+		{
+			paraRdr->setVal("BE_mode", 1);
+
+			shift_lib::ParameterReader * converted_paraRdr = new shift_lib::ParameterReader;
+			converted_paraRdr->readFromFile("./parameters.dat");
+			converted_paraRdr->readFromFile(particle_info_filename[0]);
+			converted_paraRdr->readFromArguments(argc, argv);
+			converted_paraRdr->setVal("BE_mode", 1);
+
+			for ( auto & event: allEvents )
+			{
+				vector<shift_lib::ParticleRecord> event_to_shift;
+				convert_event_to_shifter_format( event, event_to_shift, converted_paraRdr );
+
+				shift_lib::shifter shifted_event( converted_paraRdr, event_to_shift, cout, cerr );
+
+				convert_shifter_format_to_event( event_to_shift, event );
+			}
+		}*/
+
+
+		// Create HBT_event_generator object from allEvents
+		HBT_event_generator
+			HBT_event_ensemble( paraRdr, allEvents,
+								outmain, errmain );
+
+
+		// Loop a few more times to build up statistics
+		// N.B. - 2147483647 is max value for int
+		//const int nLoops = 100;  //say
+		const int nLoops = paraRdr->getVal("RNG_nLoops");
+		for (int iLoop = 1; iLoop < nLoops; ++iLoop)
+		{
+
+			if ( iLoop >= nLoops )
+				break;
+
+			if ( iLoop % 1 == 0 )
+				cout << "Starting iLoop = " << iLoop << endl;
+
+			// Read in the next file
+			//generate_events(allEvents, paraRdr);
+			generate_events_v2(allEvents, paraRdr);
+
+
+			// Shift events also here.
+			/*if ( shift_events )
+			{
+				paraRdr->setVal("BE_mode", 1);
+
+				shift_lib::ParameterReader * converted_paraRdr = new shift_lib::ParameterReader;
+				converted_paraRdr->readFromFile("./parameters.dat");
+				converted_paraRdr->readFromFile(particle_info_filename[0]);
+				converted_paraRdr->readFromArguments(argc, argv);
+				converted_paraRdr->setVal("BE_mode", 1);
+
+				for ( auto & event: allEvents )
+				{
+					vector<shift_lib::ParticleRecord> event_to_shift;
+					convert_event_to_shifter_format( event, event_to_shift, converted_paraRdr );
+					shift_lib::shifter shifted_event( converted_paraRdr, event_to_shift, cout, cerr );
+					convert_shifter_format_to_event( event_to_shift, event );
+				}
+			}*/
+
+
+			// - for each file, update numerator and denominator
+			HBT_event_ensemble.Update_records( allEvents );
+
+		}
+
+
+		// Compute correlation function itself
+		HBT_event_ensemble.Compute_correlation_function();
+
+
+		// Output correlation function
+		HBT_event_ensemble.Output_correlation_function( path + "/HBT_pipiCF.dat" );
+
+	}
+	else if ( file_mode == 1 )	// read-in particles from file
 	{
 
 		// Specify files containing all position-momentum information
@@ -266,101 +360,10 @@ int main(int argc, char *argv[])
 		}
 	
 	}
-	else if ( file_mode == 0 )	//use random number generation
+	else if ( file_mode == 2 )
 	{
-
-		// Vector to hold all event information
-		vector<EventRecord> allEvents;
-
-
-		// Read in the files
-		//generate_events(allEvents, paraRdr);
-		generate_events_v2(allEvents, paraRdr);
-
-
-		// Shift events here.
-		/*if ( shift_events )
-		{
-			paraRdr->setVal("BE_mode", 1);
-
-			shift_lib::ParameterReader * converted_paraRdr = new shift_lib::ParameterReader;
-			converted_paraRdr->readFromFile("./parameters.dat");
-			converted_paraRdr->readFromFile(particle_info_filename[0]);
-			converted_paraRdr->readFromArguments(argc, argv);
-			converted_paraRdr->setVal("BE_mode", 1);
-
-			for ( auto & event: allEvents )
-			{
-				vector<shift_lib::ParticleRecord> event_to_shift;
-				convert_event_to_shifter_format( event, event_to_shift, converted_paraRdr );
-
-				shift_lib::shifter shifted_event( converted_paraRdr, event_to_shift, cout, cerr );
-
-				convert_shifter_format_to_event( event_to_shift, event );
-			}
-		}*/
-
-
-		// Create HBT_event_generator object from allEvents
-		HBT_event_generator
-			HBT_event_ensemble( paraRdr, allEvents,
-								outmain, errmain );
-
-
-		// Loop a few more times to build up statistics
-		// N.B. - 2147483647 is max value for int
-		//const int nLoops = 100;  //say
-		const int nLoops = paraRdr->getVal("RNG_nLoops");
-		for (int iLoop = 1; iLoop < nLoops; ++iLoop)
-		{
-
-			if ( iLoop >= nLoops )
-				break;
-
-			if ( iLoop % 1 == 0 )
-				cout << "Starting iLoop = " << iLoop << endl;
-
-			// Read in the next file
-			//generate_events(allEvents, paraRdr);
-			generate_events_v2(allEvents, paraRdr);
-
-
-			// Shift events also here.
-			/*if ( shift_events )
-			{
-				paraRdr->setVal("BE_mode", 1);
-
-				shift_lib::ParameterReader * converted_paraRdr = new shift_lib::ParameterReader;
-				converted_paraRdr->readFromFile("./parameters.dat");
-				converted_paraRdr->readFromFile(particle_info_filename[0]);
-				converted_paraRdr->readFromArguments(argc, argv);
-				converted_paraRdr->setVal("BE_mode", 1);
-
-				for ( auto & event: allEvents )
-				{
-					vector<shift_lib::ParticleRecord> event_to_shift;
-					convert_event_to_shifter_format( event, event_to_shift, converted_paraRdr );
-					shift_lib::shifter shifted_event( converted_paraRdr, event_to_shift, cout, cerr );
-					convert_shifter_format_to_event( event_to_shift, event );
-				}
-			}*/
-
-
-			// - for each file, update numerator and denominator
-			HBT_event_ensemble.Update_records( allEvents );
-
-		}
-
-
-		// Compute correlation function itself
-		HBT_event_ensemble.Compute_correlation_function();
-
-
-		// Output correlation function
-		HBT_event_ensemble.Output_correlation_function( path + "/HBT_pipiCF.dat" );
-
+		;	//Nothing supported yet...
 	}
-
 
 	// Print out run-time
 	sw.Stop();
