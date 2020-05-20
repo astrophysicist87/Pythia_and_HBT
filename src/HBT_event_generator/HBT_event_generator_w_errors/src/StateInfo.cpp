@@ -11,12 +11,18 @@
 
 void HBT_event_generator::Dump_state()
 {
+	cout << "Entered Dump_state()!" << endl;
+	cerr << "Entered Dump_state()!" << endl;
+	out << "Entered Dump_state()!" << endl;
+	err << "Entered Dump_state()!" << endl;
+
 	const int q_space_size = ( q_mode == 0 ) ?
 								n_qo_bins*n_qs_bins*n_ql_bins :
 								n_Q_bins;
 	const int K_space_size = n_KT_bins*n_Kphi_bins*n_KL_bins;
 
-	ofstream outPairs( path + "/state/pairs.dat" );
+	string outPairsFilename = path + "/state/pairs.dat";
+	ofstream outPairs( outPairsFilename.c_str() );
 	for ( int iK = 0; iK < K_space_size; iK++ )
 		outPairs
 			<< numPair[iK]  << "   "
@@ -25,7 +31,8 @@ void HBT_event_generator::Dump_state()
 			<< denPair2[iK] << endl;
 	outPairs.close();
 
-	ofstream outDistributions( path + "/state/distributions.dat" );
+	string outDistributionsFilename = path + "/state/distributions.dat";
+	ofstream outDistributions( outDistributionsFilename.c_str() );
 	for ( int iqK = 0; iqK < K_space_size*q_space_size; iqK++ )
 		outDistributions
 			<< numerator[iqK]                   << "   "
