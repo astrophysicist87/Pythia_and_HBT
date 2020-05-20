@@ -129,6 +129,11 @@ then
 			chosen_BE_mode=1
 	fi
 
+	use_this_dataset=$datasetSeed
+	if [[ $HBTfilemode -eq 1 ]]; then
+			use_this_dataset="-1"
+	fi
+
 	# time and run
 	nohup time ./run_HBT_event_generator.e \
 			$CF_RESULTS_DIRECTORY \
@@ -137,6 +142,7 @@ then
 			$CF_RESULTS_DIRECTORY/catalogue.dat \
 			$CF_RESULTS_DIRECTORY/ensemble_catalogue.dat \
 			file_mode=$HBTfilemode \
+			dataset_to_use=$use_this_dataset \
 			selection_mode=$selectionMode \
 			BE_mode=$chosen_BE_mode \
 			event_class_minimum=$lowerLimit \

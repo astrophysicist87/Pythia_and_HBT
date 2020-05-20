@@ -5,7 +5,7 @@
 	CLUSTER='pitzer'
 	NTHREADS=1
 	NDATASETS=10
-	DIRECTORY=RESULTS_test_class_range_setting
+	DIRECTORY=test_class_range_setting
 	PYTHIA_WALLTIME='01:00:00'
 	HBT_WALLTIME='01:00:00'
 
