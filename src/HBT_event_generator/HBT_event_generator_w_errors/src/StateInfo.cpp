@@ -16,7 +16,7 @@ void HBT_event_generator::Dump_state()
 								n_Q_bins;
 	const int K_space_size = n_KT_bins*n_Kphi_bins*n_KL_bins;
 
-	ofstream outPairs( path + "state/pairs.dat" );
+	ofstream outPairs( path + "/state/pairs.dat" );
 	for ( int iK = 0; iK < K_space_size; iK++ )
 		outPairs
 			<< numPair[iK]  << "   "
@@ -25,7 +25,7 @@ void HBT_event_generator::Dump_state()
 			<< denPair2[iK] << endl;
 	outPairs.close();
 
-	ofstream outDistributions( path + "state/distributions.dat" );
+	ofstream outDistributions( path + "/state/distributions.dat" );
 	for ( int iqK = 0; iqK < K_space_size*q_space_size; iqK++ )
 		outDistributions
 			<< numerator[iqK]                   << "   "
@@ -51,7 +51,7 @@ void HBT_event_generator::Load_state()
 								n_Q_bins;
 	const int K_space_size = n_KT_bins*n_Kphi_bins*n_KL_bins;
 
-	ifstream inPairs( path + "state/pairs.dat" );
+	ifstream inPairs( path + "/state/pairs.dat" );
 	for ( int iK = 0; iK < K_space_size; iK++ )
 		inPairs
 			>> numPair[iK]
@@ -61,7 +61,7 @@ void HBT_event_generator::Load_state()
 	inPairs.close();
 
 	double dummy = 0.0;
-	ifstream inDistributions( path + "state/distributions.dat" );
+	ifstream inDistributions( path + "/state/distributions.dat" );
 	for ( int iqK = 0; iqK < K_space_size*q_space_size; iqK++ )
 		inDistributions
 			>> numerator[iqK]

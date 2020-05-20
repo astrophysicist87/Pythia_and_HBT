@@ -154,13 +154,17 @@ file_mode 										= 1
 	RNG_zDir 									= 1
 	RNG_seed 									= 1
 	RNG_nLoops 									= 1
+	# ( if file_mode == 2 )
+	dataset_to_use								= -1
 	# --
 
 # --
-selection_mode 									= 0
-column_to_read 									= 3		# column in multiplicities file to select on
 # 0: use centrality ranges
 # 1: use multiplicity ranges
+selection_mode 									= 0
+# column in multiplicities file to select on
+# (ASSUME ZERO-INDEXED COUNTING)
+column_to_read 									= 5
 
 # --
 # minimum bias by default

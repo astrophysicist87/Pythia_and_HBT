@@ -13,9 +13,10 @@ using namespace std;
 
 typedef struct
 {
-	int eventID;
-	int chosen_multiplicity;	// the multiplicity used for sorting
-	vector<string> fields;		// event ID, total multiplicity, dNch/deta, etc...
+	int eventID;                     // in full ensemble
+	int dataset, eventID_in_dataset; // in specific dataset
+	int chosen_multiplicity;         // the multiplicity used for sorting
+	vector<string> fields;           // event ID, total multiplicity, dNch/deta, etc...
 } EventMultiplicity;
 
 
@@ -48,8 +49,10 @@ void read_in_multiplicities(string filename, int column_to_read, vector<EventMul
 		string field = "";
 		while ( iss >> field ) thisEvent.fields.push_back( field );
 
-		// if this line has three valid entries, store and move on
-		thisEvent.eventID = stoi( thisEvent.fields[0] );
+		// if this line has valid entries, store and move on
+		thisEvent.eventID             = stoi( thisEvent.fields[0] );
+		thisEvent.dataset             = stoi( thisEvent.fields[1] );
+		thisEvent.eventID_in_dataset  = stoi( thisEvent.fields[2] );
 		thisEvent.chosen_multiplicity = stoi( thisEvent.fields[ column_to_read ] );
 		ensemble.push_back( thisEvent );
 	}
@@ -63,6 +66,7 @@ void get_events_in_event_class(
 			string filename,
 			vector<EventMultiplicity> & ensemble,
 			double minimum, double maximum,
+			int dataset_to_use,		// default dataset to use (negative means use all events)
 			int column_to_use = 1,	// default column for total multiplicity
 			string selection_mode = "centrality" )
 {
@@ -82,18 +86,37 @@ void get_events_in_event_class(
 		int lastEvent = static_cast<int>(x2);
 		//cout << ensemble.size() << "   " << x1 << "   " << x2 << "   " << firstEvent << "   " << lastEvent << endl;
 	
-		vector<EventMultiplicity>::const_iterator first = ensemble.begin() + firstEvent;
-		vector<EventMultiplicity>::const_iterator last = ensemble.begin() + lastEvent;
-		vector<EventMultiplicity> eventClass(first, last);
+		vector<EventMultiplicity> eventClass;
+		if ( dataset_to_use < 0 )
+		{
+			vector<EventMultiplicity>::const_iterator first = ensemble.begin() + firstEvent;
+			vector<EventMultiplicity>::const_iterator last = ensemble.begin() + lastEvent;
+			eventClass = vector<EventMultiplicity>(first, last);
+		}
+		else
+		{
+			//for (auto it = first; it != last; ++it)
+			std::for_each( first, last, [](const auto & event) )
+				if ( event.dataset == dataset_to_use )	// if event belongs to current dataset
+					eventClass.push_back( event );
+		}
 	
 		ensemble = eventClass;
 	}
 	else if ( selection_mode == "multiplicity" )
 	{
 		vector<EventMultiplicity> eventClass;
-		for ( const auto & event : ensemble )
-			if ( event.chosen_multiplicity >= (int)minimum and event.chosen_multiplicity <= (int)maximum )
-				eventClass.push_back( event );
+		if ( dataset < 0 )
+			for ( const auto & event : ensemble )
+				if (    event.chosen_multiplicity >= (int)minimum
+	                and event.chosen_multiplicity <= (int)maximum )
+					eventClass.push_back( event );
+		else
+			for ( const auto & event : ensemble )
+				if (    event.chosen_multiplicity >= (int)minimum
+	                and event.chosen_multiplicity <= (int)maximum
+                    and event.dataset == dataset_to_use )
+					eventClass.push_back( event );
 
 		ensemble = eventClass;
 	}

@@ -22,7 +22,7 @@ const double plumbergtest = 0.;
 const bool CONVERT_MM_TO_FM = true;	// needs to be true if running on Pythia output, false for Vishnu output
 const double MmPerFm = ( CONVERT_MM_TO_FM ) ? 1.e-12 : 1.0;	//mm-to-fm conversion
 
-vector<EventMultiplicity> ensemble_multiplicites;
+vector<EventMultiplicity> ensemble_multiplicities;
 
 void read_in_file_OSCAR(string filename, vector<EventRecord> & eventsInFile, ParameterReader * paraRdr);
 
@@ -100,7 +100,7 @@ void read_in_file(string filename, vector<EventRecord> & eventsInFile, Parameter
 	double max_pz = 1.01*(KL_max + max_ql);
 	//=============================================
 
-	if ( ensemble_multiplicites.size() < 1 )
+	if ( ensemble_multiplicities.size() < 1 )
 	{
 		cout << "Finished reading in all necessary files!" << endl;
 		return;
@@ -108,7 +108,7 @@ void read_in_file(string filename, vector<EventRecord> & eventsInFile, Parameter
 
 	// this vector contains events to include (for specific centrality class)
 	int nextEventIndex = 0;
-	int nextEventID = ensemble_multiplicites[nextEventIndex].eventID;
+	int nextEventID = ensemble_multiplicities[nextEventIndex].eventID;
 	//cout << "nextEventID = " << nextEventID << endl;
 	int countthis = 0;
 	int n_events_read_from_this_file = 0;
@@ -221,8 +221,8 @@ void read_in_file(string filename, vector<EventRecord> & eventsInFile, Parameter
 				//set next event to include
 				// (negative means we're done reading in selected events)
 				++nextEventIndex;
-				nextEventID = ( nextEventIndex == ensemble_multiplicites.size() ) ?
-								-1 : ensemble_multiplicites[nextEventIndex].eventID;
+				nextEventID = ( nextEventIndex == ensemble_multiplicities.size() ) ?
+								-1 : ensemble_multiplicities[nextEventIndex].eventID;
 
 				// break if done with this centrality class
 				if ( nextEventID < 0 )
@@ -267,7 +267,7 @@ void read_in_file(string filename, vector<EventRecord> & eventsInFile, Parameter
 	infile.close();
 	if ( n_events_read_from_this_file > 0 )
 	{
-		int n_current_events = ensemble_multiplicites.size();
+		int n_current_events = ensemble_multiplicities.size();
 
 		/*cout << "Deleting " << n_events_read_from_this_file
 				<< " computed events from list of "
@@ -275,26 +275,26 @@ void read_in_file(string filename, vector<EventRecord> & eventsInFile, Parameter
 				<< endl;
 
 		cout << "Before: "
-				<< ensemble_multiplicites[0].eventID << " "
-				<< ensemble_multiplicites[1].eventID << " "
-				<< ensemble_multiplicites[2].eventID << "..."
-				<< ensemble_multiplicites[n_current_events-3].eventID << " "
-				<< ensemble_multiplicites[n_current_events-2].eventID << " "
-				<< ensemble_multiplicites[n_current_events-1].eventID << endl;*/
+				<< ensemble_multiplicities[0].eventID << " "
+				<< ensemble_multiplicities[1].eventID << " "
+				<< ensemble_multiplicities[2].eventID << "..."
+				<< ensemble_multiplicities[n_current_events-3].eventID << " "
+				<< ensemble_multiplicities[n_current_events-2].eventID << " "
+				<< ensemble_multiplicities[n_current_events-1].eventID << endl;*/
 
-		ensemble_multiplicites.erase( ensemble_multiplicites.begin(),
-									ensemble_multiplicites.begin()
+		ensemble_multiplicities.erase( ensemble_multiplicities.begin(),
+									ensemble_multiplicities.begin()
 									+ n_events_read_from_this_file );
 
-		/*n_current_events = ensemble_multiplicites.size();
+		/*n_current_events = ensemble_multiplicities.size();
 
 		cout << "After: "
-				<< ensemble_multiplicites[0].eventID << " "
-				<< ensemble_multiplicites[1].eventID << " "
-				<< ensemble_multiplicites[2].eventID << "..."
-				<< ensemble_multiplicites[n_current_events-3].eventID << " "
-				<< ensemble_multiplicites[n_current_events-2].eventID << " "
-				<< ensemble_multiplicites[n_current_events-1].eventID << endl;
+				<< ensemble_multiplicities[0].eventID << " "
+				<< ensemble_multiplicities[1].eventID << " "
+				<< ensemble_multiplicities[2].eventID << "..."
+				<< ensemble_multiplicities[n_current_events-3].eventID << " "
+				<< ensemble_multiplicities[n_current_events-2].eventID << " "
+				<< ensemble_multiplicities[n_current_events-1].eventID << endl;
 
 		cout << "n_current_events = " << n_current_events << endl;*/
 	}
@@ -348,7 +348,7 @@ void read_in_file_OSCAR(string filename, vector<EventRecord> & eventsInFile, Par
 
 	// this vector contains events to include (for specific centrality class)
 	int nextEventIndex = 0;
-	int nextEventID = ensemble_multiplicites[nextEventIndex].eventID;
+	int nextEventID = ensemble_multiplicities[nextEventIndex].eventID;
 	int n_events_read_from_this_file = 0;
 
 	do
@@ -376,8 +376,8 @@ void read_in_file_OSCAR(string filename, vector<EventRecord> & eventsInFile, Par
 			//set next event to include
 			// (negative means we're done reading in selected events)
 			++nextEventIndex;
-			nextEventID = ( nextEventIndex == ensemble_multiplicites.size() ) ?
-							-1 : ensemble_multiplicites[nextEventIndex].eventID;
+			nextEventID = ( nextEventIndex == ensemble_multiplicities.size() ) ?
+							-1 : ensemble_multiplicities[nextEventIndex].eventID;
 		}
 
 		// to hold relevant particles for this event
@@ -453,8 +453,8 @@ void read_in_file_OSCAR(string filename, vector<EventRecord> & eventsInFile, Par
 
 	// discard number of events read in from this file
 	if ( n_events_read_from_this_file > 0 )
-		ensemble_multiplicites.erase( ensemble_multiplicites.begin(),
-									ensemble_multiplicites.begin()
+		ensemble_multiplicities.erase( ensemble_multiplicities.begin(),
+									ensemble_multiplicities.begin()
 									+ n_events_read_from_this_file );
 
 	// debugging

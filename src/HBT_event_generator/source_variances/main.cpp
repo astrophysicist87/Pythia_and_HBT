@@ -110,7 +110,7 @@ int main(int argc, char *argv[])
 		// select only those events falling into specificed centrality range
 		string multiplicity_filename = ensemble_info[1];
 		get_events_in_centrality_class(
-					multiplicity_filename, ensemble_multiplicites,
+					multiplicity_filename, ensemble_multiplicities,
 					centrality_minimum, centrality_maximum );
 
 		// Proceed with HBT calculations

@@ -247,36 +247,41 @@ int main(int argc, char *argv[])
 
 		// select only those events falling into specificed centrality range
 		string multiplicity_filename = ensemble_info[1];
-		cout << "Reading in " << multiplicity_filename << endl;
 		const int column_to_read = paraRdr->getVal("column_to_read");
+		const int dataset_to_use = paraRdr->getVal("dataset_to_use");
 		vector<string> selectionModes = { "centrality", "multiplicity" };
+		cout << "Reading in " << multiplicity_filename
+				<< " using column = " << column_to_read << endl;
+		//cout << "Accepting events only belonging to "
+        //        "dataset = " << dataset_to_use << endl;
 		get_events_in_event_class(
-					multiplicity_filename, ensemble_multiplicites,
+					multiplicity_filename, ensemble_multiplicities,
 					event_class_minimum, event_class_maximum,
-					column_to_read, selectionModes[selection_mode] );
+					dataset_to_use, column_to_read,
+					selectionModes[selection_mode] );
 
 		if ( selection_mode == 0 )
 			cout << "run_HBT_event_generator(): "
-					<< "Using " << ensemble_multiplicites.size()
+					<< "Using " << ensemble_multiplicities.size()
 					<< " events in centrality class "
 					<< event_class_minimum << "-"
 					<< event_class_maximum << "%!" << endl
 					<< "Check events in this centrality class: " << endl;
 		else
 			cout << "run_HBT_event_generator(): "
-					<< "Using " << ensemble_multiplicites.size()
+					<< "Using " << ensemble_multiplicities.size()
 					<< " events in multiplicity range "
 					<< event_class_minimum << "-"
 					<< event_class_maximum << "!" << endl
 					<< "Check events in this multiplicity range: " << endl;
 
-		//for (int iEvent = 0; iEvent < ensemble_multiplicites.size(); ++iEvent)
-		//	cout << ensemble_multiplicites[iEvent].eventID << "   "
-		//			<< ensemble_multiplicites[iEvent].total_multiplicity << "   "
-		//			<< ensemble_multiplicites[iEvent].particle_multiplicity << endl;
+		//for (int iEvent = 0; iEvent < ensemble_multiplicities.size(); ++iEvent)
+		//	cout << ensemble_multiplicities[iEvent].eventID << "   "
+		//			<< ensemble_multiplicities[iEvent].total_multiplicity << "   "
+		//			<< ensemble_multiplicities[iEvent].particle_multiplicity << endl;
 		{
 			ofstream output_multiplicities( path + "/event_class_multiplicities.dat" );
-			for ( const auto & event : ensemble_multiplicites )
+			for ( const auto & event : ensemble_multiplicities )
 			{
 				for ( const auto & field : event.fields )
 					output_multiplicities << field << "   ";
@@ -360,9 +365,136 @@ int main(int argc, char *argv[])
 		}
 	
 	}
-	else if ( file_mode == 2 )
+	else if ( file_mode == 2 )	// process data for single dataset of several
 	{
-		;	//Nothing supported yet...
+
+		// Specify files containing all position-momentum information
+		// from which to construct HBT correlation function
+		vector<string> all_file_names;
+		read_file_catalogue(catalogueFilename, all_file_names);
+
+		// Process multiplicity and ensemble information
+		vector<string> ensemble_info;
+		read_file_catalogue(ensembleCatalogueFilename, ensemble_info);
+
+		// allows to give files appropriate names
+		string collision_system_info = ensemble_info[0];
+		string target_name, projectile_name, beam_energy;
+		int Nevents;
+		istringstream iss(collision_system_info);
+		iss >> target_name
+			>> projectile_name
+			>> beam_energy
+			>> Nevents;
+
+		int selection_mode = paraRdr->getVal("selection_mode");
+		double event_class_minimum = paraRdr->getVal("event_class_minimum");
+		double event_class_maximum = paraRdr->getVal("event_class_maximum");
+
+		if ( selection_mode == 0 )
+			cout << "run_HBT_event_generator(): "
+					<< "Using centrality class: "
+					<< event_class_minimum << "-"
+					<< event_class_maximum << "%!" << endl;
+		else
+			cout << "run_HBT_event_generator(): "
+					<< "Using multiplicity range: "
+					<< event_class_minimum << "-"
+					<< event_class_maximum << "!" << endl;
+	
+
+		// select only those events falling into specificed centrality range
+		// AND which belong to chosen dataset
+		string multiplicity_filename = ensemble_info[1];
+		const int column_to_read = paraRdr->getVal("column_to_read");
+		const int dataset_to_use = paraRdr->getVal("dataset_to_use");
+		vector<string> selectionModes = { "centrality", "multiplicity" };
+		cout << "Reading in " << multiplicity_filename
+				<< " using column = " << column_to_read << endl;
+		cout << "Accepting events only belonging to "
+                "dataset = " << dataset_to_use << endl;
+		get_events_in_event_class(
+					multiplicity_filename, ensemble_multiplicities,
+					event_class_minimum, event_class_maximum,
+					dataset_to_use, column_to_read,
+					selectionModes[selection_mode] );
+
+		if ( selection_mode == 0 )
+			cout << "run_HBT_event_generator(): "
+					<< "Using " << ensemble_multiplicities.size()
+					<< " events in centrality class "
+					<< event_class_minimum << "-"
+					<< event_class_maximum << "%!" << endl
+					<< "Check events in this centrality class: " << endl;
+		else
+			cout << "run_HBT_event_generator(): "
+					<< "Using " << ensemble_multiplicities.size()
+					<< " events in multiplicity range "
+					<< event_class_minimum << "-"
+					<< event_class_maximum << "!" << endl
+					<< "Check events in this multiplicity range: " << endl;
+
+		{
+			ofstream output_multiplicities( path + "/event_class_multiplicities.dat" );
+			for ( const auto & event : ensemble_multiplicities )
+			{
+				for ( const auto & field : event.fields )
+					output_multiplicities << field << "   ";
+				output_multiplicities << endl;
+			}
+			output_multiplicities.close();
+		}
+
+		// Proceed with HBT calculations
+		{
+
+			// Vector to hold all event information
+			vector<EventRecord> allEvents;
+
+
+			// Read in the first file
+			int iFile = 0;
+			cout << "Processing " << all_file_names[iFile] << "..." << endl;
+
+			get_all_events(all_file_names[iFile], allEvents, paraRdr);
+
+
+			// Create HBT_event_generator object here
+			// note: numerator and denominator computed automatically
+			HBT_event_generator
+				HBT_event_ensemble( paraRdr, allEvents,
+									outmain, errmain );
+
+
+			// Loop over the rest of the files
+			for (iFile = 1; iFile < all_file_names.size(); ++iFile)
+			{
+
+				cout << "Processing " << all_file_names[iFile] << "..." << endl;
+
+				// Read in the next file
+				get_all_events(all_file_names[iFile], allEvents, paraRdr);
+
+
+				// - for each file, update numerator and denominator
+				HBT_event_ensemble.Update_records( allEvents );
+
+			}
+
+			// Compute correlation function itself (after
+			// all events have been read in)
+			HBT_event_ensemble.Compute_correlation_function();
+
+
+			// Output results
+			HBT_event_ensemble.Output_correlation_function( path + "/HBT_pipiCF.dat" );
+
+		}
+	
+	}
+	else if ( file_mode == 3 )
+	{
+		;	// This will handle post-processing of multiple datasets
 	}
 
 	// Print out run-time

@@ -834,6 +834,8 @@ if (false)
 
 					outMultiplicities
 								<< dataset_seed * total_number_of_events + iEvent << "   "
+								<< dataset_seed << "   "
+								<< iEvent << "   "
 								<< charged_hadron_multiplicity;
 
 					// output particle multiplicities (order hardcoded for now)

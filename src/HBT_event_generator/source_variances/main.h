@@ -21,7 +21,7 @@ const double plumbergtest = 0.;
 const bool CONVERT_MM_TO_FM = true;	// needs to be true if running on Pythia output, false for Vishnu output
 const double MmPerFm = ( CONVERT_MM_TO_FM ) ? 1.e-12 : 1.0;	//mm-to-fm conversion
 
-vector<EventMultiplicity> ensemble_multiplicites;
+vector<EventMultiplicity> ensemble_multiplicities;
 
 void display_intro(int logo_mode)
 {
