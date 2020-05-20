@@ -44,8 +44,8 @@ done
 
 echo $projectile $target $beamEnergy $NTotalEvents > $HBT_EVENT_GEN_DIRECTORY/ensemble_catalogue.dat
 echo $projectile $target $beamEnergy $NTotalEvents > $HBT_SV_DIRECTORY/ensemble_catalogue.dat
-readlink -f $PYTHIA_HEAD_RESULTS_DIRECTORY/all_event_multiplicites.dat >> $HBT_EVENT_GEN_DIRECTORY/ensemble_catalogue.dat
-readlink -f $PYTHIA_HEAD_RESULTS_DIRECTORY/all_event_multiplicites.dat >> $HBT_SV_DIRECTORY/ensemble_catalogue.dat
+readlink -f $PYTHIA_HEAD_RESULTS_DIRECTORY/all_event_multiplicities.dat >> $HBT_EVENT_GEN_DIRECTORY/ensemble_catalogue.dat
+readlink -f $PYTHIA_HEAD_RESULTS_DIRECTORY/all_event_multiplicities.dat >> $HBT_SV_DIRECTORY/ensemble_catalogue.dat
 
 
 

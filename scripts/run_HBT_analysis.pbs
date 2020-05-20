@@ -108,6 +108,7 @@ then
 
 	# using OpenMP (leave a couple cores free)
 	export OMP_NUM_THREADS=$chosen_OMP_NUM_THREADS
+	echo '| - '$PBS_JOBNAME': Check OpenMP environment variable OMP_NUM_THREADS =' $OMP_NUM_THREADS
 
 	#CF_RESULTS_DIRECTORY=$HBT_CEN_RESULTS_DIRECTORY/CF_results
 
