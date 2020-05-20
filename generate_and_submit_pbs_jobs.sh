@@ -2,21 +2,22 @@
 
 (
 	# info for this run
-	CLUSTER='mangi'
-	NTHREADS=128
+	CLUSTER='pitzer'
+	NTHREADS=1
 	NDATASETS=10
-	DIRECTORY=RESULTS_test_pp_shifting_modes
-	PYTHIA_WALLTIME='96:00:00'
-	HBT_WALLTIME='72:00:00'
+	DIRECTORY=RESULTS_test_class_range_setting
+	PYTHIA_WALLTIME='01:00:00'
+	HBT_WALLTIME='01:00:00'
 
 	# Set job specifications here
-	declare -a class_ranges=("1-11" "12-16" "17-22" "23-28" "29-34" "35-41" "42-51" "52-151" "152-1000000")
-	#declare -a class_ranges=("0-5%" "5-10%" "10-20%" "20-30%" "30-40%" "40-60%" "60-100%")
+	#declare -a class_ranges=("1-11" "12-16" "17-22" "23-28" "29-34" "35-41" "42-51" "52-151" "152-1000000")
+	declare -a class_ranges=("0-5%" "5-10%" "10-20%" "20-30%" "30-40%" "40-60%" "60-100%")
 	declare -a specs=(
-		'projectile="p" target="p" beamEnergy="13000" chosenHBTparticle="211" Nevents=1000000 BEeffects="on" shiftingSet="1" compensationSet="0" compensationMode="1" eventClassSelectionMode="multiplicity" runSV="false"'
-		'projectile="p" target="p" beamEnergy="13000" chosenHBTparticle="211" Nevents=1000000 BEeffects="on" shiftingSet="1" compensationSet="2" compensationMode="1" eventClassSelectionMode="multiplicity" runSV="false"'
-		'projectile="p" target="p" beamEnergy="13000" chosenHBTparticle="211" Nevents=1000000 BEeffects="on" shiftingSet="0" compensationSet="1" compensationMode="0" eventClassSelectionMode="multiplicity" runSV="false"'
-		'projectile="p" target="p" beamEnergy="13000" chosenHBTparticle="211" Nevents=1000000 BEeffects="on" shiftingSet="1" compensationSet="1" compensationMode="0" eventClassSelectionMode="multiplicity" runSV="false"'
+		'projectile="p" target="p" beamEnergy="13000" chosenHBTparticle="211" eventClassSelectionMode="centrality" Nevents=1000 BEeffects="off" runSV="false"'
+		#'projectile="p" target="p" beamEnergy="13000" chosenHBTparticle="211" Nevents=1000000 BEeffects="on" shiftingSet="1" compensationSet="0" compensationMode="1" eventClassSelectionMode="multiplicity" runSV="false"'
+		#'projectile="p" target="p" beamEnergy="13000" chosenHBTparticle="211" Nevents=1000000 BEeffects="on" shiftingSet="1" compensationSet="2" compensationMode="1" eventClassSelectionMode="multiplicity" runSV="false"'
+		#'projectile="p" target="p" beamEnergy="13000" chosenHBTparticle="211" Nevents=1000000 BEeffects="on" shiftingSet="0" compensationSet="1" compensationMode="0" eventClassSelectionMode="multiplicity" runSV="false"'
+		#'projectile="p" target="p" beamEnergy="13000" chosenHBTparticle="211" Nevents=1000000 BEeffects="on" shiftingSet="1" compensationSet="1" compensationMode="0" eventClassSelectionMode="multiplicity" runSV="false"'
 	)
 
 	#-----------------------------------------------------
