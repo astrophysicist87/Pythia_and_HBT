@@ -417,7 +417,6 @@ void HBT_event_generator::Compute_numerator_and_denominator_methodMode0_q_mode_3
 	}
 
 	//err << "  * Finished!" << endl;
-	Dump_state();
 
 	return;
 }
@@ -738,7 +737,6 @@ void HBT_event_generator::Compute_numerator_and_denominator_momentum_space_only_
 	}
 
 	err << "  * Finished!" << endl;
-	Dump_state();
 
 	return;
 }

@@ -96,7 +96,7 @@ class HBT_event_generator
 		static vector<int> numerator_bin_count, denominator_bin_count;
 		
 		// miscellaneous
-		string path;
+		//string path;
 		ostream & out;
 		ostream & err;
 

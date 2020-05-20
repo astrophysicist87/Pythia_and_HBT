@@ -152,6 +152,10 @@ int main(int argc, char *argv[])
 								outmain, errmain );
 
 
+		// print state to files
+		HBT_event_ensemble.Dump_state(path);
+
+
 		// Loop a few more times to build up statistics
 		// N.B. - 2147483647 is max value for int
 		//const int nLoops = 100;  //say
@@ -193,6 +197,9 @@ int main(int argc, char *argv[])
 
 			// - for each file, update numerator and denominator
 			HBT_event_ensemble.Update_records( allEvents );
+
+			// print state to files
+			HBT_event_ensemble.Dump_state(path);
 
 		}
 
@@ -313,6 +320,8 @@ int main(int argc, char *argv[])
 				HBT_event_ensemble( paraRdr, allEvents,
 									outmain, errmain );
 
+			// print state to files
+			HBT_event_ensemble.Dump_state(path);
 
 			// Loop over the rest of the files
 			for (iFile = 1; iFile < all_file_names.size(); ++iFile)
@@ -326,6 +335,9 @@ int main(int argc, char *argv[])
 
 				// - for each file, update numerator and denominator
 				HBT_event_ensemble.Update_records( allEvents );
+
+				// print state to files
+				HBT_event_ensemble.Dump_state(path);
 
 			}
 
@@ -353,6 +365,10 @@ int main(int argc, char *argv[])
 			HBT_event_generator
 				HBT_event_ensemble( paraRdr, allEvents,
 									outmain, errmain );
+
+
+			// print state to files
+			HBT_event_ensemble.Dump_state(path);
 
 
 			// Compute correlation function itself
@@ -466,6 +482,10 @@ int main(int argc, char *argv[])
 									outmain, errmain );
 
 
+			// print state to files
+			HBT_event_ensemble.Dump_state(path);
+
+
 			// Loop over the rest of the files
 			for (iFile = 1; iFile < all_file_names.size(); ++iFile)
 			{
@@ -478,6 +498,10 @@ int main(int argc, char *argv[])
 
 				// - for each file, update numerator and denominator
 				HBT_event_ensemble.Update_records( allEvents );
+
+
+				// print state to files
+				HBT_event_ensemble.Dump_state(path);
 
 			}
 

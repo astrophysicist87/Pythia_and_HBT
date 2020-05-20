@@ -9,12 +9,12 @@
 #include "Stopwatch.h"
 
 
-void HBT_event_generator::Dump_state()
+void HBT_event_generator::Dump_state(string path)
 {
-	cout << "Entered Dump_state()!" << endl;
-	cerr << "Entered Dump_state()!" << endl;
-	out << "Entered Dump_state()!" << endl;
-	err << "Entered Dump_state()!" << endl;
+//	cout << "Entered Dump_state(" << __LINE__ << ")!" << endl;
+//	cerr << "Entered Dump_state(" << __LINE__ << ")!" << endl;
+//	out << "Entered Dump_state(" << __LINE__ << ")!" << endl;
+//	err << "Entered Dump_state(" << __LINE__ << ")!" << endl;
 
 	const int q_space_size = ( q_mode == 0 ) ?
 								n_qo_bins*n_qs_bins*n_ql_bins :
@@ -22,6 +22,10 @@ void HBT_event_generator::Dump_state()
 	const int K_space_size = n_KT_bins*n_Kphi_bins*n_KL_bins;
 
 	string outPairsFilename = path + "/state/pairs.dat";
+//	cout << "Dump_state(" << __LINE__ << "): " << outPairsFilename << endl;
+//	cerr << "Dump_state(" << __LINE__ << "): " << outPairsFilename << endl;
+//	out << "Dump_state(" << __LINE__ << "): " << outPairsFilename << endl;
+//	err << "Dump_state(" << __LINE__ << "): " << outPairsFilename << endl;
 	ofstream outPairs( outPairsFilename.c_str() );
 	for ( int iK = 0; iK < K_space_size; iK++ )
 		outPairs
@@ -32,6 +36,10 @@ void HBT_event_generator::Dump_state()
 	outPairs.close();
 
 	string outDistributionsFilename = path + "/state/distributions.dat";
+//	cout << "Dump_state(" << __LINE__ << "): " << outDistributionsFilename << endl;
+//	cerr << "Dump_state(" << __LINE__ << "): " << outDistributionsFilename << endl;
+//	out << "Dump_state(" << __LINE__ << "): " << outDistributionsFilename << endl;
+//	err << "Dump_state(" << __LINE__ << "): " << outDistributionsFilename << endl;
 	ofstream outDistributions( outDistributionsFilename.c_str() );
 	for ( int iqK = 0; iqK < K_space_size*q_space_size; iqK++ )
 		outDistributions
@@ -51,7 +59,7 @@ void HBT_event_generator::Dump_state()
 }
 
 
-void HBT_event_generator::Load_state()
+void HBT_event_generator::Load_state(string path)
 {
 	const int q_space_size = ( q_mode == 0 ) ?
 								n_qo_bins*n_qs_bins*n_ql_bins :

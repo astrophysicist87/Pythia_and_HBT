@@ -416,7 +416,6 @@ void HBT_event_generator::Compute_numerator_and_denominator_methodMode2_q_mode_1
 	}
 
 	cout << "  * Finished " << total_N_events << " events so far!" << endl;
-	Dump_state();
 
 	return;
 }
