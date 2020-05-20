@@ -113,6 +113,10 @@ then
 
 	#CF_RESULTS_DIRECTORY=$HBT_CEN_RESULTS_DIRECTORY/CF_results
 
+	echo 'Need to create' $CF_RESULTS_DIRECTORY
+	echo 'Check contents(dataseed='$datasetSeed'):'
+	ls $CF_RESULTS_DIRECTORY
+
 	if [ ! -d "$CF_RESULTS_DIRECTORY" ]; then
 		mkdir -p $CF_RESULTS_DIRECTORY
 		mkdir -p $CF_RESULTS_DIRECTORY/state
