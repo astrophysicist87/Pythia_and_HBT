@@ -14,6 +14,7 @@ declare -A boolVal=( ["true"]="1" ["false"]="0")
 
 # Load environment settings
 source scripts/env.sh
+source scripts/omp_env.sh
 source settings.sh
 
 # make sure main results directory exists

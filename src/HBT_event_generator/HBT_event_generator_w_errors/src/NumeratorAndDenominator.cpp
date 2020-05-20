@@ -738,6 +738,7 @@ void HBT_event_generator::Compute_numerator_and_denominator_momentum_space_only_
 	}
 
 	err << "  * Finished!" << endl;
+	Dump_state();
 
 	return;
 }
