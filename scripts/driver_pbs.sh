@@ -90,12 +90,12 @@ else
 	for eventClassCutString in "${class_ranges[@]}"
 	do
 		varString="eventClassCutString=${eventClassCutString},datasetSeed=0,HBTfilemode=2"
-		jobids=`qsub -q $chosen_QUEUENAME                        \
-				-l walltime=$chosen_HBT_walltime_per_event_class \
-				-l nodes=1:ppn=$OMP_NUM_THREADS                  \
-				-v $varString                                    \
-				-W depend=afterok:${jobid}                       \
-				run_HBT_analysis.pbs`
+		newjobids=`qsub -q $chosen_QUEUENAME                         \
+					-l walltime=$chosen_HBT_walltime_per_event_class \
+					-l nodes=1:ppn=$OMP_NUM_THREADS                  \
+					-v $varString                                    \
+					-W depend=afterok:${jobid}                       \
+					run_HBT_analysis.pbs`
 		echo '--------'
 		for iDataset in $(seq 1 $[NDATASETS-1])
 		do
@@ -106,7 +106,7 @@ else
 						-v $varString                                    \
 						-W depend=afterok:${jobid}                       \
 						run_HBT_analysis.pbs`
-			jobids+=":${newjobid}"
+			newjobids+=":${newjobid}"
 			echo '--------'
 		done
 	done	# all event classes finished

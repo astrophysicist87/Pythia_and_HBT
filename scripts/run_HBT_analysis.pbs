@@ -105,7 +105,7 @@ then
 
 	echo '| - '$PBS_JOBNAME': Now entering '`realpath --relative-to="${PWD}" "$HBT_EVENT_GEN_DIRECTORY"`
 	cd $HBT_EVENT_GEN_DIRECTORY
-	#echo '     Now in '`pwd`
+	echo '     Now in '`pwd`
 
 	# using OpenMP (leave a couple cores free)
 	export OMP_NUM_THREADS=$chosen_OMP_NUM_THREADS
@@ -114,12 +114,12 @@ then
 	#CF_RESULTS_DIRECTORY=$HBT_CEN_RESULTS_DIRECTORY/CF_results
 
 	echo 'Need to create' $CF_RESULTS_DIRECTORY
-	echo 'Check contents(dataseed='$datasetSeed'):'
+	echo 'Check contents (dataseed='$datasetSeed'):'
 	#ls $CF_RESULTS_DIRECTORY
 
 	if [ ! -d "$CF_RESULTS_DIRECTORY" ]; then
 		mkdir -pv $CF_RESULTS_DIRECTORY
-		echo 'Check contents(dataseed='$datasetSeed'):'
+		echo 'Check contents (dataseed='$datasetSeed'):'
 		readlink -f $CF_RESULTS_DIRECTORY
 		ls $CF_RESULTS_DIRECTORY
 		mkdir -vp $CF_RESULTS_DIRECTORY/state
@@ -129,6 +129,9 @@ then
 
 	#cp ../parameters.dat .
 	cp ../parameters.dat ./*catalogue.dat $CF_RESULTS_DIRECTORY
+	echo 'Check contents again (dataseed='$datasetSeed'):'
+	ls $CF_RESULTS_DIRECTORY
+	readlink -f $CF_RESULTS_DIRECTORY/*
 
 	#default: assume BE effects are turned off in Pythia
 	chosen_BE_mode=0
