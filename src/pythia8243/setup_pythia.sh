@@ -4,4 +4,4 @@ gmake distclean
 
 ./configure
 
-gmake
+gmake -j4

@@ -520,9 +520,9 @@ int main(int argc, char *argv[])
 	{
 		;
 		// This will handle post-processing of multiple datasets
-		int nDatasets = paraRdr->getVal("nDatasets");
-		for ( int iDataset = 0; iDataset < nDatasets; iDataset++ )
-			Load_state(path + "/dataset_" + std::to_string(iDataset));
+//		int nDatasets = paraRdr->getVal("nDatasets");
+//		for ( int iDataset = 0; iDataset < nDatasets; iDataset++ )
+//			Load_state(path + "/dataset_" + std::to_string(iDataset));
 	}
 
 	// Print out run-time
