@@ -26,10 +26,10 @@ bool compareByMultiplicity(const EventMultiplicity &a, const EventMultiplicity &
     return ( a.chosen_multiplicity > b.chosen_multiplicity );
 }
 
-bool compareByEventToMultiplicity(const EventMultiplicity &a, const int &b)
+/*bool compareByEventToMultiplicity(const EventMultiplicity &a, const int &b)
 {
     return ( a.chosen_multiplicity < b );
-}
+}*/
 
 bool compareByEventToMultiplicity(const int &a, const EventMultiplicity &b)
 {
