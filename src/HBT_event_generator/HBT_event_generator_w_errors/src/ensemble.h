@@ -28,7 +28,6 @@ bool compareByMultiplicity(const EventMultiplicity &a, const EventMultiplicity &
 
 bool compareByEventToMultiplicity(const EventMultiplicity &a, const int &b)
 {
-	// a should come first if it has larger multiplicity
     return ( a.chosen_multiplicity < b );
 }
 
@@ -134,13 +133,11 @@ void get_events_in_event_class(
 			cout << "get_events_in_event_class(" << __LINE__ << "): "
                     "locating upper and lower bounds..." << endl;
 
-			std::vector<EventMultiplicity>::const_iterator
-				low = std::lower_bound( ensemble.begin(),
+			auto low = std::lower_bound( ensemble.begin(),
 										ensemble.end(),
 										(int)minimum,
 										compareByEventToMultiplicity );
-			std::vector<EventMultiplicity>::const_iterator
-				up  = std::upper_bound( ensemble.begin(),
+			auto up  = std::upper_bound( ensemble.begin(),
 										ensemble.end(),
 										(int)maximum,
 										compareByEventToMultiplicity );
