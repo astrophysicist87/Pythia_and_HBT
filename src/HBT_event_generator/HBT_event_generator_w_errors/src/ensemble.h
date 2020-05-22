@@ -86,12 +86,13 @@ void get_events_in_event_class(
 
 	cout << "get_events_in_event_class(" << __LINE__ << "): begin event class selection!" << endl;
 
+	// sort by multiplicity
+	sort( ensemble.begin(), ensemble.end(), compareByMultiplicity );
+
 	if ( selection_mode == "centrality" )
 	{
 		cout << "get_events_in_event_class(" << __LINE__ << "): processing by "
 			<< selection_mode << "..." << endl;
-		// sort by multiplicity
-		sort( ensemble.begin(), ensemble.end(), compareByMultiplicity );
 	
 		// centrality selection
 		double x1 = 0.01*minimum*static_cast<double>(ensemble.size());
@@ -122,10 +123,29 @@ void get_events_in_event_class(
 			<< selection_mode << "..." << endl;
 		vector<EventMultiplicity> eventClass;
 		if ( dataset_to_use < 0 )
-			for ( const auto & event : ensemble )
+		{
+			cout << "get_events_in_event_class(" << __LINE__ << "): "
+                    "locating upper and lower bounds..." << endl;
+
+			std::vector<EventMultiplicity>::const_iterator
+				low = std::lower_bound( ensemble.begin(),
+										ensemble.end(),
+										(int)minimum );
+			std::vector<EventMultiplicity>::const_iterator
+				up  = std::upper_bound( ensemble.begin(),
+										ensemble.end(),
+										(int)maximum );
+
+			cout << "get_events_in_event_class(" << __LINE__ << "): "
+                    "constructing event class..." << endl;
+			eventClass = vector<EventMultiplicity>(low, up);
+
+			/*for ( const auto & event : ensemble )
 				if (    event.chosen_multiplicity >= (int)minimum
 	                and event.chosen_multiplicity <= (int)maximum )
-					eventClass.push_back( event );
+					eventClass.push_back( event );*/
+			
+		}
 		else
 			for ( const auto & event : ensemble )
 				if (    event.chosen_multiplicity >= (int)minimum
@@ -141,7 +161,8 @@ void get_events_in_event_class(
 		exit(8);
 	}
 
-	cout << "get_events_in_event_class(" << __LINE__ << "): sorting..." << endl;
+	cout << "get_events_in_event_class(" << __LINE__ << "): "
+            "sorting by eventID..." << endl;
 
 	sort( ensemble.begin(), ensemble.end(), compareByEventID );
 
