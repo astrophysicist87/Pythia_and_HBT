@@ -57,6 +57,7 @@ void HBT_event_generator::Load_state(string path)
 
 	ifstream inPairs( path + "/state/pairs.dat" );
 	for ( int iK = 0; iK < K_space_size; iK++ )
+	{
 		/*inPairs
 			>> numPair[iK]
 			>> numPair2[iK]
@@ -66,6 +67,7 @@ void HBT_event_generator::Load_state(string path)
 		inPairs >> dummy; numPair2[iK] += static_cast<int>( dummy );
 		inPairs >> dummy; denPair[iK]  += static_cast<int>( dummy );
 		inPairs >> dummy; denPair2[iK] += static_cast<int>( dummy );
+	}
 	inPairs.close();
 
 	ifstream inDistributions( path + "/state/distributions.dat" );
