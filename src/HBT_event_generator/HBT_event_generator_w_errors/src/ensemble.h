@@ -127,11 +127,11 @@ void get_events_in_event_class(
 			cout << "get_events_in_event_class(" << __LINE__ << "): "
                     "locating upper and lower bounds..." << endl;
 
-			std::vector<EventMultiplicity>::const_iterator
+			std::vector<EventMultiplicity>::iterator
 				low = std::lower_bound( ensemble.begin(),
 										ensemble.end(),
 										(int)minimum );
-			std::vector<EventMultiplicity>::const_iterator
+			std::vector<EventMultiplicity>::iterator
 				up  = std::upper_bound( ensemble.begin(),
 										ensemble.end(),
 										(int)maximum );
