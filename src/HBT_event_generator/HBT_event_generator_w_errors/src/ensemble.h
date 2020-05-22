@@ -26,14 +26,24 @@ bool compareByMultiplicity(const EventMultiplicity &a, const EventMultiplicity &
     return ( a.chosen_multiplicity > b.chosen_multiplicity );
 }
 
-/*bool compareByEventToMultiplicity(const EventMultiplicity &a, const int &b)
-{
-    return ( a.chosen_multiplicity < b );
-}*/
+//bool compareByEventToMultiplicity(const EventMultiplicity &a, const int &b)
+//{
+//    return ( a.chosen_multiplicity < b );
+//}
+//
+//bool compareByEventToMultiplicity(const int &a, const EventMultiplicity &b)
+//{
+//    return ( a < b.chosen_multiplicity );
+//}
 
-bool compareByEventToMultiplicity(const int &a, const EventMultiplicity &b)
+inline bool operator<(const EventMultiplicity &a, const int &b)
 {
-    return ( a < b.chosen_multiplicity );
+    return a.chosen_multiplicity < b; 
+}
+
+inline bool operator<(const int &a, const EventMultiplicity &b)
+{
+    return a < b.chosen_multiplicity; 
 }
 
 
@@ -140,12 +150,10 @@ void get_events_in_event_class(
 
 			auto low = std::lower_bound( ensemble.begin(),
 										ensemble.end(),
-										(int)minimum,
-										compareByEventToMultiplicity );
+										(int)minimum );
 			auto up  = std::upper_bound( ensemble.begin(),
 										ensemble.end(),
-										(int)maximum,
-										compareByEventToMultiplicity );
+										(int)maximum );
 
 			cout << "get_events_in_event_class(" << __LINE__ << "): "
                     "constructing event class..." << endl;
