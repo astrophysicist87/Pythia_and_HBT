@@ -34,6 +34,9 @@ bool compareByEventID(const EventMultiplicity &a, const EventMultiplicity &b)
 
 void read_in_multiplicities(string filename, int column_to_read, vector<EventMultiplicity> & ensemble)
 {
+	cout << "read_in_multiplicities(" << __LINE__ << "): reading in column = "
+			<< column_to_read << " of " << filename << "..." << endl;
+
 	// load multiplicities from filename
 	ifstream infile(filename.c_str());
 
@@ -59,6 +62,8 @@ void read_in_multiplicities(string filename, int column_to_read, vector<EventMul
 
 	infile.close();
 
+	cout << "read_in_multiplicities(" << __LINE__ << "): finished!" << endl;
+
 	return;
 }
 
@@ -70,11 +75,21 @@ void get_events_in_event_class(
 			int column_to_use = 1,	// default column for total multiplicity
 			string selection_mode = "centrality" )
 {
+	cout << "get_events_in_event_class(" << __LINE__ << "): filename = " << filename << endl;
+	cout << "get_events_in_event_class(" << __LINE__ << "): dataset_to_use = " << dataset_to_use << endl;
+	cout << "get_events_in_event_class(" << __LINE__ << "): column_to_use = " << column_to_use << endl;
+	cout << "get_events_in_event_class(" << __LINE__ << "): selection_mode = " << selection_mode << endl;
+
+
 	// Load ensemble information
 	read_in_multiplicities(filename, column_to_use, ensemble);
 
+	cout << "get_events_in_event_class(" << __LINE__ << "): begin event class selection!" << endl;
+
 	if ( selection_mode == "centrality" )
 	{
+		cout << "get_events_in_event_class(" << __LINE__ << "): processing by "
+			<< selection_mode << "..." << endl;
 		// sort by multiplicity
 		sort( ensemble.begin(), ensemble.end(), compareByMultiplicity );
 	
@@ -103,6 +118,8 @@ void get_events_in_event_class(
 	}
 	else if ( selection_mode == "multiplicity" )
 	{
+		cout << "get_events_in_event_class(" << __LINE__ << "): processing by "
+			<< selection_mode << "..." << endl;
 		vector<EventMultiplicity> eventClass;
 		if ( dataset_to_use < 0 )
 			for ( const auto & event : ensemble )
@@ -124,7 +141,11 @@ void get_events_in_event_class(
 		exit(8);
 	}
 
+	cout << "get_events_in_event_class(" << __LINE__ << "): sorting..." << endl;
+
 	sort( ensemble.begin(), ensemble.end(), compareByEventID );
+
+	cout << "get_events_in_event_class(" << __LINE__ << "): finished everything!" << endl;
 
 	return;
 }
