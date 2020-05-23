@@ -26,13 +26,13 @@ export bMax="20.0"
 export QRefValue="0.2"                          # GeV
 export BEeffects='off'
 export BEEnhancementMode='1'                    # 0 - use fixed QRef
-                                         # 1 - use ST interval with spherical Bessel BE form
+                                         		# 1 - use ST interval with spherical Bessel BE form
 export SetFragmentationVertices='on'
 export SetPartonVertices='off'
 export ThermalOnly='false'
 
 export useInvariantSourceSize='off'             # Lorentz-invariant size vs. spatial size only
-export useDistribution='off'                    # Estimate QRef vs. take as input parameter
+export useDistribution='on'                    # Estimate QRef vs. take as input parameter
 export useRelativeDistance='on'                 # Use relative distances or absolute sizes
 export useRestFrame='on'                        # Use rest frame vs. lab frame
 export includePhaseSpace='on'                   # Include phase-space factor
