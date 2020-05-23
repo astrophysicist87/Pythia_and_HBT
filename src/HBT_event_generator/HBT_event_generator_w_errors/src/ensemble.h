@@ -156,9 +156,19 @@ void get_events_in_event_class(
 										(int)maximum );
 
 			cout << "get_events_in_event_class(" << __LINE__ << "): "
+                    "obtained lower position = " << low - ensemble.begin()
+                 << " and upper position = "     << up  - ensemble.begin()
+                 << " for (min, max) = "         << (int)minimum
+                 << "   " << (int)maximum << endl;
+
+
+			cout << "get_events_in_event_class(" << __LINE__ << "): "
                     "constructing event class..." << endl;
 			eventClass = vector<EventMultiplicity>(low, up);
 
+			cout << "get_events_in_event_class(" << __LINE__ << "): "
+                    "eventClass.size() = " << eventClass.size()
+                 << endl;
 			/*for ( const auto & event : ensemble )
 				if (    event.chosen_multiplicity >= (int)minimum
 	                and event.chosen_multiplicity <= (int)maximum )
