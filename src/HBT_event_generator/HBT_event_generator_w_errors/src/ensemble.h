@@ -148,6 +148,8 @@ void get_events_in_event_class(
 			cout << "get_events_in_event_class(" << __LINE__ << "): "
                     "locating upper and lower bounds..." << endl;
 
+			std::reverse( ensemble.begin(), ensemble.end() );
+
 			auto low = std::lower_bound( ensemble.begin(),
 										ensemble.end(),
 										(int)minimum );

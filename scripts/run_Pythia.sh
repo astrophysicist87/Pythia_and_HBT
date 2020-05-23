@@ -124,8 +124,8 @@ collisionSystemStem=$projectile$target"_"`echo $beamEnergy`"GeV_Nev"$Nevents
 	recordOfOutputFilenames_Sxp=$PYTHIA_RESULTS_DIRECTORY/`echo $collisionSystemStem`"_S_x_p_filenames.dat"
 	recordOfOutputFilename_mult=$PYTHIA_RESULTS_DIRECTORY/`echo $collisionSystemStem`"_total_N_filename.dat"
 
-	#\rm -f $HBT_EVENT_GEN_DIRECTORY/catalogue.dat
-	#\rm -f $HBT_SV_DIRECTORY/catalogue.dat
+	rm -f $HBT_EVENT_GEN_DIRECTORY/catalogue.dat
+	rm -f $HBT_SV_DIRECTORY/catalogue.dat
 
 	for line in `cat $recordOfOutputFilenames_Sxp`
 	do
