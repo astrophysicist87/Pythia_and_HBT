@@ -155,6 +155,10 @@ void get_events_in_event_class(
 										ensemble.end(),
 										(int)maximum );
 
+			cout << "CHECK EVENTS EXPLICITLY:" << endl;
+			for ( auto & event : ensemble )
+				cout << event.eventID << "   " << event.chosen_multiplicity << endl;
+
 			cout << "get_events_in_event_class(" << __LINE__ << "): "
                     "obtained lower position = " << low - ensemble.begin()
                  << " and upper position = "     << up  - ensemble.begin()
