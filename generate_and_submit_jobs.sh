@@ -12,9 +12,9 @@
 		#'projectile="p" target="p" beamEnergy="13000" chosenHBTparticle="211" Nevents=1000 eventClassSelectionMode="multiplicity" runSV="false"'
 		'projectile="p" target="p" beamEnergy="7000" chosenHBTparticle="211" Nevents=10000000 BEeffects="on" shiftingSet="1" compensationSet="0" compensationMode="1" eventClassSelectionMode="multiplicity" runSV="false"'
 		'projectile="p" target="p" beamEnergy="7000" chosenHBTparticle="211" Nevents=10000000 BEeffects="on" shiftingSet="1" compensationSet="2" compensationMode="1" eventClassSelectionMode="multiplicity" runSV="false"'
-		'projectile="p" target="p" beamEnergy="7000" chosenHBTparticle="211" Nevents=10000000 BEeffects="on" shiftingSet="0" compensationSet="1" compensationMode="0" eventClassSelectionMode="multiplicity" runSV="false"'
-		'projectile="p" target="p" beamEnergy="7000" chosenHBTparticle="211" Nevents=10000000 BEeffects="on" shiftingSet="1" compensationSet="1" compensationMode="0" eventClassSelectionMode="multiplicity" runSV="false"'
-		'projectile="p" target="p" beamEnergy="7000" chosenHBTparticle="211" Nevents=10000000 BEeffects="on" BEEnhancementMode="1" eventClassSelectionMode="multiplicity" runSV="false"'
+		#'projectile="p" target="p" beamEnergy="7000" chosenHBTparticle="211" Nevents=10000000 BEeffects="on" shiftingSet="0" compensationSet="1" compensationMode="0" eventClassSelectionMode="multiplicity" runSV="false"'
+		#'projectile="p" target="p" beamEnergy="7000" chosenHBTparticle="211" Nevents=10000000 BEeffects="on" shiftingSet="1" compensationSet="1" compensationMode="0" eventClassSelectionMode="multiplicity" runSV="false"'
+		#'projectile="p" target="p" beamEnergy="7000" chosenHBTparticle="211" Nevents=10000000 BEeffects="on" BEEnhancementMode="1" eventClassSelectionMode="multiplicity" runSV="false"'
 	)
 
 	#-----------------------------------------------------
