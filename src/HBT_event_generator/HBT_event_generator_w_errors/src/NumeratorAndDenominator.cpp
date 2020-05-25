@@ -511,7 +511,7 @@ void HBT_event_generator::Compute_numerator_and_denominator_momentum_space_only_
 				continue;
 
 			double KT = sqrt(Kx*Kx+Ky*Ky);
-			double Kphi = atan2(Ky, Kx);
+			//double Kphi = atan2(Ky, Kx);
 			//double cKphi = cos(Kphi), sKphi = sin(Kphi);
 			double cKphi = Kx/KT, sKphi = Ky/KT;
 
@@ -521,7 +521,7 @@ void HBT_event_generator::Compute_numerator_and_denominator_momentum_space_only_
 
 			// Get indices
 			int KT_idx 	 = floor((KT - KT_min)/KT_bin_width);
-			int Kphi_idx = floor((Kphi - Kphi_min)/Kphi_bin_width);
+			//int Kphi_idx = floor((Kphi - Kphi_min)/Kphi_bin_width);
 			int KL_idx 	 = floor((Kz - KL_min)/KL_bin_width);
 
 			// Avoid problems if q goes out of range
@@ -553,8 +553,8 @@ void HBT_event_generator::Compute_numerator_and_denominator_momentum_space_only_
 			if ( KT_idx < 0 or KT_idx >= n_KT_bins )
 				continue;
 
-			if ( Kphi_idx < 0 or Kphi_idx >= n_Kphi_bins )
-				continue;
+			//if ( Kphi_idx < 0 or Kphi_idx >= n_Kphi_bins )
+			//	continue;
 
 			if ( KL_idx < 0 or KL_idx >= n_KL_bins )
 				continue;
@@ -566,6 +566,10 @@ void HBT_event_generator::Compute_numerator_and_denominator_momentum_space_only_
 				continue;
 
 			if ( ql_idx < 0 or ql_idx >= n_ql_bins )
+				continue;
+
+			int Kphi_idx = floor((atan2(Ky, Kx) - Kphi_min)/Kphi_bin_width);
+			if ( Kphi_idx < 0 or Kphi_idx >= n_Kphi_bins )
 				continue;
 
 			int index3D = indexerK(KT_idx, Kphi_idx, KL_idx);
@@ -659,7 +663,7 @@ void HBT_event_generator::Compute_numerator_and_denominator_momentum_space_only_
 					continue;
 
 				double KT = sqrt(Kx*Kx+Ky*Ky);
-				double Kphi = atan2(Ky, Kx);
+				//double Kphi = atan2(Ky, Kx);
 				//double cKphi = cos(Kphi), sKphi = sin(Kphi);
 				double cKphi = Kx/KT, sKphi = Ky/KT;
 
@@ -669,7 +673,7 @@ void HBT_event_generator::Compute_numerator_and_denominator_momentum_space_only_
 	
 				// If pair survived cuts, get indices
 				int KT_idx 	= floor((KT - KT_min)/KT_bin_width);
-				int Kphi_idx = floor((Kphi - Kphi_min)/Kphi_bin_width);
+				//int Kphi_idx = floor((Kphi - Kphi_min)/Kphi_bin_width);
 				int KL_idx 	= floor((Kz - KL_min)/KL_bin_width);
 
 				// Avoid problems if q goes out of range
@@ -701,8 +705,8 @@ void HBT_event_generator::Compute_numerator_and_denominator_momentum_space_only_
 				if ( KT_idx < 0 or KT_idx >= n_KT_bins )
 					continue;
 
-				if ( Kphi_idx < 0 or Kphi_idx >= n_Kphi_bins )
-					continue;
+				//if ( Kphi_idx < 0 or Kphi_idx >= n_Kphi_bins )
+				//	continue;
 
 				if ( KL_idx < 0 or KL_idx >= n_KL_bins )
 					continue;
@@ -714,6 +718,10 @@ void HBT_event_generator::Compute_numerator_and_denominator_momentum_space_only_
 					continue;
 
 				if ( ql_idx < 0 or ql_idx >= n_ql_bins )
+					continue;
+
+				int Kphi_idx = floor((atan2(Ky, Kx) - Kphi_min)/Kphi_bin_width);
+				if ( Kphi_idx < 0 or Kphi_idx >= n_Kphi_bins )
 					continue;
 
 				int index3D = indexerK(KT_idx, Kphi_idx, KL_idx);
