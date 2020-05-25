@@ -8,6 +8,7 @@
 #include <complex>
 #include <random>
 #include <algorithm>
+#include <chrono>
 
 #include "HBT_event_generator.h"
 #include "Arsenal.h"
@@ -457,6 +458,10 @@ void HBT_event_generator::Compute_numerator_and_denominator_momentum_space_only_
 		<< "  * - momentum-space only" << endl
 		<< "  * - 3D" << endl;
 
+	auto start = std::chrono::system_clock::now();
+	std::time_t start_time = std::chrono::system_clock::to_time_t(start);
+	cout << "Start at " << std::ctime(&start_time) << endl;
+
 	double average_Npair_numerator = 0.0;
 	double average_Nmixed_denominator = 0.0;
 
@@ -780,6 +785,11 @@ void HBT_event_generator::Compute_numerator_and_denominator_momentum_space_only_
 	}
 
 	err << "  * Finished!" << endl;
+
+        auto end = std::chrono::system_clock::now();
+        std::time_t end_time = std::chrono::system_clock::to_time_t(end);
+        cout << "End at " << std::ctime(&end_time) << endl;
+
 
 	return;
 }
