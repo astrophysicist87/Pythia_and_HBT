@@ -3,14 +3,14 @@
 (
 	# info for this run
 	NTHREADS=12
-	DIRECTORY=results_blixen_nmix100
+	DIRECTORY=results_blixen_nmix10_nEv100000
 
 	# Set job specifications here
 	#declare -a class_ranges=("1-11" "12-16" "17-22" "23-28" "29-34" "35-41" "42-51" "52-151" "152-1000000")
 	#declare -a class_ranges=("0-5%" "5-10%" "10-20%" "20-30%" "30-40%" "40-60%" "60-100%")
 	declare -a class_ranges=("0-100%")
 	declare -a specs=(
-		'projectile="p" target="p" beamEnergy="13000" chosenHBTparticle="211" Nevents=10000 BEeffects="on" BEEnhancementMode="1" eventClassSelectionMode="centrality" runSV="false"'
+		'projectile="p" target="p" beamEnergy="13000" chosenHBTparticle="211" Nevents=100000 BEeffects="on" BEEnhancementMode="1" eventClassSelectionMode="centrality" runSV="false"'
 		#'projectile="p" target="p" beamEnergy="7000" chosenHBTparticle="211" Nevents=10000000 BEeffects="on" shiftingSet="1" compensationSet="0" compensationMode="1" eventClassSelectionMode="multiplicity" runSV="false"'
 		#'projectile="p" target="p" beamEnergy="7000" chosenHBTparticle="211" Nevents=10000000 BEeffects="on" shiftingSet="1" compensationSet="2" compensationMode="1" eventClassSelectionMode="multiplicity" runSV="false"'
 		#'projectile="p" target="p" beamEnergy="7000" chosenHBTparticle="211" Nevents=10000000 BEeffects="on" shiftingSet="0" compensationSet="1" compensationMode="0" eventClassSelectionMode="multiplicity" runSV="false"'
