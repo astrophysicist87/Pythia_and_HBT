@@ -448,8 +448,9 @@ void HBT_event_generator::Compute_numerator_and_denominator_methodMode0_q_mode_3
 //=====================================================================================
 void HBT_event_generator::Compute_numerator_and_denominator_momentum_space_only_q_mode_3D()
 {
-	bool perform_random_rotation = false;
-	bool perform_random_shuffle = false;
+	constexpr bool perform_random_rotation = false;
+	constexpr bool perform_random_shuffle  = false;
+	constexpr bool oneDim_slices           = true;
 
 	int number_of_completed_events = 0;
 	out << "  * Computing correlation function:" << endl
@@ -530,6 +531,22 @@ void HBT_event_generator::Compute_numerator_and_denominator_momentum_space_only_
 			int qo_idx 	 = floor((qo - qo_min) / delta_qo);
 			int qs_idx 	 = floor((qs - qs_min) / delta_qs);
 			int ql_idx 	 = floor((ql - ql_min) / delta_ql);
+
+			// allows to do only slices
+			if ( oneDim_slices )
+			{
+				bool iqo_not_center = ( qo_idx != (n_qo_bins-1)/2 );
+				bool iqs_not_center = ( qs_idx != (n_qs_bins-1)/2 );
+				bool iql_not_center = ( ql_idx != (n_ql_bins-1)/2 );
+
+				// if we're not on an axis slice, skip this q-bin
+				if (
+						( iqo_not_center and iqs_not_center )
+						or ( iqo_not_center and iql_not_center )
+						or ( iqs_not_center and iql_not_center )
+					)
+					continue;
+			}
 
 			// Momentum-space cuts
 			if ( KT_idx < 0 or KT_idx >= n_KT_bins )
@@ -661,6 +678,22 @@ void HBT_event_generator::Compute_numerator_and_denominator_momentum_space_only_
 				int qo_idx 	= floor((qo - qo_min) / delta_qo);
 				int qs_idx 	= floor((qs - qs_min) / delta_qs);
 				int ql_idx 	= floor((ql - ql_min) / delta_ql);
+
+				// allows to do only slices
+				if ( oneDim_slices )
+				{
+					bool iqo_not_center = ( qo_idx != (n_qo_bins-1)/2 );
+					bool iqs_not_center = ( qs_idx != (n_qs_bins-1)/2 );
+					bool iql_not_center = ( ql_idx != (n_ql_bins-1)/2 );
+	
+					// if we're not on an axis slice, skip this q-bin
+					if (
+							( iqo_not_center and iqs_not_center )
+							or ( iqo_not_center and iql_not_center )
+							or ( iqs_not_center and iql_not_center )
+						)
+						continue;
+				}
 
 				// Momentum-space cuts
 				if ( KT_idx < 0 or KT_idx >= n_KT_bins )
