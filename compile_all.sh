@@ -19,7 +19,8 @@ echo '#====================================='
 cd $PYTHIA_DIRECTORY
 echo 'In directory='`pwd`':'
 echo '#====================================='
-rm main_BEeffects_OpenMP
+#rm main_BEeffects_OpenMP
+gmake distclean
 gmake main_BEeffects_OpenMP
 success=$[success+`echo $?`]
 
