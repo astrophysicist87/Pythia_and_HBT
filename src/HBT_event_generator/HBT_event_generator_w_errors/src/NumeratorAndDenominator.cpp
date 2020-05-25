@@ -512,7 +512,8 @@ void HBT_event_generator::Compute_numerator_and_denominator_momentum_space_only_
 
 			double KT = sqrt(Kx*Kx+Ky*Ky);
 			double Kphi = atan2(Ky, Kx);
-			double cKphi = cos(Kphi), sKphi = sin(Kphi);
+			//double cKphi = cos(Kphi), sKphi = sin(Kphi);
+			double cKphi = Kx/KT, sKphi = Ky/KT;
 
 			double qo = qx * cKphi + qy * sKphi;
 			double qs = qy * cKphi - qx * sKphi;
@@ -659,7 +660,8 @@ void HBT_event_generator::Compute_numerator_and_denominator_momentum_space_only_
 
 				double KT = sqrt(Kx*Kx+Ky*Ky);
 				double Kphi = atan2(Ky, Kx);
-				double cKphi = cos(Kphi), sKphi = sin(Kphi);
+				//double cKphi = cos(Kphi), sKphi = sin(Kphi);
+				double cKphi = Kx/KT, sKphi = Ky/KT;
 
 				double qo = qx * cKphi + qy * sKphi;
 				double qs = qy * cKphi - qx * sKphi;
