@@ -740,7 +740,7 @@ void HBT_event_generator::Compute_numerator_and_denominator_momentum_space_only_
 
 
 		// Need this to avoid race conditions
-		#pragma omp critical
+		/*#pragma omp critical
 		{
 			int idx3D = 0, idx6D = 0;
 			for (int iKT = 0; iKT < n_KT_bins; iKT++)
@@ -781,6 +781,7 @@ void HBT_event_generator::Compute_numerator_and_denominator_momentum_space_only_
 			//print_progressbar( static_cast<double>(++number_of_completed_events)
 			//						/ static_cast<double>(total_N_events), err );
 		}
+		*/
 
 	}
 
