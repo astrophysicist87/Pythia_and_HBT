@@ -3,7 +3,7 @@
 (
 	# info for this run
 	NTHREADS=64
-	DIRECTORY=results
+	DIRECTORY=results_egan
 
 	# Set job specifications here
 	declare -a class_ranges=("1-11" "12-16" "17-22" "23-28" "29-34" "35-41" "42-51" "52-151" "152-1000000")
