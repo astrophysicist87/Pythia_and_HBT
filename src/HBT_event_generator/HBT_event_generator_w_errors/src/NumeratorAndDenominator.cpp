@@ -607,9 +607,9 @@ void HBT_event_generator::Compute_numerator_and_denominator_momentum_space_only_
 		vector<unsigned int> indices(allEvents.size());
 		iota(indices.begin(), indices.end(), 0);
 
-		if ( perform_random_shuffle
+		/*if ( perform_random_shuffle
 			or n_mixing_events < (int)allEvents.size()-1 )
-			random_shuffle(indices.begin(), indices.end());
+			random_shuffle(indices.begin(), indices.end());*/
 		vector<int> mixedEvents;
 		for (int mix_idx = 0; mix_idx <= n_mixing_events; ++mix_idx)
 			if ( indices[mix_idx] != iEvent
