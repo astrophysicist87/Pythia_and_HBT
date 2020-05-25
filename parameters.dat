@@ -105,7 +105,7 @@ n_thq_pts 										= 12
 # --
 # minimum number of mixed events
 # in denominator
-n_mix_minimum 									= 10
+n_mix_minimum 									= 30
 
 # --
 # delta function or something else
