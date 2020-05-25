@@ -8,6 +8,7 @@
 #include <complex>
 #include <random>
 #include <algorithm>
+#include <iterator>
 #include <chrono>
 
 #include "HBT_event_generator.h"
@@ -604,19 +605,23 @@ void HBT_event_generator::Compute_numerator_and_denominator_momentum_space_only_
 		//const unsigned int n_mixing_events = allEvents.size()-1;
 		//const unsigned int n_mixing_events = 100;
 
-		vector<unsigned int> indices(allEvents.size());
+		vector<int> indices(allEvents.size());
 		iota(indices.begin(), indices.end(), 0);
 
 		/*if ( perform_random_shuffle
 			or n_mixing_events < (int)allEvents.size()-1 )
 			random_shuffle(indices.begin(), indices.end());*/
 		vector<int> mixedEvents;
-		for (int mix_idx = 0; mix_idx <= n_mixing_events; ++mix_idx)
+		if ( perform_random_shuffle
+			or n_mixing_events < (int)allEvents.size()-1 )
+			std::sample(indices.begin(), indices.end(), std::back_inserter(mixedEvents),
+                n_mixing_events, std::mt19937{std::random_device{}()});
+		/*for (int mix_idx = 0; mix_idx <= n_mixing_events; ++mix_idx)
 			if ( indices[mix_idx] != iEvent
 					and mixedEvents.size() < n_mixing_events )
 			{
 				mixedEvents.push_back( indices[mix_idx] );
-			}
+			}*/
 
 		//--------------------------------
 		// Randomly rotate sampled events.
