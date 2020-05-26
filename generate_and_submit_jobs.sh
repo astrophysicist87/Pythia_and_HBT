@@ -2,7 +2,7 @@
 
 (
 	# info for this run
-	NTHREADS=36
+	NTHREADS=40
 	DIRECTORY=results_egan
 
 	# Set job specifications here
@@ -11,12 +11,11 @@
 	#declare -a class_ranges=("0-100%")
 	declare -a specs=(
 		#'projectile="p" target="p" beamEnergy="13000" chosenHBTparticle="211" Nevents=100000 BEeffects="on" BEEnhancementMode="1" eventClassSelectionMode="centrality" runSV="false"'
-		'projectile="p" target="p" beamEnergy="7000" chosenHBTparticle="211" Nevents=1000000 BEeffects="on" BEEnhancementMode="1" eventClassSelectionMode="multiplicity" runSV="false"'
-		#'projectile="p" target="p" beamEnergy="7000" chosenHBTparticle="211" Nevents=60000000 BEeffects="on" shiftingSet="1" compensationSet="0" compensationMode="1" eventClassSelectionMode="multiplicity" runSV="false"'
+		'projectile="p" target="p" beamEnergy="7000" chosenHBTparticle="211" Nevents=60000000 BEeffects="on" BEEnhancementMode="1" eventClassSelectionMode="multiplicity" runSV="false"'
+		'projectile="p" target="p" beamEnergy="7000" chosenHBTparticle="211" Nevents=60000000 BEeffects="on" shiftingSet="1" compensationSet="0" compensationMode="1" eventClassSelectionMode="multiplicity" runSV="false"'
 		#'projectile="p" target="p" beamEnergy="7000" chosenHBTparticle="211" Nevents=60000000 BEeffects="on" shiftingSet="1" compensationSet="2" compensationMode="1" eventClassSelectionMode="multiplicity" runSV="false"'
 		#'projectile="p" target="p" beamEnergy="7000" chosenHBTparticle="211" Nevents=60000000 BEeffects="on" shiftingSet="0" compensationSet="1" compensationMode="0" eventClassSelectionMode="multiplicity" runSV="false"'
 		#'projectile="p" target="p" beamEnergy="7000" chosenHBTparticle="211" Nevents=60000000 BEeffects="on" shiftingSet="1" compensationSet="1" compensationMode="0" eventClassSelectionMode="multiplicity" runSV="false"'
-		#'projectile="p" target="p" beamEnergy="7000" chosenHBTparticle="211" Nevents=60000000 BEeffects="on" BEEnhancementMode="1" eventClassSelectionMode="multiplicity" runSV="false"'
 	)
 
 	#-----------------------------------------------------
