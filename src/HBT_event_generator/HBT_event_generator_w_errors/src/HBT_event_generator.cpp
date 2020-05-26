@@ -291,14 +291,14 @@ void HBT_event_generator::Compute_correlation_function()
 			for (int iq = 0; iq < q_space_size; iq++)
 			{
 
-				double CF_num = numerator[idx] / (numPair[idxK]+1.e-100);
-				double CF_den = denominator[idx] / (denPair[idxK]+1.e-100);
+				double CF_num = numerator[idx] / (numPair[idxK]+1e-100);
+				double CF_den = denominator[idx] / (denPair[idxK]+1e-100);
 
-				double R2 = CF_num / (CF_den+1.e-100);
+				double R2 = CF_num / (CF_den+1e-100);
 
 				bool this_bin_is_safe = numPair[idxK] > 0
 										and denPair[idxK] > 0
-										and abs( CF_den ) > 1.e-25;
+										and abs( CF_den ) > 1e-25;
 
 				double BE_shift = 0.0;
 				if (BE_mode > 0) BE_shift = 1.0;
@@ -339,9 +339,9 @@ void HBT_event_generator::Compute_correlation_function()
 					// equivalent version which is stable if CF_num = 0
 					correlation_function_error[idx] =
 						sqrt(
-								( CF_num_err * CF_num_err / ( CF_den * CF_den+1.e-100 ) )
+								( CF_num_err * CF_num_err / ( CF_den * CF_den+1e-100 ) )
 									+ ( CF_num * CF_num * CF_den_err * CF_den_err
-										/ ( CF_den * CF_den * CF_den * CF_den+1.e-100 )
+										/ ( CF_den * CF_den * CF_den * CF_den+1e-100 )
 									   )
 							);
 				}

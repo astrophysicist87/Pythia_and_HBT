@@ -453,6 +453,7 @@ void HBT_event_generator::Compute_numerator_and_denominator_momentum_space_only_
 	constexpr bool perform_random_rotation = false;
 	constexpr bool perform_random_shuffle  = false;
 	constexpr bool oneDim_slices           = true;
+	constexpr bool use_LCMS                = true;
 
 	int number_of_completed_events = 0;
 	out << "  * Computing correlation function:" << endl
@@ -466,10 +467,10 @@ void HBT_event_generator::Compute_numerator_and_denominator_momentum_space_only_
 	double average_Npair_numerator = 0.0;
 	double average_Nmixed_denominator = 0.0;
 
-	constexpr bool impose_pair_rapidity_cuts = false;
+	/*constexpr bool impose_pair_rapidity_cuts = false;
 	const double KYmin = -0.1, KYmax = 0.1;
 	const double Kz_over_K0_min = tanh( KYmin );
-	const double Kz_over_K0_max = tanh( KYmax );
+	const double Kz_over_K0_max = tanh( KYmax );*/
 
 	// Sum over all events
 	#pragma omp parallel for schedule(static)
@@ -505,16 +506,31 @@ void HBT_event_generator::Compute_numerator_and_denominator_momentum_space_only_
 			double Ei = pi.E, pix = pi.px, piy = pi.py, piz = pi.pz;
 			double Ej = pj.E, pjx = pj.px, pjy = pj.py, pjz = pj.pz;
 
-			// New method of binning
-			double K0 = 0.5*(Ei+Ej), Kx = 0.5*(pix+pjx), Ky = 0.5*(piy+pjy), Kz = 0.5*(piz+pjz);
-			double q0 = Ei-Ej, qx = pix-pjx, qy = piy-pjy, qz = piz-pjz;
+			double K0 = 0.5*(Ei+Ej), Kz = 0.5*(piz+pjz);
 
-			// rapidity cuts
-			if ( impose_pair_rapidity_cuts
-					and ( ( 2.0*Kz/(Ei+Ej) < Kz_over_K0_min )
-					or ( 2.0*Kz/(Ei+Ej) > Kz_over_K0_max ) )
-				)
-				continue;
+			// boost pair if necessary
+			if ( use_LCMS )
+			{
+				double betaL   = Kz / K0;
+				double betaL2  = betaL*betaL;
+				if (betaL2 >= 1.0) continue;
+				double gamma   = 1.0/sqrt(1.0-betaL2);
+				double piz_new = gamma*(piz - betaL*Ei);
+				double Ei_new  = gamma*(Ei - betaL*piz);
+				double pjz_new = gamma*(pjz - betaL*Ej);
+				double Ej_new  = gamma*(Ej - betaL*pjz);
+				piz            = piz_new;
+				Ei             = Ei_new;
+				pjz            = pjz_new;
+				Ej             = Ej_new;
+
+				K0 = 0.5*(Ei+Ej);
+				Kz = 0.5*(piz+pjz);
+			}
+
+			// New method of binning
+			double Kx = 0.5*(pix+pjx), Ky = 0.5*(piy+pjy);
+			double q0 = Ei-Ej, qx = pix-pjx, qy = piy-pjy, qz = piz-pjz;
 
 			double KT = sqrt(Kx*Kx+Ky*Ky);
 			//double Kphi = atan2(Ky, Kx);
@@ -562,7 +578,7 @@ void HBT_event_generator::Compute_numerator_and_denominator_momentum_space_only_
 			//if ( Kphi_idx < 0 or Kphi_idx >= n_Kphi_bins )
 			//	continue;
 
-			if ( KL_idx < 0 or KL_idx >= n_KL_bins )
+			if ( !use_LCMS and ( KL_idx < 0 or KL_idx >= n_KL_bins ) )
 				continue;
 
 			if ( qo_idx < 0 or qo_idx >= n_qo_bins )
@@ -614,7 +630,7 @@ void HBT_event_generator::Compute_numerator_and_denominator_momentum_space_only_
 		vector<int> mixedEvents;
 		if ( n_mixing_events < (int)allEvents.size()-1 )
 			std::sample(indices.begin(), indices.end(), std::back_inserter(mixedEvents),
-                n_mixing_events, std::mt19937{std::random_device{}()});
+                n_mixing_events + 1, std::mt19937{std::random_device{}()});
 		/*for (int mix_idx = 0; mix_idx <= n_mixing_events; ++mix_idx)
 			if ( indices[mix_idx] != iEvent
 					and mixedEvents.size() < n_mixing_events )
@@ -637,6 +653,9 @@ void HBT_event_generator::Compute_numerator_and_denominator_momentum_space_only_
 		// Loop over mixed events.
 		for (int jEvent = 0; jEvent < mixedEvents.size(); ++jEvent)
 		{
+			// Don't correlate this event with itself
+			if ( iEvent == mixedEvents[jEvent] ) continue;
+
 			EventRecord mixedEvent = allEvents[mixedEvents[jEvent]];
 
 			double c_rand_phi = cos_rand_angles[jEvent],
@@ -660,16 +679,32 @@ void HBT_event_generator::Compute_numerator_and_denominator_momentum_space_only_
 						pjy = pj.px*s_rand_phi + pj.py*c_rand_phi,
 						pjz = pj.pz;
 
+	
+				double K0 = 0.5*(Ei+Ej), Kz = 0.5*(piz+pjz);
+	
+				// boost pair if necessary
+				if ( use_LCMS )
+				{
+					double betaL   = Kz / K0;
+					double betaL2  = betaL*betaL;
+					if (betaL2 >= 1.0) continue;
+					double gamma   = 1.0 / sqrt(1.0-betaL2);
+					double piz_new = gamma*(piz - betaL*Ei);
+					double Ei_new  = gamma*(Ei - betaL*piz);
+					double pjz_new = gamma*(pjz - betaL*Ej);
+					double Ej_new  = gamma*(Ej - betaL*pjz);
+					piz            = piz_new;
+					Ei             = Ei_new;
+					pjz            = pjz_new;
+					Ej             = Ej_new;
+	
+					K0 = 0.5*(Ei+Ej);
+					Kz = 0.5*(piz+pjz);
+				}
+	
 				// New method of binning
-				double K0 = 0.5*(Ei+Ej), Kx = 0.5*(pix+pjx), Ky = 0.5*(piy+pjy), Kz = 0.5*(piz+pjz);
+				double Kx = 0.5*(pix+pjx), Ky = 0.5*(piy+pjy);
 				double q0 = Ei-Ej, qx = pix-pjx, qy = piy-pjy, qz = piz-pjz;
-
-				// rapidity cuts
-				if ( impose_pair_rapidity_cuts
-						and ( ( 2.0*Kz/(Ei+Ej) < Kz_over_K0_min )
-						or ( 2.0*Kz/(Ei+Ej) > Kz_over_K0_max ) )
-					)
-					continue;
 
 				double KT = sqrt(Kx*Kx+Ky*Ky);
 				//double Kphi = atan2(Ky, Kx);
@@ -717,7 +752,7 @@ void HBT_event_generator::Compute_numerator_and_denominator_momentum_space_only_
 				//if ( Kphi_idx < 0 or Kphi_idx >= n_Kphi_bins )
 				//	continue;
 
-				if ( KL_idx < 0 or KL_idx >= n_KL_bins )
+				if ( !use_LCMS and ( KL_idx < 0 or KL_idx >= n_KL_bins ) )
 					continue;
 
 				if ( qo_idx < 0 or qo_idx >= n_qo_bins )
