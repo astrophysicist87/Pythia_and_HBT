@@ -526,7 +526,7 @@ void HBT_event_generator::Compute_numerator_and_denominator_momentum_space_only_
 
 				K0 = 0.5*(Ei+Ej);
 				Kz = 0.5*(piz+pjz);
-				if ( abs(Kz) > 1e-10 )
+				if ( abs(Kz) > 1e-4 )
 				{
 					cerr << "Something went wrong!!! Kz = " << Kz << endl;
 					exit(8);
@@ -705,7 +705,7 @@ void HBT_event_generator::Compute_numerator_and_denominator_momentum_space_only_
 	
 					K0 = 0.5*(Ei+Ej);
 					Kz = 0.5*(piz+pjz);
-					if ( abs(Kz) > 1e-10 )
+					if ( abs(Kz) > 1e-4 )
 					{
 						cerr << "Something went wrong!!! Kz = " << Kz << endl;
 						exit(8);
