@@ -391,7 +391,8 @@ bool BoseEinstein::shiftEvent( Event& event )
 		for (int i = 0; i < event.size(); ++i)
 			if ( event[i].id() == idNow and (event[i].isFinal() or debugging) )
 			{
-//				cout << "check particles: " << idNow << "   " << i << "   " << event[i].m() << "   " << event[i].p();
+				//cout << "check particles: " << idNow << "   " << i << "   " << event[i].m() << "   " << event[i].p();
+				//cout << "check particles (cont): " << idNow << "   " << i << "   " << event[i].vProd();
 				hadronBE.push_back( BoseEinsteinHadron( idNow, i, event[i].p(), event[i].m(), event[i].vProd() ) );
 			}
 		nStored[iSpecies + 1] = hadronBE.size();
