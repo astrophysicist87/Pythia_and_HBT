@@ -25,7 +25,7 @@ void HBT_event_generator::Compute_numerator_and_denominator_methodMode2_q_mode_1
 	const int q_space_size = n_Q_bins*n_qRP_pts*n_thq_pts;
 	const int K_space_size = n_KT_bins*n_Kphi_bins*n_KL_bins;
 
-	int number_of_completed_events = 0;
+	//int number_of_completed_events = 0;
 	cout << "  * Computing numerator and denominator of correlation function with errors; qmode = 1D using bin-averaging" << endl;
 
 	double average_Npair_numerator = 0.0;

@@ -455,7 +455,7 @@ void HBT_event_generator::Compute_numerator_and_denominator_momentum_space_only_
 	constexpr bool oneDim_slices           = true;
 	constexpr bool use_LCMS                = true;
 
-	int number_of_completed_events = 0;
+	//int number_of_completed_events = 0;
 	out << "  * Computing correlation function:" << endl
 		<< "  * - momentum-space only" << endl
 		<< "  * - 3D" << endl;

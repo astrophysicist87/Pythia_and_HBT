@@ -454,7 +454,7 @@ void HBT_event_generator::Compute_numerator_and_denominator_momentum_space_only_
 	bool perform_random_rotation = false;
 	bool perform_random_shuffle = false;
 
-	int number_of_completed_events = 0;
+	//int number_of_completed_events = 0;
 	err << "  * Computing numerator and denominator of correlation function with errors" << endl;
 
 	//const int q_space_size = n_qo_bins*n_qs_bins*n_ql_bins;

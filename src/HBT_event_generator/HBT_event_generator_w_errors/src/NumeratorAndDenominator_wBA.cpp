@@ -26,7 +26,7 @@ void HBT_event_generator::Compute_numerator_and_denominator_methodMode2_q_mode_3
 	bool perform_random_rotation = false;
 	bool perform_random_shuffle = false;
 
-	int number_of_completed_events = 0;
+	//int number_of_completed_events = 0;
 	//cout << "In file: " << __FILE__ << " and function: " << __FUNCTION__ << " at line: " << __LINE__ << endl;
 	//cout << "  * Computing numerator and denominator of correlation function with errors; qmode = 3D using bin-averaging" << endl;
 
