@@ -32,7 +32,7 @@ export SetPartonVertices='off'
 export ThermalOnly='false'
 
 export useInvariantSourceSize='off'             # Lorentz-invariant size vs. spatial size only
-export useDistribution='on'                    # Estimate QRef vs. take as input parameter
+export useDistribution='off'                    # Estimate QRef vs. take as input parameter
 export useRelativeDistance='on'                 # Use relative distances or absolute sizes
 export useRestFrame='on'                        # Use rest frame vs. lab frame
 export includePhaseSpace='on'                   # Include phase-space factor
