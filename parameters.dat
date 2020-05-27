@@ -108,6 +108,11 @@ n_thq_pts 										= 12
 n_mix_minimum 									= 1000
 
 # --
+# number of events to generate
+# correlation function from
+number_of_expected_events						= 10
+
+# --
 # delta function or something else
 bin_mode 										= 0
 

@@ -282,6 +282,9 @@ int main(int argc, char *argv[])
 					<< event_class_maximum << "!" << endl
 					<< "Check events in this multiplicity range: " << endl;
 
+		// Set this for tracking total number of events
+		paraRdr->setVal( "number_of_expected_events", ensemble_multiplicities.size() );
+
 		//for (int iEvent = 0; iEvent < ensemble_multiplicities.size(); ++iEvent)
 		//	cout << ensemble_multiplicities[iEvent].eventID << "   "
 		//			<< ensemble_multiplicities[iEvent].total_multiplicity << "   "

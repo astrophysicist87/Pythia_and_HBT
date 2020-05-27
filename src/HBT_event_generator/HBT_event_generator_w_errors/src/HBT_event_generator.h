@@ -39,7 +39,7 @@ class HBT_event_generator
 
 		bool use_smoothness_approximation;
 		int bin_mode, q_mode, scalar_mode, method_mode, BE_mode;
-		int total_N_events, number_of_completed_events;
+		int total_N_events, number_of_expected_events, number_of_completed_events;
 		
 		int n_mix_minimum;
 

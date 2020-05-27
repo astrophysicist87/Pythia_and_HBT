@@ -314,7 +314,7 @@ void HBT_event_generator::Compute_numerator_and_denominator_methodMode2_q_mode_3
 
 			cout << "\t - finished "
 					<< number_of_completed_events + total_N_events - allEvents.size()
-					<< " of " << total_N_events << endl;
+					<< " of " << number_of_expected_events << endl;
 		}
 
 	}

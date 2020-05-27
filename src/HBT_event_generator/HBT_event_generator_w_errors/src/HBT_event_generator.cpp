@@ -103,6 +103,9 @@ void HBT_event_generator::initialize_all(
 	qs_max 			= -qs_min;
 	ql_max 			= -ql_min;
 	Q_max 			= -Q_min;
+	// - miscellaneous
+	number_of_expected_events
+					= paraRdr->getVal("number_of_expected_events");
 
 	// - number of points to use when fleshing out correlation
 	//   function in each direction

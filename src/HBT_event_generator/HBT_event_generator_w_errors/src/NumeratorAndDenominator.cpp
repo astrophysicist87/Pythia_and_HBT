@@ -411,7 +411,7 @@ void HBT_event_generator::Compute_numerator_and_denominator_methodMode0_q_mode_3
 				}
 			}
 
-			err << "\t - finished " << ++number_of_completed_events << " of " << total_N_events << endl;
+			err << "\t - finished " << ++number_of_completed_events << " of " << number_of_expected_events << endl;
 			//print_progressbar( static_cast<double>(++number_of_completed_events)
 			//						/ static_cast<double>(total_N_events), err );
 		}
@@ -826,7 +826,7 @@ void HBT_event_generator::Compute_numerator_and_denominator_momentum_space_only_
 				++idx3D;
 			}
 
-			err << "\t - finished " << ++number_of_completed_events << " of " << total_N_events << endl;
+			err << "\t - finished " << ++number_of_completed_events << " of " << number_of_expected_events << endl;
 			//print_progressbar( static_cast<double>(++number_of_completed_events)
 			//						/ static_cast<double>(total_N_events), err );
 		}
