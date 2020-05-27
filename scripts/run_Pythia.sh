@@ -54,7 +54,7 @@ collisionSystemStem=$projectile$target"_"`echo $beamEnergy`"GeV_Nev"$Nevents
 		# make sure results directory exists
 		if [ ! -d "$PYTHIA_RESULTS_DIRECTORY" ]
 		then
-			mkdir $PYTHIA_RESULTS_DIRECTORY
+			mkdir -p $PYTHIA_RESULTS_DIRECTORY
 		fi
 
 		#--------------------------
