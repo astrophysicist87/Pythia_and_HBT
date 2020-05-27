@@ -28,7 +28,7 @@ pythiaHBT::bmax 								= 20.0
 
 # --
 # Computation modes
-pythiaHBT::seed									= -1
+pythiaHBT::seed									= 0
 pythiaHBT::thermal_only							= 0
 pythiaHBT::track_unshifted_particles			= 0
 pythiaHBT::output_Bjorken_variables 			= 0

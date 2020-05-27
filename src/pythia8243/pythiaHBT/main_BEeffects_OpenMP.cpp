@@ -430,7 +430,7 @@ int main(int argc, char *argv[])
 		// Read in any standard Pythia options
 		//pythia.readFile( "main_BEeffects.cmnd" );
 		pythia.readFile( path + "main_BEeffects.cmnd" );
-
+		cout << "main_BEeffects_OpenMP: loading " << path + "main_BEeffects.cmnd..." << endl;
 
 
 		// ==============================================
