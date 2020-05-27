@@ -121,7 +121,7 @@ then
 	fi
 
 	# time and run
-	nohup time ./run_HBT_event_generator.e \
+	nohup time nice -n 10 ./run_HBT_event_generator.e \
 			$CF_RESULTS_DIRECTORY \
 			$CF_RESULTS_DIRECTORY/parameters.dat \
 			$CF_RESULTS_DIRECTORY/particle_catalogue.dat \
@@ -221,7 +221,7 @@ then
 	cp ../parameters.dat ./*catalogue.dat $SV_RESULTS_DIRECTORY
 
 	# time and run
-	nohup time ./SV.e \
+	nohup time nice -n 10 ./SV.e \
 			$SV_RESULTS_DIRECTORY \
 			$SV_RESULTS_DIRECTORY/parameters.dat \
 			$SV_RESULTS_DIRECTORY/particle_catalogue.dat \

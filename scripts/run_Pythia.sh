@@ -101,7 +101,7 @@ collisionSystemStem=$projectile$target"_"`echo $beamEnergy`"GeV_Nev"$Nevents
 		upperLimit=100
 
 		# time and run
-		./run_BEeffects_OpenMP.sh \
+		nice -n 10 ./run_BEeffects_OpenMP.sh \
 			$projectile $target \
 			$PYTHIA_RESULTS_DIRECTORY \
 			pythiaHBT::beam_energy=$beamEnergy \
