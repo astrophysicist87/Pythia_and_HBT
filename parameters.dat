@@ -6,7 +6,7 @@
 # --
 # Collision system parameters
 pythiaHBT::number_of_events 					= 10
-pythiaHBT::max_events_per_file					= 1000000
+pythiaHBT::max_events_per_file					= 100000
 pythiaHBT::beam_energy 							= 13000 # in GeV
 
 # --
