@@ -11,7 +11,6 @@
 
 #include "HBT_event_generator.h"
 #include "Arsenal.h"
-//#include "/home/blixen/plumberg/src/ArsenalAndParameterReaderSource/Arsenal.h"
 #include "Stopwatch.h"
 
 
@@ -26,7 +25,7 @@ void HBT_event_generator::Compute_numerator_and_denominator_methodMode2_q_mode_1
 	const int K_space_size = n_KT_bins*n_Kphi_bins*n_KL_bins;
 
 	//int number_of_completed_events = 0;
-	cout << "  * Computing numerator and denominator of correlation function with errors; qmode = 1D using bin-averaging" << endl;
+	out << "  * Computing numerator and denominator of correlation function with errors; qmode = 1D using bin-averaging" << endl;
 
 	double average_Npair_numerator = 0.0;
 	double average_Nmixed_denominator = 0.0;
@@ -458,14 +457,14 @@ void HBT_event_generator::Compute_numerator_and_denominator_methodMode2_q_mode_1
 
 			++number_of_completed_events;
 
-			//cout << "\t - finished "
+			//out << "\t - finished "
 			//		<< number_of_completed_events + total_N_events - allEvents.size()
 			//		<< " of " << total_N_events << endl;
 		}
 
 	}
 
-	cout << "  * Finished " << total_N_events << " events so far!" << endl;
+	out << "  * Finished " << total_N_events << " events so far!" << endl;
 
 	return;
 }

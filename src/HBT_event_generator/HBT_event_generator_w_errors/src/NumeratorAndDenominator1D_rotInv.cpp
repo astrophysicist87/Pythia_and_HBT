@@ -39,7 +39,7 @@ void HBT_event_generator::Compute_numerator_and_denominator_methodMode0_q_mode_1
 		EventRecord event = allEvents[iEvent];
 		#pragma omp critical
 		{
-			cout << "\t -- working on event = " << event.eventID << endl;
+			out << "\t -- working on event = " << event.eventID << endl;
 		}
 
 		//let these be fully six-dimensional (factor of 2 for +/- roots in qs)

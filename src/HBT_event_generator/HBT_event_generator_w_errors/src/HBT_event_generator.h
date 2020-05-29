@@ -25,6 +25,8 @@ constexpr complex<double> i(0.0, 1.0);
 constexpr double hbarC = 0.19733;	//GeV*fm
 constexpr bool include_energy_factors = false;
 
+constexpr int VERBOSE = 1;
+
 class HBT_event_generator
 {
 	private:

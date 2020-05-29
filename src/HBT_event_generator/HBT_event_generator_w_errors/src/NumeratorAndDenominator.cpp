@@ -19,9 +19,6 @@
 
 void HBT_event_generator::Compute_numerator_and_denominator_methodMode0_q_mode_3D()
 {
-	//int number_of_completed_events = 0;
-	//err << "  * Computing numerator and denominator of correlation function with errors" << endl;
-
 	constexpr bool average_over_Kphi = true;
 
 	constexpr bool oneDim_slices = false;
@@ -30,10 +27,6 @@ void HBT_event_generator::Compute_numerator_and_denominator_methodMode0_q_mode_3
 	const double KYmin = -0.1, KYmax = 0.1;
 	const double Kz_over_K0_min = tanh( KYmin );
 	const double Kz_over_K0_max = tanh( KYmax );
-
-	// check multiplicities
-	//for (int iEvent = 0; iEvent < allEvents.size(); ++iEvent)
-	//	err << "allEvents[" << iEvent << "].particles.size() = " << allEvents[iEvent].particles.size() << endl;
 
 	// Sum over all events
 	#pragma omp parallel for schedule(static)
@@ -380,7 +373,7 @@ void HBT_event_generator::Compute_numerator_and_denominator_methodMode0_q_mode_3
 							= abs_sum1*abs_sum1 - sum2[idx];
 					double denominator_contribution_from_this_event
 							= sum3[idx]*sum4[idx] - sum5[idx];
-	//cout << "den check: " << denominator_contribution_from_this_event
+	//out << "den check: " << denominator_contribution_from_this_event
 	//		 << "   " << sum3[idx] << "   " << sum4[idx] << "   " << sum5[idx] << endl;
 
 					// first moments
@@ -528,7 +521,7 @@ void HBT_event_generator::Compute_numerator_and_denominator_momentum_space_only_
 				Kz = 0.5*(piz+pjz);
 				if ( abs(Kz) > 1e-4 )
 				{
-					cerr << "Something went wrong!!! Kz = " << Kz << endl;
+					err << "Something went wrong!!! Kz = " << Kz << endl;
 					exit(8);
 				}
 			}
@@ -698,6 +691,16 @@ void HBT_event_generator::Compute_numerator_and_denominator_momentum_space_only_
 					double Ei_new  = gamma*(Ei - betaL*piz);
 					double pjz_new = gamma*(pjz - betaL*Ej);
 					double Ej_new  = gamma*(Ej - betaL*pjz);
+					#pragma omp critical
+					{
+						cout << "Check LCMS: "
+                             << piz << "   " << Ei << "   "
+                             << pjz << "   " << Ej << "   "
+                             << piz_new << "   " << Ei_new << "   "
+                             << pjz_new << "   " << Ej_new << "   "
+                             << Kz << "   " << K0 << "   "
+                             << 0.5*(piz+pjz) << "   " << 0.5*(Ei+Ej) << endl;
+					}
 					piz            = piz_new;
 					Ei             = Ei_new;
 					pjz            = pjz_new;
@@ -707,7 +710,7 @@ void HBT_event_generator::Compute_numerator_and_denominator_momentum_space_only_
 					Kz = 0.5*(piz+pjz);
 					if ( abs(Kz) > 1e-4 )
 					{
-						cerr << "Something went wrong!!! Kz = " << Kz << endl;
+						err << "Something went wrong!!! Kz = " << Kz << endl;
 						exit(8);
 					}
 				}

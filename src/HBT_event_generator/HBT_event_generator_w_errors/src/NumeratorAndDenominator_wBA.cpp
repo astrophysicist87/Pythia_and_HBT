@@ -11,7 +11,6 @@
 
 #include "HBT_event_generator.h"
 #include "Arsenal.h"
-//#include "/home/blixen/plumberg/src/ArsenalAndParameterReaderSource/Arsenal.h"
 #include "Stopwatch.h"
 
 
@@ -27,8 +26,8 @@ void HBT_event_generator::Compute_numerator_and_denominator_methodMode2_q_mode_3
 	bool perform_random_shuffle = false;
 
 	//int number_of_completed_events = 0;
-	//cout << "In file: " << __FILE__ << " and function: " << __FUNCTION__ << " at line: " << __LINE__ << endl;
-	//cout << "  * Computing numerator and denominator of correlation function with errors; qmode = 3D using bin-averaging" << endl;
+	//out << "In file: " << __FILE__ << " and function: " << __FUNCTION__ << " at line: " << __LINE__ << endl;
+	//out << "  * Computing numerator and denominator of correlation function with errors; qmode = 3D using bin-averaging" << endl;
 
 	double average_Npair_numerator = 0.0;
 	double average_Nmixed_denominator = 0.0;
@@ -44,7 +43,7 @@ void HBT_event_generator::Compute_numerator_and_denominator_methodMode2_q_mode_3
 		EventRecord event = allEvents[iEvent];
 		/*#pragma omp critical
 		{
-			cout << "Now doing event = " << event.eventID << " of full ensemble" << endl;
+			out << "Now doing event = " << event.eventID << " of full ensemble" << endl;
 		}*/
 
 		vector<double> private_num(numerator.size(), 0.0);
@@ -312,14 +311,14 @@ void HBT_event_generator::Compute_numerator_and_denominator_methodMode2_q_mode_3
 
 			++number_of_completed_events;
 
-			cout << "\t - finished "
+			out << "\t - finished "
 					<< number_of_completed_events + total_N_events - allEvents.size()
 					<< " of " << number_of_expected_events << endl;
 		}
 
 	}
 
-	cout << "  * Finished " << total_N_events << " events so far!" << endl;
+	out << "  * Finished " << total_N_events << " events so far!" << endl;
 
 	return;
 }
