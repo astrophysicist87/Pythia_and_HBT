@@ -13,7 +13,7 @@
 	declare -a specs=(
 		#blixen
 		#'projectile="p" target="p" beamEnergy="7000" chosenHBTparticle="211" Nevents=60000000 BEeffects="on" BEEnhancementMode="0" eventClassSelectionMode="multiplicity" runSV="false" useDistribution="on"'
-		'projectile="p" target="p" beamEnergy="7000" chosenHBTparticle="211" Nevents=1000 BEeffects="on" shiftingSet="1" compensationSet="0" compensationMode="1" eventClassSelectionMode="centrality" runSV="false"'
+		'projectile="p" target="p" beamEnergy="7000" chosenHBTparticle="211" Nevents=1000 BEeffects="on" shiftingSet="1" compensationSet="0" compensationMode="1" computeBEEnhancementExactly="off" eventClassSelectionMode="centrality" runSV="false"'
 		#egan
 		#'projectile="p" target="p" beamEnergy="7000" chosenHBTparticle="211" Nevents=1000000 BEeffects="on" BEEnhancementMode="0" eventClassSelectionMode="multiplicity" runSV="false" useDistribution="on"'
 		#'projectile="p" target="p" beamEnergy="7000" chosenHBTparticle="211" Nevents=1000000 BEeffects="on" shiftingSet="1" compensationSet="0" compensationMode="1" eventClassSelectionMode="multiplicity" runSV="false"'
