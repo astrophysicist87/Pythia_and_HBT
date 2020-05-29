@@ -517,10 +517,6 @@ void HBT_event_generator::Compute_numerator_and_denominator_momentum_space_only_
 				double Ei_new  = gamma*(Ei - betaL*piz);
 				double pjz_new = gamma*(pjz - betaL*Ej);
 				double Ej_new  = gamma*(Ej - betaL*pjz);
-				piz            = piz_new;
-				Ei             = Ei_new;
-				pjz            = pjz_new;
-				Ej             = Ej_new;
 				#pragma omp critical
 				{
 					out << "Check LCMS: "
@@ -531,6 +527,11 @@ void HBT_event_generator::Compute_numerator_and_denominator_momentum_space_only_
                          << Kz << "   " << K0 << "   "
                          << 0.5*(piz+pjz) << "   " << 0.5*(Ei+Ej) << endl;
 				}
+				piz            = piz_new;
+				Ei             = Ei_new;
+				pjz            = pjz_new;
+				Ej             = Ej_new;
+
 				K0 = 0.5*(Ei+Ej);
 				Kz = 0.5*(piz+pjz);
 				if ( abs(Kz) > 1e-4 )
