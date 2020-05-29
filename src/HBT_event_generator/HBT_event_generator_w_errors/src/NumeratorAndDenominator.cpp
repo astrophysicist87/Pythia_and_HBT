@@ -13,7 +13,6 @@
 
 #include "HBT_event_generator.h"
 #include "Arsenal.h"
-//#include "/home/blixen/plumberg/src/ArsenalAndParameterReaderSource/Arsenal.h"
 #include "Stopwatch.h"
 
 
@@ -27,6 +26,10 @@ void HBT_event_generator::Compute_numerator_and_denominator_methodMode0_q_mode_3
 	const double KYmin = -0.1, KYmax = 0.1;
 	const double Kz_over_K0_min = tanh( KYmin );
 	const double Kz_over_K0_max = tanh( KYmax );
+
+	out << "HBT_event_generator:  * Computing correlation function:" << endl
+		<< "HBT_event_generator:  * - method_mode = " << method_mode << endl
+		<< "HBT_event_generator:  * - q_mode = 3D" << endl;
 
 	// Sum over all events
 	#pragma omp parallel for schedule(static)
@@ -129,7 +132,8 @@ void HBT_event_generator::Compute_numerator_and_denominator_methodMode0_q_mode_3
 						double arg =  q0 * ti - qx * xi - qy * yi - qz * zi;
 
 						complex<double> complex_num_term = exp(i*arg/hbarC) / num_bin_factor;
-						//err << "CHECKCOMPLEX " << arg/hbarC << "   " << i*arg/hbarC << "   " << exp(i*arg/hbarC) << endl;
+						//err << "CHECKCOMPLEX " << arg/hbarC << "   "
+						//	<< i*arg/hbarC << "   " << exp(i*arg/hbarC) << endl;
 
 						sum1[index6D] += complex_num_term;
 						sum2[index6D] += 1.0 / (num_bin_factor*num_bin_factor);
@@ -404,14 +408,16 @@ void HBT_event_generator::Compute_numerator_and_denominator_methodMode0_q_mode_3
 				}
 			}
 
-			err << "\t - finished " << ++number_of_completed_events << " of " << number_of_expected_events << endl;
+			out << "HBT_event_generator:\t - finished "
+				<< ++number_of_completed_events << " of "
+				<< number_of_expected_events << endl;
 			//print_progressbar( static_cast<double>(++number_of_completed_events)
 			//						/ static_cast<double>(total_N_events), err );
 		}
 
 	}
 
-	//err << "  * Finished!" << endl;
+	out << "HBT_event_generator:  * Finished!" << endl;
 
 	return;
 }
@@ -448,14 +454,13 @@ void HBT_event_generator::Compute_numerator_and_denominator_momentum_space_only_
 	constexpr bool oneDim_slices           = true;
 	constexpr bool use_LCMS                = true;
 
-	//int number_of_completed_events = 0;
-	out << "  * Computing correlation function:" << endl
-		<< "  * - momentum-space only" << endl
-		<< "  * - 3D" << endl;
+	out << "HBT_event_generator:  * Computing correlation function:" << endl
+		<< "HBT_event_generator:  * - momentum-space only" << endl
+		<< "HBT_event_generator:  * - 3D" << endl;
 
 	auto start = std::chrono::system_clock::now();
 	std::time_t start_time = std::chrono::system_clock::to_time_t(start);
-	out << "Start at " << std::ctime(&start_time) << endl;
+	out << "HBT_event_generator:  * Starting at " << std::ctime(&start_time) << endl;
 
 	double average_Npair_numerator = 0.0;
 	double average_Nmixed_denominator = 0.0;
@@ -516,7 +521,16 @@ void HBT_event_generator::Compute_numerator_and_denominator_momentum_space_only_
 				Ei             = Ei_new;
 				pjz            = pjz_new;
 				Ej             = Ej_new;
-
+				#pragma omp critical
+				{
+					out << "Check LCMS: "
+                         << piz << "   " << Ei << "   "
+                         << pjz << "   " << Ej << "   "
+                         << piz_new << "   " << Ei_new << "   "
+                         << pjz_new << "   " << Ej_new << "   "
+                         << Kz << "   " << K0 << "   "
+                         << 0.5*(piz+pjz) << "   " << 0.5*(Ei+Ej) << endl;
+				}
 				K0 = 0.5*(Ei+Ej);
 				Kz = 0.5*(piz+pjz);
 				if ( abs(Kz) > 1e-4 )
@@ -693,7 +707,7 @@ void HBT_event_generator::Compute_numerator_and_denominator_momentum_space_only_
 					double Ej_new  = gamma*(Ej - betaL*pjz);
 					#pragma omp critical
 					{
-						cout << "Check LCMS: "
+						out << "Check LCMS: "
                              << piz << "   " << Ei << "   "
                              << pjz << "   " << Ej << "   "
                              << piz_new << "   " << Ei_new << "   "
@@ -829,7 +843,9 @@ void HBT_event_generator::Compute_numerator_and_denominator_momentum_space_only_
 				++idx3D;
 			}
 
-			err << "\t - finished " << ++number_of_completed_events << " of " << number_of_expected_events << endl;
+			out << "HBT_event_generator:\t - finished "
+				<< ++number_of_completed_events << " of "
+				<< number_of_expected_events << endl;
 			//print_progressbar( static_cast<double>(++number_of_completed_events)
 			//						/ static_cast<double>(total_N_events), err );
 		}
@@ -837,11 +853,11 @@ void HBT_event_generator::Compute_numerator_and_denominator_momentum_space_only_
 
 	}
 
-	err << "  * Finished!" << endl;
-
     auto end = std::chrono::system_clock::now();
     std::time_t end_time = std::chrono::system_clock::to_time_t(end);
-    out << "End at " << std::ctime(&end_time) << endl;
+    out << "HBT_event_generator:  * Ending at " << std::ctime(&end_time) << endl;
+
+	out << "HBT_event_generator:  * Finished!" << endl;
 
 	return;
 }
