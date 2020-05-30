@@ -33,9 +33,11 @@ echo '| '`basename "$0"`': saving all loaded settings to settings.sh.'
 output_settings > settings.sh
 
 
+echo '| '`basename "$0"`': storing all job specifications in this_job.txt.'
+output_this_job > this_job.txt
+
 
 echo '| '`basename "$0"`': everything being run from '$HOSTNAME'.'
-
 
 
 #if [ -z ${chosen_OMP_NUM_THREADS+x} ]

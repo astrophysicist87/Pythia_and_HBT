@@ -112,8 +112,104 @@ echo 'export storeBjorkenCoordinates='$storeBjorkenCoordinates
 
 }
 
+
+output_this_job () {
+
+declare -A boolVal=( ["true"]="1" ["false"]="0")
+
+echo '--------------------------------------------------------------------------------'	# width is 80 spaces
+echo '| Date              :' `date +%A" "%B" "%d" "%r" "%Z" "%Y`
+echo '| Overview          :' $Nevents $projectile'+'$target 'collisions at \sqrt{s_{NN}} =' $beamEnergy 'GeV'
+echo '--------------------------------------------------------------------------------'	# width is 80 spaces
+echo '| -------------------------------------------'
+echo '| Collision system  :' $projectile'+'$target
+echo '| Beam energy (GeV) :' $beamEnergy
+echo '| Number of events  :' $Nevents
+printf '|' ${eventClassSelectionMode^} 'classes: '
+for eventClassCutString in "${class_ranges[@]}"
+do
+    printf $eventClassCutString' '
+done
+echo '| Particle IDs used in HBT:' $chosenHBTparticle
+echo '|'
+echo '| -------------------------------------------'
+echo '| Chosen analyses :'
+echo '|     * Pythia/Angantyr event generation    :' $runPythia
+echo '|     * Compute HBT correlation function    :' $runHBTEG
+echo '|     * Fit HBT correlation function        :' $runFitCF
+echo '|     * Compute source variances            :' $runSV
+echo '|'
+echo '| -------------------------------------------'
+echo '| Chosen Pythia/Angantyr settings           :'
+echo '|     * Impact parameter range (fm)         : ('$bMin','$bMax')'
+echo '|     * Set fragmentation vertices          :' $SetFragmentationVertices
+echo '|     * Set parton vertices                 :' $SetPartonVertices
+echo '|     * Print thermal particles only        :' $ThermalOnly
+echo '|     * Include color reconnection          :' $UseColorReconnection
+echo '|     * Include rope hadronization          :' $UseRopeHadronization
+echo '|     * Include string shoving              :' $IncludeStringShoving
+echo '|     * Include flavor ropes mechanism      :' $IncludeFlavourRopesMechanism
+echo '|     * Store Bjorken coordinates           :' $storeBjorkenCoordinates
+echo '|'
+echo '|     * Bose-Einstein effects included      :' $BEeffects
+echo '|     * Bose-Einstein mode                  :' $BEEnhancementMode
+echo '|       if Bose-Einstein mode == 0          :'
+echo '|          - QRef default value             :' $QRefValue
+echo '|          - estimate source size from'
+echo '|            space-time distribution        :' $useDistribution
+echo '|            -- use space-time instead'
+echo '|               of spatial separation       :' $useInvariantSourceSize
+echo '|            -- use relative separations'
+echo '|               instead of coordinates      :' $useRelativeDistance
+echo '|            -- evaluate distances in PRF'
+echo '|               instead of lab frame        :' $useRestFrame
+echo '|       if Bose-Einstein mode == 1          :'
+echo '|          - include phase space            :' $includePhaseSpace
+echo '|          - include estimated pair density :' $linearInterpolateCDF
+echo '|          - compute shift integral exactly :' $computeBEEnhancementExactly
+echo '|          - shifting set definition        :' $shiftingSet
+echo '|          - compensation set definition    :' $compensationSet
+echo '|          - compensation mode              :' $compensationMode
+echo '|'
+echo '| -------------------------------------------'
+echo '| Chosen HBT analysis settings              :'
+echo '|     * Number of KT points                 :' `cat parameters.dat | grep n_KT_pts | awk -F= '{print $2}'`
+echo '|          - KT minimum                     :' `cat parameters.dat | grep KTmin | awk -F= '{print $2}'`
+echo '|          - KT maximum                     :' `cat parameters.dat | grep KTmax | awk -F= '{print $2}'`
+echo '|     * Number of KPhi points               :' `cat parameters.dat | grep n_Kphi_pts | awk -F= '{print $2}'`
+echo '|     * Number of KL points                 :' `cat parameters.dat | grep n_KL_pts | awk -F= '{print $2}'`
+echo '|          - KL minimum                     :' `cat parameters.dat | grep KLmin | awk -F= '{print $2}'`
+echo '|          - KL maximum                     :' `cat parameters.dat | grep KLmax | awk -F= '{print $2}'`
+echo '|     * Relative momentum q mode            :' `cat parameters.dat | grep q_mode | awk -F= '{print $2}'`
+echo '|       if q mode == 0                      :'
+echo '|          - Number of q points (out)       :' `cat parameters.dat | grep n_qo_pts | awk -F= '{print $2}'`
+echo '|          - Number of q points (side)      :' `cat parameters.dat | grep n_qs_pts | awk -F= '{print $2}'`
+echo '|          - Number of q points (long)      :' `cat parameters.dat | grep n_ql_pts | awk -F= '{print $2}'`
+echo '|          - Bin width (out)                :' `cat parameters.dat | grep delta_qo | awk -F= '{print $2}'`
+echo '|          - Bin width (side)               :' `cat parameters.dat | grep delta_qs | awk -F= '{print $2}'`
+echo '|          - Bin width (long)               :' `cat parameters.dat | grep delta_ql | awk -F= '{print $2}'`
+echo '|       if q mode == 1                      :'
+echo '|          - Scalar type                    :' `cat parameters.dat | grep scalar_mode | awk -F= '{print $2}'`
+echo '|          - Number of Q points             :' `cat parameters.dat | grep n_Q_pts | awk -F= '{print $2}'`
+echo '|          - Bin width (scalar)             :' `cat parameters.dat | grep delta_Q | awk -F= '{print $2}'`
+echo '|          - Points in qRP radial integral  :' `cat parameters.dat | grep n_qRP_pts | awk -F= '{print $2}'`
+echo '|          - Points in qRP angular integral :' `cat parameters.dat | grep n_thq_pts | awk -F= '{print $2}'`
+echo '|     * Method of computing correlator      :' `cat parameters.dat | grep method_mode | awk -F= '{print $2}'`
+echo '|'
+echo '| -------------------------------------------'
+echo '| Chosen settings to fit correlator         :'
+echo '|     * Fitting mode                        :' `cat parameters.dat | grep fit_mode | awk -F= '{print $2}'`
+echo '|     * Include cross terms                 :' `cat parameters.dat | grep include_cross_terms | awk -F= '{print $2}'`
+echo '|     * Use q-axis slices only              :' `cat parameters.dat | grep use_slices_only | awk -F= '{print $2}'`
+echo '|     * Include cross terms                 :' `cat parameters.dat | grep include_cross_terms | awk -F= '{print $2}'`
+echo '|     * Include cross terms                 :' `cat parameters.dat | grep include_cross_terms | awk -F= '{print $2}'`
+echo '|'
+echo '| -------------------------------------------'
+}
+
 export -f check_success
 export -f clean_directory
 export -f output_settings
+export -f output_this_job
 
 # End of file
