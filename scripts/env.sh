@@ -125,11 +125,12 @@ echo '| -------------------------------------------'
 echo '| Collision system  :' $projectile'+'$target
 echo '| Beam energy (GeV) :' $beamEnergy
 echo '| Number of events  :' $Nevents
-printf '|' ${eventClassSelectionMode^} 'classes: '
+printf "| ${eventClassSelectionMode^} classes:"
 for eventClassCutString in "${class_ranges[@]}"
 do
-    printf $eventClassCutString' '
+    printf " $eventClassCutString"
 done
+printf "\n"
 echo '| Particle IDs used in HBT:' $chosenHBTparticle
 echo '|'
 echo '| -------------------------------------------'
