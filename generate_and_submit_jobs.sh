@@ -2,9 +2,9 @@
 
 (
 	# info for this run
-	NTHREADS=64
-	DIRECTORY=results_egan_N60000000
-	NICENESS=19
+	NTHREADS=12
+	DIRECTORY=results_blixen_N60000000
+	NICENESS=0
 
 	# Set job specifications here
 	declare -a class_ranges=("1-11" "12-16" "17-22" "23-28" "29-34" "35-41" "42-51" "52-151" "152-1000000")
@@ -12,12 +12,12 @@
 	#declare -a class_ranges=("0-100%")
 	declare -a specs=(
 		#blixen
-		#'projectile="p" target="p" beamEnergy="7000" chosenHBTparticle="211" Nevents=60000000 BEeffects="on" BEEnhancementMode="0" eventClassSelectionMode="multiplicity" runSV="false" useDistribution="on"'
+		'projectile="p" target="p" beamEnergy="7000" chosenHBTparticle="211" Nevents=60000000 BEeffects="on" BEEnhancementMode="0" eventClassSelectionMode="multiplicity" runSV="false" useDistribution="on"'
 		#'projectile="p" target="p" beamEnergy="7000" chosenHBTparticle="211" Nevents=1000 BEeffects="on" shiftingSet="1" compensationSet="0" compensationMode="1" computeBEEnhancementExactly="off" eventClassSelectionMode="centrality" runSV="false"'
 		#egan
-		'projectile="p" target="p" beamEnergy="7000" chosenHBTparticle="211" Nevents=60000000 BEeffects="on" BEEnhancementMode="0" eventClassSelectionMode="multiplicity" runSV="false" useDistribution="on"'
-		'projectile="p" target="p" beamEnergy="7000" chosenHBTparticle="211" Nevents=60000000 BEeffects="on" shiftingSet="1" compensationSet="0" compensationMode="1" computeBEEnhancementExactly="off" eventClassSelectionMode="multiplicity" runSV="false"'
-		'projectile="p" target="p" beamEnergy="7000" chosenHBTparticle="211" Nevents=60000000 BEeffects="on" shiftingSet="1" compensationSet="2" compensationMode="1" computeBEEnhancementExactly="off" eventClassSelectionMode="multiplicity" runSV="false"'
+		#'projectile="p" target="p" beamEnergy="7000" chosenHBTparticle="211" Nevents=60000000 BEeffects="on" BEEnhancementMode="0" eventClassSelectionMode="multiplicity" runSV="false" useDistribution="on"'
+		#'projectile="p" target="p" beamEnergy="7000" chosenHBTparticle="211" Nevents=60000000 BEeffects="on" shiftingSet="1" compensationSet="0" compensationMode="1" computeBEEnhancementExactly="off" eventClassSelectionMode="multiplicity" runSV="false"'
+		#'projectile="p" target="p" beamEnergy="7000" chosenHBTparticle="211" Nevents=60000000 BEeffects="on" shiftingSet="1" compensationSet="2" compensationMode="1" computeBEEnhancementExactly="off" eventClassSelectionMode="multiplicity" runSV="false"'
 		#lema
 		#'projectile="p" target="p" beamEnergy="7000" chosenHBTparticle="211" Nevents=60000000 BEeffects="on" shiftingSet="0" compensationSet="1" compensationMode="0" computeBEEnhancementExactly="off" eventClassSelectionMode="multiplicity" runSV="false"'
 		#'projectile="p" target="p" beamEnergy="7000" chosenHBTparticle="211" Nevents=60000000 BEeffects="on" shiftingSet="1" compensationSet="1" compensationMode="0" computeBEEnhancementExactly="off" eventClassSelectionMode="multiplicity" runSV="false"'
