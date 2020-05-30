@@ -129,6 +129,10 @@ printf "| ${eventClassSelectionMode^} classes:"
 for eventClassCutString in "${class_ranges[@]}"
 do
     printf " $eventClassCutString"
+	if [ "$eventClassCutString" == "centrality" ]
+	then
+		printf '%'
+	fi
 done
 printf "\n"
 echo '| Particle IDs used in HBT:' $chosenHBTparticle
@@ -202,8 +206,6 @@ echo '| Chosen settings to fit correlator         :'
 echo '|     * Fitting mode                        :' `cat parameters.dat | grep fit_mode | awk -F= '{print $2}'`
 echo '|     * Include cross terms                 :' `cat parameters.dat | grep include_cross_terms | awk -F= '{print $2}'`
 echo '|     * Use q-axis slices only              :' `cat parameters.dat | grep use_slices_only | awk -F= '{print $2}'`
-echo '|     * Include cross terms                 :' `cat parameters.dat | grep include_cross_terms | awk -F= '{print $2}'`
-echo '|     * Include cross terms                 :' `cat parameters.dat | grep include_cross_terms | awk -F= '{print $2}'`
 echo '|'
 echo '| -------------------------------------------'
 }

@@ -517,7 +517,7 @@ void HBT_event_generator::Compute_numerator_and_denominator_momentum_space_only_
 				double Ei_new  = gamma*(Ei - betaL*piz);
 				double pjz_new = gamma*(pjz - betaL*Ej);
 				double Ej_new  = gamma*(Ej - betaL*pjz);
-				#pragma omp critical
+				/*#pragma omp critical
 				{
 					out << "Check LCMS: "
                          << piz << "   " << Ei << "   "
@@ -526,7 +526,7 @@ void HBT_event_generator::Compute_numerator_and_denominator_momentum_space_only_
                          << pjz_new << "   " << Ej_new << "   "
                          << Kz << "   " << K0 << "   "
                          << 0.5*(piz+pjz) << "   " << 0.5*(Ei+Ej) << endl;
-				}
+				}*/
 				piz            = piz_new;
 				Ei             = Ei_new;
 				pjz            = pjz_new;
@@ -706,7 +706,7 @@ void HBT_event_generator::Compute_numerator_and_denominator_momentum_space_only_
 					double Ei_new  = gamma*(Ei - betaL*piz);
 					double pjz_new = gamma*(pjz - betaL*Ej);
 					double Ej_new  = gamma*(Ej - betaL*pjz);
-					#pragma omp critical
+					/*#pragma omp critical
 					{
 						out << "Check LCMS: "
                              << piz << "   " << Ei << "   "
@@ -715,7 +715,7 @@ void HBT_event_generator::Compute_numerator_and_denominator_momentum_space_only_
                              << pjz_new << "   " << Ej_new << "   "
                              << Kz << "   " << K0 << "   "
                              << 0.5*(piz+pjz) << "   " << 0.5*(Ei+Ej) << endl;
-					}
+					}*/
 					piz            = piz_new;
 					Ei             = Ei_new;
 					pjz            = pjz_new;
