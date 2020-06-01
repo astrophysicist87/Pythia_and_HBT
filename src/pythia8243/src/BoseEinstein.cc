@@ -71,8 +71,8 @@ const double BoseEinstein::Q2MIN     = 1e-8;
 // Parameters of energy compensation procedure: maximally allowed
 // relative energy error, iterative stepsize, and number of iterations.
 const double BoseEinstein::COMPRELERR = 1e-10;
-const double BoseEinstein::COMPFACMAX = 100.;
-const int    BoseEinstein::NCOMPSTEP  = 10000;
+const double BoseEinstein::COMPFACMAX = 1000.;
+const int    BoseEinstein::NCOMPSTEP  = 10;
 
 const double BoseEinstein::dQ = 1e-2;
 const double BoseEinstein::Qmaximum = 1.0;
@@ -442,73 +442,73 @@ bool BoseEinstein::shiftEvent( Event& event )
 	double eSumOriginal = 0.;
 	double eSumShifted  = 0.;
 	double eDiffByComp  = 0.;
-	double epSumOriginal = 0.;
+	/*double epSumOriginal = 0.;
 	double epSumShifted  = 0.;
-	double epDiffByComp  = 0.;
+	double epDiffByComp  = 0.;*/
 	//cout << "CHECK SIZES: " << nStored[9] << " vs. " << hadronBE.size() << endl;
 	for ( auto & pHad : hadronBE )
 	{
 		eSumOriginal += pHad.p.e();
-		epSumOriginal += abs(pHad.p.e()) + abs(pHad.p.px()) + abs(pHad.p.py()) + abs(pHad.p.pz());
+		//epSumOriginal += abs(pHad.p.e()) + abs(pHad.p.px()) + abs(pHad.p.py()) + abs(pHad.p.pz());
 		pHad.p       += pHad.pShift;
 		pHad.p.e( sqrt( pHad.p.pAbs2() + pHad.m2 ) );
 		eSumShifted  += pHad.p.e();
-		epSumShifted += abs(pHad.p.e()) + abs(pHad.p.px()) + abs(pHad.p.py()) + abs(pHad.p.pz());
+		//epSumShifted += abs(pHad.p.e()) + abs(pHad.p.px()) + abs(pHad.p.py()) + abs(pHad.p.pz());
 		eDiffByComp  += dot3( pHad.pComp, pHad.p ) / pHad.p.e();
-		epDiffByComp  += abs(pHad.p.e() + dot3( pHad.pComp, pHad.p ) / pHad.p.e())
+		/*epDiffByComp  += abs(pHad.p.e() + dot3( pHad.pComp, pHad.p ) / pHad.p.e())
 							+ abs(pHad.pComp.px()+pHad.p.px())
 							+ abs(pHad.pComp.py()+pHad.p.py())
-							+ abs(pHad.pComp.pz()+pHad.p.pz());
+							+ abs(pHad.pComp.pz()+pHad.p.pz());*/
 	}
-	epDiffByComp -= epSumShifted;
+	//epDiffByComp -= epSumShifted;
 
 	constexpr bool perform_compensation = true;
 	
 	// Iterate compensation shift until convergence.
 	int iStep = 0;
 	while ( perform_compensation
-			/*and abs(eSumShifted - eSumOriginal) > COMPRELERR * eSumOriginal
-			and abs(eSumShifted - eSumOriginal) < COMPFACMAX * abs(eDiffByComp)*/
-			and abs(epSumShifted - epSumOriginal) > COMPRELERR * epSumOriginal
-			and abs(epSumShifted - epSumOriginal) < COMPFACMAX * abs(epDiffByComp)
+			and abs(eSumShifted - eSumOriginal) > COMPRELERR * eSumOriginal
+			and abs(eSumShifted - eSumOriginal) < COMPFACMAX * abs(eDiffByComp)
+			/*and abs(epSumShifted - epSumOriginal) > COMPRELERR * epSumOriginal
+			and abs(epSumShifted - epSumOriginal) < COMPFACMAX * abs(epDiffByComp)*/
 			and iStep < NCOMPSTEP )
 	{
 		++iStep;
-		//double compFac   = (eSumOriginal - eSumShifted) / eDiffByComp;
-		double compFac   = (epSumOriginal - epSumShifted) / epDiffByComp;
+		double compFac   = (eSumOriginal - eSumShifted) / eDiffByComp;
+		//double compFac   = (epSumOriginal - epSumShifted) / epDiffByComp;
 cout << setprecision(12) << "Compensation check: " << iStep << "   "
 		<< eSumOriginal << "   " << eSumShifted << "   "
-		<< eDiffByComp << "   " << epSumOriginal << "   "
-		<< epSumShifted << "   " << epDiffByComp << endl;
+		<< eDiffByComp /*<< "   " << epSumOriginal << "   "
+		<< epSumShifted << "   " << epDiffByComp*/ << endl;
 		eSumShifted      = 0.;
 		eDiffByComp      = 0.;
-		epSumShifted      = 0.;
-		epDiffByComp      = 0.;
+		/*epSumShifted      = 0.;
+		epDiffByComp      = 0.;*/
 		for ( auto & pHad : hadronBE )
 		{
 			pHad.p      += compFac * pHad.pComp;
 			pHad.p.e( sqrt( pHad.p.pAbs2() + pHad.m2 ) );
 			eSumShifted += pHad.p.e();
 			eDiffByComp += dot3( pHad.pComp, pHad.p ) / pHad.p.e();
-			epSumShifted += abs(pHad.p.e()) + abs(pHad.p.px()) + abs(pHad.p.py()) + abs(pHad.p.pz());
+			/*epSumShifted += abs(pHad.p.e()) + abs(pHad.p.px()) + abs(pHad.p.py()) + abs(pHad.p.pz());
 			epDiffByComp  += abs(pHad.p.e() + dot3( pHad.pComp, pHad.p ) / pHad.p.e())
 							+ abs(pHad.pComp.px()+pHad.p.px())
 							+ abs(pHad.pComp.py()+pHad.p.py())
-							+ abs(pHad.pComp.pz()+pHad.p.pz());
+							+ abs(pHad.pComp.pz()+pHad.p.pz());*/
 		}
-		epDiffByComp -= epSumShifted;
+		//epDiffByComp -= epSumShifted;
 	}
 		
 cout << setprecision(12) << "Compensation check (final): " << "   "
 		<< eSumOriginal << "   " << eSumShifted << "   "
-		<< eDiffByComp << "   " << epSumOriginal << "   "
-		<< epSumShifted << "   " << epDiffByComp << endl;
+		<< eDiffByComp /*<< "   " << epSumOriginal << "   "
+		<< epSumShifted << "   " << epDiffByComp*/ << endl;
 
 cout << setprecision(12) << "Compensation criteria: "
 		<< abs(eSumShifted - eSumOriginal) << " < "
-		<< COMPRELERR * eSumOriginal << ";   "
+		<< COMPRELERR * eSumOriginal /*<< ";   "
 		<< abs(epSumShifted - epSumOriginal) << " < "
-		<< COMPRELERR * epSumOriginal << endl;
+		<< COMPRELERR * epSumOriginal*/ << endl;
 
 //if (1) exit (8);
 
@@ -518,8 +518,8 @@ cout << setprecision(12) << "Compensation criteria: "
 	// However, not grave enough to kill event, so return true.
 	if ( perform_compensation
 	and check_for_bad_events
-	//and abs(eSumShifted - eSumOriginal) > COMPRELERR * eSumOriginal
-	and abs(epSumShifted - epSumOriginal) > COMPRELERR * epSumOriginal
+	and abs(eSumShifted - eSumOriginal) > COMPRELERR * eSumOriginal
+	//and abs(epSumShifted - epSumOriginal) > COMPRELERR * epSumOriginal
 	)
 	{
 		infoPtr->errorMsg("Warning in BoseEinstein::shiftEvent: "
@@ -529,11 +529,11 @@ cout << setprecision(12) << "Compensation criteria: "
              << "BoseEinsteinCheck: This event did not pass! Check: "
              << abs(eSumShifted - eSumOriginal) << " < "
              << COMPRELERR * eSumOriginal << "\n";
-		if ( BE_VERBOSE )
+		/*if ( BE_VERBOSE )
 		cout << setprecision(16)
              << "BoseEinsteinCheck: This event did not pass! Check: "
              << abs(epSumShifted - epSumOriginal) << " < "
-             << COMPRELERR * epSumOriginal << "\n";
+             << COMPRELERR * epSumOriginal << "\n";*/
 		infoPtr->setBECShifts( false );
 		return true;
 	}
@@ -544,11 +544,11 @@ cout << setprecision(12) << "Compensation criteria: "
              << "BoseEinsteinCheck: This event passes! Check: "
              << abs(eSumShifted - eSumOriginal) << " < "
              << COMPRELERR * eSumOriginal << "\n";
-		if ( BE_VERBOSE )
+		/*if ( BE_VERBOSE )
 		cout << setprecision(16)
              << "BoseEinsteinCheck: This event passes! Check: "
              << abs(epSumShifted - epSumOriginal) << " < "
-             << COMPRELERR * epSumOriginal << "\n";
+             << COMPRELERR * epSumOriginal << "\n";*/
 		infoPtr->setBECShifts( true );
 	}
 	
