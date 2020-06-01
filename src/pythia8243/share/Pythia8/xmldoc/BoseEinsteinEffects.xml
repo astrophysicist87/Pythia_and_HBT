@@ -134,7 +134,7 @@ together.
 </flag>-->
 
 <flag name="BoseEinstein:computeBEEnhancementExactly" default="on"> 
-Whether to evaluate be enhancement exactly or using an approximation 
+Whether to evaluate BE enhancement exactly or using an approximation 
 (the latter is faster).
 </flag>
 
