@@ -70,7 +70,7 @@ const double BoseEinstein::Q2MIN     = 1e-8;
 
 // Parameters of energy compensation procedure: maximally allowed
 // relative energy error, iterative stepsize, and number of iterations.
-const double BoseEinstein::COMPRELERR = 1e-14;
+const double BoseEinstein::COMPRELERR = 1e-10;
 const double BoseEinstein::COMPFACMAX = 1000.;
 const int    BoseEinstein::NCOMPSTEP  = 10;
 
@@ -454,7 +454,11 @@ bool BoseEinstein::shiftEvent( Event& event )
 		pHad.p.e( sqrt( pHad.p.pAbs2() + pHad.m2 ) );
 		eSumShifted  += pHad.p.e();
 		//epSumShifted += abs(pHad.p.e()) + abs(pHad.p.px()) + abs(pHad.p.py()) + abs(pHad.p.pz());
-		eDiffByComp  += dot3( pHad.pComp, pHad.p ) / pHad.p.e();
+		//eDiffByComp  += dot3( pHad.pComp, pHad.p ) / pHad.p.e();	//ORIGINAL
+		eDiffByComp  += sqrt( pHad.p.e()*pHad.p.e()
+                              + dot3( pHad.pComp, pHad.p )
+                              + dot3( pHad.pComp, pHad.pComp ) )
+                        - pHad.p.e();
 		/*epDiffByComp  += abs(pHad.p.e() + dot3( pHad.pComp, pHad.p ) / pHad.p.e())
 							+ abs(pHad.pComp.px()+pHad.p.px())
 							+ abs(pHad.pComp.py()+pHad.p.py())
@@ -489,7 +493,11 @@ cout << setprecision(12) << "Compensation check: " << iStep << "   "
 			pHad.p      += compFac * pHad.pComp;
 			pHad.p.e( sqrt( pHad.p.pAbs2() + pHad.m2 ) );
 			eSumShifted += pHad.p.e();
-			eDiffByComp += dot3( pHad.pComp, pHad.p ) / pHad.p.e();
+			//eDiffByComp  += dot3( pHad.pComp, pHad.p ) / pHad.p.e();	//ORIGINAL
+			eDiffByComp  += sqrt( pHad.p.e()*pHad.p.e()
+	                              + dot3( pHad.pComp, pHad.p )
+	                              + dot3( pHad.pComp, pHad.pComp ) )
+	                        - pHad.p.e();
 			/*epSumShifted += abs(pHad.p.e()) + abs(pHad.p.px()) + abs(pHad.p.py()) + abs(pHad.p.pz());
 			epDiffByComp  += abs(pHad.p.e() + dot3( pHad.pComp, pHad.p ) / pHad.p.e())
 							+ abs(pHad.pComp.px()+pHad.p.px())
