@@ -70,7 +70,7 @@ const double BoseEinstein::Q2MIN     = 1e-8;
 
 // Parameters of energy compensation procedure: maximally allowed
 // relative energy error, iterative stepsize, and number of iterations.
-const double BoseEinstein::COMPRELERR = 1e-12;
+const double BoseEinstein::COMPRELERR = 1e-14;
 const double BoseEinstein::COMPFACMAX = 1000.;
 const int    BoseEinstein::NCOMPSTEP  = 10;
 
