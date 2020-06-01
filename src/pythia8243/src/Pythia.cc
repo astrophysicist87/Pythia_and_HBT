@@ -2978,12 +2978,12 @@ bool Pythia::check() {
 std::cout << "check deviation: " << epDev << "   " << epTolErr << "   " << epTolWarn << "   " << eLab << std::endl;
   if (epDev > epTolErr * eLab) {
     info.errorMsg("Error in Pythia::check: energy-momentum not conserved");
-std::cout << "check deviation: " << epDev << "   " << epTolErr << "   " << eLab << std::endl;
+std::cout << "check deviation (err): " << epDev << "   " << epTolErr << "   " << eLab << std::endl;
     physical = false;
   } else if (epDev > epTolWarn * eLab) {
     info.errorMsg("Warning in Pythia::check: "
       "energy-momentum not quite conserved");
-std::cout << "check deviation: " << epDev << "   " << epTolWarn << "   " << eLab << std::endl;
+std::cout << "check deviation (warn): " << epDev << "   " << epTolWarn << "   " << eLab << std::endl;
   }
   if (abs(chargeSum) > 0.1) {
     info.errorMsg("Error in Pythia::check: charge not conserved");
