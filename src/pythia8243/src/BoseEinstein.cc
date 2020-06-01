@@ -72,7 +72,7 @@ const double BoseEinstein::Q2MIN     = 1e-8;
 // relative energy error, iterative stepsize, and number of iterations.
 const double BoseEinstein::COMPRELERR = 1e-10;
 const double BoseEinstein::COMPFACMAX = 1000.;
-const int    BoseEinstein::NCOMPSTEP  = 100;
+const int    BoseEinstein::NCOMPSTEP  = 10;
 
 const double BoseEinstein::dQ = 1e-2;
 const double BoseEinstein::Qmaximum = 1.0;
