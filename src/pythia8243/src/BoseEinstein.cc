@@ -1786,7 +1786,7 @@ void BoseEinstein::shiftPairs_mode1(
 				// --> reduce pair's energy in lab to conserve total
 				// Add shifts to sum. (Energy component dummy.)
 				Vec4 pDiff  = factor * (had1.p + had2.p);
-				//pDiff = 0.5 * (had1.p + had2.p);
+				pDiff = 0.5 * (had1.p + had2.p);
 				// WARNING: PREFACTOR MAKES A DIFFERENCE!!!
 	
 				had1.pComp += pDiff;
