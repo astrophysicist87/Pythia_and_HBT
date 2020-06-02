@@ -561,7 +561,7 @@ bool BoseEinstein::shiftEvent( Event& event )
 		for ( auto & pHad : hadronBE )
 		{
 			eDiffByComp += dot3( pDiffByTrans, pHad.p ) / pHad.p.e();
-			pDiffByComp += pDiffByTrans;
+			//pDiffByComp += pDiffByTrans;
 		}
 
 
