@@ -580,7 +580,10 @@ public:
     scaleVMDBSave = scaleBIn;}
 
   // Set info related to Bose-Einstein shifts
-  void setBECShifts( bool hasBECShiftsIn ) { hasBECShiftsEvent = hasBECShiftsIn; }
+  void setBECShifts( bool hasBECShiftsIn ) { hasBECShiftsEvent = hasBECShiftsIn;
+                                             std::cout << "setBECShifts: "
+                                             "Setting hasBECShiftsEvent = "
+                                             << hasBECShiftsEvent << std::endl; }
 
   // Reset info for current event: only from Pythia class.
   void clear() {
