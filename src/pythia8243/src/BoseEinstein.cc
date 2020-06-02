@@ -454,14 +454,14 @@ bool BoseEinstein::shiftEvent( Event& event )
 		pHad.p.e( sqrt( pHad.p.pAbs2() + pHad.m2 ) );
 		eSumShifted  += pHad.p.e();
 		//epSumShifted += abs(pHad.p.e()) + abs(pHad.p.px()) + abs(pHad.p.py()) + abs(pHad.p.pz());
-		eDiffByComp  += dot3( pHad.pComp, pHad.p ) / pHad.p.e();	//ORIGINAL
-		/*eDiffByComp  += sqrt( pHad.p.e()*pHad.p.e()
-                              + dot3( pHad.pComp, pHad.p )
+		//eDiffByComp  += dot3( pHad.pComp, pHad.p ) / pHad.p.e();	//ORIGINAL
+		eDiffByComp  += sqrt( pHad.p.e()*pHad.p.e()
+                              + 2.0*dot3( pHad.pComp, pHad.p )
                               + dot3( pHad.pComp, pHad.pComp ) )
-                        - pHad.p.e();*/
+                        - pHad.p.e();
 cout << "COMPARE eDiffByComp defs: " << dot3( pHad.pComp, pHad.p ) / pHad.p.e()
 		<< " vs. " << sqrt( pHad.p.e()*pHad.p.e()
-                      + dot3( pHad.pComp, pHad.p )
+                      + 2.0*dot3( pHad.pComp, pHad.p )
                       + dot3( pHad.pComp, pHad.pComp ) )
                         - pHad.p.e() << endl;
 		/*epDiffByComp  += abs(pHad.p.e() + dot3( pHad.pComp, pHad.p ) / pHad.p.e())
@@ -498,14 +498,14 @@ cout << setprecision(12) << "Compensation check: " << iStep << "   "
 			pHad.p      += compFac * pHad.pComp;
 			pHad.p.e( sqrt( pHad.p.pAbs2() + pHad.m2 ) );
 			eSumShifted += pHad.p.e();
-			eDiffByComp  += dot3( pHad.pComp, pHad.p ) / pHad.p.e();	//ORIGINAL
-			/*eDiffByComp  += sqrt( pHad.p.e()*pHad.p.e()
-	                              + dot3( pHad.pComp, pHad.p )
+			//eDiffByComp  += dot3( pHad.pComp, pHad.p ) / pHad.p.e();	//ORIGINAL
+			eDiffByComp  += sqrt( pHad.p.e()*pHad.p.e()
+	                              + 2.0*dot3( pHad.pComp, pHad.p )
 	                              + dot3( pHad.pComp, pHad.pComp ) )
-	                        - pHad.p.e();*/
+	                        - pHad.p.e();
 cout << "COMPARE eDiffByComp defs: " << dot3( pHad.pComp, pHad.p ) / pHad.p.e()
 		<< " vs. " << sqrt( pHad.p.e()*pHad.p.e()
-                      + dot3( pHad.pComp, pHad.p )
+                      + 2.0*dot3( pHad.pComp, pHad.p )
                       + dot3( pHad.pComp, pHad.pComp ) )
                         - pHad.p.e() << endl;
 			/*epSumShifted += abs(pHad.p.e()) + abs(pHad.p.px()) + abs(pHad.p.py()) + abs(pHad.p.pz());
