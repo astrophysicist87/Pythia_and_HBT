@@ -593,7 +593,7 @@ bool BoseEinstein::shiftEvent( Event& event )
 			pDiffByTrans = ( pSumOriginal - pSumShifted - pDiffByComp ) / hadronBE.size();
 			//pDiffByTrans = Vec4(0.0, 0.0, 0.0, 0.0);
 
-			cout << "New method(" << iStep << "): pDiffByTrans = " << pDiffByTrans;
+			cout << "New method (" << iStep << "): pDiffByTrans = " << pDiffByTrans;
 
 			// Update compensation effect estimates to include translation effects as well
 			for ( auto & pHad : hadronBE )

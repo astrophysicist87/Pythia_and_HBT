@@ -153,7 +153,13 @@ void HeavyIons::clearProcessLevel(Pythia & pyt) {
 
 void HeavyIons::updateInfo() {
   map<string, int> saveMess = mainPythiaPtr->info.messages;
+  std::cout << "HeavyIons::updateInfo(" << __LINE__ << "): "
+               "mainPythiaPtr->info.hasBECShifts() = "
+            << mainPythiaPtr->info.hasBECShifts() << std::endl;
   mainPythiaPtr->info = hiinfo.primInfo;
+  std::cout << "HeavyIons::updateInfo(" << __LINE__ << "): "
+               "mainPythiaPtr->info.hasBECShifts() = "
+            << mainPythiaPtr->info.hasBECShifts() << std::endl;
   mainPythiaPtr->info.hiinfo = &hiinfo;
   mainPythiaPtr->info.messages = saveMess;
   mainPythiaPtr->info.updateWeight(hiinfo.weight());

@@ -304,6 +304,8 @@ bool HadronLevel::next( Event& event) {
   // Normally done first time around, but sometimes not (e.g. Upsilon).
   } while (moreToDo);
 
+  std::cout << "HadronLevel (end of next): infoPtr->hasBECShifts() = " << infoPtr->hasBECShifts() << std::endl;
+
   // Done.
   return true;
 
