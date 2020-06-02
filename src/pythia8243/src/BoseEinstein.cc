@@ -520,7 +520,7 @@ bool BoseEinstein::shiftEvent( Event& event )
 				<< abs(eSumShifted - eSumOriginal) << " < "
 				<< COMPRELERR * eSumOriginal << endl;
 	}
-	else
+	/*else
 	{
 
 		//======================================================================
@@ -554,10 +554,10 @@ bool BoseEinstein::shiftEvent( Event& event )
 //	                        - pHad.p.e();
 //			if ( abs(dE1)>1e-10 and abs(dE2)>1e-10 and 2.0*abs(dE1-dE2)/(abs(dE1+dE2)+1e-20)>0.01 )
 //				cout << "COMPARE eDiffByComp defs: " << dE1 << " vs. " << dE2 << endl;
-			/*eDiffByComp  += sqrt( pHad.p.e()*pHad.p.e()
-	                              + 2.0*dot3( pHad.pComp, pHad.p )
-	                              + dot3( pHad.pComp, pHad.pComp ) )
-	                        - pHad.p.e();*/
+			//eDiffByComp  += sqrt( pHad.p.e()*pHad.p.e()
+	        //                      + 2.0*dot3( pHad.pComp, pHad.p )
+	        //                      + dot3( pHad.pComp, pHad.pComp ) )
+	        //                - pHad.p.e();
 		}
 			
 		// Iterate compensation shift until convergence.
@@ -592,10 +592,10 @@ bool BoseEinstein::shiftEvent( Event& event )
 				pHad.p.e( sqrt( pHad.p.pAbs2() + pHad.m2 ) );
 				eSumShifted += pHad.p.e();
 				eDiffByComp  += dot3( pHad.pComp, pHad.p ) / pHad.p.e();	//ORIGINAL
-				/*eDiffByComp  += sqrt( pHad.p.e()*pHad.p.e()
-		                              + 2.0*dot3( pHad.pComp, pHad.p )
-		                              + dot3( pHad.pComp, pHad.pComp ) )
-		                        - pHad.p.e();*/
+				//eDiffByComp  += sqrt( pHad.p.e()*pHad.p.e()
+		        //                      + 2.0*dot3( pHad.pComp, pHad.p )
+		        //                      + dot3( pHad.pComp, pHad.pComp ) )
+		        //                - pHad.p.e();
 //			double dE1 = dot3( pHad.pComp, pHad.p ) / pHad.p.e();
 //			double dE2 = sqrt( pHad.p.e()*pHad.p.e()
 //	                              + 2.0*dot3( pHad.pComp, pHad.p )
@@ -617,7 +617,7 @@ bool BoseEinstein::shiftEvent( Event& event )
 //		cout << setprecision(12) << "Compensation criteria: "
 //				<< abs(eSumShifted - eSumOriginal) << " < "
 //				<< COMPRELERR * eSumOriginal << endl;
-	}
+	}*/
 //if (1) exit (8);
 	
 	// Error if no convergence, and then return without doing BE shift.
