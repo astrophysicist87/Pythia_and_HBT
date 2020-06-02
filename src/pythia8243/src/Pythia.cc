@@ -2966,7 +2966,7 @@ bool Pythia::check() {
     // Add final-state four-momentum and charge.
     if (event[i].isFinal()) {
       pSum      += event[i].p();
-cout << "check particle: " << event[i].id() << "   " << event[i].p();
+//cout << "check particle: " << event[i].id() << "   " << event[i].p();
       chargeSum += event[i].charge();
     }
 
