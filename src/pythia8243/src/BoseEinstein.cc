@@ -459,11 +459,11 @@ bool BoseEinstein::shiftEvent( Event& event )
                               + 2.0*dot3( pHad.pComp, pHad.p )
                               + dot3( pHad.pComp, pHad.pComp ) )
                         - pHad.p.e();
-cout << "COMPARE eDiffByComp defs: " << dot3( pHad.pComp, pHad.p ) / pHad.p.e()
+/*cout << "COMPARE eDiffByComp defs: " << dot3( pHad.pComp, pHad.p ) / pHad.p.e()
 		<< " vs. " << sqrt( pHad.p.e()*pHad.p.e()
                       + 2.0*dot3( pHad.pComp, pHad.p )
                       + dot3( pHad.pComp, pHad.pComp ) )
-                        - pHad.p.e() << endl;
+                        - pHad.p.e() << endl;*/
 		/*epDiffByComp  += abs(pHad.p.e() + dot3( pHad.pComp, pHad.p ) / pHad.p.e())
 							+ abs(pHad.pComp.px()+pHad.p.px())
 							+ abs(pHad.pComp.py()+pHad.p.py())
@@ -489,6 +489,10 @@ cout << setprecision(12) << "Compensation check: " << iStep << "   "
 		<< eSumOriginal << "   " << eSumShifted << "   "
 		<< eDiffByComp /*<< "   " << epSumOriginal << "   "
 		<< epSumShifted << "   " << epDiffByComp*/ << endl;
+cout << setprecision(12) << "Compensation check(2): " << iStep << "   "
+		<< abs(eSumShifted - eSumOriginal) << "   "
+		<< COMPRELERR * eSumOriginal << "   "
+		<< COMPFACMAX * abs(eDiffByComp) << endl;
 		eSumShifted      = 0.;
 		eDiffByComp      = 0.;
 		/*epSumShifted      = 0.;
@@ -503,11 +507,11 @@ cout << setprecision(12) << "Compensation check: " << iStep << "   "
 	                              + 2.0*dot3( pHad.pComp, pHad.p )
 	                              + dot3( pHad.pComp, pHad.pComp ) )
 	                        - pHad.p.e();
-cout << "COMPARE eDiffByComp defs: " << dot3( pHad.pComp, pHad.p ) / pHad.p.e()
+/*cout << "COMPARE eDiffByComp defs: " << dot3( pHad.pComp, pHad.p ) / pHad.p.e()
 		<< " vs. " << sqrt( pHad.p.e()*pHad.p.e()
                       + 2.0*dot3( pHad.pComp, pHad.p )
                       + dot3( pHad.pComp, pHad.pComp ) )
-                        - pHad.p.e() << endl;
+                        - pHad.p.e() << endl;*/
 			/*epSumShifted += abs(pHad.p.e()) + abs(pHad.p.px()) + abs(pHad.p.py()) + abs(pHad.p.pz());
 			epDiffByComp  += abs(pHad.p.e() + dot3( pHad.pComp, pHad.p ) / pHad.p.e())
 							+ abs(pHad.pComp.px()+pHad.p.px())
@@ -517,10 +521,14 @@ cout << "COMPARE eDiffByComp defs: " << dot3( pHad.pComp, pHad.p ) / pHad.p.e()
 		//epDiffByComp -= epSumShifted;
 	}
 		
-cout << setprecision(12) << "Compensation check (final): " << "   "
+cout << setprecision(12) << "Compensation check (final): "
 		<< eSumOriginal << "   " << eSumShifted << "   "
 		<< eDiffByComp /*<< "   " << epSumOriginal << "   "
 		<< epSumShifted << "   " << epDiffByComp*/ << endl;
+cout << setprecision(12) << "Compensation check(2) (final): "
+		<< abs(eSumShifted - eSumOriginal) << "   "
+		<< COMPRELERR * eSumOriginal << "   "
+		<< COMPFACMAX * abs(eDiffByComp) << endl;
 
 cout << setprecision(12) << "Compensation criteria: "
 		<< abs(eSumShifted - eSumOriginal) << " < "
