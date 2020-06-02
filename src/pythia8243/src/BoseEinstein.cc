@@ -443,7 +443,7 @@ bool BoseEinstein::shiftEvent( Event& event )
 	double eSumOriginal = 0.;
 	double eSumShifted  = 0.;
 	double eDiffByComp  = 0.;
-	constexpr int compensation_version_to_use = 0;
+	constexpr int compensation_version_to_use = 1;
 
 	constexpr bool perform_compensation = true;
 	constexpr bool check_for_bad_events = true;
@@ -549,10 +549,53 @@ bool BoseEinstein::shiftEvent( Event& event )
 			eDiffByComp  += dot3( pHad.pComp, pHad.p ) / pHad.p.e();
 			pDiffByComp  += pHad.pComp;
 		}
+
 		// Define vector to "offset" effects on 3p conservation of shifting and
 		// compensation, spread out over all hadrons being shifted
 		// Again, ignore energy components
-		Vec4 pDiffByTrans = ( pSumOriginal - pSumShifted - pDiffByComp ) / hadronBE.size();
+		// Shift EACH hadron by this vector to conserve total 3p at each iteration
+		//Vec4 pDiffByTrans = ( pSumOriginal - pSumShifted - pDiffByComp ) / hadronBE.size();
+		Vec4 pDiffByTrans(0.0, 0.0, 0.0, 0.0);
+
+		// Update compensation effect estimates to include translation effects as well
+		for ( auto & pHad : hadronBE )
+		{
+			eDiffByComp += dot3( pDiffByTrans, pHad.p ) / pHad.p.e();
+			pDiffByComp += pDiffByTrans;
+		}
+
+
+		// Iterate compensation shift until convergence.
+		int iStep = 0;
+		while ( perform_compensation
+				and abs(eSumShifted - eSumOriginal) > COMPRELERR * eSumOriginal
+				and abs(eSumShifted - eSumOriginal) < COMPFACMAX * abs(eDiffByComp)
+				and iStep < NCOMPSTEP )
+		{
+			++iStep;
+			double compFac   = (eSumOriginal - eSumShifted) / eDiffByComp;
+			eSumShifted      = 0.;
+			eDiffByComp      = 0.;
+			pSumShifted      = Vec4(0.0, 0.0, 0.0, 0.0);
+			for ( auto & pHad : hadronBE )
+			{
+				pHad.p      += compFac * pHad.pComp;
+				pHad.p.e( sqrt( pHad.p.pAbs2() + pHad.m2 ) );
+				eSumShifted += pHad.p.e();
+				pSumShifted += pHad.p;
+				eDiffByComp  += dot3( pHad.pComp, pHad.p ) / pHad.p.e();
+			}
+			//
+			//pDiffByTrans = ( pSumOriginal - pSumShifted - pDiffByComp ) / hadronBE.size();
+			pDiffByTrans = Vec4(0.0, 0.0, 0.0, 0.0);
+	
+			// Update compensation effect estimates to include translation effects as well
+			for ( auto & pHad : hadronBE )
+			{
+				eDiffByComp += dot3( pDiffByTrans, pHad.p ) / pHad.p.e();
+				pDiffByComp += pDiffByTrans;
+			}
+		}
 		//======================================================================
 
 	}
