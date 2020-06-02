@@ -550,25 +550,22 @@ bool BoseEinstein::shiftEvent( Event& event )
 			pDiffByComp  += pHad.pComp;
 		}
 
-		cout << "New method: pSumOriginal = " << pSumOriginal;
-		cout << "New method: pSumShifted  = " << pSumShifted;
+		cout << "New method (0): pSumOriginal = " << pSumOriginal;
+		cout << "New method (0): pSumShifted  = " << pSumShifted;
 
 
 		// Define vector to "offset" effects on 3p conservation of shifting and
 		// compensation, spread out over all hadrons being shifted
 		// Again, ignore energy components
 		// Shift EACH hadron by this vector to conserve total 3p at each iteration
-		//Vec4 pDiffByTrans = ( pSumOriginal - pSumShifted - pDiffByComp ) / hadronBE.size();
-		Vec4 pDiffByTrans(0.0, 0.0, 0.0, 0.0);
+		Vec4 pDiffByTrans = ( pSumOriginal - pSumShifted - pDiffByComp ) / hadronBE.size();
+		//Vec4 pDiffByTrans(0.0, 0.0, 0.0, 0.0);
 
 		// Update compensation effect estimates to include translation effects as well
 		for ( auto & pHad : hadronBE )
-		{
 			eDiffByComp += dot3( pDiffByTrans, pHad.p ) / pHad.p.e();
-			//pDiffByComp += pDiffByTrans;
-		}
 
-		cout << "New method: pDiffByTrans = " << pDiffByTrans;
+		cout << "New method (0): pDiffByTrans = " << pDiffByTrans;
 
 		// Iterate compensation shift until convergence.
 		int iStep = 0;
@@ -590,11 +587,11 @@ bool BoseEinstein::shiftEvent( Event& event )
 				pSumShifted += pHad.p;
 				eDiffByComp  += dot3( pHad.pComp, pHad.p ) / pHad.p.e();
 			}
-			cout << "New method(" << iStep << "): pSumShifted  = " << pSumShifted;
+			cout << "New method (" << iStep << "): pSumShifted  = " << pSumShifted;
 
 			//update amount to shift by
-			//pDiffByTrans = ( pSumOriginal - pSumShifted - pDiffByComp ) / hadronBE.size();
-			pDiffByTrans = Vec4(0.0, 0.0, 0.0, 0.0);
+			pDiffByTrans = ( pSumOriginal - pSumShifted - pDiffByComp ) / hadronBE.size();
+			//pDiffByTrans = Vec4(0.0, 0.0, 0.0, 0.0);
 
 			cout << "New method(" << iStep << "): pDiffByTrans = " << pDiffByTrans;
 
