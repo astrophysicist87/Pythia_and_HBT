@@ -96,7 +96,9 @@ bool HadronLevel::init(Info* infoPtrIn, Settings& settings,
     timesDecPtr, &flavSel, decayHandlePtr, handledParticles);
 
   // Initialize BoseEinstein.
+  std::cout << "HadronLevel (before BE init): infoPtr->hasBECshifts() = " << infoPtr->hasBECshifts() << std::endl;
   boseEinstein.init(infoPtr, settings, *particleDataPtr);
+  std::cout << "HadronLevel (after BE init): infoPtr->hasBECshifts() = " << infoPtr->hasBECshifts() << std::endl;
 
   // Initialize DeuteronProduction.
   if (doDeuteronProd)
@@ -264,8 +266,17 @@ bool HadronLevel::next( Event& event) {
       hadronScatter.scatterOld(event);
 
     // Third part: include Bose-Einstein effects among current particles.
-    if (doBoseEinsteinNow) {
-      if (!boseEinstein.shiftEvent(event)) return false;
+    if (doBoseEinsteinNow)
+	{
+	  std::cout << "HadronLevel (before shift event): infoPtr->hasBECshifts() = " << infoPtr->hasBECshifts() << std::endl;
+      if (!boseEinstein.shiftEvent(event))
+      {
+		std::cout << "HadronLevel: BoseEinstein module failed!" << std::endl;
+		std::cout << "HadronLevel (after shift event): infoPtr->hasBECshifts() = " << infoPtr->hasBECshifts() << std::endl;
+		return false;
+      }
+	  std::cout << "HadronLevel: BoseEinstein module succeeded!" << std::endl;
+	  std::cout << "HadronLevel (after shift event): infoPtr->hasBECshifts() = " << infoPtr->hasBECshifts() << std::endl;
       doBoseEinsteinNow = false;
     }
 
