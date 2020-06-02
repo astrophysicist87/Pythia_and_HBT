@@ -544,6 +544,7 @@ bool BoseEinstein::shiftEvent( Event& event )
 		vector<double> pzAbsOriginals;
 		for ( auto & pHad : hadronBE )
 		{
+			cout << "UNSHIFTED RESULTS: " << pHad.p;
 			// get total E and 3p before and after shifting
 			eSumOriginal += pHad.p.e();
 
@@ -560,6 +561,9 @@ bool BoseEinstein::shiftEvent( Event& event )
 			pSumOriginal += pHad.p;
 			pHad.p       += pHad.pShift;
 			pHad.p.e( sqrt( pHad.p.pAbs2() + pHad.m2 ) );
+
+			cout << "SHIFTED RESULTS: " << pHad.p;
+
 			eSumShifted  += pHad.p.e();
 			pSumShifted  += pHad.p;
 			// for shifted hadrons consider effect of performing compensation
@@ -673,6 +677,10 @@ bool BoseEinstein::shiftEvent( Event& event )
 		cout << "Final check:" << endl;
 		cout << "  --> pSumOriginal = " << pSumOriginal;
 		cout << "  --> pSumShifted  = " << pSumShifted;
+
+		for ( auto & pHad : hadronBE )
+			cout << "COMPENSATED RESULTS: " << pHad.p;
+
 
 
 	}
