@@ -554,8 +554,8 @@ bool BoseEinstein::shiftEvent( Event& event )
 		// compensation, spread out over all hadrons being shifted
 		// Again, ignore energy components
 		// Shift EACH hadron by this vector to conserve total 3p at each iteration
-		//Vec4 pDiffByTrans = ( pSumOriginal - pSumShifted - pDiffByComp ) / hadronBE.size();
-		Vec4 pDiffByTrans(0.0, 0.0, 0.0, 0.0);
+		Vec4 pDiffByTrans = ( pSumOriginal - pSumShifted - pDiffByComp ) / hadronBE.size();
+		//Vec4 pDiffByTrans(0.0, 0.0, 0.0, 0.0);
 
 		// Update compensation effect estimates to include translation effects as well
 		for ( auto & pHad : hadronBE )
@@ -579,22 +579,19 @@ bool BoseEinstein::shiftEvent( Event& event )
 			pSumShifted      = Vec4(0.0, 0.0, 0.0, 0.0);
 			for ( auto & pHad : hadronBE )
 			{
-				pHad.p      += compFac * pHad.pComp;
+				pHad.p      += compFac * ( pHad.pComp + pDiffByTrans );
 				pHad.p.e( sqrt( pHad.p.pAbs2() + pHad.m2 ) );
 				eSumShifted += pHad.p.e();
 				pSumShifted += pHad.p;
 				eDiffByComp  += dot3( pHad.pComp, pHad.p ) / pHad.p.e();
 			}
 			//
-			//pDiffByTrans = ( pSumOriginal - pSumShifted - pDiffByComp ) / hadronBE.size();
-			pDiffByTrans = Vec4(0.0, 0.0, 0.0, 0.0);
+			pDiffByTrans = ( pSumOriginal - pSumShifted - pDiffByComp ) / hadronBE.size();
+			//pDiffByTrans = Vec4(0.0, 0.0, 0.0, 0.0);
 	
 			// Update compensation effect estimates to include translation effects as well
 			for ( auto & pHad : hadronBE )
-			{
 				eDiffByComp += dot3( pDiffByTrans, pHad.p ) / pHad.p.e();
-				pDiffByComp += pDiffByTrans;
-			}
 		}
 		//======================================================================
 
