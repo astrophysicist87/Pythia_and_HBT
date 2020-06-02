@@ -138,6 +138,7 @@ bool BoseEinstein::init(Info* infoPtrIn, Settings& settings,
 		//     as in original version
 		infoPtr->errorMsg("Error in BoseEinstein::init: "
 		                  "incompatible flags selected, so skip BE");
+		cout << "BECshifts being set to false here!" << endl;
 		infoPtr->setBECShifts( false );
 		return false;
 	}
@@ -521,7 +522,21 @@ bool BoseEinstein::shiftEvent( Event& event )
 	}
 	else
 	{
+
+		//======================================================================
 		Vec4 pSumOriginal, pSumShifted, pDiffByComp;
+		for ( auto & pHad : hadronBE )
+		{
+			//ignore energy component; only care about balancing 3-momentum here
+			pSumOriginal += pHad.p;
+			pSumShifted  += pHad.p + pHad.pShift;
+		}
+		//======================================================================
+
+
+
+
+
 		for ( auto & pHad : hadronBE )
 		{
 			eSumOriginal += pHad.p.e();
@@ -532,13 +547,13 @@ bool BoseEinstein::shiftEvent( Event& event )
 			pSumShifted  += pHad.p;
 			eDiffByComp  += dot3( pHad.pComp, pHad.p ) / pHad.p.e();	//ORIGINAL
 			pDiffByComp  += pHad.pComp;
-			double dE1 = dot3( pHad.pComp, pHad.p ) / pHad.p.e();
-			double dE2 = sqrt( pHad.p.e()*pHad.p.e()
-	                              + 2.0*dot3( pHad.pComp, pHad.p )
-	                              + dot3( pHad.pComp, pHad.pComp ) )
-	                        - pHad.p.e();
-			if ( abs(dE1)>1e-10 and abs(dE2)>1e-10 and 2.0*abs(dE1-dE2)/(abs(dE1+dE2)+1e-20)>0.01 )
-				cout << "COMPARE eDiffByComp defs: " << dE1 << " vs. " << dE2 << endl;
+//			double dE1 = dot3( pHad.pComp, pHad.p ) / pHad.p.e();
+//			double dE2 = sqrt( pHad.p.e()*pHad.p.e()
+//	                              + 2.0*dot3( pHad.pComp, pHad.p )
+//	                              + dot3( pHad.pComp, pHad.pComp ) )
+//	                        - pHad.p.e();
+//			if ( abs(dE1)>1e-10 and abs(dE2)>1e-10 and 2.0*abs(dE1-dE2)/(abs(dE1+dE2)+1e-20)>0.01 )
+//				cout << "COMPARE eDiffByComp defs: " << dE1 << " vs. " << dE2 << endl;
 			/*eDiffByComp  += sqrt( pHad.p.e()*pHad.p.e()
 	                              + 2.0*dot3( pHad.pComp, pHad.p )
 	                              + dot3( pHad.pComp, pHad.pComp ) )
@@ -554,13 +569,21 @@ bool BoseEinstein::shiftEvent( Event& event )
 		{
 			++iStep;
 			double compFac   = (eSumOriginal - eSumShifted) / eDiffByComp;
-			cout << setprecision(12) << "Compensation check: " << iStep << "   "
-					<< eSumOriginal << "   " << eSumShifted << "   "
-					<< eDiffByComp << endl;
-			cout << setprecision(12) << "Compensation check(2): " << iStep << "   "
-					<< abs(eSumShifted - eSumOriginal) << "   "
-					<< COMPRELERR * eSumOriginal << "   "
-					<< COMPFACMAX * abs(eDiffByComp) << endl;
+			//==================================================================
+			Vec4 pDiffByTrans = (pSumShifted + compFac * pHad.pComp);
+			double eDiffByTrans = 0.0;
+			for ( auto & pHad : hadronBE )
+			{
+				eDiffByTrans += 
+			}
+			//==================================================================
+//			cout << setprecision(12) << "Compensation check: " << iStep << "   "
+//					<< eSumOriginal << "   " << eSumShifted << "   "
+//					<< eDiffByComp << endl;
+//			cout << setprecision(12) << "Compensation check(2): " << iStep << "   "
+//					<< abs(eSumShifted - eSumOriginal) << "   "
+//					<< COMPRELERR * eSumOriginal << "   "
+//					<< COMPFACMAX * abs(eDiffByComp) << endl;
 			eSumShifted      = 0.;
 			eDiffByComp      = 0.;
 			for ( auto & pHad : hadronBE )
@@ -573,27 +596,27 @@ bool BoseEinstein::shiftEvent( Event& event )
 		                              + 2.0*dot3( pHad.pComp, pHad.p )
 		                              + dot3( pHad.pComp, pHad.pComp ) )
 		                        - pHad.p.e();*/
-			double dE1 = dot3( pHad.pComp, pHad.p ) / pHad.p.e();
-			double dE2 = sqrt( pHad.p.e()*pHad.p.e()
-	                              + 2.0*dot3( pHad.pComp, pHad.p )
-	                              + dot3( pHad.pComp, pHad.pComp ) )
-	                        - pHad.p.e();
-			if ( abs(dE1)>1e-10 and abs(dE2)>1e-10 and 2.0*abs(dE1-dE2)/(abs(dE1+dE2)+1e-20)>0.01 )
-				cout << "COMPARE eDiffByComp defs: " << dE1 << " vs. " << dE2 << endl;
+//			double dE1 = dot3( pHad.pComp, pHad.p ) / pHad.p.e();
+//			double dE2 = sqrt( pHad.p.e()*pHad.p.e()
+//	                              + 2.0*dot3( pHad.pComp, pHad.p )
+//	                              + dot3( pHad.pComp, pHad.pComp ) )
+//	                        - pHad.p.e();
+//			if ( abs(dE1)>1e-10 and abs(dE2)>1e-10 and 2.0*abs(dE1-dE2)/(abs(dE1+dE2)+1e-20)>0.01 )
+//				cout << "COMPARE eDiffByComp defs: " << dE1 << " vs. " << dE2 << endl;
 			}
 		}
 			
-		cout << setprecision(12) << "Compensation check (final): "
-				<< eSumOriginal << "   " << eSumShifted << "   "
-				<< eDiffByComp << endl;
-		cout << setprecision(12) << "Compensation check(2) (final): "
-				<< abs(eSumShifted - eSumOriginal) << "   "
-				<< COMPRELERR * eSumOriginal << "   "
-				<< COMPFACMAX * abs(eDiffByComp) << endl;
-		
-		cout << setprecision(12) << "Compensation criteria: "
-				<< abs(eSumShifted - eSumOriginal) << " < "
-				<< COMPRELERR * eSumOriginal << endl;
+//		cout << setprecision(12) << "Compensation check (final): "
+//				<< eSumOriginal << "   " << eSumShifted << "   "
+//				<< eDiffByComp << endl;
+//		cout << setprecision(12) << "Compensation check(2) (final): "
+//				<< abs(eSumShifted - eSumOriginal) << "   "
+//				<< COMPRELERR * eSumOriginal << "   "
+//				<< COMPFACMAX * abs(eDiffByComp) << endl;
+//		
+//		cout << setprecision(12) << "Compensation criteria: "
+//				<< abs(eSumShifted - eSumOriginal) << " < "
+//				<< COMPRELERR * eSumOriginal << endl;
 	}
 //if (1) exit (8);
 	
@@ -1818,7 +1841,7 @@ void BoseEinstein::shiftPairs_mode1(
 				// --> reduce pair's energy in lab to conserve total
 				// Add shifts to sum. (Energy component dummy.)
 				Vec4 pDiff  = factor * (had1.p + had2.p);
-				pDiff = 0.5 * (had1.p + had2.p);
+				//pDiff = 0.5 * (had1.p + had2.p);
 				// WARNING: PREFACTOR MAKES A DIFFERENCE!!!
 	
 				had1.pComp += pDiff;
