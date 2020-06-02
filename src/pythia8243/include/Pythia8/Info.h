@@ -58,7 +58,7 @@ public:
     scaleVMDASave(), scaleVMDBSave(), counters(), weightCKKWLSave(1.),
     weightFIRSTSave(0.), hasBECShiftsEvent(false) {
     for (int i = 0; i < 40; ++i) counters[i] = 0;
-    setNWeights(1);}
+    setNWeights(1);  std::cout << "Info: A NEW INFO OBJECT HAS BEEN CREATED!" << std::endl;}
 
   // Destructor for clean-up.
  ~Info(){

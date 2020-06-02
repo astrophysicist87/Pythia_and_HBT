@@ -636,6 +636,8 @@ int main(int argc, char *argv[])
 					and not pythia.info.hasBECShifts() )
 			{
 				cout << "WARNING: event not shifted correctly!  Trying again..." << endl;
+				cout << "WARNING: momentum_space_modifications = " << momentum_space_modifications << endl;
+				cout << "WARNING: pythia.info.hasBECShifts() = " << pythia.info.hasBECShifts() << endl;
 if (1) exit(8);
 				continue;
 			}
