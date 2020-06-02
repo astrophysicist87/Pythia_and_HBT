@@ -632,6 +632,9 @@ int main(int argc, char *argv[])
 				cout << "Event generation failed for some reason!  Continuing!" << endl;
 				continue;
 			}
+			else
+				cout << "Event generation was successful!" << endl;
+
 
 			// If using BE shifts, check that this event
 			// was shifted successfully.

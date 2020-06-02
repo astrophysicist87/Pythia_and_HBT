@@ -448,27 +448,34 @@ bool BoseEinstein::shiftEvent( Event& event )
 	constexpr bool perform_compensation = true;
 	constexpr bool check_for_bad_events = true;
 
+
 	if ( compensation_version_to_use == 0 )
 	{
+		Vec4 pSumOriginal, pSumShifted, pDiffByComp;
 		for ( auto & pHad : hadronBE )
 		{
 			eSumOriginal += pHad.p.e();
+			pSumOriginal += pHad.p;
 			pHad.p       += pHad.pShift;
 			pHad.p.e( sqrt( pHad.p.pAbs2() + pHad.m2 ) );
 			eSumShifted  += pHad.p.e();
+			pSumShifted  += pHad.p;
 			eDiffByComp  += dot3( pHad.pComp, pHad.p ) / pHad.p.e();	//ORIGINAL
-			double dE1 = dot3( pHad.pComp, pHad.p ) / pHad.p.e();
-			double dE2 = sqrt( pHad.p.e()*pHad.p.e()
-	                              + 2.0*dot3( pHad.pComp, pHad.p )
-	                              + dot3( pHad.pComp, pHad.pComp ) )
-	                        - pHad.p.e();
-			if ( abs(dE1)>1e-10 and abs(dE2)>1e-10 and 2.0*abs(dE1-dE2)/(abs(dE1+dE2)+1e-20)>0.01 )
-				cout << "COMPARE eDiffByComp defs: " << dE1 << " vs. " << dE2 << endl;
+			//double dE1 = dot3( pHad.pComp, pHad.p ) / pHad.p.e();
+			//double dE2 = sqrt( pHad.p.e()*pHad.p.e()
+	        //                      + 2.0*dot3( pHad.pComp, pHad.p )
+	        //                      + dot3( pHad.pComp, pHad.pComp ) )
+	        //                - pHad.p.e();
+			//if ( abs(dE1)>1e-10 and abs(dE2)>1e-10 and 2.0*abs(dE1-dE2)/(abs(dE1+dE2)+1e-20)>0.01 )
+			//	cout << "COMPARE eDiffByComp defs: " << dE1 << " vs. " << dE2 << endl;
 			/*eDiffByComp  += sqrt( pHad.p.e()*pHad.p.e()
 	                              + 2.0*dot3( pHad.pComp, pHad.p )
 	                              + dot3( pHad.pComp, pHad.pComp ) )
 	                        - pHad.p.e();*/
 		}
+
+		cout << "CHECK: pSumOriginal = " << pSumOriginal;
+		cout << "CHECK: pSumShifted = " << pSumShifted;
 			
 		// Iterate compensation shift until convergence.
 		int iStep = 0;
@@ -488,24 +495,27 @@ bool BoseEinstein::shiftEvent( Event& event )
 					<< COMPFACMAX * abs(eDiffByComp) << endl;
 			eSumShifted      = 0.;
 			eDiffByComp      = 0.;
+			pSumShifted      = Vec4(0.0, 0.0, 0.0, 0.0);
 			for ( auto & pHad : hadronBE )
 			{
 				pHad.p      += compFac * pHad.pComp;
 				pHad.p.e( sqrt( pHad.p.pAbs2() + pHad.m2 ) );
 				eSumShifted += pHad.p.e();
+				pSumShifted += pHad.p;
 				eDiffByComp  += dot3( pHad.pComp, pHad.p ) / pHad.p.e();	//ORIGINAL
 				/*eDiffByComp  += sqrt( pHad.p.e()*pHad.p.e()
 		                              + 2.0*dot3( pHad.pComp, pHad.p )
 		                              + dot3( pHad.pComp, pHad.pComp ) )
 		                        - pHad.p.e();*/
-			double dE1 = dot3( pHad.pComp, pHad.p ) / pHad.p.e();
-			double dE2 = sqrt( pHad.p.e()*pHad.p.e()
-	                              + 2.0*dot3( pHad.pComp, pHad.p )
-	                              + dot3( pHad.pComp, pHad.pComp ) )
-	                        - pHad.p.e();
-			if ( abs(dE1)>1e-10 and abs(dE2)>1e-10 and 2.0*abs(dE1-dE2)/(abs(dE1+dE2)+1e-20)>0.01 )
-				cout << "COMPARE eDiffByComp defs: " << dE1 << " vs. " << dE2 << endl;
+			//double dE1 = dot3( pHad.pComp, pHad.p ) / pHad.p.e();
+			//double dE2 = sqrt( pHad.p.e()*pHad.p.e()
+	        //                      + 2.0*dot3( pHad.pComp, pHad.p )
+	        //                      + dot3( pHad.pComp, pHad.pComp ) )
+	        //                - pHad.p.e();
+			//if ( abs(dE1)>1e-10 and abs(dE2)>1e-10 and 2.0*abs(dE1-dE2)/(abs(dE1+dE2)+1e-20)>0.01 )
+			//	cout << "COMPARE eDiffByComp defs: " << dE1 << " vs. " << dE2 << endl;
 			}
+		cout << "CHECK(2): pSumShifted = " << pSumShifted;
 		}
 			
 		cout << setprecision(12) << "Compensation check (final): "
@@ -520,104 +530,32 @@ bool BoseEinstein::shiftEvent( Event& event )
 				<< abs(eSumShifted - eSumOriginal) << " < "
 				<< COMPRELERR * eSumOriginal << endl;
 	}
-	/*else
+	else
 	{
 
 		//======================================================================
+		// ignore energy components; consider only 3-momenta here
 		Vec4 pSumOriginal, pSumShifted, pDiffByComp;
 		for ( auto & pHad : hadronBE )
 		{
-			//ignore energy component; only care about balancing 3-momentum here
-			pSumOriginal += pHad.p;
-			pSumShifted  += pHad.p + pHad.pShift;
-		}
-		//======================================================================
-
-
-
-
-
-		for ( auto & pHad : hadronBE )
-		{
+			// get total E and 3p before and after shifting
 			eSumOriginal += pHad.p.e();
 			pSumOriginal += pHad.p;
 			pHad.p       += pHad.pShift;
 			pHad.p.e( sqrt( pHad.p.pAbs2() + pHad.m2 ) );
 			eSumShifted  += pHad.p.e();
 			pSumShifted  += pHad.p;
-			eDiffByComp  += dot3( pHad.pComp, pHad.p ) / pHad.p.e();	//ORIGINAL
+			// for shifted hadrons consider effect of performing compensation
+			eDiffByComp  += dot3( pHad.pComp, pHad.p ) / pHad.p.e();
 			pDiffByComp  += pHad.pComp;
-//			double dE1 = dot3( pHad.pComp, pHad.p ) / pHad.p.e();
-//			double dE2 = sqrt( pHad.p.e()*pHad.p.e()
-//	                              + 2.0*dot3( pHad.pComp, pHad.p )
-//	                              + dot3( pHad.pComp, pHad.pComp ) )
-//	                        - pHad.p.e();
-//			if ( abs(dE1)>1e-10 and abs(dE2)>1e-10 and 2.0*abs(dE1-dE2)/(abs(dE1+dE2)+1e-20)>0.01 )
-//				cout << "COMPARE eDiffByComp defs: " << dE1 << " vs. " << dE2 << endl;
-			//eDiffByComp  += sqrt( pHad.p.e()*pHad.p.e()
-	        //                      + 2.0*dot3( pHad.pComp, pHad.p )
-	        //                      + dot3( pHad.pComp, pHad.pComp ) )
-	        //                - pHad.p.e();
 		}
-			
-		// Iterate compensation shift until convergence.
-		int iStep = 0;
-		while ( perform_compensation
-				and abs(eSumShifted - eSumOriginal) > COMPRELERR * eSumOriginal
-				and abs(eSumShifted - eSumOriginal) < COMPFACMAX * abs(eDiffByComp)
-				and iStep < NCOMPSTEP )
-		{
-			++iStep;
-			double compFac   = (eSumOriginal - eSumShifted) / eDiffByComp;
-			//==================================================================
-			Vec4 pDiffByTrans = (pSumShifted + compFac * pHad.pComp);
-			double eDiffByTrans = 0.0;
-			for ( auto & pHad : hadronBE )
-			{
-				eDiffByTrans += 
-			}
-			//==================================================================
-//			cout << setprecision(12) << "Compensation check: " << iStep << "   "
-//					<< eSumOriginal << "   " << eSumShifted << "   "
-//					<< eDiffByComp << endl;
-//			cout << setprecision(12) << "Compensation check(2): " << iStep << "   "
-//					<< abs(eSumShifted - eSumOriginal) << "   "
-//					<< COMPRELERR * eSumOriginal << "   "
-//					<< COMPFACMAX * abs(eDiffByComp) << endl;
-			eSumShifted      = 0.;
-			eDiffByComp      = 0.;
-			for ( auto & pHad : hadronBE )
-			{
-				pHad.p      += compFac * pHad.pComp;
-				pHad.p.e( sqrt( pHad.p.pAbs2() + pHad.m2 ) );
-				eSumShifted += pHad.p.e();
-				eDiffByComp  += dot3( pHad.pComp, pHad.p ) / pHad.p.e();	//ORIGINAL
-				//eDiffByComp  += sqrt( pHad.p.e()*pHad.p.e()
-		        //                      + 2.0*dot3( pHad.pComp, pHad.p )
-		        //                      + dot3( pHad.pComp, pHad.pComp ) )
-		        //                - pHad.p.e();
-//			double dE1 = dot3( pHad.pComp, pHad.p ) / pHad.p.e();
-//			double dE2 = sqrt( pHad.p.e()*pHad.p.e()
-//	                              + 2.0*dot3( pHad.pComp, pHad.p )
-//	                              + dot3( pHad.pComp, pHad.pComp ) )
-//	                        - pHad.p.e();
-//			if ( abs(dE1)>1e-10 and abs(dE2)>1e-10 and 2.0*abs(dE1-dE2)/(abs(dE1+dE2)+1e-20)>0.01 )
-//				cout << "COMPARE eDiffByComp defs: " << dE1 << " vs. " << dE2 << endl;
-			}
-		}
-			
-//		cout << setprecision(12) << "Compensation check (final): "
-//				<< eSumOriginal << "   " << eSumShifted << "   "
-//				<< eDiffByComp << endl;
-//		cout << setprecision(12) << "Compensation check(2) (final): "
-//				<< abs(eSumShifted - eSumOriginal) << "   "
-//				<< COMPRELERR * eSumOriginal << "   "
-//				<< COMPFACMAX * abs(eDiffByComp) << endl;
-//		
-//		cout << setprecision(12) << "Compensation criteria: "
-//				<< abs(eSumShifted - eSumOriginal) << " < "
-//				<< COMPRELERR * eSumOriginal << endl;
-	}*/
+		// Define vector to "offset" effects on 3p conservation of shifting and
+		// compensation, spread out over all hadrons being shifted
+		// Again, ignore energy components
+		Vec4 pDiffByTrans = ( pSumOriginal - pSumShifted - pDiffByComp ) / hadronBE.size();
+		//======================================================================
+
+	}
 //if (1) exit (8);
 	
 	// Error if no convergence, and then return without doing BE shift.
