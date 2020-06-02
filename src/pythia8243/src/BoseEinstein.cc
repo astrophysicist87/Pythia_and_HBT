@@ -536,23 +536,23 @@ bool BoseEinstein::shiftEvent( Event& event )
 		//======================================================================
 		// ignore energy components; consider only 3-momenta here
 		Vec4 pSumOriginal, pSumShifted, pDiffByComp;
-		//double pxAbsSumOriginal = 0.0;
-		//double pyAbsSumOriginal = 0.0;
-		//double pzAbsSumOriginal = 0.0;
-		//vector<double> pxAbsOriginals;
-		//vector<double> pyAbsOriginals;
-		//vector<double> pzAbsOriginals;
+		double pxAbsSumOriginal = 0.0;
+		double pyAbsSumOriginal = 0.0;
+		double pzAbsSumOriginal = 0.0;
+		vector<double> pxAbsOriginals;
+		vector<double> pyAbsOriginals;
+		vector<double> pzAbsOriginals;
 		for ( auto & pHad : hadronBE )
 		{
 			// get total E and 3p before and after shifting
 			eSumOriginal += pHad.p.e();
 
-			//pxAbsSumOriginal += abs(pHad.p.px());
-			//pyAbsSumOriginal += abs(pHad.p.py());
-			//pzAbsSumOriginal += abs(pHad.p.pz());
-			//pxAbsOriginals.push_back( abs(pHad.p.px()) );
-			//pyAbsOriginals.push_back( abs(pHad.p.py()) );
-			//pzAbsOriginals.push_back( abs(pHad.p.pz()) );
+			pxAbsSumOriginal += abs(pHad.p.px());
+			pyAbsSumOriginal += abs(pHad.p.py());
+			pzAbsSumOriginal += abs(pHad.p.pz());
+			pxAbsOriginals.push_back( abs(pHad.p.px()) );
+			pyAbsOriginals.push_back( abs(pHad.p.py()) );
+			pzAbsOriginals.push_back( abs(pHad.p.pz()) );
 
 			pSumOriginal += pHad.p;
 			pHad.p       += pHad.pShift;
@@ -577,22 +577,22 @@ bool BoseEinstein::shiftEvent( Event& event )
 		// - trivial
 		//Vec4 pDiffByTrans(0.0, 0.0, 0.0, 0.0);
 		// - translation spread evenly over all shifted hadrons
-		Vec4 pDiffByTrans = pDiffByTransTotal / hadronBE.size();
+		//Vec4 pDiffByTrans = pDiffByTransTotal / hadronBE.size();
 		// - translation spread proportionately over all shifted hadrons,
 		// - calculated below
-		//Vec4 pDiffByTrans;
-		//double eps_x = pDiffByTransTotal.px() / pxAbsSumOriginal;
-		//double eps_y = pDiffByTransTotal.py() / pyAbsSumOriginal;
-		//double eps_z = pDiffByTransTotal.pz() / pzAbsSumOriginal;
+		Vec4 pDiffByTrans;
+		double eps_x = pDiffByTransTotal.px() / pxAbsSumOriginal;
+		double eps_y = pDiffByTransTotal.py() / pyAbsSumOriginal;
+		double eps_z = pDiffByTransTotal.pz() / pzAbsSumOriginal;
 
 		// Update compensation effect estimates to include translation effects as well
-		//int iHad = 0;
+		int iHad = 0;
 		for ( auto & pHad : hadronBE )
 		{
-			//pDiffByTrans.px( eps_x * pxAbsOriginals[iHad] );
-			//pDiffByTrans.py( eps_y * pyAbsOriginals[iHad] );
-			//pDiffByTrans.pz( eps_z * pzAbsOriginals[iHad] );
-			//iHad++;
+			pDiffByTrans.px( eps_x * pxAbsOriginals[iHad] );
+			pDiffByTrans.py( eps_y * pyAbsOriginals[iHad] );
+			pDiffByTrans.pz( eps_z * pzAbsOriginals[iHad] );
+			iHad++;
 			eDiffByComp += dot3( pDiffByTrans, pHad.p ) / pHad.p.e();
 		}
 
@@ -610,8 +610,13 @@ bool BoseEinstein::shiftEvent( Event& event )
 			eSumShifted      = 0.;
 			eDiffByComp      = 0.;
 			pSumShifted      = Vec4(0.0, 0.0, 0.0, 0.0);
+			iHad = 0;
 			for ( auto & pHad : hadronBE )
 			{
+				pDiffByTrans.px( eps_x * pxAbsOriginals[iHad] );
+				pDiffByTrans.py( eps_y * pyAbsOriginals[iHad] );
+				pDiffByTrans.pz( eps_z * pzAbsOriginals[iHad] );
+				iHad++;
 				pHad.p      += compFac * ( pHad.pComp + pDiffByTrans );
 				pHad.p.e( sqrt( pHad.p.pAbs2() + pHad.m2 ) );
 				eSumShifted += pHad.p.e();
@@ -623,22 +628,22 @@ bool BoseEinstein::shiftEvent( Event& event )
 			//update amount to shift by
 			pDiffByTransTotal = pSumOriginal - pSumShifted - pDiffByComp;
 			//pDiffByTrans = Vec4(0.0, 0.0, 0.0, 0.0);
-			pDiffByTrans = pDiffByTransTotal / hadronBE.size();
+			//pDiffByTrans = pDiffByTransTotal / hadronBE.size();
 
 			//cout << "New method (" << iStep << "): pDiffByTrans = " << pDiffByTrans;
 
-			//eps_x = pDiffByTransTotal.px() / pxAbsSumOriginal;
-			//eps_y = pDiffByTransTotal.py() / pyAbsSumOriginal;
-			//eps_z = pDiffByTransTotal.pz() / pzAbsSumOriginal;
+			eps_x = pDiffByTransTotal.px() / pxAbsSumOriginal;
+			eps_y = pDiffByTransTotal.py() / pyAbsSumOriginal;
+			eps_z = pDiffByTransTotal.pz() / pzAbsSumOriginal;
 
 			// Update compensation effect estimates to include translation effects as well
-			//iHad = 0;
+			iHad = 0;
 			for ( auto & pHad : hadronBE )
 			{
-				//pDiffByTrans.px( eps_x * pxAbsOriginals[iHad] );
-				//pDiffByTrans.py( eps_y * pyAbsOriginals[iHad] );
-				//pDiffByTrans.pz( eps_z * pzAbsOriginals[iHad] );
-				//iHad++;
+				pDiffByTrans.px( eps_x * pxAbsOriginals[iHad] );
+				pDiffByTrans.py( eps_y * pyAbsOriginals[iHad] );
+				pDiffByTrans.pz( eps_z * pzAbsOriginals[iHad] );
+				iHad++;
 				eDiffByComp += dot3( pDiffByTrans, pHad.p ) / pHad.p.e();
 			}
 		}
