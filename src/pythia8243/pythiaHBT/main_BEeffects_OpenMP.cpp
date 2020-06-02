@@ -636,6 +636,7 @@ int main(int argc, char *argv[])
 					and not pythia.info.hasBECShifts() )
 			{
 				cout << "WARNING: event not shifted correctly!  Trying again..." << endl;
+if (1) exit(8);
 				continue;
 			}
 
