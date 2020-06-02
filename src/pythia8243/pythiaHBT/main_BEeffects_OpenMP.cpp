@@ -628,7 +628,10 @@ int main(int argc, char *argv[])
 		{
 			// Generate next Pythia event in this thread.
 			if ( not pythia.next() )
+			{
+				cout << "Event generation failed for some reason!  Continuing!" << endl;
 				continue;
+			}
 
 			// If using BE shifts, check that this event
 			// was shifted successfully.
