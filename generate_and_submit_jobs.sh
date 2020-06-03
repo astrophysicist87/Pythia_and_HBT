@@ -3,7 +3,7 @@
 (
 	# info for this run
 	NTHREADS=1
-	DIRECTORY=results_quick_test
+	DIRECTORY=results_quick_test_corrected
 	NICENESS=0
 
 	# Set job specifications here

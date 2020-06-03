@@ -630,9 +630,9 @@ void HBT_event_generator::Compute_numerator_and_denominator_momentum_space_only_
 
 		//--------------------------------
 		// Randomly rotate sampled events.
-		vector<double> random_angles(n_mixing_events, 0.0), cos_rand_angles, sin_rand_angles;
+		vector<double> random_angles(n_mixing_events+1, 0.0), cos_rand_angles, sin_rand_angles;
 		if ( perform_random_rotation )
-			get_random_angles(n_mixing_events, random_angles);
+			get_random_angles(n_mixing_events+1, random_angles);
 		for (int mix_idx = 0; mix_idx < random_angles.size(); ++mix_idx)
 		{
 			cos_rand_angles.push_back( cos( random_angles[mix_idx] ) );
