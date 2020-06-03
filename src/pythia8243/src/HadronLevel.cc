@@ -268,15 +268,15 @@ bool HadronLevel::next( Event& event) {
     // Third part: include Bose-Einstein effects among current particles.
     if (doBoseEinsteinNow)
 	{
-	  std::cout << "HadronLevel (before shift event): infoPtr->hasBECShifts() = " << infoPtr->hasBECShifts() << std::endl;
+	  //std::cout << "HadronLevel (before shift event): infoPtr->hasBECShifts() = " << infoPtr->hasBECShifts() << std::endl;
       if (!boseEinstein.shiftEvent(event))
       {
-		std::cout << "HadronLevel: BoseEinstein module failed!" << std::endl;
-		std::cout << "HadronLevel (after shift event): infoPtr->hasBECShifts() = " << infoPtr->hasBECShifts() << std::endl;
+		//std::cout << "HadronLevel: BoseEinstein module failed!" << std::endl;
+		//std::cout << "HadronLevel (after shift event): infoPtr->hasBECShifts() = " << infoPtr->hasBECShifts() << std::endl;
 		return false;
       }
-	  std::cout << "HadronLevel: BoseEinstein module succeeded!" << std::endl;
-	  std::cout << "HadronLevel (after shift event): infoPtr->hasBECShifts() = " << infoPtr->hasBECShifts() << std::endl;
+	  //std::cout << "HadronLevel: BoseEinstein module succeeded!" << std::endl;
+	  //std::cout << "HadronLevel (after shift event): infoPtr->hasBECShifts() = " << infoPtr->hasBECShifts() << std::endl;
       doBoseEinsteinNow = false;
     }
 
