@@ -536,7 +536,8 @@ void HBT_event_generator::Compute_numerator_and_denominator_momentum_space_only_
 				Kz = 0.5*(piz+pjz);
 				if ( abs(Kz) > 1e-4 )
 				{
-					err << "Something went wrong!!! Kz = " << Kz << endl;
+					#pragma omp atomic
+						err << "Something went wrong!!! Kz = " << Kz << endl;
 					exit(8);
 				}
 			}
@@ -668,6 +669,9 @@ void HBT_event_generator::Compute_numerator_and_denominator_momentum_space_only_
 		{
 			// Don't correlate this event with itself
 			if ( iEvent == mixedEvents[jEvent] ) continue;
+			
+			#pragma omp atomic
+				cout << __FUNCTION__ << ":" << __LINE__ << ": " << iEvent << " mixing with " << mixedEvents[jEvent] << endl;
 
 			EventRecord mixedEvent = allEvents[mixedEvents[jEvent]];
 
@@ -725,7 +729,8 @@ void HBT_event_generator::Compute_numerator_and_denominator_momentum_space_only_
 					Kz = 0.5*(piz+pjz);
 					if ( abs(Kz) > 1e-4 )
 					{
-						err << "Something went wrong!!! Kz = " << Kz << endl;
+						#pragma omp atomic
+							err << "Something went wrong!!! Kz = " << Kz << endl;
 						exit(8);
 					}
 				}
