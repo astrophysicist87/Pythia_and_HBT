@@ -614,25 +614,16 @@ void HBT_event_generator::Compute_numerator_and_denominator_momentum_space_only_
 		vector<int> indices(allEvents.size());
 		iota(indices.begin(), indices.end(), 0);
 
-		/*if ( perform_random_shuffle
-			or n_mixing_events < (int)allEvents.size()-1 )
-			random_shuffle(indices.begin(), indices.end());*/
 		vector<int> mixedEvents;
 		if ( n_mixing_events < (int)allEvents.size()-1 )
 			std::sample(indices.begin(), indices.end(), std::back_inserter(mixedEvents),
                 n_mixing_events + 1, std::mt19937{std::random_device{}()});
-		/*for (int mix_idx = 0; mix_idx <= n_mixing_events; ++mix_idx)
-			if ( indices[mix_idx] != iEvent
-					and mixedEvents.size() < n_mixing_events )
-			{
-				mixedEvents.push_back( indices[mix_idx] );
-			}*/
 
 		//--------------------------------
 		// Randomly rotate sampled events.
-		vector<double> random_angles(n_mixing_events+1, 0.0), cos_rand_angles, sin_rand_angles;
+		vector<double> random_angles( mixedEvents.size(), 0.0 ), cos_rand_angles, sin_rand_angles;
 		if ( perform_random_rotation )
-			get_random_angles(n_mixing_events+1, random_angles);
+			get_random_angles( mixedEvents.size(), random_angles );
 		for (int mix_idx = 0; mix_idx < random_angles.size(); ++mix_idx)
 		{
 			cos_rand_angles.push_back( cos( random_angles[mix_idx] ) );
@@ -646,15 +637,15 @@ void HBT_event_generator::Compute_numerator_and_denominator_momentum_space_only_
 			// Don't correlate this event with itself
 			if ( iEvent == mixedEvents[jEvent] ) continue;
 
-			EventRecord mixedEvent = allEvents[mixedEvents[jEvent]];
+			EventRecord mixedEvent = allEvents.at(mixedEvents.at(jEvent));
 
-			double c_rand_phi = cos_rand_angles[jEvent],
-					s_rand_phi = sin_rand_angles[jEvent];
+			double c_rand_phi = cos_rand_angles.at(jEvent),
+					s_rand_phi = sin_rand_angles.at(jEvent);
 
-			#pragma omp critical
+			/*#pragma omp critical
 				cout << __FUNCTION__ << ":" << __LINE__ << ": accessed "
 					<< jEvent << " of " << cos_rand_angles.size()
-					<< " and " << sin_rand_angles.size() << endl;
+					<< " and " << sin_rand_angles.size() << endl;*/
 
 			//-----------------------------
 			// Sum over pairs of particles.

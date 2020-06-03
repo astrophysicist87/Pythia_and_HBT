@@ -55,9 +55,9 @@ KT_grid_mode 									= 0
 	#     (for integrating corr. function)
 
 # KT points
-n_KT_pts 										= 2
+n_KT_pts 										= 9
 KTmin 											= 0.0
-KTmax 											= 0.1
+KTmax 											= 0.8
 
 # --
 # Kphi grid
@@ -83,8 +83,8 @@ KLmax 											= 1.0
 # --
 # relative momenta (3D)
 n_qo_pts 										= 32
-n_qs_pts 										= 2
-n_ql_pts 										= 2
+n_qs_pts 										= 32
+n_ql_pts 										= 32
 delta_qo 										= 0.04
 delta_qs 										= 0.04
 delta_ql 										= 0.04
@@ -105,7 +105,7 @@ n_thq_pts 										= 12
 # --
 # minimum number of mixed events
 # in denominator
-n_mix_minimum 									= 10
+n_mix_minimum 									= 1000
 
 # --
 # number of events to generate
