@@ -465,11 +465,6 @@ void HBT_event_generator::Compute_numerator_and_denominator_momentum_space_only_
 	double average_Npair_numerator = 0.0;
 	double average_Nmixed_denominator = 0.0;
 
-	/*constexpr bool impose_pair_rapidity_cuts = false;
-	const double KYmin = -0.1, KYmax = 0.1;
-	const double Kz_over_K0_min = tanh( KYmin );
-	const double Kz_over_K0_max = tanh( KYmax );*/
-
 	// Sum over all events
 	#pragma omp parallel for schedule(static)
 	for (int iEvent = 0; iEvent < allEvents.size(); ++iEvent)
@@ -499,8 +494,6 @@ void HBT_event_generator::Compute_numerator_and_denominator_momentum_space_only_
 			ParticleRecord pi = event.particles[iParticle];
 			ParticleRecord pj = event.particles[jParticle];
 
-			//double ti = pi.t, xi = pi.x, yi = pi.y, zi = pi.z;
-			//double tj = pj.t, xj = pj.x, yj = pj.y, zj = pj.z;
 			double Ei = pi.E, pix = pi.px, piy = pi.py, piz = pi.pz;
 			double Ej = pj.E, pjx = pj.px, pjy = pj.py, pjz = pj.pz;
 
@@ -517,16 +510,7 @@ void HBT_event_generator::Compute_numerator_and_denominator_momentum_space_only_
 				double Ei_new  = gamma*(Ei - betaL*piz);
 				double pjz_new = gamma*(pjz - betaL*Ej);
 				double Ej_new  = gamma*(Ej - betaL*pjz);
-				/*#pragma omp critical
-				{
-					out << "Check LCMS: "
-                         << piz << "   " << Ei << "   "
-                         << pjz << "   " << Ej << "   "
-                         << piz_new << "   " << Ei_new << "   "
-                         << pjz_new << "   " << Ej_new << "   "
-                         << Kz << "   " << K0 << "   "
-                         << 0.5*(piz+pjz) << "   " << 0.5*(Ei+Ej) << endl;
-				}*/
+
 				piz            = piz_new;
 				Ei             = Ei_new;
 				pjz            = pjz_new;
@@ -611,15 +595,7 @@ void HBT_event_generator::Compute_numerator_and_denominator_momentum_space_only_
 			int index3D = indexerK(KT_idx, Kphi_idx, KL_idx);
 			int index6D = indexer(KT_idx, Kphi_idx, KL_idx, qo_idx, qs_idx, ql_idx);
 
-			//double arg =  q0 * (ti - tj)
-			//			- qx * (xi - xj)
-			//			- qy * (yi - yj)
-			//			- qz * (zi - zj);
-
-			//double num_term = cos(arg/hbarC);
-			double num_term = 1.0;
-
-			private_num[index6D] += num_term;
+			private_num[index6D]++;
 			private_numPair[index3D]++;
 
 		}
@@ -669,14 +645,16 @@ void HBT_event_generator::Compute_numerator_and_denominator_momentum_space_only_
 		{
 			// Don't correlate this event with itself
 			if ( iEvent == mixedEvents[jEvent] ) continue;
-			
-			#pragma omp critical
-				cout << __FUNCTION__ << ":" << __LINE__ << ": " << iEvent << " mixing with " << mixedEvents[jEvent] << endl;
 
 			EventRecord mixedEvent = allEvents[mixedEvents[jEvent]];
 
 			double c_rand_phi = cos_rand_angles[jEvent],
 					s_rand_phi = sin_rand_angles[jEvent];
+
+			#pragma omp critical
+				cout << __FUNCTION__ << ":" << __LINE__ << ": accessed "
+					<< jEvent << " of " << cos_rand_angles.size()
+					<< " and " << sin_rand_angles.size() << endl;
 
 			//-----------------------------
 			// Sum over pairs of particles.
@@ -710,16 +688,7 @@ void HBT_event_generator::Compute_numerator_and_denominator_momentum_space_only_
 					double Ei_new  = gamma*(Ei - betaL*piz);
 					double pjz_new = gamma*(pjz - betaL*Ej);
 					double Ej_new  = gamma*(Ej - betaL*pjz);
-					/*#pragma omp critical
-					{
-						out << "Check LCMS: "
-                             << piz << "   " << Ei << "   "
-                             << pjz << "   " << Ej << "   "
-                             << piz_new << "   " << Ei_new << "   "
-                             << pjz_new << "   " << Ej_new << "   "
-                             << Kz << "   " << K0 << "   "
-                             << 0.5*(piz+pjz) << "   " << 0.5*(Ei+Ej) << endl;
-					}*/
+
 					piz            = piz_new;
 					Ei             = Ei_new;
 					pjz            = pjz_new;
