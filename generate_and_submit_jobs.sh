@@ -2,7 +2,7 @@
 
 (
 	# info for this run
-	NTHREADS=12
+	NTHREADS=1
 	DIRECTORY=results_quick_test
 	NICENESS=0
 

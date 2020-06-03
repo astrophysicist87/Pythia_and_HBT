@@ -63,10 +63,10 @@ do
 done	# all centralities finished
 
 
-PYTHIA_RESULTS_DIRECTORY=$MAIN_RESULTS_DIRECTORY/Pythia_results/dataset_0
-zipFilename=$PYTHIA_RESULTS_DIRECTORY".zip"
+#PYTHIA_RESULTS_DIRECTORY=$MAIN_RESULTS_DIRECTORY/Pythia_results/dataset_0
+#zipFilename=$PYTHIA_RESULTS_DIRECTORY".zip"
 
-zip -r $zipFilename $PYTHIA_RESULTS_DIRECTORY && rm -rf $PYTHIA_RESULTS_DIRECTORY
+#zip -r $zipFilename $PYTHIA_RESULTS_DIRECTORY && rm -rf $PYTHIA_RESULTS_DIRECTORY
 
 
 echo '| '`basename "$0"`': Finished everything!'
