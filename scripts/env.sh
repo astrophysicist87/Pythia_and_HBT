@@ -131,7 +131,7 @@ do
     printf " $eventClassCutString"
 	if [ "$eventClassCutString" == "centrality" ]
 	then
-		printf '%'
+		printf '%%'
 	fi
 done
 printf "\n"

@@ -632,8 +632,8 @@ int main(int argc, char *argv[])
 				cout << "Event generation failed for some reason!  Continuing!" << endl;
 				continue;
 			}
-			else
-				cout << "Event generation was successful!" << endl;
+			//else
+			//	cout << "Event generation was successful!" << endl;
 
 
 			// If using BE shifts, check that this event
@@ -641,9 +641,9 @@ int main(int argc, char *argv[])
 			if ( momentum_space_modifications
 					and not pythia.info.hasBECShifts() )
 			{
-				cout << "WARNING: event not shifted correctly!  Trying again..." << endl;
-				cout << "WARNING: momentum_space_modifications = " << momentum_space_modifications << endl;
-				cout << "WARNING: pythia.info.hasBECShifts() = " << pythia.info.hasBECShifts() << endl;
+				//cout << "WARNING: event not shifted correctly!  Trying again..." << endl;
+				//cout << "WARNING: momentum_space_modifications = " << momentum_space_modifications << endl;
+				//cout << "WARNING: pythia.info.hasBECShifts() = " << pythia.info.hasBECShifts() << endl;
 //if (1) exit(8);
 				continue;
 			}
