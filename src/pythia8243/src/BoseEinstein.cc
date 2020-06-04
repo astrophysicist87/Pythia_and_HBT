@@ -77,7 +77,7 @@ const int    BoseEinstein::NCOMPSTEP  = 10;
 const double BoseEinstein::dQ = 1e-2;
 const double BoseEinstein::Qmaximum = 1.0;
 
-const bool BoseEinstein::BE_VERBOSE = true;
+const bool BoseEinstein::BE_VERBOSE = false;
 
 //--------------------------------------------------------------------------
 
@@ -474,8 +474,8 @@ bool BoseEinstein::shiftEvent( Event& event )
 	                        - pHad.p.e();*/
 		}
 
-		cout << "CHECK: pSumOriginal = " << pSumOriginal;
-		cout << "CHECK: pSumShifted = " << pSumShifted;
+		//cout << "CHECK: pSumOriginal = " << pSumOriginal;
+		//cout << "CHECK: pSumShifted = " << pSumShifted;
 			
 		// Iterate compensation shift until convergence.
 		int iStep = 0;
@@ -486,13 +486,13 @@ bool BoseEinstein::shiftEvent( Event& event )
 		{
 			++iStep;
 			double compFac   = (eSumOriginal - eSumShifted) / eDiffByComp;
-			cout << setprecision(12) << "Compensation check: " << iStep << "   "
+			/*cout << setprecision(12) << "Compensation check: " << iStep << "   "
 					<< eSumOriginal << "   " << eSumShifted << "   "
 					<< eDiffByComp << endl;
 			cout << setprecision(12) << "Compensation check(2): " << iStep << "   "
 					<< abs(eSumShifted - eSumOriginal) << "   "
 					<< COMPRELERR * eSumOriginal << "   "
-					<< COMPFACMAX * abs(eDiffByComp) << endl;
+					<< COMPFACMAX * abs(eDiffByComp) << endl;*/
 			eSumShifted      = 0.;
 			eDiffByComp      = 0.;
 			pSumShifted      = Vec4(0.0, 0.0, 0.0, 0.0);
@@ -515,10 +515,10 @@ bool BoseEinstein::shiftEvent( Event& event )
 			//if ( abs(dE1)>1e-10 and abs(dE2)>1e-10 and 2.0*abs(dE1-dE2)/(abs(dE1+dE2)+1e-20)>0.01 )
 			//	cout << "COMPARE eDiffByComp defs: " << dE1 << " vs. " << dE2 << endl;
 			}
-		cout << "CHECK(2): pSumShifted = " << pSumShifted;
+		//cout << "CHECK(2): pSumShifted = " << pSumShifted;
 		}
 			
-		cout << setprecision(12) << "Compensation check (final): "
+		/*cout << setprecision(12) << "Compensation check (final): "
 				<< eSumOriginal << "   " << eSumShifted << "   "
 				<< eDiffByComp << endl;
 		cout << setprecision(12) << "Compensation check(2) (final): "
@@ -528,7 +528,7 @@ bool BoseEinstein::shiftEvent( Event& event )
 		
 		cout << setprecision(12) << "Compensation criteria: "
 				<< abs(eSumShifted - eSumOriginal) << " < "
-				<< COMPRELERR * eSumOriginal << endl;
+				<< COMPRELERR * eSumOriginal << endl;*/
 	}
 	else
 	{
@@ -544,7 +544,7 @@ bool BoseEinstein::shiftEvent( Event& event )
 		vector<double> pzAbsOriginals;
 		for ( auto & pHad : hadronBE )
 		{
-			cout << "UNSHIFTED RESULTS: " << pHad.p;
+			//cout << "UNSHIFTED RESULTS: " << pHad.p;
 			// get total E and 3p before and after shifting
 			eSumOriginal += pHad.p.e();
 
@@ -562,7 +562,7 @@ bool BoseEinstein::shiftEvent( Event& event )
 			pHad.p       += pHad.pShift;
 			pHad.p.e( sqrt( pHad.p.pAbs2() + pHad.m2 ) );
 
-			cout << "SHIFTED RESULTS: " << pHad.p;
+			//cout << "SHIFTED RESULTS: " << pHad.p;
 
 			eSumShifted  += pHad.p.e();
 			pSumShifted  += pHad.p;
@@ -571,8 +571,8 @@ bool BoseEinstein::shiftEvent( Event& event )
 			pDiffByComp  += pHad.pComp;
 		}
 
-		cout << "New method (0): pSumOriginal = " << pSumOriginal;
-		cout << "New method (0): pSumShifted  = " << pSumShifted;
+		//cout << "New method (0): pSumOriginal = " << pSumOriginal;
+		//cout << "New method (0): pSumShifted  = " << pSumShifted;
 
 
 		// Define vector to "offset" effects on 3p conservation of shifting and
@@ -641,7 +641,7 @@ bool BoseEinstein::shiftEvent( Event& event )
 				pSumShifted += pHad.p;
 				eDiffByComp  += dot3( pHad.pComp, pHad.p ) / pHad.p.e();
 			}
-			cout << "New method (" << iStep << "): pSumShifted  = " << pSumShifted;
+			//cout << "New method (" << iStep << "): pSumShifted  = " << pSumShifted;
 
 			//update amount to shift by
 			pDiffByTransTotal = pSumOriginal - pSumShifted - pDiffByComp;
@@ -674,12 +674,12 @@ bool BoseEinstein::shiftEvent( Event& event )
 		}
 		//======================================================================
 
-		cout << "Final check:" << endl;
+		/*cout << "Final check:" << endl;
 		cout << "  --> pSumOriginal = " << pSumOriginal;
 		cout << "  --> pSumShifted  = " << pSumShifted;
 
 		for ( auto & pHad : hadronBE )
-			cout << "COMPENSATED RESULTS: " << pHad.p;
+			cout << "COMPENSATED RESULTS: " << pHad.p;*/
 
 
 
