@@ -44,7 +44,7 @@ export compensationSet='0'						# Which pairs to use in compensation
 export compensationMode='1'						# How to compute compensation
 
 # other flags
-export UseColorReconnection='off'
+export UseColorReconnection='on'
 export UseRopeHadronization='off'
 export IncludeStringShoving='off'
 export IncludeFlavourRopesMechanism='off'
