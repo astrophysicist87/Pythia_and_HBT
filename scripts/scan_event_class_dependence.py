@@ -10,7 +10,7 @@ columnLabels = ['dNdeta','KT',\
                 'err(lambda)','err(R2o)','err(R2s)','err(R2l)']
 multLabels = [r'$N_{ch}=1-11$', r'$N_{ch}=12-16$', r'$N_{ch}=17-22$', \
               r'$N_{ch}=23-28$', r'$N_{ch}=29-34$', r'$N_{ch}=35-41$', \
-              r'$N_{ch}=42-51$', r'$N_{ch}=52-151$']
+              r'$N_{ch}=42-51$', r'$N_{ch}=52-151$', r'$N_{ch}=152-\infty$']
 #KTLabels = [r'$K_T=0-100$ MeV', r'$K_T=100-200$ MeV', r'$K_T=200-300$ MeV', \
 #            r'$K_T=300-400$ MeV', r'$K_T=400-500$ MeV', r'$K_T=500-600$ MeV', \
 #            r'$K_T=600-700$ MeV', r'$K_T=700-800$ MeV']
@@ -21,8 +21,8 @@ R2iLabels = dict({'R2o':r'$R_o$ $($fm$)$','R2s':r'$R_s$ $($fm$)$','R2l':r'$R_l$ 
 
 cols = dict(zip(columnLabels,range(len(columnLabels))))
 CFcols=dict({'out': 0,'side': 1,'long': 2})
-colors = ['blue','red','green','purple','cyan','magenta','orange','yellow']
-styles = ['o','*','v','^','s','D','P','X']
+colors = ['blue','red','green','purple','cyan','magenta','orange','yellow','teal']
+styles = ['o','*','v','^','s','D','P','X','d']
 
 def pause():
     programPause = raw_input("")
@@ -47,21 +47,25 @@ def get_dNchdeta_and_R2i_data(directory):
     return np.c_[ np.broadcast_to( mean_dNchdeta, len(R2i_vs_KT) ), R2i_vs_KT ]
     
 def get_dNchdeta_and_CF_data(directory):
+    nMult = len(multLabels)
+    nq = 31
+    nKT = len(KTLabels)
     mean_dNchdeta = get_event_class_mean_dNchdeta(directory)
     CF_vs_KT = np.loadtxt(directory + '/CF_results/HBT_pipiCF.dat', usecols=(0,3,4,5,10,11))
-    CF_vs_KT_o = CF_vs_KT[np.where((CF_vs_KT[:,2]==0) & (CF_vs_KT[:,3]==0))].reshape([8,51,6])
+    CF_vs_KT_o = CF_vs_KT[np.where((CF_vs_KT[:,2]==0) & (CF_vs_KT[:,3]==0))].reshape([8,nq,nKT])
     #print CF_vs_KT_o[:,:,[0,1,4,5]].shape
-    CF_vs_KT_o = np.c_[ np.broadcast_to( mean_dNchdeta, [8,51,1] ), CF_vs_KT_o[:,:,[0,1,4,5]] ]
-    CF_vs_KT_s = CF_vs_KT[np.where((CF_vs_KT[:,1]==0) & (CF_vs_KT[:,3]==0))].reshape([8,51,6])
-    CF_vs_KT_s = np.c_[ np.broadcast_to( mean_dNchdeta, [8,51,1] ), CF_vs_KT_s[:,:,[0,2,4,5]] ]
-    CF_vs_KT_l = CF_vs_KT[np.where((CF_vs_KT[:,1]==0) & (CF_vs_KT[:,2]==0))].reshape([8,51,6])
-    CF_vs_KT_l = np.c_[ np.broadcast_to( mean_dNchdeta, [8,51,1] ), CF_vs_KT_l[:,:,[0,3,4,5]] ]
+    CF_vs_KT_o = np.c_[ np.broadcast_to( mean_dNchdeta, [8,nq,1] ), CF_vs_KT_o[:,:,[0,1,4,5]] ]
+    CF_vs_KT_s = CF_vs_KT[np.where((CF_vs_KT[:,1]==0) & (CF_vs_KT[:,3]==0))].reshape([8,nq,nKT])
+    CF_vs_KT_s = np.c_[ np.broadcast_to( mean_dNchdeta, [8,nq,1] ), CF_vs_KT_s[:,:,[0,2,4,5]] ]
+    CF_vs_KT_l = CF_vs_KT[np.where((CF_vs_KT[:,1]==0) & (CF_vs_KT[:,2]==0))].reshape([8,nq,nKT])
+    CF_vs_KT_l = np.c_[ np.broadcast_to( mean_dNchdeta, [8,nq,1] ), CF_vs_KT_l[:,:,[0,3,4,5]] ]
     return np.stack( (CF_vs_KT_o, CF_vs_KT_s, CF_vs_KT_l) )
     
 
 
 def plot_R2i_vs_KT(data, R2i):
     fig, ax = plt.subplots()
+	ax.axhline(0, color='k', linestyle='-', linewidth=1.0)
     for multIndex in range(len(data)):
         dataSlice=data[multIndex]
         R2iVec=dataSlice[:,cols[R2i]]
@@ -101,6 +105,7 @@ def plot_R2i_vs_KT_dummy(data):
 
 def plot_R2i_vs_mult(data, R2i):
     fig, ax = plt.subplots()
+	ax.axhline(0, color='k', linestyle='-', linewidth=1.0)
     for KTIndex in range(data.shape[1]):
         dataSlice=data[:,KTIndex,:]
         R2iVec=dataSlice[:,cols[R2i]]
@@ -141,8 +146,9 @@ def plot_R2i_vs_mult_dummy(data):
     
 def plot_CF_vs_KT(data, direction):
     fig, ax = plt.subplots()
+	ax.axhline(0, color='k', linestyle='-', linewidth=1.0)
     for KTIndex in range(data.shape[2])[0:6]:
-        dNdetaIndex = -1
+        dNdetaIndex = 0
         dataSlice=data[dNdetaIndex,CFcols[direction],KTIndex]
         ax.plot(dataSlice[:,2], \
                 dataSlice[:,3], \
@@ -158,7 +164,7 @@ def plot_CF_vs_KT(data, direction):
     ax.set_xlabel(r'$q_{\mathrm{%(direction)s}}$ (GeV)' % {'direction': direction},
                     fontsize=16)
     ax.set_ylabel(r'$C$', fontsize=16)
-    ax.set_xlim(left=-0.125, right=0.125)
+    ax.set_xlim(left=-0.6, right=0.6)
     ax.tick_params(axis='both', which='major', labelsize=14)
     plt.tight_layout()
     #plt.show()
@@ -168,6 +174,7 @@ def plot_CF_vs_KT(data, direction):
 
 def plot_CF_vs_dNdeta(data, direction):
     fig, ax = plt.subplots()
+	ax.axhline(0, color='k', linestyle='-', linewidth=1.0)
     for dNdetaIndex in range(data.shape[0]):
         KTIndex = 0
         dataSlice=data[dNdetaIndex,CFcols[direction],KTIndex]
@@ -184,7 +191,7 @@ def plot_CF_vs_dNdeta(data, direction):
     ax.set_xlabel(r'$q_{\mathrm{%(direction)s}}$ (GeV)' % {'direction': direction},
                     fontsize=16)
     ax.set_ylabel(r'$C$', fontsize=16)
-    ax.set_xlim(left=-0.125, right=0.125)
+    ax.set_xlim(left=-0.6, right=0.6)
     ax.set_ylim(top=1.4)
     ax.tick_params(axis='both', which='major', labelsize=14)
     plt.tight_layout()
