@@ -8,7 +8,7 @@ export runPythia=true
 export eventClassSelectionInPythia=false
 export runHBTEG=true
 export runFitCF=true
-export runSV=true
+export runSV=false
 #export runBF=false
 
 # system specifications
