@@ -8,9 +8,10 @@ GeVToMeV = 1000.0
 columnLabels = ['dNdeta','KT',\
                 'lambda','R2o','R2s','R2l',\
                 'err(lambda)','err(R2o)','err(R2s)','err(R2l)']
-multLabels = [r'$N_{ch}=1-11$', r'$N_{ch}=12-16$', r'$N_{ch}=17-22$', \
-              r'$N_{ch}=23-28$', r'$N_{ch}=29-34$', r'$N_{ch}=35-41$', \
-              r'$N_{ch}=42-51$', r'$N_{ch}=52-151$', r'$N_{ch}=152-\infty$']
+#multLabels = [r'$N_{ch}=1-11$', r'$N_{ch}=12-16$', r'$N_{ch}=17-22$', \
+#              r'$N_{ch}=23-28$', r'$N_{ch}=29-34$', r'$N_{ch}=35-41$', \
+#              r'$N_{ch}=42-51$', r'$N_{ch}=52-151$', r'$N_{ch}=152-\infty$']
+multLabels = [r'$0-100\%$']
 #KTLabels = [r'$K_T=0-100$ MeV', r'$K_T=100-200$ MeV', r'$K_T=200-300$ MeV', \
 #            r'$K_T=300-400$ MeV', r'$K_T=400-500$ MeV', r'$K_T=500-600$ MeV', \
 #            r'$K_T=600-700$ MeV', r'$K_T=700-800$ MeV']
@@ -65,7 +66,7 @@ def get_dNchdeta_and_CF_data(directory):
 
 def plot_R2i_vs_KT(data, R2i):
     fig, ax = plt.subplots()
-	ax.axhline(0, color='k', linestyle='-', linewidth=1.0)
+    ax.axhline(0, color='k', linestyle='-', linewidth=1.0)
     for multIndex in range(len(data)):
         dataSlice=data[multIndex]
         R2iVec=dataSlice[:,cols[R2i]]
@@ -105,7 +106,7 @@ def plot_R2i_vs_KT_dummy(data):
 
 def plot_R2i_vs_mult(data, R2i):
     fig, ax = plt.subplots()
-	ax.axhline(0, color='k', linestyle='-', linewidth=1.0)
+    ax.axhline(0, color='k', linestyle='-', linewidth=1.0)
     for KTIndex in range(data.shape[1]):
         dataSlice=data[:,KTIndex,:]
         R2iVec=dataSlice[:,cols[R2i]]
@@ -146,7 +147,7 @@ def plot_R2i_vs_mult_dummy(data):
     
 def plot_CF_vs_KT(data, direction):
     fig, ax = plt.subplots()
-	ax.axhline(0, color='k', linestyle='-', linewidth=1.0)
+    ax.axhline(1, color='k', linestyle='-', linewidth=1.0)
     for KTIndex in range(data.shape[2])[0:6]:
         dNdetaIndex = 0
         dataSlice=data[dNdetaIndex,CFcols[direction],KTIndex]
@@ -174,7 +175,7 @@ def plot_CF_vs_KT(data, direction):
 
 def plot_CF_vs_dNdeta(data, direction):
     fig, ax = plt.subplots()
-	ax.axhline(0, color='k', linestyle='-', linewidth=1.0)
+    ax.axhline(1, color='k', linestyle='-', linewidth=1.0)
     for dNdetaIndex in range(data.shape[0]):
         KTIndex = 0
         dataSlice=data[dNdetaIndex,CFcols[direction],KTIndex]
