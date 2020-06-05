@@ -207,8 +207,8 @@ void HBT_event_generator::Compute_numerator_and_denominator_methodMode0_q_mode_1
 				//int index6D = indexer_qmode_1(iKT, iKphi, iKL, iQ, iqRP, ithq);
 
 				double Q0 = 0.5*(Q_pts[iQ]+Q_pts[iQ+1]);
-				if (abs(Q0)<1.e-20)
-					Q0 = 1.e-20;
+				if (abs(Q0)<1e-20)
+					Q0 = 1e-20;
 
 				double loc_alpha = 4.0*(particle_mass*particle_mass + KT*KT + KL*KL) + Q0*Q0;
 
@@ -325,8 +325,8 @@ void HBT_event_generator::Compute_numerator_and_denominator_methodMode0_q_mode_1
 												// y-->out, x-->long
 				const double Kmag = sqrt(KT*KT+KL*KL);
 				double Q0 = 0.5*(Q_pts[iQ]+Q_pts[iQ+1]);
-				if (abs(Q0)<1.e-20)
-					Q0 = 1.e-20;
+				if (abs(Q0)<1e-20)
+					Q0 = 1e-20;
 				const double loc_alpha = 4.0*(particle_mass*particle_mass + KT*KT + KL*KL) + Q0*Q0;
 
 				// integrals over numerator and denominator
@@ -435,7 +435,8 @@ void HBT_event_generator::Compute_numerator_and_denominator_methodMode0_q_mode_1
 
 	}
 
-	err << "  * Exiting Compute_numerator_and_denominator_with_errors_q_mode_1D()" << endl;
+	//if ( number_of_completed_events == number_of_expected_events )
+	out << "  * Exiting Compute_numerator_and_denominator_with_errors_q_mode_1D()" << endl;
 
 	return;
 }
@@ -694,7 +695,7 @@ void HBT_event_generator::Compute_numerator_and_denominator_momentum_space_only_
 
 				// set Q2 value for this q-K cell
 				double Q2bar = qo*qo + qs*qs + ql*ql - q0*q0;	// Q2bar>=0
-				if (Q2bar < -1.e-6)
+				if (Q2bar < -1e-6)
 				{
 					err << "Compute_numerator_and_denominator_with_errors_q_mode_1D(warning): "
 						<< "Q2bar = " << Q2bar << " < 0.0!" << endl;
@@ -772,14 +773,15 @@ void HBT_event_generator::Compute_numerator_and_denominator_momentum_space_only_
 				++idx3D;
 			}
 
-			err << "\t - finished " << ++number_of_completed_events << " of " << number_of_expected_events << endl;
+			out << "\t - finished " << ++number_of_completed_events << " of " << number_of_expected_events << endl;
 			//print_progressbar( static_cast<double>(++number_of_completed_events)
 			//						/ static_cast<double>(total_N_events), err );
 		}
 
 	}
 
-	err << "  * Finished!" << endl;
+	if ( number_of_completed_events == number_of_expected_events )
+		out << "  * Finished!" << endl;
 
 	return;
 }

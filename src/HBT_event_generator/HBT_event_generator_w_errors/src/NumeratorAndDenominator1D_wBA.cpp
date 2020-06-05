@@ -299,8 +299,8 @@ void HBT_event_generator::Compute_numerator_and_denominator_methodMode2_q_mode_1
 			for (int iQ = 0; iQ < n_Q_bins; iQ++)
 			{
 				double Q0 = 0.5*(Q_pts[iQ]+Q_pts[iQ+1]);
-				if (abs(Q0)<1.e-6)
-					Q0 = 1.e-6;
+				if (abs(Q0)<1e-6)
+					Q0 = 1e-6;
 
 				for (int ithq = 0; ithq < n_thq_pts; ithq++)	//using points, not bins!
 				{
@@ -464,7 +464,8 @@ void HBT_event_generator::Compute_numerator_and_denominator_methodMode2_q_mode_1
 
 	}
 
-	out << "  * Finished " << total_N_events << " events so far!" << endl;
+	if ( number_of_completed_events == number_of_expected_events )
+		out << "  * Finished!" << endl;
 
 	return;
 }

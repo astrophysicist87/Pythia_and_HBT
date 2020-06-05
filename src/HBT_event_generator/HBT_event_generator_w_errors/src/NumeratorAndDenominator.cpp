@@ -417,7 +417,8 @@ void HBT_event_generator::Compute_numerator_and_denominator_methodMode0_q_mode_3
 
 	}
 
-	out << "HBT_event_generator:  * Finished!" << endl;
+	if ( number_of_completed_events == number_of_expected_events )
+		out << "HBT_event_generator:  * Finished!" << endl;
 
 	return;
 }
@@ -819,11 +820,14 @@ void HBT_event_generator::Compute_numerator_and_denominator_momentum_space_only_
 
 	}
 
-    auto end = std::chrono::system_clock::now();
-    std::time_t end_time = std::chrono::system_clock::to_time_t(end);
-    out << "HBT_event_generator:  * Ending at " << std::ctime(&end_time) << endl;
-
-	out << "HBT_event_generator:  * Finished!" << endl;
+	if ( number_of_completed_events == number_of_expected_events )
+	{
+	    auto end = std::chrono::system_clock::now();
+	    std::time_t end_time = std::chrono::system_clock::to_time_t(end);
+	    out << "HBT_event_generator:  * Ending at " << std::ctime(&end_time) << endl;
+	
+		out << "HBT_event_generator:  * Finished!" << endl;
+	}
 
 	return;
 }

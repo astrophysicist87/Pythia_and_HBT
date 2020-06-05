@@ -318,7 +318,8 @@ void HBT_event_generator::Compute_numerator_and_denominator_methodMode2_q_mode_3
 
 	}
 
-	out << "  * Finished " << total_N_events << " events so far!" << endl;
+	if ( number_of_completed_events == number_of_expected_events )
+		out << "  * Finished " << total_N_events << " events so far!" << endl;
 
 	return;
 }
