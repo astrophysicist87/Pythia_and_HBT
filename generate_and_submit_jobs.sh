@@ -15,6 +15,10 @@
 		#'projectile="p" target="p" beamEnergy="7000" chosenHBTparticle="211" Nevents=60000000 BEeffects="on" BEEnhancementMode="0" eventClassSelectionMode="multiplicity" runSV="false" useDistribution="on"'
 		'projectile="p" target="p" beamEnergy="7000" chosenHBTparticle="211" Nevents=1000000 BEeffects="on" BEEnhancementMode="0" eventClassSelectionMode="centrality" runSV="false" useDistribution="off"'
 		'projectile="p" target="p" beamEnergy="7000" chosenHBTparticle="211" Nevents=1000000 BEeffects="on" BEEnhancementMode="0" eventClassSelectionMode="centrality" runSV="false" useDistribution="on"'
+		'projectile="p" target="p" beamEnergy="7000" chosenHBTparticle="211" Nevents=1000000 BEeffects="on" BEEnhancementMode="0" eventClassSelectionMode="centrality" runSV="false" useDistribution="on" useInvariantSourceSize="on"'
+		'projectile="p" target="p" beamEnergy="7000" chosenHBTparticle="211" Nevents=1000000 BEeffects="on" BEEnhancementMode="1" eventClassSelectionMode="centrality" runSV="false" linearInterpolateCDF="on"'
+		'projectile="p" target="p" beamEnergy="7000" chosenHBTparticle="211" Nevents=1000000 BEeffects="on" BEEnhancementMode="1" eventClassSelectionMode="centrality" runSV="false" linearInterpolateCDF="on" compensationMode="0"'
+		'projectile="p" target="p" beamEnergy="7000" chosenHBTparticle="211" Nevents=1000000 BEeffects="on" BEEnhancementMode="1" eventClassSelectionMode="centrality" runSV="false" linearInterpolateCDF="off"'
 		#egan
 		#'projectile="p" target="p" beamEnergy="7000" chosenHBTparticle="211" Nevents=60000000 BEeffects="on" BEEnhancementMode="0" eventClassSelectionMode="multiplicity" runSV="false" useDistribution="on"'
 		#'projectile="p" target="p" beamEnergy="7000" chosenHBTparticle="211" Nevents=60000000 BEeffects="on" shiftingSet="1" compensationSet="0" compensationMode="1" computeBEEnhancementExactly="off" eventClassSelectionMode="multiplicity" runSV="false"'
