@@ -23,23 +23,23 @@
 		##############
 		#egan
 		##############
+		'projectile="p" target="p" beamEnergy="7000" chosenHBTparticle="211" Nevents=1000000 BEeffects="on" shiftingSet="1" compensationSet="0" compensationMode="1"'
+		'projectile="p" target="p" beamEnergy="7000" chosenHBTparticle="211" Nevents=1000000 BEeffects="on" shiftingSet="1" compensationSet="0" compensationMode="0"'
+		'projectile="p" target="p" beamEnergy="7000" chosenHBTparticle="211" Nevents=1000000 BEeffects="on" shiftingSet="1" compensationSet="0" compensationMode="0" linearInterpolateCDF="off"'
+		'projectile="p" target="p" beamEnergy="7000" chosenHBTparticle="211" Nevents=1000000 BEeffects="on" shiftingSet="1" compensationSet="0" compensationMode="0" includePhaseSpace="off"'
 		#'projectile="p" target="p" beamEnergy="7000" chosenHBTparticle="211" Nevents=1000000 BEeffects="on" shiftingSet="1" compensationSet="0" compensationMode="1" computeBEEnhancementExactly="off"'
-		#'projectile="p" target="p" beamEnergy="7000" chosenHBTparticle="211" Nevents=1000000 BEeffects="on" shiftingSet="1" compensationSet="0" compensationMode="1"'
-		#'projectile="p" target="p" beamEnergy="7000" chosenHBTparticle="211" Nevents=1000000 BEeffects="on" shiftingSet="1" compensationSet="0" compensationMode="0"'
-		#'projectile="p" target="p" beamEnergy="7000" chosenHBTparticle="211" Nevents=1000000 BEeffects="on" shiftingSet="1" compensationSet="0" compensationMode="0" linearInterpolateCDF="off"'
-		#'projectile="p" target="p" beamEnergy="7000" chosenHBTparticle="211" Nevents=1000000 BEeffects="on" shiftingSet="1" compensationSet="0" compensationMode="0" includePhaseSpace="off"'
 		#'projectile="p" target="p" beamEnergy="7000" chosenHBTparticle="211" Nevents=1000000 BEeffects="on" BEEnhancementMode="0" eventClassSelectionMode="centrality" runSV="false" useDistribution="off"'
 		#'projectile="p" target="p" beamEnergy="7000" chosenHBTparticle="211" Nevents=1000000 BEeffects="on" BEEnhancementMode="0" eventClassSelectionMode="centrality" runSV="false" useDistribution="on"'
 		##############
 		#lema
 		##############
-		'projectile="p" target="p" beamEnergy="7000" chosenHBTparticle="211" Nevents=1000000 BEeffects="on" shiftingSet="1" compensationSet="0" compensationMode="1" computeBEEnhancementExactly="off"'
-		'projectile="p" target="p" beamEnergy="7000" chosenHBTparticle="211" Nevents=1000000 BEeffects="on" shiftingSet="1" compensationSet="0" compensationMode="1"'
-		'projectile="p" target="p" beamEnergy="7000" chosenHBTparticle="211" Nevents=1000000 BEeffects="on" shiftingSet="1" compensationSet="0" compensationMode="0"'
-		'projectile="p" target="p" beamEnergy="7000" chosenHBTparticle="211" Nevents=1000000 BEeffects="on" shiftingSet="1" compensationSet="0" compensationMode="0" linearInterpolateCDF="off"'
-		'projectile="p" target="p" beamEnergy="7000" chosenHBTparticle="211" Nevents=1000000 BEeffects="on" shiftingSet="1" compensationSet="0" compensationMode="0" includePhaseSpace="off"'
-		'projectile="p" target="p" beamEnergy="7000" chosenHBTparticle="211" Nevents=1000000 BEeffects="on" BEEnhancementMode="0" eventClassSelectionMode="centrality" runSV="false" useDistribution="off"'
-		'projectile="p" target="p" beamEnergy="7000" chosenHBTparticle="211" Nevents=1000000 BEeffects="on" BEEnhancementMode="0" eventClassSelectionMode="centrality" runSV="false" useDistribution="on"'
+		#'projectile="p" target="p" beamEnergy="7000" chosenHBTparticle="211" Nevents=1000000 BEeffects="on" shiftingSet="1" compensationSet="0" compensationMode="1"'
+		#'projectile="p" target="p" beamEnergy="7000" chosenHBTparticle="211" Nevents=1000000 BEeffects="on" shiftingSet="1" compensationSet="0" compensationMode="0"'
+		#'projectile="p" target="p" beamEnergy="7000" chosenHBTparticle="211" Nevents=1000000 BEeffects="on" shiftingSet="1" compensationSet="0" compensationMode="0" linearInterpolateCDF="off"'
+		#'projectile="p" target="p" beamEnergy="7000" chosenHBTparticle="211" Nevents=1000000 BEeffects="on" shiftingSet="1" compensationSet="0" compensationMode="0" includePhaseSpace="off"'
+		#'projectile="p" target="p" beamEnergy="7000" chosenHBTparticle="211" Nevents=1000000 BEeffects="on" shiftingSet="1" compensationSet="0" compensationMode="1" computeBEEnhancementExactly="off"'
+		#'projectile="p" target="p" beamEnergy="7000" chosenHBTparticle="211" Nevents=1000000 BEeffects="on" BEEnhancementMode="0" eventClassSelectionMode="centrality" runSV="false" useDistribution="off"'
+		#'projectile="p" target="p" beamEnergy="7000" chosenHBTparticle="211" Nevents=1000000 BEeffects="on" BEEnhancementMode="0" eventClassSelectionMode="centrality" runSV="false" useDistribution="on"'
 	)
 
 	#-----------------------------------------------------

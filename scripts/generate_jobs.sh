@@ -39,8 +39,8 @@ do
 	cp $SCRIPTS_DIRECTORY/driver.sh                      $HOME_RESULTS_DIRECTORY/job-${job}
 	cp $SCRIPTS_DIRECTORY/run_Pythia.sh                  $HOME_RESULTS_DIRECTORY/job-${job}
 	cp $SCRIPTS_DIRECTORY/run_HBT_analysis.sh            $HOME_RESULTS_DIRECTORY/job-${job}
-	cp $SCRIPTS_DIRECTORY/scan_event_class_dependence.py $HOME_RESULTS_DIRECTORY/job-${job}
 	cp $SCRIPTS_DIRECTORY/rerun.sh                       $HOME_RESULTS_DIRECTORY/job-${job}
+	cp $SCRIPTS_DIRECTORY/scan_event_class_dependence.py $HOME_RESULTS_DIRECTORY/job-${job}/scripts
 	cp $SCRIPTS_DIRECTORY/defaults.sh \
        $SCRIPTS_DIRECTORY/specs.sh \
        $SCRIPTS_DIRECTORY/env.sh \
