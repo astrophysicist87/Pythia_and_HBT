@@ -443,7 +443,7 @@ bool BoseEinstein::shiftEvent( Event& event )
 	double eSumOriginal = 0.;
 	double eSumShifted  = 0.;
 	double eDiffByComp  = 0.;
-	constexpr int compensation_version_to_use = 2;
+	constexpr int compensation_version_to_use = 0;
 
 	constexpr bool perform_compensation = true;
 	constexpr bool check_for_bad_events = true;
@@ -1189,7 +1189,7 @@ void BoseEinstein::set_sorted_xDiffs(
 
 		sorted_xDiffs[xDiff_pairCount++] = xDiffPRF.pAbs();
 	}
-	sort( sorted_xDiffs.begin(), sorted_xDiffs.end() );
+	//sort( sorted_xDiffs.begin(), sorted_xDiffs.end() );
 	return;
 }
 

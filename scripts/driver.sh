@@ -63,6 +63,28 @@ do
 done	# all centralities finished
 
 
+# lastly, attempt to generate some plots vs. KT and/or multiplicity
+echo '| - '`basename "$0"`': Attempting to generate some plots for event class =' $eventClassCutString'...'
+mv $SCRIPTS_DIRECTORY/scan_event_class_dependence.py $HBT_RESULTS_DIRECTORY
+(
+	cd $HBT_RESULTS_DIRECTORY
+
+	declare -A selectionTokens=( ["centrality"]="C" ["multiplicity"]="N")
+	selectionToken="${selectionTokens[$eventClassSelectionMode]}"
+
+	declare -a theseEventClasses=()
+	for eventClassCutString in "${class_ranges[@]}"
+	do
+		eventClassCut=(`echo $eventClassCutString | sed 's/-/ /g' | sed 's/%//g'`)
+		thisEventClass=${selectionToken}${eventClassCut[0]}"_"${eventClassCut[1]}
+		theseEventClasses+=("$thisEventClass")
+	done
+
+	python scan_event_class_dependence.py "${theseEventClasses[@]}"
+)
+
+
+
 #PYTHIA_RESULTS_DIRECTORY=$MAIN_RESULTS_DIRECTORY/Pythia_results/dataset_0
 #zipFilename=$PYTHIA_RESULTS_DIRECTORY".zip"
 
