@@ -443,7 +443,7 @@ bool BoseEinstein::shiftEvent( Event& event )
 	double eSumOriginal = 0.;
 	double eSumShifted  = 0.;
 	double eDiffByComp  = 0.;
-	constexpr int compensation_version_to_use = 2;
+	constexpr int compensation_version_to_use = 0;
 
 	constexpr bool perform_compensation = true;
 	constexpr bool check_for_bad_events = true;
@@ -752,7 +752,9 @@ bool BoseEinstein::getSortedPairs(
 	for (int i1 = nStored[iSpecies]; i1 < nStored[iSpecies+1] - 1; ++i1)
 	for (int i2 = i1 + 1; i2 < nStored[iSpecies+1]; ++i2)
 	{
-		if (m2(hadronBE.at(i1).p, hadronBE.at(i2).p) - m2Pair[iTab] < 0.0)
+		double Q2_thisPair = m2(hadronBE.at(i1).p, hadronBE.at(i2).p)
+                             - m2Pair[iTab];
+		if ( Q2_thisPair < 0.0 )
 		{
 			/*if ( BE_VERBOSE )
 			{
@@ -767,10 +769,19 @@ bool BoseEinstein::getSortedPairs(
 			}*/
 			continue;
 		}
+
+		// Limit Q2 values to shift
+		if ( Q2_thisPair > 1.0 ) continue;
+
+		// Limit xDiffs to shift
+		Vec4 xDiffPRF = ( hadronBE.at(i1).x - hadronBE.at(i2).x ) * MM2FM;
+	    xDiffPRF.bstback( 0.5*(hadronBE.at(i1).p + hadronBE.at(i2).p) );
+		double xDiffPRF_thisPair = xDiffPRF.pAbs();
+		if ( xDiffPRF_thisPair > 4.0 or xDiffPRF_thisPair < 0.2 ) continue;	//in fm
+
 		sortedPairs.push_back(
 			std::make_pair(
-				sqrt( m2(hadronBE.at(i1).p, hadronBE.at(i2).p) - m2Pair[iTab] ),
-				std::make_pair(i1, i2)
+				sqrt( Q2_thisPair ), std::make_pair(i1, i2)
 			)
 		);
 	}
