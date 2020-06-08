@@ -67,7 +67,7 @@ done	# all centralities finished
 echo '| - '`basename "$0"`': Attempting to generate some plots for event class =' $eventClassCutString'...'
 mv $SCRIPTS_DIRECTORY/scan_event_class_dependence.py $MAIN_RESULTS_DIRECTORY/HBT_results
 (
-	cd $HBT_RESULTS_DIRECTORY
+	cd $MAIN_RESULTS_DIRECTORY/HBT_results
 
 	declare -A selectionTokens=( ["centrality"]="C" ["multiplicity"]="N")
 	selectionToken="${selectionTokens[$eventClassSelectionMode]}"
