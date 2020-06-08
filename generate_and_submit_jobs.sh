@@ -3,7 +3,7 @@
 (
 	# info for this run
 	NTHREADS=12
-	DIRECTORY=results_egan_N1000000_compV1
+	DIRECTORY=results_lema_N1000000_compV2
 	NICENESS=0
 
 	# Set job specifications here
