@@ -2,9 +2,9 @@
 
 (
 	# info for this run
-	NTHREADS=12
-	DIRECTORY=results_lema_N1000000_compV2
-	NICENESS=0
+	NTHREADS=64
+	DIRECTORY=results_egan_N1000000_compV1
+	NICENESS=19
 
 	# Set job specifications here
 	#declare -a class_ranges=("1-11" "12-16" "17-22" "23-28" "29-34" "35-41" "42-51" "52-151" "152-1000000")
@@ -26,7 +26,7 @@
 		#'projectile="p" target="p" beamEnergy="7000" Nevents=1000000 BEeffects="on" shiftingSet="1" compensationSet="1" compensationMode="0"'
 		#'projectile="p" target="p" beamEnergy="7000" Nevents=1000000 BEeffects="on" shiftingSet="1" compensationSet="2" compensationMode="1"'
 		#'projectile="p" target="p" beamEnergy="7000" Nevents=1000000 BEeffects="on" BEEnhancementMode="0" useDistribution="on"'
-		#'projectile="p" target="p" beamEnergy="7000" Nevents=1000000 BEeffects="on" BEEnhancementMode="0"'
+		'projectile="p" target="p" beamEnergy="7000" Nevents=1000000 BEeffects="on" BEEnhancementMode="0"'
 		##############
 		#lema
 		##############
@@ -34,7 +34,7 @@
 		#'projectile="p" target="p" beamEnergy="7000" Nevents=1000000 BEeffects="on" shiftingSet="1" compensationSet="1" compensationMode="0"'
 		#'projectile="p" target="p" beamEnergy="7000" Nevents=1000000 BEeffects="on" shiftingSet="1" compensationSet="2" compensationMode="1"'
 		#'projectile="p" target="p" beamEnergy="7000" Nevents=1000000 BEeffects="on" BEEnhancementMode="0" useDistribution="on"'
-		'projectile="p" target="p" beamEnergy="7000" Nevents=1000000 BEeffects="on" BEEnhancementMode="0"'
+		#projectile="p" target="p" beamEnergy="7000" Nevents=1000000 BEeffects="on" BEEnhancementMode="0"'
 	)
 
 	#-----------------------------------------------------
