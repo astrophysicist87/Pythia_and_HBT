@@ -770,14 +770,17 @@ bool BoseEinstein::getSortedPairs(
 			continue;
 		}
 
+		constexpr bool impose_Q2_limits = true;
+		constexpr bool impose_xDiff_limits = false;
+
 		// Limit Q2 values to shift
-		if ( Q2_thisPair > 1.0 ) continue;
+		if ( impose_Q2_limits and Q2_thisPair > 1.0 ) continue;
 
 		// Limit xDiffs to shift
 		Vec4 xDiffPRF = ( hadronBE.at(i1).x - hadronBE.at(i2).x ) * MM2FM;
 	    xDiffPRF.bstback( 0.5*(hadronBE.at(i1).p + hadronBE.at(i2).p) );
 		double xDiffPRF_thisPair = xDiffPRF.pAbs();
-		if ( xDiffPRF_thisPair > 4.0 or xDiffPRF_thisPair < 0.2 ) continue;	//in fm
+		if ( impose_xDiff_limits and ( xDiffPRF_thisPair > 4.0 or xDiffPRF_thisPair < 0.2 ) ) continue;	//in fm
 
 		sortedPairs.push_back(
 			std::make_pair(

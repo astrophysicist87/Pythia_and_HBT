@@ -3,7 +3,7 @@
 (
 	# info for this run
 	NTHREADS=64
-	DIRECTORY=results_lema_N1000000_QandDxLimits
+	DIRECTORY=results_lema_N1000000_QLimits
 	NICENESS=19
 
 	# Set job specifications here
