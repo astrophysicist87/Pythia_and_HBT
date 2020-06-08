@@ -65,7 +65,7 @@ done	# all centralities finished
 
 # lastly, attempt to generate some plots vs. KT and/or multiplicity
 echo '| - '`basename "$0"`': Attempting to generate some plots for event class =' $eventClassCutString'...'
-mv $SCRIPTS_DIRECTORY/scan_event_class_dependence.py $HBT_RESULTS_DIRECTORY
+mv $SCRIPTS_DIRECTORY/scan_event_class_dependence.py $MAIN_RESULTS_DIRECTORY/HBT_results
 (
 	cd $HBT_RESULTS_DIRECTORY
 
@@ -79,6 +79,8 @@ mv $SCRIPTS_DIRECTORY/scan_event_class_dependence.py $HBT_RESULTS_DIRECTORY
 		thisEventClass=${selectionToken}${eventClassCut[0]}"_"${eventClassCut[1]}
 		theseEventClasses+=("$thisEventClass")
 	done
+
+	echo '| - '`basename "$0"`': Submitting this command: python scan_event_class_dependence.py' "${theseEventClasses[@]}"
 
 	python scan_event_class_dependence.py "${theseEventClasses[@]}"
 )

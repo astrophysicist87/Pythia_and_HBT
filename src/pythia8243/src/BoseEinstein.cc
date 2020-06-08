@@ -216,54 +216,77 @@ void BoseEinstein::set_QRef(int iSpecies)
 
 double BoseEinstein::get_1D_source_size(int iSpecies)
 {
-	double result = 0.0;
-	double count = 0.0;
-
-	if ( useInvariantSize )
+	constexpr bool return_RMS = false;
+	if ( return_RMS )
 	{
-		if ( useRelativeDistance )
-			for (int i1 = nStored[iSpecies]; i1 < nStored[iSpecies+1]-1; ++i1)
-			for (int i2 = i1 + 1; i2 < nStored[iSpecies+1]; ++i2)
-			{
-				Vec4 xDiff = hadronBE.at(i1).x - hadronBE.at(i2).x;
-				result += xDiff*xDiff;
-				count += 1.0;
-			}
+		double result = 0.0;
+		double count = 0.0;
+	
+		if ( useInvariantSize )
+		{
+			if ( useRelativeDistance )
+				for (int i1 = nStored[iSpecies]; i1 < nStored[iSpecies+1]-1; ++i1)
+				for (int i2 = i1 + 1; i2 < nStored[iSpecies+1]; ++i2)
+				{
+					Vec4 xDiff = hadronBE.at(i1).x - hadronBE.at(i2).x;
+					result += xDiff*xDiff;
+					count += 1.0;
+				}
+			else
+				for (int i1 = nStored[iSpecies]; i1 < nStored[iSpecies+1]; ++i1)
+				{
+					Vec4 x = hadronBE.at(i1).x;
+					result += x*x;
+					count += 1.0;
+				}
+		}
 		else
-			for (int i1 = nStored[iSpecies]; i1 < nStored[iSpecies+1]; ++i1)
-			{
-				Vec4 x = hadronBE.at(i1).x;
-				result += x*x;
-				count += 1.0;
-			}
+		{
+			if ( useRelativeDistance )
+				for (int i1 = nStored[iSpecies]; i1 < nStored[iSpecies+1]-1; ++i1)
+				for (int i2 = i1 + 1; i2 < nStored[iSpecies+1]; ++i2)
+				{
+					Vec4 xDiff = hadronBE.at(i1).x - hadronBE.at(i2).x;
+					if ( useRestFrame )
+						xDiff.bstback( 0.5*( hadronBE.at(i1).p
+												+ hadronBE.at(i2).p ) );
+					result += xDiff.pAbs2();
+					count += 1.0;
+				}
+			else
+				for (int i1 = nStored[iSpecies]; i1 < nStored[iSpecies+1]; ++i1)
+				{
+					Vec4 x = hadronBE.at(i1).x;
+					if ( useRestFrame ) x.bstback( hadronBE.at(i1).p );
+					result += x.pAbs2();
+					count += 1.0;
+				}
+		}
+	
+		double RMSsize = sqrt(result / (count+1e-100)) * MM2FM / HBARC;
+	
+		// return RMS source size
+		return ( 1.0 / RMSsize );
 	}
 	else
 	{
-		if ( useRelativeDistance )
-			for (int i1 = nStored[iSpecies]; i1 < nStored[iSpecies+1]-1; ++i1)
-			for (int i2 = i1 + 1; i2 < nStored[iSpecies+1]; ++i2)
-			{
-				Vec4 xDiff = hadronBE.at(i1).x - hadronBE.at(i2).x;
-				if ( useRestFrame )
-					xDiff.bstback( 0.5*( hadronBE.at(i1).p
-											+ hadronBE.at(i2).p ) );
-				result += xDiff.pAbs2();
-				count += 1.0;
-			}
-		else
-			for (int i1 = nStored[iSpecies]; i1 < nStored[iSpecies+1]; ++i1)
-			{
-				Vec4 x = hadronBE.at(i1).x;
-				if ( useRestFrame ) x.bstback( hadronBE.at(i1).p );
-				result += x.pAbs2();
-				count += 1.0;
-			}
+		double size_estimate_sum   = 0.0;
+		double size_estimate_sqsum = 0.0;
+
+		for (int i1 = nStored[iSpecies]; i1 < nStored[iSpecies+1]-1; ++i1)
+		for (int i2 = i1 + 1;            i2 < nStored[iSpecies+1];   ++i2)
+		{
+			Vec4 xDiff           = hadronBE.at(i1).x - hadronBE.at(i2).x;
+			xDiff.bstback(   0.5*( hadronBE.at(i1).p + hadronBE.at(i2).p ) );
+			double xDiffval      = xDiff.pAbs();
+			size_estimate_sum   += 1.0 / xDiffval;
+			size_estimate_sqsum += 1.0 / (xDiffval*xDiffval);
+		}
+
+		return ( 2.0 * size_estimate_sqsum * (MM2FM / HBARC)
+                  / ( M_PI * size_estimate_sum ) );
 	}
 
-	double RMSsize = sqrt(result / (count+1e-100)) * MM2FM / HBARC;
-
-	// return RMS source size
-	return ( 1.0 / RMSsize );
 }
 
 
@@ -443,7 +466,7 @@ bool BoseEinstein::shiftEvent( Event& event )
 	double eSumOriginal = 0.;
 	double eSumShifted  = 0.;
 	double eDiffByComp  = 0.;
-	constexpr int compensation_version_to_use = 2;
+	constexpr int compensation_version_to_use = 1;
 
 	constexpr bool perform_compensation = true;
 	constexpr bool check_for_bad_events = true;
@@ -771,7 +794,7 @@ bool BoseEinstein::getSortedPairs(
 		}
 
 		constexpr bool impose_Q2_limits = false;
-		constexpr bool impose_xDiff_limits = true;
+		constexpr bool impose_xDiff_limits = false;
 
 		// Limit Q2 values to shift
 		if ( impose_Q2_limits and Q2_thisPair > 1.0 ) continue;
