@@ -2,9 +2,9 @@
 
 (
 	# info for this run
-	NTHREADS=64
-	DIRECTORY=results_lema_N1000000_compV2
-	NICENESS=19
+	NTHREADS=12
+	DIRECTORY=results_use_up_blixen_N1000000
+	NICENESS=0
 
 	# Set job specifications here
 	#declare -a class_ranges=("1-11" "12-16" "17-22" "23-28" "29-34" "35-41" "42-51" "52-151" "152-1000000")
@@ -19,25 +19,26 @@
 		#'projectile="p" target="p" beamEnergy="7000" Nevents=1000000 BEeffects="on" BEEnhancementMode="0" QRefValue="0.5"'
 		#'projectile="p" target="p" beamEnergy="7000" Nevents=1000000 BEeffects="on" BEEnhancementMode="0" QRefValue="0.7"'
 		#'projectile="p" target="p" beamEnergy="7000" Nevents=1000000 BEeffects="on" BEEnhancementMode="0" QRefValue="0.9"'
+		'projectile="p" target="p" beamEnergy="7000" Nevents=1000000 BEeffects="on" BEEnhancementMode="0" useDistribution="on"'
 		##############
 		#egan
+		##############
+		#'projectile="p" target="p" beamEnergy="7000" Nevents=1000000 BEeffects="on" BEEnhancementMode="0"'
+		#'projectile="p" target="p" beamEnergy="7000" Nevents=1000000 BEeffects="on" BEEnhancementMode="0" useDistribution="on"'
+		#'projectile="p" target="p" beamEnergy="7000" Nevents=10000000 BEeffects="on" shiftingSet="1" compensationSet="1" compensationMode="0"'
+		#'projectile="p" target="p" beamEnergy="7000" Nevents=10000000 BEeffects="on" shiftingSet="1" compensationSet="1" compensationMode="1"'
+		#'projectile="p" target="p" beamEnergy="7000" Nevents=10000000 BEeffects="on" shiftingSet="1" compensationSet="2" compensationMode="1"'
+		##############
+		#lema
 		##############
 		#'projectile="p" target="p" beamEnergy="7000" Nevents=1000000 BEeffects="on" BEEnhancementMode="0"'
 		#'projectile="p" target="p" beamEnergy="7000" Nevents=1000000 BEeffects="on" BEEnhancementMode="0" useDistribution="on"'
 		#'projectile="p" target="p" beamEnergy="7000" Nevents=1000000 BEeffects="on" shiftingSet="1" compensationSet="1" compensationMode="0"'
 		#'projectile="p" target="p" beamEnergy="7000" Nevents=1000000 BEeffects="on" shiftingSet="1" compensationSet="1" compensationMode="1"'
 		#'projectile="p" target="p" beamEnergy="7000" Nevents=1000000 BEeffects="on" shiftingSet="1" compensationSet="2" compensationMode="1"'
-		##############
-		#lema
-		##############
-		'projectile="p" target="p" beamEnergy="7000" Nevents=1000000 BEeffects="on" BEEnhancementMode="0"'
-		'projectile="p" target="p" beamEnergy="7000" Nevents=1000000 BEeffects="on" BEEnhancementMode="0" useDistribution="on"'
-		'projectile="p" target="p" beamEnergy="7000" Nevents=1000000 BEeffects="on" shiftingSet="1" compensationSet="1" compensationMode="0"'
-		'projectile="p" target="p" beamEnergy="7000" Nevents=1000000 BEeffects="on" shiftingSet="1" compensationSet="1" compensationMode="1"'
-		'projectile="p" target="p" beamEnergy="7000" Nevents=1000000 BEeffects="on" shiftingSet="1" compensationSet="2" compensationMode="1"'
-		'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=10000 BEeffects="on" BEEnhancementMode="0"'
-		'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=10000 BEeffects="on" BEEnhancementMode="0" QRefValue="0.1"'
-		'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=10000 BEeffects="on" BEEnhancementMode="0" QRefValue="0.5"'
+		#'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=10000 BEeffects="on" BEEnhancementMode="0"'
+		#'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=10000 BEeffects="on" BEEnhancementMode="0" QRefValue="0.1"'
+		#'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=10000 BEeffects="on" BEEnhancementMode="0" QRefValue="0.5"'
 	)
 
 	#-----------------------------------------------------
