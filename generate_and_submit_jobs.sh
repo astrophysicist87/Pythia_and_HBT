@@ -14,12 +14,12 @@
 		##############
 		#blixen
 		##############
-		#'projectile="p" target="p" beamEnergy="7000" Nevents=10000000 BEeffects="on" BEEnhancementMode="0" QRefValue="0.1"'
+		'projectile="p" target="p" beamEnergy="7000" Nevents=10000000 BEeffects="on" BEEnhancementMode="0" QRefValue="0.1"'
 		#'projectile="p" target="p" beamEnergy="7000" Nevents=1000000 BEeffects="on" BEEnhancementMode="0" QRefValue="0.3"'
 		#'projectile="p" target="p" beamEnergy="7000" Nevents=1000000 BEeffects="on" BEEnhancementMode="0" QRefValue="0.5"'
 		#'projectile="p" target="p" beamEnergy="7000" Nevents=1000000 BEeffects="on" BEEnhancementMode="0" QRefValue="0.7"'
 		#'projectile="p" target="p" beamEnergy="7000" Nevents=1000000 BEeffects="on" BEEnhancementMode="0" QRefValue="0.9"'
-		'projectile="p" target="p" beamEnergy="7000" Nevents=1000000 BEeffects="on" BEEnhancementMode="0" useDistribution="on"'
+		'projectile="p" target="p" beamEnergy="7000" Nevents=10000000 BEeffects="on" BEEnhancementMode="0" useDistribution="on"'
 		##############
 		#egan
 		##############
