@@ -193,7 +193,7 @@ void BoseEinstein::set_QRef(int iSpecies)
 		}
 	}
 
-	cout << "Using QRef = " << QRef << "!" << endl;
+	//cout << "Using QRef = " << QRef << "!" << endl;
 
 	// If out of range, just use default value (type this correctly later)
 	if ( QRef < 0.05 )
@@ -289,7 +289,7 @@ double BoseEinstein::get_1D_source_size(int iSpecies)
 		}
 
 		return ( 2.0 * size_estimate_sqsum
-                  / ( M_PI * size_estimate_sum ) );
+                  / ( M_PI * size_estimate_sum + 1e-100 ) );
 	}
 
 }
