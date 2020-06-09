@@ -9,6 +9,7 @@
 
 #include <ostream>
 #include <chrono>
+#include <bits/stdc++.h> 
 
 namespace Pythia8 {
 
@@ -192,6 +193,8 @@ void BoseEinstein::set_QRef(int iSpecies)
 		}
 	}
 
+	cout << "Using QRef = " << QRef << "!" << endl;
+
 	// If out of range, just use default value (type this correctly later)
 	if ( QRef < 0.05 )
 	{
@@ -279,6 +282,7 @@ double BoseEinstein::get_1D_source_size(int iSpecies)
 			Vec4 xDiff           = hadronBE.at(i1).x - hadronBE.at(i2).x;
 			xDiff.bstback(   0.5*( hadronBE.at(i1).p + hadronBE.at(i2).p ) );
 			double xDiffval      = xDiff.pAbs();
+			//if (xDiffval < 1e-20) continue;
 			size_estimate_sum   += 1.0 / xDiffval;
 			size_estimate_sqsum += 1.0 / (xDiffval*xDiffval);
 		}
@@ -883,7 +887,10 @@ void BoseEinstein::shiftPair_fixedQRef( int i1, int i2, int iTab )
 
     // Step size and number of steps in normal table.
     deltaQ[iTab]      = STEPSIZE * min(mPair[iTab], QRef);
-    nStep[iTab]       = min( 199, 1 + int(3. * QRef / deltaQ[iTab]) );
+	//if ( abs(3. * QRef / deltaQ[iTab]) < INT_MAX )
+	    nStep[iTab]   = min( 199, 1 + int(3. * QRef / deltaQ[iTab]) );
+	//else
+	//    nStep[iTab]   = 199;
     maxQ[iTab]        = (nStep[iTab] - 0.1) * deltaQ[iTab];
     centerCorr        = deltaQ[iTab] * deltaQ[iTab] / 12.;
 
@@ -898,7 +905,11 @@ void BoseEinstein::shiftPair_fixedQRef( int i1, int i2, int iTab )
 
     // Step size and number of steps in compensation table.
     deltaQ3[iTab]     = STEPSIZE * min(mPair[iTab], QRef3);
-    nStep3[iTab]      = min( 199, 1 + int(9. * QRef / deltaQ3[iTab]) );
+	//if ( abs(9. * QRef / deltaQ3[iTab]) < INT_MAX )
+	    nStep3[iTab]  = min( 199, 1 + int(9. * QRef / deltaQ3[iTab]) );
+	//else
+	//    nStep[iTab]   = 199;
+    
     maxQ3[iTab]       = (nStep3[iTab] - 0.1) * deltaQ3[iTab];
     centerCorr        = deltaQ3[iTab] * deltaQ3[iTab] / 12.;
 

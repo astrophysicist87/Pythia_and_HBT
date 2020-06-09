@@ -49,7 +49,8 @@ def get_dNchdeta_and_R2i_data(directory):
     
 def get_dNchdeta_and_CF_data(directory):
     nMult = len(multLabels)
-    nq = 31
+    #nq = 31
+    nq = 63
     nKT = len(KTLabels)
     mean_dNchdeta = get_event_class_mean_dNchdeta(directory)
     CF_vs_KT = np.loadtxt(directory + '/CF_results/HBT_pipiCF.dat', usecols=(0,3,4,5,10,11))

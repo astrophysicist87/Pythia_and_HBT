@@ -3,7 +3,7 @@
 (
 	# info for this run
 	NTHREADS=12
-	DIRECTORY=results_use_up_blixen_N1000000
+	DIRECTORY=results_use_up_blixen
 	NICENESS=0
 
 	# Set job specifications here
@@ -14,7 +14,7 @@
 		##############
 		#blixen
 		##############
-		#'projectile="p" target="p" beamEnergy="7000" Nevents=1000000 BEeffects="on" BEEnhancementMode="0" QRefValue="0.1"'
+		#'projectile="p" target="p" beamEnergy="7000" Nevents=10000000 BEeffects="on" BEEnhancementMode="0" QRefValue="0.1"'
 		#'projectile="p" target="p" beamEnergy="7000" Nevents=1000000 BEeffects="on" BEEnhancementMode="0" QRefValue="0.3"'
 		#'projectile="p" target="p" beamEnergy="7000" Nevents=1000000 BEeffects="on" BEEnhancementMode="0" QRefValue="0.5"'
 		#'projectile="p" target="p" beamEnergy="7000" Nevents=1000000 BEeffects="on" BEEnhancementMode="0" QRefValue="0.7"'
