@@ -281,8 +281,9 @@ double BoseEinstein::get_1D_source_size(int iSpecies)
 		{
 			Vec4 xDiff           = hadronBE.at(i1).x - hadronBE.at(i2).x;
 			xDiff.bstback(   0.5*( hadronBE.at(i1).p + hadronBE.at(i2).p ) );
-			double xDiffval      = xDiff.pAbs() * (MM2FM / HBARC);	// GeV^-1
-			//if (xDiffval < 1e-20) continue;
+			double xDiffval      = xDiff.pAbs() * MM2FM;	// fm
+			if (xDiffval < 1e-6) continue;					// closer than 1e-6 fm or negative
+			xDiffval            /= HBARC;					// 1/GeV
 			size_estimate_sum   += 1.0 / xDiffval;
 			size_estimate_sqsum += 1.0 / (xDiffval*xDiffval);
 		}
