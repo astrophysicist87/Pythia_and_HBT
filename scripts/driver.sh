@@ -92,6 +92,8 @@ mv $SCRIPTS_DIRECTORY/scan_event_class_dependence.py $MAIN_RESULTS_DIRECTORY/HBT
 
 #zip -r $zipFilename $PYTHIA_RESULTS_DIRECTORY && rm -rf $PYTHIA_RESULTS_DIRECTORY
 
+mail -a this_job.txt -s 'Job completed' astrophysicist87@gmail.com <<< 'The attached job has finished running in' `pwd` 'at' `date`
+
 
 echo '| '`basename "$0"`': Finished everything!'
 echo '--------------------------------------------------------------------------------'	# width is 80 spaces
