@@ -335,12 +335,12 @@ bool BoseEinstein::shiftEvent( Event& event )
 	}
 
 	// Boost to frame where 4-momentum of hadrons to be shifted vanishes.
-	for ( auto pHad : hadronBE )
+	/*for ( auto pHad : hadronBE )
 	{
 		// boost p and x only; pShift = pComp = (0,0,0,0).
 		pHad.p.bstback( pHadSum );
 		pHad.x.bstback( pHadSum );
-	}
+	}*/
 
 
 	for (int iSpecies = 0; iSpecies < 9; ++iSpecies)
@@ -396,7 +396,7 @@ bool BoseEinstein::shiftEvent( Event& event )
 	double eSumOriginal = 0.;
 	double eSumShifted  = 0.;
 	double eDiffByComp  = 0.;
-	constexpr int compensation_version_to_use = 0;
+	constexpr int compensation_version_to_use = 2;
 
 	constexpr bool perform_compensation = true;
 	constexpr bool check_for_bad_events = true;
