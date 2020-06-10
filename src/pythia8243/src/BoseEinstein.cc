@@ -320,7 +320,7 @@ bool BoseEinstein::shiftEvent( Event& event )
 		
 		// Properties of current hadron species.
 		int idNow = IDHADRON[ iSpecies ];
-		int iTab  = ITABLE[ iSpecies ];
+		//int iTab  = ITABLE[ iSpecies ];
 		
 		// Loop through event record to store copies of current species.
 		for (int i = 0; i < event.size(); ++i)
@@ -333,6 +333,10 @@ bool BoseEinstein::shiftEvent( Event& event )
 			}
 		nStored[iSpecies + 1] = hadronBE.size();
 	}
+
+	cout << "-------------------------------------------------" << endl;
+	cout << "| Check pHadSum = " << pHadSum;
+	cout << "-------------------------------------------------" << endl;
 
 	// Boost to frame where 4-momentum of hadrons to be shifted vanishes.
 	/*for ( auto pHad : hadronBE )
@@ -350,7 +354,7 @@ bool BoseEinstein::shiftEvent( Event& event )
 		if (!doEta  and iSpecies >= 7) continue;
 		
 		// Properties of current hadron species.
-		int idNow = IDHADRON[ iSpecies ];
+		//int idNow = IDHADRON[ iSpecies ];
 		int iTab  = ITABLE[ iSpecies ];
 				
 		// ======================================================
