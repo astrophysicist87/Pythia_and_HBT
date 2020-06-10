@@ -546,6 +546,9 @@ bool BoseEinstein::shiftEvent( Event& event )
 
 		// Iterate compensation shift until convergence.
 		int iStep = 0;
+		cout << "CHECK: pSumOriginal = " << pSumOriginal;
+		cout << "CHECK (" << iStep << "): pSumShifted = " << pSumShifted;
+
 		while ( perform_compensation
 				and abs(eSumShifted - eSumOriginal) > COMPRELERR * eSumOriginal
 				and abs(eSumShifted - eSumOriginal) < COMPFACMAX * abs(eDiffByComp)
@@ -602,6 +605,8 @@ bool BoseEinstein::shiftEvent( Event& event )
 				}
 				eDiffByComp += dot3( pDiffByTrans, pHad.p ) / pHad.p.e();
 			}
+		cout << "CHECK (" << iStep << "): pSumShifted = " << pSumShifted;
+
 		}
 		//======================================================================
 
