@@ -324,7 +324,7 @@ bool BoseEinstein::shiftEvent( Event& event )
 		
 		// Loop through event record to store copies of current species.
 		for (int i = 0; i < event.size(); ++i)
-			if ( event[i].id() == idNow and (event[i].isFinal() or debugging) )
+			if ( event[i].id() == idNow and event[i].isFinal() )
 			{
 				//cout << "check particles: " << idNow << "   " << i << "   " << event[i].m() << "   " << event[i].p();
 				//cout << "check particles (cont): " << idNow << "   " << i << "   " << event[i].vProd();
@@ -345,7 +345,14 @@ bool BoseEinstein::shiftEvent( Event& event )
 
 	for (int iSpecies = 0; iSpecies < 9; ++iSpecies)
 	{
+		if (!doPion and iSpecies <= 2) continue;
+		if (!doKaon and iSpecies >= 3 and iSpecies <= 6) continue;
+		if (!doEta  and iSpecies >= 7) continue;
 		
+		// Properties of current hadron species.
+		int idNow = IDHADRON[ iSpecies ];
+		int iTab  = ITABLE[ iSpecies ];
+				
 		// ======================================================
 		// Define these to estimate pair shift using pair density
 		vector< pair< double, pair <int,int> > > sortedPairs;
