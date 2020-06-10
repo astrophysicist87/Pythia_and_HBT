@@ -20,8 +20,8 @@
 		#'projectile="p" target="p" beamEnergy="7000" Nevents=1000000 BEeffects="on" BEEnhancementMode="0" QRefValue="0.7"'
 		#'projectile="p" target="p" beamEnergy="7000" Nevents=1000000 BEeffects="on" BEEnhancementMode="0" QRefValue="0.9"'
 		#'projectile="p" target="p" beamEnergy="7000" Nevents=10000000 BEeffects="on" BEEnhancementMode="0" useDistribution="on"'
-		'projectile="p" target="p" beamEnergy="7000" Nevents=10000000 BEeffects="on" shiftingSet="0" compensationSet="1" compensationMode="0"'
-		'projectile="p" target="p" beamEnergy="7000" Nevents=10000000 BEeffects="on" shiftingSet="0" compensationSet="1" compensationMode="1"'
+		#'projectile="p" target="p" beamEnergy="7000" Nevents=10000000 BEeffects="on" shiftingSet="0" compensationSet="1" compensationMode="0"'
+		#'projectile="p" target="p" beamEnergy="7000" Nevents=10000000 BEeffects="on" shiftingSet="0" compensationSet="1" compensationMode="1"'
 		##############
 		#egan
 		##############
@@ -38,11 +38,11 @@
 		#'projectile="p" target="p" beamEnergy="7000" Nevents=1000000 BEeffects="on" shiftingSet="1" compensationSet="1" compensationMode="0"'
 		#'projectile="p" target="p" beamEnergy="7000" Nevents=1000000 BEeffects="on" shiftingSet="1" compensationSet="1" compensationMode="1"'
 		#'projectile="p" target="p" beamEnergy="7000" Nevents=1000000 BEeffects="on" shiftingSet="1" compensationSet="2" compensationMode="1"'
-		#'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=10000 BEeffects="on" BEEnhancementMode="0" useDistribution="on"'
-		#'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=10000 BEeffects="on" shiftingSet="1" compensationSet="1" compensationMode="0"'
+		'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=10000 BEeffects="on" BEEnhancementMode="0" useDistribution="on"'
+		'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=10000 BEeffects="on" shiftingSet="1" compensationSet="1" compensationMode="0"'
 		#'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=10000 BEeffects="on" shiftingSet="1" compensationSet="1" compensationMode="1"'
 		#'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=10000 BEeffects="on" shiftingSet="1" compensationSet="2" compensationMode="1"'
-		#'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=10000 BEeffects="on" shiftingSet="0" compensationSet="1" compensationMode="0"'
+		'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=10000 BEeffects="on" shiftingSet="0" compensationSet="1" compensationMode="0"'
 		#'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=10000 BEeffects="on" shiftingSet="0" compensationSet="1" compensationMode="1"'
 	)
 

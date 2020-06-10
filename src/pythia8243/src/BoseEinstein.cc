@@ -306,9 +306,6 @@ bool BoseEinstein::shiftEvent( Event& event )
 	// Start timing	
 	auto start = std::chrono::system_clock::now();
 
-	// Record total 4-momentum of hadrons to be shifted.
-	Vec4 pHadSum;
-	
 	// Loop over all hadron species with BE effects.
 	nStored[0] = 0;
 	for (int iSpecies = 0; iSpecies < 9; ++iSpecies)
@@ -320,7 +317,7 @@ bool BoseEinstein::shiftEvent( Event& event )
 		
 		// Properties of current hadron species.
 		int idNow = IDHADRON[ iSpecies ];
-		//int iTab  = ITABLE[ iSpecies ];
+		int iTab  = ITABLE[ iSpecies ];
 		
 		// Loop through event record to store copies of current species.
 		for (int i = 0; i < event.size(); ++i)
@@ -332,26 +329,6 @@ bool BoseEinstein::shiftEvent( Event& event )
 				pHadSum += event[i].p();
 			}
 		nStored[iSpecies + 1] = hadronBE.size();
-	}
-
-	// Boost to frame where 4-momentum of hadrons to be shifted vanishes.
-	/*for ( auto pHad : hadronBE )
-	{
-		// boost p and x only; pShift = pComp = (0,0,0,0).
-		pHad.p.bstback( pHadSum );
-		pHad.x.bstback( pHadSum );
-	}*/
-
-
-	for (int iSpecies = 0; iSpecies < 9; ++iSpecies)
-	{
-		if (!doPion and iSpecies <= 2) continue;
-		if (!doKaon and iSpecies >= 3 and iSpecies <= 6) continue;
-		if (!doEta  and iSpecies >= 7) continue;
-		
-		// Properties of current hadron species.
-		//int idNow = IDHADRON[ iSpecies ];
-		int iTab  = ITABLE[ iSpecies ];
 				
 		// ======================================================
 		// Define these to estimate pair shift using pair density
@@ -396,7 +373,7 @@ bool BoseEinstein::shiftEvent( Event& event )
 	double eSumOriginal = 0.;
 	double eSumShifted  = 0.;
 	double eDiffByComp  = 0.;
-	constexpr int compensation_version_to_use = 2;
+	constexpr int compensation_version_to_use = 0;
 
 	constexpr bool perform_compensation = true;
 	constexpr bool check_for_bad_events = true;
@@ -417,8 +394,8 @@ bool BoseEinstein::shiftEvent( Event& event )
 		}
 
 		int iStep = 0;
-		cout << "CHECK: pSumOriginal = " << pSumOriginal;
-		cout << "CHECK (" << iStep << "): pSumShifted = " << pSumShifted;
+		//cout << "CHECK: pSumOriginal = " << pSumOriginal;
+		//cout << "CHECK (" << iStep << "): pSumShifted = " << pSumShifted;
 			
 		// Iterate compensation shift until convergence.
 		while ( perform_compensation
@@ -428,13 +405,6 @@ bool BoseEinstein::shiftEvent( Event& event )
 		{
 			++iStep;
 			double compFac   = (eSumOriginal - eSumShifted) / eDiffByComp;
-			/*cout << setprecision(12) << "Compensation check: " << iStep << "   "
-					<< eSumOriginal << "   " << eSumShifted << "   "
-					<< eDiffByComp << endl;
-			cout << setprecision(12) << "Compensation check(2): " << iStep << "   "
-					<< abs(eSumShifted - eSumOriginal) << "   "
-					<< COMPRELERR * eSumOriginal << "   "
-					<< COMPFACMAX * abs(eDiffByComp) << endl;*/
 			eSumShifted      = 0.;
 			eDiffByComp      = 0.;
 			pSumShifted      = Vec4(0.0, 0.0, 0.0, 0.0);
@@ -446,20 +416,9 @@ bool BoseEinstein::shiftEvent( Event& event )
 				pSumShifted += pHad.p;
 				eDiffByComp  += dot3( pHad.pComp, pHad.p ) / pHad.p.e();	//ORIGINAL
 			}
-		cout << "CHECK (" << iStep << "): pSumShifted = " << pSumShifted;
+		//cout << "CHECK (" << iStep << "): pSumShifted = " << pSumShifted;
 		}
 			
-		/*cout << setprecision(12) << "Compensation check (final): "
-				<< eSumOriginal << "   " << eSumShifted << "   "
-				<< eDiffByComp << endl;
-		cout << setprecision(12) << "Compensation check(2) (final): "
-				<< abs(eSumShifted - eSumOriginal) << "   "
-				<< COMPRELERR * eSumOriginal << "   "
-				<< COMPFACMAX * abs(eDiffByComp) << endl;
-		
-		cout << setprecision(12) << "Compensation criteria: "
-				<< abs(eSumShifted - eSumOriginal) << " < "
-				<< COMPRELERR * eSumOriginal << endl;*/
 	}
 	else
 	{
@@ -546,8 +505,8 @@ bool BoseEinstein::shiftEvent( Event& event )
 
 		// Iterate compensation shift until convergence.
 		int iStep = 0;
-		cout << "CHECK: pSumOriginal = " << pSumOriginal;
-		cout << "CHECK (" << iStep << "): pSumShifted = " << pSumShifted;
+		//cout << "CHECK: pSumOriginal = " << pSumOriginal;
+		//cout << "CHECK (" << iStep << "): pSumShifted = " << pSumShifted;
 
 		while ( perform_compensation
 				and abs(eSumShifted - eSumOriginal) > COMPRELERR * eSumOriginal
@@ -605,7 +564,7 @@ bool BoseEinstein::shiftEvent( Event& event )
 				}
 				eDiffByComp += dot3( pDiffByTrans, pHad.p ) / pHad.p.e();
 			}
-		cout << "CHECK (" << iStep << "): pSumShifted = " << pSumShifted;
+		//cout << "CHECK (" << iStep << "): pSumShifted = " << pSumShifted;
 
 		}
 		//======================================================================
@@ -621,16 +580,6 @@ bool BoseEinstein::shiftEvent( Event& event )
 
 	}
 //if (1) exit (8);
-
-	/*// Check 4-momentum conservation
-	Vec4 pHadSumFinal;
-	for ( auto & pHad : hadronBE )
-		pHadSumFinal += pHad.p;
-
-	cout << "-------------------------------------------------" << endl;
-	cout << "| Check pHadSum      = " << pHadSum;
-	cout << "| Check pHadSumFinal = " << pHadSumFinal;
-	cout << "-------------------------------------------------" << endl;*/
 
 	
 	// Error if no convergence, and then return without doing BE shift.
@@ -659,26 +608,7 @@ bool BoseEinstein::shiftEvent( Event& event )
              << COMPRELERR * eSumOriginal << "\n";
 		infoPtr->setBECShifts( true );
 	}
-	
-
-	// Boost back to lab frame
-	/*for ( auto pHad : hadronBE )
-	{
-		// only need to boost p back
-		pHad.p.bst( pHadSum );
-		pHad.x.bst( pHadSum );
-	}*/
-
-	// Check 4-momentum conservation
-	Vec4 pHadSumFinal;
-	for ( auto & pHad : hadronBE )
-		pHadSumFinal += pHad.p;
-
-	cout << "-------------------------------------------------" << endl;
-	cout << "| Check pHadSum      = " << pHadSum;
-	cout << "| Check pHadSumFinal = " << pHadSumFinal;
-	cout << "-------------------------------------------------" << endl;
-	
+		
 	// Store new particle copies with shifted momenta.
 	for ( auto & pHad : hadronBE )
 	{
