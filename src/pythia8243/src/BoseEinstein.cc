@@ -73,7 +73,7 @@ const double BoseEinstein::Q2MIN     = 1e-8;
 // relative energy error, iterative stepsize, and number of iterations.
 const double BoseEinstein::COMPRELERR = 1e-10;
 const double BoseEinstein::COMPFACMAX = 1000.;
-const int    BoseEinstein::NCOMPSTEP  = 10;
+const int    BoseEinstein::NCOMPSTEP  = 1000;
 
 const double BoseEinstein::dQ = 1e-2;
 const double BoseEinstein::Qmaximum = 1.0;
@@ -414,24 +414,13 @@ bool BoseEinstein::shiftEvent( Event& event )
 			eSumShifted  += pHad.p.e();
 			pSumShifted  += pHad.p;
 			eDiffByComp  += dot3( pHad.pComp, pHad.p ) / pHad.p.e();	//ORIGINAL
-			//double dE1 = dot3( pHad.pComp, pHad.p ) / pHad.p.e();
-			//double dE2 = sqrt( pHad.p.e()*pHad.p.e()
-	        //                      + 2.0*dot3( pHad.pComp, pHad.p )
-	        //                      + dot3( pHad.pComp, pHad.pComp ) )
-	        //                - pHad.p.e();
-			//if ( abs(dE1)>1e-10 and abs(dE2)>1e-10 and 2.0*abs(dE1-dE2)/(abs(dE1+dE2)+1e-20)>0.01 )
-			//	cout << "COMPARE eDiffByComp defs: " << dE1 << " vs. " << dE2 << endl;
-			/*eDiffByComp  += sqrt( pHad.p.e()*pHad.p.e()
-	                              + 2.0*dot3( pHad.pComp, pHad.p )
-	                              + dot3( pHad.pComp, pHad.pComp ) )
-	                        - pHad.p.e();*/
 		}
 
-		//cout << "CHECK: pSumOriginal = " << pSumOriginal;
-		//cout << "CHECK: pSumShifted = " << pSumShifted;
+		int iStep = 0;
+		cout << "CHECK: pSumOriginal = " << pSumOriginal;
+		cout << "CHECK (" << iStep << "): pSumShifted = " << pSumShifted;
 			
 		// Iterate compensation shift until convergence.
-		int iStep = 0;
 		while ( perform_compensation
 				and abs(eSumShifted - eSumOriginal) > COMPRELERR * eSumOriginal
 				and abs(eSumShifted - eSumOriginal) < COMPFACMAX * abs(eDiffByComp)
@@ -456,19 +445,8 @@ bool BoseEinstein::shiftEvent( Event& event )
 				eSumShifted += pHad.p.e();
 				pSumShifted += pHad.p;
 				eDiffByComp  += dot3( pHad.pComp, pHad.p ) / pHad.p.e();	//ORIGINAL
-				/*eDiffByComp  += sqrt( pHad.p.e()*pHad.p.e()
-		                              + 2.0*dot3( pHad.pComp, pHad.p )
-		                              + dot3( pHad.pComp, pHad.pComp ) )
-		                        - pHad.p.e();*/
-			//double dE1 = dot3( pHad.pComp, pHad.p ) / pHad.p.e();
-			//double dE2 = sqrt( pHad.p.e()*pHad.p.e()
-	        //                      + 2.0*dot3( pHad.pComp, pHad.p )
-	        //                      + dot3( pHad.pComp, pHad.pComp ) )
-	        //                - pHad.p.e();
-			//if ( abs(dE1)>1e-10 and abs(dE2)>1e-10 and 2.0*abs(dE1-dE2)/(abs(dE1+dE2)+1e-20)>0.01 )
-			//	cout << "COMPARE eDiffByComp defs: " << dE1 << " vs. " << dE2 << endl;
 			}
-		//cout << "CHECK(2): pSumShifted = " << pSumShifted;
+		cout << "CHECK (" << iStep << "): pSumShifted = " << pSumShifted;
 		}
 			
 		/*cout << setprecision(12) << "Compensation check (final): "
