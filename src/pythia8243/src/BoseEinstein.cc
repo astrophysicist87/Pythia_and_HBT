@@ -306,6 +306,8 @@ bool BoseEinstein::shiftEvent( Event& event )
 	// Start timing	
 	auto start = std::chrono::system_clock::now();
 
+cout << "Entering here" << endl;
+
 	// Record total 4-momentum of hadrons to be shifted.
 	Vec4 pHadSum;
 	
