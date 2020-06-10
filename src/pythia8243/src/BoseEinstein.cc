@@ -306,8 +306,6 @@ bool BoseEinstein::shiftEvent( Event& event )
 	// Start timing	
 	auto start = std::chrono::system_clock::now();
 
-cout << "Entering here" << endl;
-
 	// Record total 4-momentum of hadrons to be shifted.
 	Vec4 pHadSum;
 	
@@ -335,10 +333,6 @@ cout << "Entering here" << endl;
 			}
 		nStored[iSpecies + 1] = hadronBE.size();
 	}
-
-	cout << "-------------------------------------------------" << endl;
-	cout << "| Check pHadSum = " << pHadSum;
-	cout << "-------------------------------------------------" << endl;
 
 	// Boost to frame where 4-momentum of hadrons to be shifted vanishes.
 	/*for ( auto pHad : hadronBE )
@@ -680,6 +674,16 @@ cout << "Entering here" << endl;
 		pHad.p.bst( pHadSum );
 		pHad.x.bst( pHadSum );
 	}*/
+
+	// Check 4-momentum conservation
+	Vec4 pHadSumFinal;
+	for ( auto & pHad : hadronBE )
+		pHadSumFinal += pHad.p;
+
+	cout << "-------------------------------------------------" << endl;
+	cout << "| Check pHadSum      = " << pHadSum;
+	cout << "| Check pHadSumFinal = " << pHadSumFinal;
+	cout << "-------------------------------------------------" << endl;
 	
 	// Store new particle copies with shifted momenta.
 	for ( auto & pHad : hadronBE )
