@@ -326,7 +326,6 @@ bool BoseEinstein::shiftEvent( Event& event )
 				//cout << "check particles: " << idNow << "   " << i << "   " << event[i].m() << "   " << event[i].p();
 				//cout << "check particles (cont): " << idNow << "   " << i << "   " << event[i].vProd();
 				hadronBE.push_back( BoseEinsteinHadron( idNow, i, event[i].p(), event[i].m(), event[i].vProd() ) );
-				pHadSum += event[i].p();
 			}
 		nStored[iSpecies + 1] = hadronBE.size();
 				
