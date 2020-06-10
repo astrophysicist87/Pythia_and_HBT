@@ -638,6 +638,17 @@ bool BoseEinstein::shiftEvent( Event& event )
 
 	}
 //if (1) exit (8);
+
+	// Check 4-momentum conservation
+	Vec4 pHadSumFinal;
+	for ( auto & pHad : hadronBE )
+		pHadSumFinal += pHad.p;
+
+	cout << "-------------------------------------------------" << endl;
+	cout << "| Check pHadSum      = " << pHadSum;
+	cout << "| Check pHadSumFinal = " << pHadSumFinal;
+	cout << "-------------------------------------------------" << endl;
+
 	
 	// Error if no convergence, and then return without doing BE shift.
 	// However, not grave enough to kill event, so return true.
@@ -675,7 +686,7 @@ bool BoseEinstein::shiftEvent( Event& event )
 		pHad.x.bst( pHadSum );
 	}*/
 
-	// Check 4-momentum conservation
+	/*// Check 4-momentum conservation
 	Vec4 pHadSumFinal;
 	for ( auto & pHad : hadronBE )
 		pHadSumFinal += pHad.p;
@@ -683,7 +694,7 @@ bool BoseEinstein::shiftEvent( Event& event )
 	cout << "-------------------------------------------------" << endl;
 	cout << "| Check pHadSum      = " << pHadSum;
 	cout << "| Check pHadSumFinal = " << pHadSumFinal;
-	cout << "-------------------------------------------------" << endl;
+	cout << "-------------------------------------------------" << endl;*/
 	
 	// Store new particle copies with shifted momenta.
 	for ( auto & pHad : hadronBE )
