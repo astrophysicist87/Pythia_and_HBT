@@ -303,105 +303,11 @@ bool BoseEinstein::shiftEvent( Event& event )
 	// Reset list of identical particles.
 	hadronBE.resize(0);
 
-
-	//===========Added by Chris Plumberg================
-	// if using debugging version, reset pion momentum to random value
-	///*
-	constexpr bool debugging = false;
-	if ( debugging )
-	{
-		//unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-		//std::default_random_engine generator(seed);
-		std::default_random_engine generator;
-
-		const double scale = 5.0;
-		std::normal_distribution<double> distribution(0.0, scale);
-		// loop over particles in this event
-		int lastPion = -1;
-		for (int i = 0; i < event.size(); ++i)
-		{
-			Particle & p = event[i];
-			if ( p.isHadron() and p.id() == 211 )
-			{
-				// record this particle index
-				lastPion = i;
-
-				//================================
-				// random number generation here
-
-				// reset positions
-				p.tProd( 0.0 );
-				p.xProd( 0.0*FM2MM * distribution( generator ) );
-				p.yProd( 0.0*FM2MM * distribution( generator ) );
-				p.zProd( FM2MM * distribution( generator ) );
-				//const double tmp_rand = FM2MM * distribution( generator );
-				//p.tProd( tmp_rand );
-				//p.zProd( tmp_rand );
-
-				const double pm = p.m();
-				const double px = 0.0 * distribution( generator );
-				const double py = 0.0 * distribution( generator );
-				const double pz = 1.0 * distribution( generator );
-				//const double Epi = sqrt(0.13957*0.13957 + px*px + py*py + pz*pz);
-				const double Epi = sqrt(pm*pm + px*px + py*py + pz*pz);
-
-				// reset momenta
-				p.e( Epi );
-				p.px( px );
-				p.py( py );
-				p.pz( pz );
-
-				p.statusPos();
-
-			}
-		}
-
-		if ( lastPion < 0 ) lastPion = event.size()-1;
-
-		// Then add a bunch more pions...
-		if (true)
-		for (int i = 0; i < 1000; i++)
-		{
-			// same "mother" for all
-			int jNew = event.copy( lastPion, 99 );
-			//event[ iNew ].p( hadronBE.at(i).p );
-
-			// reset positions
-			event[ jNew ].tProd( 0.0 );
-			event[ jNew ].xProd( 0.0*FM2MM * distribution( generator ) );
-			event[ jNew ].yProd( 0.0*FM2MM * distribution( generator ) );
-			event[ jNew ].zProd( FM2MM * distribution( generator ) );
-			//const double tmp_rand = FM2MM * distribution( generator );
-			//event[ jNew ].tProd( tmp_rand );
-			//event[ jNew ].zProd( tmp_rand );
-
-			const double pm = event[ jNew ].m();
-			const double px = 0.0 * distribution( generator );
-			const double py = 0.0 * distribution( generator );
-			const double pz = 1.0 * distribution( generator );
-			//const double Epi = sqrt(0.13957*0.13957 + px*px + py*py + pz*pz);
-			const double Epi = sqrt(pm*pm + px*px + py*py + pz*pz);
-
-			// reset momenta
-			event[ jNew ].e( Epi );
-			event[ jNew ].px( px );
-			event[ jNew ].py( py );
-			event[ jNew ].pz( pz );
-
-			event[ jNew ].statusPos();
-
-			//cout << "Added particle in position = " << iNew << endl;
-		}
-	}
-
-	//*/
-	//===========End of Chris Plumberg's addition================
-
-
 	// Start timing	
 	auto start = std::chrono::system_clock::now();
 
-//cout << "check particles: the beginning" << endl;
+	// Record total 4-momentum of hadrons to be shifted.
+	Vec4 pHadSum;
 	
 	// Loop over all hadron species with BE effects.
 	nStored[0] = 0;
@@ -423,8 +329,22 @@ bool BoseEinstein::shiftEvent( Event& event )
 				//cout << "check particles: " << idNow << "   " << i << "   " << event[i].m() << "   " << event[i].p();
 				//cout << "check particles (cont): " << idNow << "   " << i << "   " << event[i].vProd();
 				hadronBE.push_back( BoseEinsteinHadron( idNow, i, event[i].p(), event[i].m(), event[i].vProd() ) );
+				pHadSum += event[i].p();
 			}
 		nStored[iSpecies + 1] = hadronBE.size();
+	}
+
+	// Boost to frame where 4-momentum of hadrons to be shifted vanishes.
+	/*for ( auto pHad : hadronBE )
+	{
+		// boost p and x only; pShift = pComp = (0,0,0,0).
+		pHad.p.bstback( pHadSum );
+		pHad.x.bstback( pHadSum );
+	}*/
+
+
+	for (int iSpecies = 0; iSpecies < 9; ++iSpecies)
+	{
 		
 		// ======================================================
 		// Define these to estimate pair shift using pair density
@@ -461,8 +381,6 @@ bool BoseEinstein::shiftEvent( Event& event )
 				break;
 		}
 	}
-
-//cout << "check particles: the ending" << endl;
 	
 	// Must have at least two pairs to carry out compensation.
 	if (nStored[9] < 2) return true;
@@ -471,7 +389,7 @@ bool BoseEinstein::shiftEvent( Event& event )
 	double eSumOriginal = 0.;
 	double eSumShifted  = 0.;
 	double eDiffByComp  = 0.;
-	constexpr int compensation_version_to_use = 2;
+	constexpr int compensation_version_to_use = 0;
 
 	constexpr bool perform_compensation = true;
 	constexpr bool check_for_bad_events = true;
@@ -741,6 +659,14 @@ bool BoseEinstein::shiftEvent( Event& event )
 		infoPtr->setBECShifts( true );
 	}
 	
+
+	// Boost back to lab frame
+	/*for ( auto pHad : hadronBE )
+	{
+		// only need to boost p back
+		pHad.p.bst( pHadSum );
+		pHad.x.bst( pHadSum );
+	}*/
 	
 	// Store new particle copies with shifted momenta.
 	for ( auto & pHad : hadronBE )
@@ -755,8 +681,6 @@ bool BoseEinstein::shiftEvent( Event& event )
 	if ( BE_VERBOSE )
 	std::cout << "BoseEinsteinCheck: elapsed time: "
               << elapsed_seconds.count() << " s" << "\n";
-
-	//if (1) exit(8);
 	
 	// Done.
 	return true;
