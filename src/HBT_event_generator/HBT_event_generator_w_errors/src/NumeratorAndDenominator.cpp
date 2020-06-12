@@ -20,7 +20,7 @@ void HBT_event_generator::Compute_numerator_and_denominator_methodMode0_q_mode_3
 {
 	constexpr bool average_over_Kphi = true;
 
-	constexpr bool oneDim_slices = false;
+	//constexpr bool oneDim_slices = false;
 
 	constexpr bool impose_pair_rapidity_cuts = false;
 	const double KYmin = -0.1, KYmax = 0.1;
@@ -452,8 +452,8 @@ void HBT_event_generator::Compute_numerator_and_denominator_momentum_space_only_
 {
 	constexpr bool perform_random_rotation = false;
 	constexpr bool perform_random_shuffle  = false;
-	constexpr bool oneDim_slices           = true;
-	constexpr bool use_LCMS                = true;
+	//constexpr bool oneDim_slices           = true;
+	//constexpr bool use_LCMS                = true;
 
 	out << "HBT_event_generator:  * Computing correlation function:" << endl
 		<< "HBT_event_generator:  * - momentum-space only" << endl

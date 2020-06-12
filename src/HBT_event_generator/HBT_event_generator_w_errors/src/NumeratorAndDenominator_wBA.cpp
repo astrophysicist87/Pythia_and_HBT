@@ -22,8 +22,10 @@ void HBT_event_generator::Compute_numerator_and_denominator_methodMode2_q_mode_3
 	//bool use_smoothness_approximation = false;
 	const double SAfact = ( use_smoothness_approximation ) ? 0.0 : 1.0;
 
-	bool perform_random_rotation = false;
-	bool perform_random_shuffle = false;
+	constexpr bool perform_random_rotation = false;
+	constexpr bool perform_random_shuffle  = false;
+	//constexpr bool oneDim_slices           = true;
+	//constexpr bool use_LCMS                = true;
 
 	//int number_of_completed_events = 0;
 	//out << "In file: " << __FILE__ << " and function: " << __FUNCTION__ << " at line: " << __LINE__ << endl;
@@ -41,10 +43,6 @@ void HBT_event_generator::Compute_numerator_and_denominator_methodMode2_q_mode_3
 	for (int iEvent = 0; iEvent < allEvents.size(); ++iEvent)
 	{
 		EventRecord event = allEvents[iEvent];
-		/*#pragma omp critical
-		{
-			out << "Now doing event = " << event.eventID << " of full ensemble" << endl;
-		}*/
 
 		vector<double> private_num(numerator.size(), 0.0);
 		vector<double> private_num2(numerator2.size(), 0.0);
@@ -90,6 +88,33 @@ void HBT_event_generator::Compute_numerator_and_denominator_methodMode2_q_mode_3
 			// New method of binning
 			double K0 = 0.5*(Ei+Ej), Kx = 0.5*(pix+pjx), Ky = 0.5*(piy+pjy), Kz = 0.5*(piz+pjz);
 
+			// boost pair if necessary
+			if ( use_LCMS )
+			{
+				double betaL   = Kz / K0;
+				double betaL2  = betaL*betaL;
+				if (betaL2 >= 1.0) continue;
+				double gamma   = 1.0/sqrt(1.0-betaL2);
+				double piz_new = gamma*(piz - betaL*Ei);
+				double Ei_new  = gamma*(Ei - betaL*piz);
+				double pjz_new = gamma*(pjz - betaL*Ej);
+				double Ej_new  = gamma*(Ej - betaL*pjz);
+
+				piz            = piz_new;
+				Ei             = Ei_new;
+				pjz            = pjz_new;
+				Ej             = Ej_new;
+
+				K0 = 0.5*(Ei+Ej);
+				Kz = 0.5*(piz+pjz);
+				if ( abs(Kz) > 1e-4 )
+				{
+					#pragma omp critical
+						err << "Something went wrong!!! Kz = " << Kz << endl;
+					exit(8);
+				}
+			}
+
 			double KT = sqrt(Kx*Kx+Ky*Ky);
 			double Kphi = atan2(Ky, Kx);
 			double cKphi = cos(Kphi), sKphi = sin(Kphi);
@@ -124,6 +149,22 @@ void HBT_event_generator::Compute_numerator_and_denominator_methodMode2_q_mode_3
 			for (int iqs = 0; iqs < n_qs_bins; iqs++)
 			for (int iql = 0; iql < n_ql_bins; iql++)
 			{
+
+				// allows to do only slices
+				if ( oneDim_slices )
+				{
+					bool iqo_not_center = ( iqo != (n_qo_bins-1)/2 );
+					bool iqs_not_center = ( iqs != (n_qs_bins-1)/2 );
+					bool iql_not_center = ( iql != (n_ql_bins-1)/2 );
+	
+					// if we're not on an axis slice, skip this q-bin
+					if (
+							( iqo_not_center and iqs_not_center )
+							or ( iqo_not_center and iql_not_center )
+							or ( iqs_not_center and iql_not_center )
+						)
+						continue;
+				}
 
 				/*bool in_center = ( iqo == (n_qo_bins-1)/2
 						and iqs == (n_qs_bins-1)/2
@@ -186,6 +227,33 @@ void HBT_event_generator::Compute_numerator_and_denominator_methodMode2_q_mode_3
 			// New method of binning
 			double K0 = 0.5*(Ei+Ej), Kx = 0.5*(pix+pjx), Ky = 0.5*(piy+pjy), Kz = 0.5*(piz+pjz);
 
+			// boost pair if necessary
+			if ( use_LCMS )
+			{
+				double betaL   = Kz / K0;
+				double betaL2  = betaL*betaL;
+				if (betaL2 >= 1.0) continue;
+				double gamma   = 1.0 / sqrt(1.0-betaL2);
+				double piz_new = gamma*(piz - betaL*Ei);
+				double Ei_new  = gamma*(Ei - betaL*piz);
+				double pjz_new = gamma*(pjz - betaL*Ej);
+				double Ej_new  = gamma*(Ej - betaL*pjz);
+
+				piz            = piz_new;
+				Ei             = Ei_new;
+				pjz            = pjz_new;
+				Ej             = Ej_new;
+
+				K0 = 0.5*(Ei+Ej);
+				Kz = 0.5*(piz+pjz);
+				if ( abs(Kz) > 1e-4 )
+				{
+					#pragma omp critical
+						err << "Something went wrong!!! Kz = " << Kz << endl;
+					exit(8);
+				}
+			}
+
 			double KT = sqrt(Kx*Kx+Ky*Ky);
 			double Kphi = atan2(Ky, Kx);
 			double cKphi = cos(Kphi), sKphi = sin(Kphi);
@@ -212,6 +280,22 @@ void HBT_event_generator::Compute_numerator_and_denominator_methodMode2_q_mode_3
 			for (int iqs = 0; iqs < n_qs_bins; iqs++)
 			for (int iql = 0; iql < n_ql_bins; iql++)
 			{
+
+				// allows to do only slices
+				if ( oneDim_slices )
+				{
+					bool iqo_not_center = ( iqo != (n_qo_bins-1)/2 );
+					bool iqs_not_center = ( iqs != (n_qs_bins-1)/2 );
+					bool iql_not_center = ( iql != (n_ql_bins-1)/2 );
+	
+					// if we're not on an axis slice, skip this q-bin
+					if (
+							( iqo_not_center and iqs_not_center )
+							or ( iqo_not_center and iql_not_center )
+							or ( iqs_not_center and iql_not_center )
+						)
+						continue;
+				}
 
 				//bool in_center = ( iqo == (n_qo_bins-1)/2 and iqs == (n_qs_bins-1)/2 and iql == (n_ql_bins-1)/2 );
 				double overall_factor = 1.0;

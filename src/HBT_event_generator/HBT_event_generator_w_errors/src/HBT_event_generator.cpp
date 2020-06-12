@@ -60,6 +60,9 @@ void HBT_event_generator::initialize_all(
 	BE_mode 		= paraRdr->getVal("BE_mode");
 	use_smoothness_approximation
 					= (bool)paraRdr->getVal("use_smoothness_approximation");
+	oneDim_slices	= (bool)paraRdr->getVal("use_slices_only");
+	use_LCMS		= (bool)paraRdr->getVal("use_LCMS");
+
 	// - bin parameters
 	bin_epsilon		= paraRdr->getVal("bin_epsilon");
 	use_pz_bin_asymmetry
