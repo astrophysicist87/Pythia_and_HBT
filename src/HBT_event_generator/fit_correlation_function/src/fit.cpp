@@ -181,7 +181,7 @@ void Correlation_function::find_minimum_chisq_correlationfunction_full(	int iKT,
 		// Invert the matrix m
 		status    += gsl_linalg_LU_invert (T_gsl, perm, T_inverse_gsl);
 
-		gsl_set_error_handler_on();
+		gsl_set_error_handler(NULL);
 
 		if ( status > 0 )
 		{
@@ -612,7 +612,7 @@ void Correlation_function::find_minimum_chisq_CFerr_full_FR( int iKT, int iKphi,
 		// Invert the matrix m
 		status    += gsl_linalg_LU_invert (T_gsl, perm, T_inverse_gsl);
 
-		gsl_set_error_handler_on();
+		gsl_set_error_handler(NULL);
 
 		if ( status > 0 )
 		{
