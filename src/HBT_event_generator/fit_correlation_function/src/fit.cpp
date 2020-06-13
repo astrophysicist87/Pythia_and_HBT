@@ -245,7 +245,7 @@ void Correlation_function::find_minimum_chisq_correlationfunction_full(	int iKT,
 				R2_sidelong_err[indexerK(iKT, iKphi, iKL)] 	= 100000.0;
 			}
 
-			break;	
+			exit(8);	
 		}
 
 		double ** T_inverse = new double * [dim];
