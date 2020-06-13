@@ -106,7 +106,7 @@ void Correlation_function::find_minimum_chisq_correlationfunction_full(	int iKT,
 		}
 		if ( not use_this_bin ) continue;
 
-		out << "Using bin(" << __LINE__ << "): " << i << "   " << j << "   " << k << endl;
+		//out << "Using bin(" << __LINE__ << "): " << i << "   " << j << "   " << k << endl;
 
 		int idx = indexer(iKT, iKphi, iKL, i, j, k);
 
@@ -166,6 +166,12 @@ void Correlation_function::find_minimum_chisq_correlationfunction_full(	int iKT,
 
 	if ( n_usable_bins > dim )
 	{
+		out << __FILE__<< "(" << __LINE__ << "): Enough usable bins!" << endl;
+		out << __FILE__<< "(" << __LINE__ << "): iKT           = " << iKT << endl;
+		out << __FILE__<< "(" << __LINE__ << "): n_usable_bins = " << n_usable_bins << endl;
+		out << __FILE__<< "(" << __LINE__ << "): dim           = " << dim << endl;
+
+
 		for(int i = 0; i < dim; i++)
 		    for(int j = 0; j < dim; j++)
 		        gsl_matrix_set(T_gsl, i, j, T[i][j]);
@@ -221,7 +227,7 @@ void Correlation_function::find_minimum_chisq_correlationfunction_full(	int iKT,
 			}
 			if ( not use_this_bin ) continue;
 
-			out << "Using bin(" << __LINE__ << "): " << i << "   " << j << "   " << k << endl;
+			//out << "Using bin(" << __LINE__ << "): " << i << "   " << j << "   " << k << endl;
 
 			int idx = indexer(iKT, iKphi, iKL, i, j, k);
 
@@ -296,7 +302,7 @@ void Correlation_function::find_minimum_chisq_correlationfunction_full(	int iKT,
 			}
 			if ( not use_this_bin ) continue;
 
-			out << "Using bin: " << i << "   " << j << "   " << k << endl;
+			//out << "Using bin: " << i << "   " << j << "   " << k << endl;
 
 			int idx = indexer(iKT, iKphi, iKL, i, j, k);
 
@@ -375,6 +381,7 @@ void Correlation_function::find_minimum_chisq_correlationfunction_full(	int iKT,
 	else // matrix would have been singular or fit meaningless; not enough finite bins to fit parameters!
 	{
 		err << __FILE__<< "(" << __LINE__ << "): Not enough usable bins!" << endl;
+		err << __FILE__<< "(" << __LINE__ << "): iKT           = " << iKT << endl;
 		err << __FILE__<< "(" << __LINE__ << "): n_usable_bins = " << n_usable_bins << endl;
 		err << __FILE__<< "(" << __LINE__ << "): dim           = " << dim << endl;
 
