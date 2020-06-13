@@ -101,7 +101,8 @@ void Correlation_function::find_minimum_chisq_correlationfunction_full(	int iKT,
 			int i_in_center = int(i==(n_qo_bins-1)/2);
 			int j_in_center = int(j==(n_qs_bins-1)/2);
 			int k_in_center = int(k==(n_ql_bins-1)/2);
-			use_this_bin = bool( i_in_center + j_in_center + k_in_center <= 1 );
+			//use_this_bin = bool( i_in_center + j_in_center + k_in_center <= 1 );
+			use_this_bin = bool( i_in_center + j_in_center + k_in_center > 1 );
 		}
 		if ( not use_this_bin ) continue;
 
@@ -213,7 +214,8 @@ void Correlation_function::find_minimum_chisq_correlationfunction_full(	int iKT,
 				int i_in_center = int(i==(n_qo_bins-1)/2);
 				int j_in_center = int(j==(n_qs_bins-1)/2);
 				int k_in_center = int(k==(n_ql_bins-1)/2);
-				use_this_bin = bool( i_in_center + j_in_center + k_in_center <= 1 );
+				//use_this_bin = bool( i_in_center + j_in_center + k_in_center <= 1 );
+				use_this_bin = bool( i_in_center + j_in_center + k_in_center > 1 );
 			}
 			if ( not use_this_bin ) continue;
 
@@ -285,7 +287,8 @@ void Correlation_function::find_minimum_chisq_correlationfunction_full(	int iKT,
 				int i_in_center = int(i==(n_qo_bins-1)/2);
 				int j_in_center = int(j==(n_qs_bins-1)/2);
 				int k_in_center = int(k==(n_ql_bins-1)/2);
-				use_this_bin = bool( i_in_center + j_in_center + k_in_center <= 1 );
+				//use_this_bin = bool( i_in_center + j_in_center + k_in_center <= 1 );
+				use_this_bin = bool( i_in_center + j_in_center + k_in_center > 1 );
 			}
 			if ( not use_this_bin ) continue;
 
@@ -366,6 +369,9 @@ void Correlation_function::find_minimum_chisq_correlationfunction_full(	int iKT,
 	else // matrix would have been singular or fit meaningless; not enough finite bins to fit parameters!
 	{
 		err << __FILE__<< "(" << __LINE__ << "): Not enough usable bins!" << endl;
+		err << __FILE__<< "(" << __LINE__ << "): n_usable_bins = " << n_usable_bins << endl;
+		err << __FILE__<< "(" << __LINE__ << "): dim           = " << dim << endl;
+
 		// store results
 		lambda_Correl[indexerK(iKT, iKphi, iKL)] 		= 0.0;
 		R2_out[indexerK(iKT, iKphi, iKL)] 				= 0.0;
@@ -457,7 +463,8 @@ void Correlation_function::find_minimum_chisq_CFerr_full_FR( int iKT, int iKphi,
 			int i_in_center = int(i==(n_qo_bins-1)/2);
 			int j_in_center = int(j==(n_qs_bins-1)/2);
 			int k_in_center = int(k==(n_ql_bins-1)/2);
-			use_this_bin = bool( i_in_center + j_in_center + k_in_center <= 1 );
+			//use_this_bin = bool( i_in_center + j_in_center + k_in_center <= 1 );
+			use_this_bin = bool( i_in_center + j_in_center + k_in_center > 1 );
 		}
 		if ( not use_this_bin ) continue;
 
