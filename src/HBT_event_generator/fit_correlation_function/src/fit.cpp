@@ -101,12 +101,9 @@ void Correlation_function::find_minimum_chisq_correlationfunction_full(	int iKT,
 			int i_in_center = int(i==(n_qo_bins-1)/2);
 			int j_in_center = int(j==(n_qs_bins-1)/2);
 			int k_in_center = int(k==(n_ql_bins-1)/2);
-			//use_this_bin = bool( i_in_center + j_in_center + k_in_center <= 1 );
 			use_this_bin = bool( i_in_center + j_in_center + k_in_center > 1 );
 		}
 		if ( not use_this_bin ) continue;
-
-		//out << "Using bin(" << __LINE__ << "): " << i << "   " << j << "   " << k << endl;
 
 		int idx = indexer(iKT, iKphi, iKL, i, j, k);
 
@@ -176,51 +173,19 @@ void Correlation_function::find_minimum_chisq_correlationfunction_full(	int iKT,
 		    for (int j = 0; j < dim; j++)
 		        gsl_matrix_set(T_gsl, i, j, T[i][j]);
 
-			err << "---------------------------------------------------------------------------------" << endl;
-			err << __FILE__<< "(" << __LINE__ << "): Failed!" << endl;
-			err << __FILE__<< "(" << __LINE__ << "): iKT           = " << iKT << endl;
-			err << __FILE__<< "(" << __LINE__ << "): n_usable_bins = " << n_usable_bins << endl;
-			err << __FILE__<< "(" << __LINE__ << "): dim           = " << dim << endl;
-	
-			err << "Matrix T passed to GSL:" << endl;
-			for (int i = 0; i < dim; i++)
-			{
-			    for (int j = 0; j < dim; j++)
-					err << T[i][j] << "   ";
-				err << endl;
-			}
-			err << endl;
-
-			err << "Vector V passed to GSL:" << endl;
-			for (int i = 0; i < dim; i++)
-			{
-				err << V[i] << "   ";
-			}
-			err << endl << endl;
-
-			err << "qweight:" << endl;
-			for (int i = 0; i < dim; i++)
-			{
-				err << qweight[i] << "   ";
-			}
-			err << endl << endl;
-
-			/*err << "Miscellaneous:" << endl;
-			err << "q_out_local              = " << q_out_local << endl;
-			err << "q_side_local             = " << q_side_local << endl;
-			err << "q_long_local             = " << q_long_local << endl;
-			err << "log_correl_over_sigma_sq = " << log_correl_over_sigma_sq << endl;
-			err << "inv_sigma_k_prime_sq     = " << inv_sigma_k_prime_sq << endl;*/
-			err << "---------------------------------------------------------------------------------" << endl;
+		gsl_set_error_handler_off();
 
 		// Make LU decomposition of matrix T_gsl
 		int status = gsl_linalg_LU_decomp (T_gsl, perm, &s_gsl);
 		// Invert the matrix m
-		status += gsl_linalg_LU_invert (T_gsl, perm, T_inverse_gsl);
+		status    += gsl_linalg_LU_invert (T_gsl, perm, T_inverse_gsl);
+
+		gsl_set_error_handler_on();
 
 		if ( status > 0 )
 		{
-			err << "---------------------------------------------------------------------------------" << endl;
+
+			/*err << "---------------------------------------------------------------------------------" << endl;
 			err << __FILE__<< "(" << __LINE__ << "): Failed!" << endl;
 			err << __FILE__<< "(" << __LINE__ << "): iKT           = " << iKT << endl;
 			err << __FILE__<< "(" << __LINE__ << "): n_usable_bins = " << n_usable_bins << endl;
@@ -234,29 +199,21 @@ void Correlation_function::find_minimum_chisq_correlationfunction_full(	int iKT,
 				err << endl;
 			}
 			err << endl;
-
+	
 			err << "Vector V passed to GSL:" << endl;
 			for (int i = 0; i < dim; i++)
 			{
 				err << V[i] << "   ";
 			}
 			err << endl << endl;
-
+	
 			err << "qweight:" << endl;
 			for (int i = 0; i < dim; i++)
 			{
 				err << qweight[i] << "   ";
 			}
 			err << endl << endl;
-
-			/*err << "Miscellaneous:" << endl;
-			err << "q_out_local              = " << q_out_local << endl;
-			err << "q_side_local             = " << q_side_local << endl;
-			err << "q_long_local             = " << q_long_local << endl;
-			err << "log_correl_over_sigma_sq = " << log_correl_over_sigma_sq << endl;
-			err << "inv_sigma_k_prime_sq     = " << inv_sigma_k_prime_sq << endl;*/
-			err << "---------------------------------------------------------------------------------" << endl;
-
+			err << "---------------------------------------------------------------------------------" << endl;*/
 
 			// store results
 			lambda_Correl[indexerK(iKT, iKphi, iKL)] 		= 0.0;
@@ -282,204 +239,197 @@ void Correlation_function::find_minimum_chisq_correlationfunction_full(	int iKT,
 				R2_sidelong_err[indexerK(iKT, iKphi, iKL)] 	= 100000.0;
 			}
 
-			exit(8);	
 		}
-
-		double ** T_inverse = new double * [dim];
-		for(int i = 0; i < dim; i++)
+		else
 		{
-		    T_inverse[i] = new double [dim];
-		    for(int j = 0; j < dim; j++)
-		        T_inverse[i][j] = gsl_matrix_get(T_inverse_gsl, i, j);
-		}
-		double * results = new double [dim];
-		for(int i = 0; i < dim; i++)
-		{
-		    results[i] = 0.0;
-		    for(int j = 0; j < dim; j++)
-		        results[i] += T_inverse[i][j]*V[j];
-		}
-
-
-
-		// compute results
-		lambda_Correl[indexerK(iKT, iKphi, iKL)] = exp(results[0]);
-		R2_out[indexerK(iKT, iKphi, iKL)] = results[1]*hbarC*hbarC;
-		R2_side[indexerK(iKT, iKphi, iKL)] = results[2]*hbarC*hbarC;
-		R2_long[indexerK(iKT, iKphi, iKL)] = results[3]*hbarC*hbarC;
-		if ( include_cross_terms )
-		{
-			R2_outside[indexerK(iKT, iKphi, iKL)] = results[4]*hbarC*hbarC;
-			R2_outlong[indexerK(iKT, iKphi, iKL)] = results[5]*hbarC*hbarC;
-			R2_sidelong[indexerK(iKT, iKphi, iKL)] = results[6]*hbarC*hbarC;
-		}
-
-		// compute chi^2
-		double chi_sq = 0.0;
-		for (int i = 0; i < n_qo_bins; i++)
-		for (int j = 0; j < n_qs_bins; j++)
-		for (int k = 0; k < n_ql_bins; k++)
-		{
-			bool use_this_bin = true;
-			if ( use_slices_only )
+			double ** T_inverse = new double * [dim];
+			for(int i = 0; i < dim; i++)
 			{
-				int i_in_center = int(i==(n_qo_bins-1)/2);
-				int j_in_center = int(j==(n_qs_bins-1)/2);
-				int k_in_center = int(k==(n_ql_bins-1)/2);
-				//use_this_bin = bool( i_in_center + j_in_center + k_in_center <= 1 );
-				use_this_bin = bool( i_in_center + j_in_center + k_in_center > 1 );
+			    T_inverse[i] = new double [dim];
+			    for(int j = 0; j < dim; j++)
+			        T_inverse[i][j] = gsl_matrix_get(T_inverse_gsl, i, j);
 			}
-			if ( not use_this_bin ) continue;
-
-			//out << "Using bin(" << __LINE__ << "): " << i << "   " << j << "   " << k << endl;
-
-			int idx = indexer(iKT, iKphi, iKL, i, j, k);
-
-		    double q_out_local = 0.5*(qo_pts[i]+qo_pts[i+1]);
-		    double q_side_local = 0.5*(qs_pts[j]+qs_pts[j+1]);
-		    double q_long_local = 0.5*(ql_pts[k]+ql_pts[k+1]);
-
-			double correl_local = correlation_function[idx]-1.0;
-			double correl_err_local = correlation_function_error[idx];
-
-			if (correl_local < 1e-15) continue;
-
-			//bool ignore_central_point = true;
-			if ( 	ignore_central_point
-					and i==(n_qo_bins-1)/2
-					and j==(n_qs_bins-1)/2
-					and k==(n_ql_bins-1)/2)
-				continue;
-			//	correl_err_local = 1.0e10;	//ignore central point
-		    double sigma_k_prime = correl_err_local/correl_local;
-
-			if ( sigma_k_prime < 1e-15 )	// too small
-				continue;
-
-			double this_residual = log(correl_local) - results[0] 
-							+ results[1]*q_out_local*q_out_local 
-							+ results[2]*q_side_local*q_side_local
-							+ results[3]*q_long_local*q_long_local;
-			if ( include_cross_terms )
-				this_residual += results[4]*q_out_local*q_side_local
-									+ results[5]*q_out_local*q_long_local
-									+ results[6]*q_side_local*q_long_local;
-
-		    chi_sq += this_residual*this_residual / (sigma_k_prime*sigma_k_prime);
-		}
-
-		double chi_sq_per_dof = chi_sq/(data_length - dim);
-		out << "chi_sq = " << chi_sq << endl;
-		out << "Number d.o.f. = " << data_length - dim << endl;
-		out << "chi_sq/d.o.f. = " << chi_sq_per_dof << endl;
-		out << "Goodness-of-fit parameter Q = "
-			<< gsl_sf_gamma_inc_Q (0.5*(data_length - dim), 0.5*chi_sq) << endl;
-
-		//============================================
-		// compute curvature and covariance matrices
-		double ** curvature_mat = new double * [dim];
-		double ** covariance_mat = new double * [dim];
-		for(int i = 0; i < dim; i++)
-		{
-		    curvature_mat[i] = new double [dim];
-		    covariance_mat[i] = new double [dim];
-		    for(int j = 0; j < dim; j++)
+			double * results = new double [dim];
+			for(int i = 0; i < dim; i++)
 			{
-		        curvature_mat[i][j] = 0.0;
-		        covariance_mat[i][j] = 0.0;
+			    results[i] = 0.0;
+			    for(int j = 0; j < dim; j++)
+			        results[i] += T_inverse[i][j]*V[j];
 			}
-		}
-
-		//=============================
-		for (int i = 0; i < n_qo_bins; i++)
-		for (int j = 0; j < n_qs_bins; j++)
-		for (int k = 0; k < n_ql_bins; k++)
-		{
-			bool use_this_bin = true;
-			if ( use_slices_only )
-			{
-				int i_in_center = int(i==(n_qo_bins-1)/2);
-				int j_in_center = int(j==(n_qs_bins-1)/2);
-				int k_in_center = int(k==(n_ql_bins-1)/2);
-				//use_this_bin = bool( i_in_center + j_in_center + k_in_center <= 1 );
-				use_this_bin = bool( i_in_center + j_in_center + k_in_center > 1 );
-			}
-			if ( not use_this_bin ) continue;
-
-			//out << "Using bin: " << i << "   " << j << "   " << k << endl;
-
-			int idx = indexer(iKT, iKphi, iKL, i, j, k);
-
-		    double q_out_local = 0.5*(qo_pts[i]+qo_pts[i+1]);
-		    double q_side_local = 0.5*(qs_pts[j]+qs_pts[j+1]);
-		    double q_long_local = 0.5*(ql_pts[k]+ql_pts[k+1]);
-
-			double correl_local = correlation_function[idx]-1.0;
-			double correl_err_local = correlation_function_error[idx];
-
-			if (correl_local < 1e-15) continue;
-
-			//bool ignore_central_point = true;
-			if ( 	ignore_central_point
-					and i==(n_qo_bins-1)/2
-					and j==(n_qs_bins-1)/2
-					and k==(n_ql_bins-1)/2)
-				continue;
-			//	correl_err_local = 1.0e10;	//ignore central point
-
-		    double sigma_k_prime = correl_err_local/correl_local;
-
-			if ( sigma_k_prime < 1e-15 )	// too small
-				continue;
-
-		    double inv_sigma_k_prime_sq = 1./(sigma_k_prime*sigma_k_prime);
-
-			qweight[0] = - 1.0;
-			qweight[1] = q_out_local*q_out_local;
-			qweight[2] = q_side_local*q_side_local;
-			qweight[3] = q_long_local*q_long_local;
+	
+			// compute results
+			lambda_Correl[indexerK(iKT, iKphi, iKL)] = exp(results[0]);
+			R2_out[indexerK(iKT, iKphi, iKL)] = results[1]*hbarC*hbarC;
+			R2_side[indexerK(iKT, iKphi, iKL)] = results[2]*hbarC*hbarC;
+			R2_long[indexerK(iKT, iKphi, iKL)] = results[3]*hbarC*hbarC;
 			if ( include_cross_terms )
 			{
-				qweight[4] = q_out_local*q_side_local;
-				qweight[5] = q_out_local*q_long_local;
-				qweight[6] = q_side_local*q_long_local;
+				R2_outside[indexerK(iKT, iKphi, iKL)] = results[4]*hbarC*hbarC;
+				R2_outlong[indexerK(iKT, iKphi, iKL)] = results[5]*hbarC*hbarC;
+				R2_sidelong[indexerK(iKT, iKphi, iKL)] = results[6]*hbarC*hbarC;
 			}
+	
+			// compute chi^2
+			double chi_sq = 0.0;
+			for (int i = 0; i < n_qo_bins; i++)
+			for (int j = 0; j < n_qs_bins; j++)
+			for (int k = 0; k < n_ql_bins; k++)
+			{
+				bool use_this_bin = true;
+				if ( use_slices_only )
+				{
+					int i_in_center = int(i==(n_qo_bins-1)/2);
+					int j_in_center = int(j==(n_qs_bins-1)/2);
+					int k_in_center = int(k==(n_ql_bins-1)/2);
+					use_this_bin = bool( i_in_center + j_in_center + k_in_center > 1 );
+				}
+				if ( not use_this_bin ) continue;
+		
+				int idx = indexer(iKT, iKphi, iKL, i, j, k);
+	
+			    double q_out_local = 0.5*(qo_pts[i]+qo_pts[i+1]);
+			    double q_side_local = 0.5*(qs_pts[j]+qs_pts[j+1]);
+			    double q_long_local = 0.5*(ql_pts[k]+ql_pts[k+1]);
+	
+				double correl_local = correlation_function[idx]-1.0;
+				double correl_err_local = correlation_function_error[idx];
+	
+				if (correl_local < 1e-15) continue;
+	
+				//bool ignore_central_point = true;
+				if ( 	ignore_central_point
+						and i==(n_qo_bins-1)/2
+						and j==(n_qs_bins-1)/2
+						and k==(n_ql_bins-1)/2)
+					continue;
+				//	correl_err_local = 1.0e10;	//ignore central point
+			    double sigma_k_prime = correl_err_local/correl_local;
+	
+				if ( sigma_k_prime < 1e-15 )	// too small
+					continue;
+	
+				double this_residual = log(correl_local) - results[0] 
+								+ results[1]*q_out_local*q_out_local 
+								+ results[2]*q_side_local*q_side_local
+								+ results[3]*q_long_local*q_long_local;
+				if ( include_cross_terms )
+					this_residual += results[4]*q_out_local*q_side_local
+										+ results[5]*q_out_local*q_long_local
+										+ results[6]*q_side_local*q_long_local;
+	
+			    chi_sq += this_residual*this_residual / (sigma_k_prime*sigma_k_prime);
+			}
+	
+			double chi_sq_per_dof = chi_sq/(data_length - dim);
+			out << "chi_sq = " << chi_sq << endl;
+			out << "Number d.o.f. = " << data_length - dim << endl;
+			out << "chi_sq/d.o.f. = " << chi_sq_per_dof << endl;
+			out << "Goodness-of-fit parameter Q = "
+				<< gsl_sf_gamma_inc_Q (0.5*(data_length - dim), 0.5*chi_sq) << endl;
+	
+			//============================================
+			// compute curvature and covariance matrices
+			double ** curvature_mat = new double * [dim];
+			double ** covariance_mat = new double * [dim];
+			for(int i = 0; i < dim; i++)
+			{
+			    curvature_mat[i] = new double [dim];
+			    covariance_mat[i] = new double [dim];
+			    for(int j = 0; j < dim; j++)
+				{
+			        curvature_mat[i][j] = 0.0;
+			        covariance_mat[i][j] = 0.0;
+				}
+			}
+	
+			//=============================
+			for (int i = 0; i < n_qo_bins; i++)
+			for (int j = 0; j < n_qs_bins; j++)
+			for (int k = 0; k < n_ql_bins; k++)
+			{
+				bool use_this_bin = true;
+				if ( use_slices_only )
+				{
+					int i_in_center = int(i==(n_qo_bins-1)/2);
+					int j_in_center = int(j==(n_qs_bins-1)/2);
+					int k_in_center = int(k==(n_ql_bins-1)/2);
+					use_this_bin = bool( i_in_center + j_in_center + k_in_center > 1 );
+				}
+				if ( not use_this_bin ) continue;
+		
+				int idx = indexer(iKT, iKphi, iKL, i, j, k);
+	
+			    double q_out_local = 0.5*(qo_pts[i]+qo_pts[i+1]);
+			    double q_side_local = 0.5*(qs_pts[j]+qs_pts[j+1]);
+			    double q_long_local = 0.5*(ql_pts[k]+ql_pts[k+1]);
+	
+				double correl_local = correlation_function[idx]-1.0;
+				double correl_err_local = correlation_function_error[idx];
+	
+				if (correl_local < 1e-15) continue;
+	
+				//bool ignore_central_point = true;
+				if ( 	ignore_central_point
+						and i==(n_qo_bins-1)/2
+						and j==(n_qs_bins-1)/2
+						and k==(n_ql_bins-1)/2)
+					continue;
+				//	correl_err_local = 1.0e10;	//ignore central point
+	
+			    double sigma_k_prime = correl_err_local/correl_local;
+	
+				if ( sigma_k_prime < 1e-15 )	// too small
+					continue;
+	
+			    double inv_sigma_k_prime_sq = 1./(sigma_k_prime*sigma_k_prime);
+	
+				qweight[0] = - 1.0;
+				qweight[1] = q_out_local*q_out_local;
+				qweight[2] = q_side_local*q_side_local;
+				qweight[3] = q_long_local*q_long_local;
+				if ( include_cross_terms )
+				{
+					qweight[4] = q_out_local*q_side_local;
+					qweight[5] = q_out_local*q_long_local;
+					qweight[6] = q_side_local*q_long_local;
+				}
+	
+				for(int ij = 0; ij < dim; ij++)
+				for(int lm = 0; lm < dim; lm++)
+			        curvature_mat[ij][lm] += qweight[ij]*qweight[lm]
+												* inv_sigma_k_prime_sq;
+			}
+	
+			//=============================
+			// covariance matrix is inverse of curvaure matrix
+			gsl_matrix_invert( curvature_mat, covariance_mat, dim );
+	
+			//=============================
+			// determine errors on fit parameters
+			// (i.e., diagonal elements of covariance matrix)
+			lambda_Correl_err[indexerK(iKT, iKphi, iKL)] = lambda_Correl[indexerK(iKT, iKphi, iKL)]*(exp(sqrt(covariance_mat[0][0]))-1);
+			R2_out_err[indexerK(iKT, iKphi, iKL)] = sqrt(covariance_mat[1][1])*hbarC*hbarC;
+			R2_side_err[indexerK(iKT, iKphi, iKL)] = sqrt(covariance_mat[2][2])*hbarC*hbarC;
+			R2_long_err[indexerK(iKT, iKphi, iKL)] = sqrt(covariance_mat[3][3])*hbarC*hbarC;
+			if ( include_cross_terms )
+			{
+				R2_outside_err[indexerK(iKT, iKphi, iKL)] = sqrt(covariance_mat[4][4])*hbarC*hbarC;
+				R2_outlong_err[indexerK(iKT, iKphi, iKL)] = sqrt(covariance_mat[5][5])*hbarC*hbarC;
+				R2_sidelong_err[indexerK(iKT, iKphi, iKL)] = sqrt(covariance_mat[6][6])*hbarC*hbarC;
+			}
+	
+			for(int i = 0; i < dim; i++)
+			{
+				delete [] T_inverse[i];
+				delete [] curvature_mat[i];
+				delete [] covariance_mat[i];
+			}
+			delete [] T_inverse;
+			delete [] curvature_mat;
+			delete [] covariance_mat;
+			delete [] results;
 
-			for(int ij = 0; ij < dim; ij++)
-			for(int lm = 0; lm < dim; lm++)
-		        curvature_mat[ij][lm] += qweight[ij]*qweight[lm]
-											* inv_sigma_k_prime_sq;
 		}
-
-		//=============================
-		// covariance matrix is inverse of curvaure matrix
-		gsl_matrix_invert( curvature_mat, covariance_mat, dim );
-
-		//=============================
-		// determine errors on fit parameters
-		// (i.e., diagonal elements of covariance matrix)
-		lambda_Correl_err[indexerK(iKT, iKphi, iKL)] = lambda_Correl[indexerK(iKT, iKphi, iKL)]*(exp(sqrt(covariance_mat[0][0]))-1);
-		R2_out_err[indexerK(iKT, iKphi, iKL)] = sqrt(covariance_mat[1][1])*hbarC*hbarC;
-		R2_side_err[indexerK(iKT, iKphi, iKL)] = sqrt(covariance_mat[2][2])*hbarC*hbarC;
-		R2_long_err[indexerK(iKT, iKphi, iKL)] = sqrt(covariance_mat[3][3])*hbarC*hbarC;
-		if ( include_cross_terms )
-		{
-			R2_outside_err[indexerK(iKT, iKphi, iKL)] = sqrt(covariance_mat[4][4])*hbarC*hbarC;
-			R2_outlong_err[indexerK(iKT, iKphi, iKL)] = sqrt(covariance_mat[5][5])*hbarC*hbarC;
-			R2_sidelong_err[indexerK(iKT, iKphi, iKL)] = sqrt(covariance_mat[6][6])*hbarC*hbarC;
-		}
-
-		for(int i = 0; i < dim; i++)
-		{
-			delete [] T_inverse[i];
-			delete [] curvature_mat[i];
-			delete [] covariance_mat[i];
-		}
-		delete [] T_inverse;
-		delete [] curvature_mat;
-		delete [] covariance_mat;
-		delete [] results;
-
 
 	}
 	else // matrix would have been singular or fit meaningless; not enough finite bins to fit parameters!
@@ -580,7 +530,6 @@ void Correlation_function::find_minimum_chisq_CFerr_full_FR( int iKT, int iKphi,
 			int i_in_center = int(i==(n_qo_bins-1)/2);
 			int j_in_center = int(j==(n_qs_bins-1)/2);
 			int k_in_center = int(k==(n_ql_bins-1)/2);
-			//use_this_bin = bool( i_in_center + j_in_center + k_in_center <= 1 );
 			use_this_bin = bool( i_in_center + j_in_center + k_in_center > 1 );
 		}
 		if ( not use_this_bin ) continue;
@@ -599,7 +548,7 @@ void Correlation_function::find_minimum_chisq_CFerr_full_FR( int iKT, int iKphi,
 		double correl_local = correlation_function[idx]-1.0;
 		double correl_err_local = correlation_function_error[idx];
 
-		if (correl_local < 1.0e-15) continue;
+		if (correl_local < 1e-15) continue;
 
 		//bool ignore_central_point = true;
 		if ( 	ignore_central_point
@@ -645,67 +594,137 @@ void Correlation_function::find_minimum_chisq_CFerr_full_FR( int iKT, int iKphi,
 
 	if ( n_usable_bins > dim )
 	{
+		out << __FILE__<< "(" << __LINE__ << "): Enough usable bins!" << endl;
+		out << __FILE__<< "(" << __LINE__ << "): iKT           = " << iKT << endl;
+		out << __FILE__<< "(" << __LINE__ << "): n_usable_bins = " << n_usable_bins << endl;
+		out << __FILE__<< "(" << __LINE__ << "): dim           = " << dim << endl;
 
-		for(int i = 0; i < dim; i++)
-		    for(int j = 0; j < dim; j++)
+
+		for (int i = 0; i < dim; i++)
+		    for (int j = 0; j < dim; j++)
 		        gsl_matrix_set(T_gsl, i, j, T[i][j]);
 
+		gsl_set_error_handler_off();
+
 		// Make LU decomposition of matrix T_gsl
-		gsl_linalg_LU_decomp (T_gsl, perm, &s_gsl);
+		int status = gsl_linalg_LU_decomp (T_gsl, perm, &s_gsl);
 		// Invert the matrix m
-		gsl_linalg_LU_invert (T_gsl, perm, T_inverse_gsl);
+		status    += gsl_linalg_LU_invert (T_gsl, perm, T_inverse_gsl);
 
-		double ** T_inverse = new double * [dim];
-		for(int i = 0; i < dim; i++)
+		gsl_set_error_handler_on();
+
+		if ( status > 0 )
 		{
-		    T_inverse[i] = new double [dim];
-		    for(int j = 0; j < dim; j++)
-		        T_inverse[i][j] = gsl_matrix_get(T_inverse_gsl, i, j);
+
+			/*err << "---------------------------------------------------------------------------------" << endl;
+			err << __FILE__<< "(" << __LINE__ << "): Failed!" << endl;
+			err << __FILE__<< "(" << __LINE__ << "): iKT           = " << iKT << endl;
+			err << __FILE__<< "(" << __LINE__ << "): n_usable_bins = " << n_usable_bins << endl;
+			err << __FILE__<< "(" << __LINE__ << "): dim           = " << dim << endl;
+	
+			err << "Matrix T passed to GSL:" << endl;
+			for (int i = 0; i < dim; i++)
+			{
+			    for (int j = 0; j < dim; j++)
+					err << T[i][j] << "   ";
+				err << endl;
+			}
+			err << endl;
+	
+			err << "Vector V passed to GSL:" << endl;
+			for (int i = 0; i < dim; i++)
+			{
+				err << V[i] << "   ";
+			}
+			err << endl << endl;
+	
+			err << "qweight:" << endl;
+			for (int i = 0; i < dim; i++)
+			{
+				err << qweight[i] << "   ";
+			}
+			err << endl << endl;
+			err << "---------------------------------------------------------------------------------" << endl;*/
+
+			// store results
+			lambda_Correl[indexerK(iKT, iKphi, iKL)] 		= 0.0;
+			R2_out[indexerK(iKT, iKphi, iKL)] 				= 0.0;
+			R2_side[indexerK(iKT, iKphi, iKL)] 				= 0.0;
+			R2_long[indexerK(iKT, iKphi, iKL)] 				= 0.0;
+			if ( include_cross_terms )
+			{
+				R2_outside[indexerK(iKT, iKphi, iKL)] 		= 0.0;
+				R2_outlong[indexerK(iKT, iKphi, iKL)] 		= 0.0;
+				R2_sidelong[indexerK(iKT, iKphi, iKL)] 		= 0.0;
+			}
+	
+			// store errors
+			lambda_Correl_err[indexerK(iKT, iKphi, iKL)] 	= 100000.0;
+			R2_out_err[indexerK(iKT, iKphi, iKL)] 			= 100000.0;
+			R2_side_err[indexerK(iKT, iKphi, iKL)] 			= 100000.0;
+			R2_long_err[indexerK(iKT, iKphi, iKL)] 			= 100000.0;
+			if ( include_cross_terms )
+			{
+				R2_outside_err[indexerK(iKT, iKphi, iKL)] 	= 100000.0;
+				R2_outlong_err[indexerK(iKT, iKphi, iKL)] 	= 100000.0;
+				R2_sidelong_err[indexerK(iKT, iKphi, iKL)] 	= 100000.0;
+			}
+
 		}
-		double * results = new double [dim];
-		for(int i = 0; i < dim; i++)
+		else
 		{
-		    results[i] = 0.0;
-		    for(int j = 0; j < dim; j++)
-		        results[i] += T_inverse[i][j]*V[j];
+			double ** T_inverse = new double * [dim];
+			for(int i = 0; i < dim; i++)
+			{
+			    T_inverse[i] = new double [dim];
+			    for(int j = 0; j < dim; j++)
+			        T_inverse[i][j] = gsl_matrix_get(T_inverse_gsl, i, j);
+			}
+			double * results = new double [dim];
+			for(int i = 0; i < dim; i++)
+			{
+			    results[i] = 0.0;
+			    for(int j = 0; j < dim; j++)
+			        results[i] += T_inverse[i][j]*V[j];
+			}
+	
+			double lambda 	= exp(results[0]);
+			double R2_o 	= results[1]*hbarC*hbarC;
+			double R2_s 	= results[2]*hbarC*hbarC;
+			double R2_l 	= results[3]*hbarC*hbarC;
+			double R2_os, R2_ol, R2_sl;
+			if ( include_cross_terms )
+			{
+				R2_os 		= results[4]*hbarC*hbarC;
+				R2_ol 		= results[5]*hbarC*hbarC;
+				R2_sl 		= results[6]*hbarC*hbarC;
+			}
+	
+			const int iK3D = indexerK(iKT, iKphi, iKL);
+	
+			//make error the value of the largest variation
+			lambda_Correl_FRerr[iK3D] 	= max( abs( lambda - lambda_Correl[iK3D] ), lambda_Correl_FRerr[iK3D] );
+			R2_out_FRerr[iK3D] 			= max( abs( R2_o - R2_out[iK3D] ), R2_out_FRerr[iK3D] );
+			R2_side_FRerr[iK3D] 		= max( abs( R2_s - R2_side[iK3D] ), R2_side_FRerr[iK3D] );
+			R2_long_FRerr[iK3D] 		= max( abs( R2_l - R2_long[iK3D] ), R2_long_FRerr[iK3D] );
+			if ( include_cross_terms )
+			{
+				R2_outside_FRerr[iK3D] 		= max( abs( R2_os - R2_outside[iK3D] ), R2_outside_FRerr[iK3D] );
+				R2_outlong_FRerr[iK3D] 		= max( abs( R2_ol - R2_outlong[iK3D] ), R2_outlong_FRerr[iK3D] );
+				R2_sidelong_FRerr[iK3D] 	= max( abs( R2_sl - R2_sidelong[iK3D] ), R2_sidelong_FRerr[iK3D] );
+			}
+	
+			//=============================
+			// clean up
+			gsl_matrix_free (T_gsl);
+			gsl_matrix_free (T_inverse_gsl);
+			gsl_permutation_free (perm);
+	
+			for(int i = 0; i < dim; i++)
+			    delete [] T_inverse[i];
+			delete [] T_inverse;
+			delete [] results;
 		}
-
-		double lambda 	= exp(results[0]);
-		double R2_o 	= results[1]*hbarC*hbarC;
-		double R2_s 	= results[2]*hbarC*hbarC;
-		double R2_l 	= results[3]*hbarC*hbarC;
-		double R2_os, R2_ol, R2_sl;
-		if ( include_cross_terms )
-		{
-			R2_os 		= results[4]*hbarC*hbarC;
-			R2_ol 		= results[5]*hbarC*hbarC;
-			R2_sl 		= results[6]*hbarC*hbarC;
-		}
-
-		const int iK3D = indexerK(iKT, iKphi, iKL);
-
-		//make error the value of the largest variation
-		lambda_Correl_FRerr[iK3D] 	= max( abs( lambda - lambda_Correl[iK3D] ), lambda_Correl_FRerr[iK3D] );
-		R2_out_FRerr[iK3D] 			= max( abs( R2_o - R2_out[iK3D] ), R2_out_FRerr[iK3D] );
-		R2_side_FRerr[iK3D] 		= max( abs( R2_s - R2_side[iK3D] ), R2_side_FRerr[iK3D] );
-		R2_long_FRerr[iK3D] 		= max( abs( R2_l - R2_long[iK3D] ), R2_long_FRerr[iK3D] );
-		if ( include_cross_terms )
-		{
-			R2_outside_FRerr[iK3D] 		= max( abs( R2_os - R2_outside[iK3D] ), R2_outside_FRerr[iK3D] );
-			R2_outlong_FRerr[iK3D] 		= max( abs( R2_ol - R2_outlong[iK3D] ), R2_outlong_FRerr[iK3D] );
-			R2_sidelong_FRerr[iK3D] 	= max( abs( R2_sl - R2_sidelong[iK3D] ), R2_sidelong_FRerr[iK3D] );
-		}
-
-		//=============================
-		// clean up
-		gsl_matrix_free (T_gsl);
-		gsl_matrix_free (T_inverse_gsl);
-		gsl_permutation_free (perm);
-
-		for(int i = 0; i < dim; i++)
-		    delete [] T_inverse[i];
-		delete [] T_inverse;
-		delete [] results;
 	}
 	/*else // matrix would have been singular or fit meaningless; not enough finite bins to fit parameters!
 	{
