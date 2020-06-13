@@ -172,14 +172,81 @@ void Correlation_function::find_minimum_chisq_correlationfunction_full(	int iKT,
 		out << __FILE__<< "(" << __LINE__ << "): dim           = " << dim << endl;
 
 
-		for(int i = 0; i < dim; i++)
-		    for(int j = 0; j < dim; j++)
+		for (int i = 0; i < dim; i++)
+		    for (int j = 0; j < dim; j++)
 		        gsl_matrix_set(T_gsl, i, j, T[i][j]);
 
 		// Make LU decomposition of matrix T_gsl
-		gsl_linalg_LU_decomp (T_gsl, perm, &s_gsl);
+		int status = gsl_linalg_LU_decomp (T_gsl, perm, &s_gsl);
 		// Invert the matrix m
-		gsl_linalg_LU_invert (T_gsl, perm, T_inverse_gsl);
+		status += gsl_linalg_LU_invert (T_gsl, perm, T_inverse_gsl);
+
+		if ( status > 0 )
+		{
+			err << "---------------------------------------------------------------------------------" << endl;
+			err << __FILE__<< "(" << __LINE__ << "): Failed!" << endl;
+			err << __FILE__<< "(" << __LINE__ << "): iKT           = " << iKT << endl;
+			err << __FILE__<< "(" << __LINE__ << "): n_usable_bins = " << n_usable_bins << endl;
+			err << __FILE__<< "(" << __LINE__ << "): dim           = " << dim << endl;
+	
+			err << "Matrix T passed to GSL:" << endl;
+			for (int i = 0; i < dim; i++)
+			{
+			    for (int j = 0; j < dim; j++)
+					err << T[i][j] << "   ";
+				err << endl;
+			}
+			err << endl;
+
+			err << "Vector V passed to GSL:" << endl;
+			for (int i = 0; i < dim; i++)
+			{
+				err << V[i] << "   ";
+			}
+			err << endl << endl;
+
+			err << "qweight:" << endl;
+			for (int i = 0; i < dim; i++)
+			{
+				err << qweight[i] << "   ";
+			}
+			err << endl << endl;
+
+			err << "Miscellaneous:" << endl;
+			err << "q_out_local              = " << q_out_local << endl;
+			err << "q_side_local             = " << q_side_local << endl;
+			err << "q_long_local             = " << q_long_local << endl;
+			err << "log_correl_over_sigma_sq = " << log_correl_over_sigma_sq << endl;
+			err << "inv_sigma_k_prime_sq     = " << inv_sigma_k_prime_sq << endl;
+			err << "---------------------------------------------------------------------------------" << endl;
+
+
+			// store results
+			lambda_Correl[indexerK(iKT, iKphi, iKL)] 		= 0.0;
+			R2_out[indexerK(iKT, iKphi, iKL)] 				= 0.0;
+			R2_side[indexerK(iKT, iKphi, iKL)] 				= 0.0;
+			R2_long[indexerK(iKT, iKphi, iKL)] 				= 0.0;
+			if ( include_cross_terms )
+			{
+				R2_outside[indexerK(iKT, iKphi, iKL)] 		= 0.0;
+				R2_outlong[indexerK(iKT, iKphi, iKL)] 		= 0.0;
+				R2_sidelong[indexerK(iKT, iKphi, iKL)] 		= 0.0;
+			}
+	
+			// store errors
+			lambda_Correl_err[indexerK(iKT, iKphi, iKL)] 	= 100000.0;
+			R2_out_err[indexerK(iKT, iKphi, iKL)] 			= 100000.0;
+			R2_side_err[indexerK(iKT, iKphi, iKL)] 			= 100000.0;
+			R2_long_err[indexerK(iKT, iKphi, iKL)] 			= 100000.0;
+			if ( include_cross_terms )
+			{
+				R2_outside_err[indexerK(iKT, iKphi, iKL)] 	= 100000.0;
+				R2_outlong_err[indexerK(iKT, iKphi, iKL)] 	= 100000.0;
+				R2_sidelong_err[indexerK(iKT, iKphi, iKL)] 	= 100000.0;
+			}
+
+			break;	
+		}
 
 		double ** T_inverse = new double * [dim];
 		for(int i = 0; i < dim; i++)
