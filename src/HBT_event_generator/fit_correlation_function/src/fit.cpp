@@ -101,8 +101,8 @@ void Correlation_function::find_minimum_chisq_correlationfunction_full(	int iKT,
 			int i_in_center = int(i==(n_qo_bins-1)/2);
 			int j_in_center = int(j==(n_qs_bins-1)/2);
 			int k_in_center = int(k==(n_ql_bins-1)/2);
-			//use_this_bin = bool( i_in_center + j_in_center + k_in_center <= 1 );
-			use_this_bin = bool( i_in_center + j_in_center + k_in_center > 1 );
+			use_this_bin = bool( i_in_center + j_in_center + k_in_center <= 1 );
+			//use_this_bin = bool( i_in_center + j_in_center + k_in_center > 1 );
 		}
 		if ( not use_this_bin ) continue;
 
@@ -214,8 +214,8 @@ void Correlation_function::find_minimum_chisq_correlationfunction_full(	int iKT,
 				int i_in_center = int(i==(n_qo_bins-1)/2);
 				int j_in_center = int(j==(n_qs_bins-1)/2);
 				int k_in_center = int(k==(n_ql_bins-1)/2);
-				//use_this_bin = bool( i_in_center + j_in_center + k_in_center <= 1 );
-				use_this_bin = bool( i_in_center + j_in_center + k_in_center > 1 );
+				use_this_bin = bool( i_in_center + j_in_center + k_in_center <= 1 );
+				//use_this_bin = bool( i_in_center + j_in_center + k_in_center > 1 );
 			}
 			if ( not use_this_bin ) continue;
 
@@ -287,8 +287,8 @@ void Correlation_function::find_minimum_chisq_correlationfunction_full(	int iKT,
 				int i_in_center = int(i==(n_qo_bins-1)/2);
 				int j_in_center = int(j==(n_qs_bins-1)/2);
 				int k_in_center = int(k==(n_ql_bins-1)/2);
-				//use_this_bin = bool( i_in_center + j_in_center + k_in_center <= 1 );
-				use_this_bin = bool( i_in_center + j_in_center + k_in_center > 1 );
+				use_this_bin = bool( i_in_center + j_in_center + k_in_center <= 1 );
+				//use_this_bin = bool( i_in_center + j_in_center + k_in_center > 1 );
 			}
 			if ( not use_this_bin ) continue;
 
@@ -463,8 +463,8 @@ void Correlation_function::find_minimum_chisq_CFerr_full_FR( int iKT, int iKphi,
 			int i_in_center = int(i==(n_qo_bins-1)/2);
 			int j_in_center = int(j==(n_qs_bins-1)/2);
 			int k_in_center = int(k==(n_ql_bins-1)/2);
-			//use_this_bin = bool( i_in_center + j_in_center + k_in_center <= 1 );
-			use_this_bin = bool( i_in_center + j_in_center + k_in_center > 1 );
+			use_this_bin = bool( i_in_center + j_in_center + k_in_center <= 1 );
+			//use_this_bin = bool( i_in_center + j_in_center + k_in_center > 1 );
 		}
 		if ( not use_this_bin ) continue;
 
