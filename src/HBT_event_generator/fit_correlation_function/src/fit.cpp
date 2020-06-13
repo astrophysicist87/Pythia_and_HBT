@@ -114,7 +114,7 @@ void Correlation_function::find_minimum_chisq_correlationfunction_full(	int iKT,
 		double correl_local = correlation_function[idx]-1.0;
 		double correl_err_local = correlation_function_error[idx];
 
-		if (correl_local < 1.0e-15) continue;
+		if (correl_local < 1e-15) continue;
 
 		//bool ignore_central_point = true;
 		if ( 	ignore_central_point
@@ -365,6 +365,7 @@ void Correlation_function::find_minimum_chisq_correlationfunction_full(	int iKT,
 	}
 	else // matrix would have been singular or fit meaningless; not enough finite bins to fit parameters!
 	{
+		err << __FILE__<< "(" << __LINE__ << "): Not enough usable bins!" << endl;
 		// store results
 		lambda_Correl[indexerK(iKT, iKphi, iKL)] 		= 0.0;
 		R2_out[indexerK(iKT, iKphi, iKL)] 				= 0.0;
