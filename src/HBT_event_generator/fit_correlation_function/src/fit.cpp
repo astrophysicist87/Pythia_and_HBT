@@ -77,7 +77,7 @@ void Correlation_function::find_minimum_chisq_correlationfunction_full(	int iKT,
     double * V = new double [dim];
     double * qweight = new double [dim];
     double ** T = new double * [dim];
-    for(int i = 0; i < dim; i++)
+    for (int i = 0; i < dim; i++)
     {
         V[i] = 0.0;
         T[i] = new double [dim];
@@ -101,10 +101,12 @@ void Correlation_function::find_minimum_chisq_correlationfunction_full(	int iKT,
 			int i_in_center = int(i==(n_qo_bins-1)/2);
 			int j_in_center = int(j==(n_qs_bins-1)/2);
 			int k_in_center = int(k==(n_ql_bins-1)/2);
-			use_this_bin = bool( i_in_center + j_in_center + k_in_center <= 1 );
-			//use_this_bin = bool( i_in_center + j_in_center + k_in_center > 1 );
+			//use_this_bin = bool( i_in_center + j_in_center + k_in_center <= 1 );
+			use_this_bin = bool( i_in_center + j_in_center + k_in_center > 1 );
 		}
 		if ( not use_this_bin ) continue;
+
+		out << "Using bin(" << __LINE__ << "): " << i << "   " << j << "   " << k << endl;
 
 		int idx = indexer(iKT, iKphi, iKL, i, j, k);
 
@@ -143,16 +145,16 @@ void Correlation_function::find_minimum_chisq_correlationfunction_full(	int iKT,
 			qweight[6] = q_side_local*q_long_local;
 		}
 
-        for(int ij = 0; ij < dim; ij++)
+        for (int ij = 0; ij < dim; ij++)
         {
             V[ij] += qweight[ij]*log_correl_over_sigma_sq;
             T[0][ij] += qweight[ij]*inv_sigma_k_prime_sq;
         }
 
-        for(int ij = 1; ij < dim; ij++)
+        for (int ij = 1; ij < dim; ij++)
             T[ij][0] = T[0][ij];
             
-        for(int ij = 1; ij < dim; ij++)
+        for (int ij = 1; ij < dim; ij++)
         {
             for(int lm = 1; lm < dim; lm++)
                 T[ij][lm] += -qweight[ij]*qweight[lm]*inv_sigma_k_prime_sq;
@@ -214,10 +216,12 @@ void Correlation_function::find_minimum_chisq_correlationfunction_full(	int iKT,
 				int i_in_center = int(i==(n_qo_bins-1)/2);
 				int j_in_center = int(j==(n_qs_bins-1)/2);
 				int k_in_center = int(k==(n_ql_bins-1)/2);
-				use_this_bin = bool( i_in_center + j_in_center + k_in_center <= 1 );
-				//use_this_bin = bool( i_in_center + j_in_center + k_in_center > 1 );
+				//use_this_bin = bool( i_in_center + j_in_center + k_in_center <= 1 );
+				use_this_bin = bool( i_in_center + j_in_center + k_in_center > 1 );
 			}
 			if ( not use_this_bin ) continue;
+
+			out << "Using bin(" << __LINE__ << "): " << i << "   " << j << "   " << k << endl;
 
 			int idx = indexer(iKT, iKphi, iKL, i, j, k);
 
@@ -228,7 +232,7 @@ void Correlation_function::find_minimum_chisq_correlationfunction_full(	int iKT,
 			double correl_local = correlation_function[idx]-1.0;
 			double correl_err_local = correlation_function_error[idx];
 
-			if (correl_local < 1.0e-15) continue;
+			if (correl_local < 1e-15) continue;
 
 			//bool ignore_central_point = true;
 			if ( 	ignore_central_point
@@ -287,10 +291,12 @@ void Correlation_function::find_minimum_chisq_correlationfunction_full(	int iKT,
 				int i_in_center = int(i==(n_qo_bins-1)/2);
 				int j_in_center = int(j==(n_qs_bins-1)/2);
 				int k_in_center = int(k==(n_ql_bins-1)/2);
-				use_this_bin = bool( i_in_center + j_in_center + k_in_center <= 1 );
-				//use_this_bin = bool( i_in_center + j_in_center + k_in_center > 1 );
+				//use_this_bin = bool( i_in_center + j_in_center + k_in_center <= 1 );
+				use_this_bin = bool( i_in_center + j_in_center + k_in_center > 1 );
 			}
 			if ( not use_this_bin ) continue;
+
+			out << "Using bin: " << i << "   " << j << "   " << k << endl;
 
 			int idx = indexer(iKT, iKphi, iKL, i, j, k);
 
@@ -301,7 +307,7 @@ void Correlation_function::find_minimum_chisq_correlationfunction_full(	int iKT,
 			double correl_local = correlation_function[idx]-1.0;
 			double correl_err_local = correlation_function_error[idx];
 
-			if(correl_local < 1.0e-15) continue;
+			if (correl_local < 1e-15) continue;
 
 			//bool ignore_central_point = true;
 			if ( 	ignore_central_point
@@ -463,8 +469,8 @@ void Correlation_function::find_minimum_chisq_CFerr_full_FR( int iKT, int iKphi,
 			int i_in_center = int(i==(n_qo_bins-1)/2);
 			int j_in_center = int(j==(n_qs_bins-1)/2);
 			int k_in_center = int(k==(n_ql_bins-1)/2);
-			use_this_bin = bool( i_in_center + j_in_center + k_in_center <= 1 );
-			//use_this_bin = bool( i_in_center + j_in_center + k_in_center > 1 );
+			//use_this_bin = bool( i_in_center + j_in_center + k_in_center <= 1 );
+			use_this_bin = bool( i_in_center + j_in_center + k_in_center > 1 );
 		}
 		if ( not use_this_bin ) continue;
 
