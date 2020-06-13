@@ -212,12 +212,12 @@ void Correlation_function::find_minimum_chisq_correlationfunction_full(	int iKT,
 			}
 			err << endl << endl;
 
-			err << "Miscellaneous:" << endl;
+			/*err << "Miscellaneous:" << endl;
 			err << "q_out_local              = " << q_out_local << endl;
 			err << "q_side_local             = " << q_side_local << endl;
 			err << "q_long_local             = " << q_long_local << endl;
 			err << "log_correl_over_sigma_sq = " << log_correl_over_sigma_sq << endl;
-			err << "inv_sigma_k_prime_sq     = " << inv_sigma_k_prime_sq << endl;
+			err << "inv_sigma_k_prime_sq     = " << inv_sigma_k_prime_sq << endl;*/
 			err << "---------------------------------------------------------------------------------" << endl;
 
 
