@@ -338,7 +338,7 @@ bool BoseEinstein::shiftEvent( Event& event )
 	for ( auto & pHad : hadronBE )
 	{
 		// boost p and x only; pShift = pComp = (0,0,0,0).
-		hadronBE[i].p.bstback( pHadSum );
+		pHad.p.bstback( pHadSum );
 	}
 	
 	for (int iSpecies = 0; iSpecies < 9; ++iSpecies)
