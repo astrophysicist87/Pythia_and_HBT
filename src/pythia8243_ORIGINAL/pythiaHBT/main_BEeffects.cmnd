@@ -1,0 +1,8 @@
+Fragmentation:setVertices = on
+PartonVertex:setVertex = off
+HadronLevel:BoseEinstein = on
+BoseEinstein:QRef = 0.2
+ColourReconnection:reconnect = on
+Ropewalk:RopeHadronization = off
+Ropewalk:doShoving = off
+Ropewalk:doFlavour = off
