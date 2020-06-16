@@ -306,6 +306,9 @@ bool BoseEinstein::shiftEvent( Event& event )
 	// Start timing	
 	auto start = std::chrono::system_clock::now();
 
+	// Record total 4-momentum of hadrons to be shifted.
+	Vec4 pHadSum;
+
 	// Loop over all hadron species with BE effects.
 	nStored[0] = 0;
 	for (int iSpecies = 0; iSpecies < 9; ++iSpecies)
@@ -317,7 +320,7 @@ bool BoseEinstein::shiftEvent( Event& event )
 		
 		// Properties of current hadron species.
 		int idNow = IDHADRON[ iSpecies ];
-		int iTab  = ITABLE[ iSpecies ];
+		//int iTab  = ITABLE[ iSpecies ];
 		
 		// Loop through event record to store copies of current species.
 		for (int i = 0; i < event.size(); ++i)
@@ -326,8 +329,27 @@ bool BoseEinstein::shiftEvent( Event& event )
 				//cout << "check particles: " << idNow << "   " << i << "   " << event[i].m() << "   " << event[i].p();
 				//cout << "check particles (cont): " << idNow << "   " << i << "   " << event[i].vProd();
 				hadronBE.push_back( BoseEinsteinHadron( idNow, i, event[i].p(), event[i].m(), event[i].vProd() ) );
+				pHadSum += event[i].p();
 			}
 		nStored[iSpecies + 1] = hadronBE.size();
+	}
+
+	// Boost to frame where 4-momentum of hadrons to be shifted vanishes.
+	for ( auto & pHad : hadronBE )
+	{
+		// boost p and x only; pShift = pComp = (0,0,0,0).
+		hadronBE[i].p.bstback( pHadSum );
+	}
+	
+	for (int iSpecies = 0; iSpecies < 9; ++iSpecies)
+	{
+		if (!doPion and iSpecies <= 2) continue;
+		if (!doKaon and iSpecies >= 3 and iSpecies <= 6) continue;
+		if (!doEta  and iSpecies >= 7) continue;
+		
+		// Properties of current hadron species.
+		//int idNow = IDHADRON[ iSpecies ];
+		int iTab  = ITABLE[ iSpecies ];
 				
 		// ======================================================
 		// Define these to estimate pair shift using pair density
@@ -378,7 +400,7 @@ bool BoseEinstein::shiftEvent( Event& event )
 	constexpr bool check_for_bad_events = true;
 
 
-	if ( compensation_version_to_use == 0 )
+	if ( compensation_version_to_use == 0 or compensation_version_to_use == 3 )
 	{
 		Vec4 pSumOriginal, pSumShifted, pDiffByComp;
 		for ( auto & pHad : hadronBE )
@@ -403,6 +425,23 @@ bool BoseEinstein::shiftEvent( Event& event )
 				and iStep < NCOMPSTEP )
 		{
 			++iStep;
+			///*
+			if ( compensation_version_to_use == 3 )
+			{
+			    double eFactor   = eSumOriginal / eSumShifted;
+			    eSumShifted      = 0.;
+			    eDiffByComp      = 0.;
+				pSumShifted      = Vec4(0.0, 0.0, 0.0, 0.0);
+			    for ( auto & pHad : hadronBE )
+				{
+					pHad.p *= eFactor;
+					pHad.p.e( sqrt( pHad.p.pAbs2() + pHad.m2 ) );
+					eSumShifted   += pHad.p.e();
+					pSumShifted   += pHad.p;
+					eDiffByComp   += dot3( pHad.pComp, pHad.p) / pHad.p.e();
+			    }
+			}
+			//*/
 			double compFac   = (eSumOriginal - eSumShifted) / eDiffByComp;
 			eSumShifted      = 0.;
 			eDiffByComp      = 0.;
@@ -413,7 +452,7 @@ bool BoseEinstein::shiftEvent( Event& event )
 				pHad.p.e( sqrt( pHad.p.pAbs2() + pHad.m2 ) );
 				eSumShifted += pHad.p.e();
 				pSumShifted += pHad.p;
-				eDiffByComp  += dot3( pHad.pComp, pHad.p ) / pHad.p.e();	//ORIGINAL
+				eDiffByComp += dot3( pHad.pComp, pHad.p ) / pHad.p.e();	//ORIGINAL
 			}
 		//cout << "CHECK (" << iStep << "): pSumShifted = " << pSumShifted;
 		}
@@ -580,6 +619,16 @@ bool BoseEinstein::shiftEvent( Event& event )
 	}
 //if (1) exit (8);
 
+	/*// Check 4-momentum conservation
+	Vec4 pHadSumFinal;
+	for ( auto & pHad : hadronBE )
+		pHadSumFinal += pHad.p;
+	cout << "-------------------------------------------------" << endl;
+	cout << "| Check pHadSum      = " << pHadSum;
+	cout << "| Check pHadSumFinal = " << pHadSumFinal;
+	cout << "-------------------------------------------------" << endl;
+	*/
+
 	
 	// Error if no convergence, and then return without doing BE shift.
 	// However, not grave enough to kill event, so return true.
@@ -607,6 +656,25 @@ bool BoseEinstein::shiftEvent( Event& event )
              << COMPRELERR * eSumOriginal << "\n";
 		infoPtr->setBECShifts( true );
 	}
+
+	///*
+	// Boost back to lab frame
+	for ( auto & pHad : hadronBE )
+	{
+		// only need to boost p back
+		pHad.p.bst( pHadSum );
+	}
+
+	// Check 4-momentum conservation
+	Vec4 pHadSumFinal;
+	for ( auto & pHad : hadronBE )
+		pHadSumFinal += pHad.p;
+
+	cout << "-------------------------------------------------" << endl;
+	cout << "| Check pHadSum      = " << pHadSum;
+	cout << "| Check pHadSumFinal = " << pHadSumFinal;
+	cout << "-------------------------------------------------" << endl;
+	//*/
 		
 	// Store new particle copies with shifted momenta.
 	for ( auto & pHad : hadronBE )
