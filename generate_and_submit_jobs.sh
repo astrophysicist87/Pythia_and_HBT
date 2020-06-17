@@ -3,7 +3,7 @@
 (
 	# info for this run
 	NTHREADS=64
-	DIRECTORY=results_egan_PbPb2760_newRescaleMomenta
+	DIRECTORY=results_lema_PbPb2760_newRescaleMomenta
 	NICENESS=19
 
 	# Set job specifications here
