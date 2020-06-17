@@ -33,7 +33,7 @@ const double BoseEinstein::Q2MIN     = 1e-8;
 // relative energy error, iterative stepsize, and number of iterations.
 const double BoseEinstein::COMPRELERR = 1e-10;
 const double BoseEinstein::COMPFACMAX = 1000.;
-const int    BoseEinstein::NCOMPSTEP  = 100;
+const int    BoseEinstein::NCOMPSTEP  = 10;
 
 //--------------------------------------------------------------------------
 
@@ -201,7 +201,7 @@ vector<Vec4> unshifted_momenta, shifted_momenta;
     && abs(eSumShifted - eSumOriginal) < COMPFACMAX * abs(eDiffByComp)
     && iStep < NCOMPSTEP ) {
     ++iStep;
-	///*
+	/*
     double eFactor   = eSumOriginal / eSumShifted;
     eSumShifted      = 0.;
     eDiffByComp      = 0.;
@@ -214,7 +214,7 @@ vector<Vec4> unshifted_momenta, shifted_momenta;
       eDiffByComp   += dot3( hadronBE[i].pComp, hadronBE[i].p)
                        / hadronBE[i].p.e();
     }
-	//*/
+	*/
     double compFac   = (eSumOriginal - eSumShifted) / eDiffByComp;
     eSumShifted      = 0.;
     eDiffByComp      = 0.;
@@ -246,6 +246,8 @@ vector<Vec4> unshifted_momenta, shifted_momenta;
   if ( abs(eSumShifted - eSumOriginal) > COMPRELERR * eSumOriginal ) {
     infoPtr->errorMsg("Warning in BoseEinstein::shiftEvent: "
       "no consistent BE shift topology found, so skip BE");
+cout << "Warning in BoseEinstein::shiftEvent: "
+      "no consistent BE shift topology found, so skip BE" << endl;
     return true;
   }
 
@@ -270,14 +272,14 @@ vector<Vec4> unshifted_momenta, shifted_momenta;
 	cout << "-------------------------------------------------" << endl;
 	//*/
 
-	cout << "-------------------------------------------------" << endl;
+	/*cout << "-------------------------------------------------" << endl;
 	for (int i = 0; i < nStored[9]; ++i)
 	{
 		cout << "| BEFORE: " << unshifted_momenta[i];
 		cout << "| AFTER:  " << shifted_momenta[i];
 		cout << "|" << endl;
 	}
-	cout << "-------------------------------------------------" << endl;
+	cout << "-------------------------------------------------" << endl;*/
 
 
   // Store new particle copies with shifted momenta.
