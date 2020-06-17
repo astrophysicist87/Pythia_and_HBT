@@ -195,8 +195,8 @@ vector<Vec4> unshifted_momenta, shifted_momenta;
 
   // Iterate compensation shift until convergence.
   int iStep = 0;
-  cout << "CHECK: pSumOriginal = " << pSumOriginal;
-  cout << "CHECK (" << iStep << "): pSumShifted = " << pSumShifted;
+  //cout << "CHECK: pSumOriginal = " << pSumOriginal;
+  //cout << "CHECK (" << iStep << "): pSumShifted = " << pSumShifted;
   while ( abs(eSumShifted - eSumOriginal) > COMPRELERR * eSumOriginal
     && abs(eSumShifted - eSumOriginal) < COMPFACMAX * abs(eDiffByComp)
     && iStep < NCOMPSTEP ) {
@@ -227,17 +227,17 @@ vector<Vec4> unshifted_momenta, shifted_momenta;
       eDiffByComp   += dot3( hadronBE[i].pComp, hadronBE[i].p)
                        / hadronBE[i].p.e();
     }
-  cout << "CHECK (" << iStep << "): pSumShifted = " << pSumShifted;
+  //cout << "CHECK (" << iStep << "): pSumShifted = " << pSumShifted;
   }
 
 	// Check 4-momentum conservation
 	Vec4 pHadSumFinal;
 	for (int i = 0; i < nStored[9]; ++i)
 		pHadSumFinal += hadronBE[i].p;
-	cout << "-------------------------------------------------" << endl;
+	/*cout << "-------------------------------------------------" << endl;
 	cout << "| Check pHadSum      = " << pHadSum;
 	cout << "| Check pHadSumFinal = " << pHadSumFinal;
-	cout << "-------------------------------------------------" << endl;
+	cout << "-------------------------------------------------" << endl;*/
 	//*/
 
 
@@ -266,10 +266,10 @@ cout << "Warning in BoseEinstein::shiftEvent: "
 		pHadSumFinal += hadronBE[i].p;
 		shifted_momenta.push_back( hadronBE[i].p );
 	}
-	cout << "-------------------------------------------------" << endl;
+	/*cout << "-------------------------------------------------" << endl;
 	cout << "| Check pHadSum      = " << pHadSum;
 	cout << "| Check pHadSumFinal = " << pHadSumFinal;
-	cout << "-------------------------------------------------" << endl;
+	cout << "-------------------------------------------------" << endl;*/
 	//*/
 
 	/*cout << "-------------------------------------------------" << endl;
