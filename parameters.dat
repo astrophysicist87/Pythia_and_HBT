@@ -82,12 +82,18 @@ KLmax 											= 1.0
 
 # --
 # relative momenta (3D)
-n_qo_pts 										= 32
-n_qs_pts 										= 32
-n_ql_pts 										= 32
-delta_qo 										= 0.04
-delta_qs 										= 0.04
-delta_ql 										= 0.04
+n_qo_pts 										= 52
+n_qs_pts 										= 52
+n_ql_pts 										= 52
+delta_qo 										= 0.005
+delta_qs 										= 0.005
+delta_ql 										= 0.005
+#n_qo_pts 										= 32
+#n_qs_pts 										= 32
+#n_ql_pts 										= 32
+#delta_qo 										= 0.04
+#delta_qs 										= 0.04
+#delta_ql 										= 0.04
 
 # --
 # relative momentum (1D)
@@ -191,7 +197,7 @@ include_cross_terms 							= 0
 # --
 # whether to include full CF
 # or only CF along axes in fit
-use_slices_only 								= 1
+use_slices_only 								= 0
 
 # --
 # whether to include full CF

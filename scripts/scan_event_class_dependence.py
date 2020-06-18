@@ -8,10 +8,10 @@ GeVToMeV = 1000.0
 columnLabels = ['dNdeta','KT',\
                 'lambda','R2o','R2s','R2l',\
                 'err(lambda)','err(R2o)','err(R2s)','err(R2l)']
-#multLabels = [r'$N_{ch}=1-11$', r'$N_{ch}=12-16$', r'$N_{ch}=17-22$', \
-#              r'$N_{ch}=23-28$', r'$N_{ch}=29-34$', r'$N_{ch}=35-41$', \
-#              r'$N_{ch}=42-51$', r'$N_{ch}=52-151$', r'$N_{ch}=152-\infty$']
-multLabels = [r'$0-100\%$']
+multLabels = [r'$N_{ch}=1-11$', r'$N_{ch}=12-16$', r'$N_{ch}=17-22$', \
+              r'$N_{ch}=23-28$', r'$N_{ch}=29-34$', r'$N_{ch}=35-41$', \
+              r'$N_{ch}=42-51$', r'$N_{ch}=52-151$', r'$N_{ch}=152-\infty$']
+#multLabels = [r'$0-100\%$']
 #KTLabels = [r'$K_T=0-100$ MeV', r'$K_T=100-200$ MeV', r'$K_T=200-300$ MeV', \
 #            r'$K_T=300-400$ MeV', r'$K_T=400-500$ MeV', r'$K_T=500-600$ MeV', \
 #            r'$K_T=600-700$ MeV', r'$K_T=700-800$ MeV']
@@ -50,7 +50,8 @@ def get_dNchdeta_and_R2i_data(directory):
 def get_dNchdeta_and_CF_data(directory):
     nMult = len(multLabels)
     #nq = 31
-    nq = 63
+    nq = 51
+    #nq = 63
     nKT = len(KTLabels)
     mean_dNchdeta = get_event_class_mean_dNchdeta(directory)
     CF_vs_KT = np.loadtxt(directory + '/CF_results/HBT_pipiCF.dat', usecols=(0,3,4,5,10,11))

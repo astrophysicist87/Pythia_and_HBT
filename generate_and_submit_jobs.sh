@@ -3,13 +3,13 @@
 (
 	# info for this run
 	NTHREADS=64
-	DIRECTORY=results_lema_PbPb2760_newRescaleMomenta
+	DIRECTORY=results_pp_7TeV_Nev60000000
 	NICENESS=19
 
 	# Set job specifications here
-	#declare -a class_ranges=("1-11" "12-16" "17-22" "23-28" "29-34" "35-41" "42-51" "52-151" "152-1000000")
+	declare -a class_ranges=("1-11" "12-16" "17-22" "23-28" "29-34" "35-41" "42-51" "52-151" "152-1000000")
 	#declare -a class_ranges=("0-5%" "5-10%" "10-20%" "20-30%" "30-40%" "40-60%" "60-100%")
-	declare -a class_ranges=("0-100%")
+	#declare -a class_ranges=("0-100%")
 	declare -a specs=(
 		##############
 		#blixen
@@ -30,9 +30,9 @@
 		#'projectile="p" target="p" beamEnergy="7000" Nevents=10000000 BEeffects="on" BEEnhancementMode="0" QRefValue="0.15"'
 		#'projectile="p" target="p" beamEnergy="7000" Nevents=10000000 BEeffects="on" BEEnhancementMode="0" QRefValue="0.2"'
 		#'projectile="p" target="p" beamEnergy="7000" Nevents=10000000 BEeffects="on" BEEnhancementMode="0" useDistribution="on"'
-		#'projectile="p" target="p" beamEnergy="7000" Nevents=60000000 eventClassSelectionMode="multiplicity"'
-		'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=10000 BEeffects="on" BEEnhancementMode="0"'
-		'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=10000 BEeffects="on" BEEnhancementMode="0" useDistribution="on"'
+		'projectile="p" target="p" beamEnergy="7000" Nevents=60000000 eventClassSelectionMode="multiplicity"'
+		#'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=10000 BEeffects="on" BEEnhancementMode="0"'
+		#'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=10000 BEeffects="on" BEEnhancementMode="0" useDistribution="on"'
 		#'projectile="p" target="p" beamEnergy="7000" Nevents=1000'
 		##############
 		#lema
