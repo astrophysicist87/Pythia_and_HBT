@@ -105,6 +105,7 @@ bool BoseEinstein::init(Info* infoPtrIn, Settings& settings,
   int shiftingSet                 = settings.mode("BoseEinstein:shiftingSet");
   int compensationSet             = settings.mode("BoseEinstein:compensationSet");
   int compensationMode            = settings.mode("BoseEinstein:compensationMode");
+  compensationVersion             = settings.mode("BoseEinstein:compensationVersion");
 
   rescale_pair_momenta            =  ( compensationMode == 1 );
 
@@ -394,7 +395,8 @@ bool BoseEinstein::shiftEvent( Event& event )
 	double eSumOriginal = 0.;
 	double eSumShifted  = 0.;
 	double eDiffByComp  = 0.;
-	constexpr int compensation_version_to_use = 3;
+	//constexpr int compensation_version_to_use = 3;
+	int compensation_version_to_use = compensationVersion;
 
 	constexpr bool perform_compensation = true;
 	constexpr bool check_for_bad_events = true;

@@ -95,6 +95,7 @@ collisionSystemStem=$projectile$target"_"`echo $beamEnergy`"GeV_Nev"$Nevents
 		echo 'BoseEinstein:shiftingSet ='                 $shiftingSet                  >> $PYTHIA_CMND_FILE
 		echo 'BoseEinstein:compensationSet ='             $compensationSet              >> $PYTHIA_CMND_FILE
 		echo 'BoseEinstein:compensationMode ='            $compensationMode             >> $PYTHIA_CMND_FILE
+		echo 'BoseEinstein:compensationVersion ='         $compensationVersion          >> $PYTHIA_CMND_FILE
 
 		# Default is now to compute all events in Pythia from the get-go
 		lowerLimit=0

@@ -198,6 +198,17 @@ How to perform compensation:
 0 - take pComp from same pDiff as used for shifting
 1 - rescale pair momenta
 </mode> 
+
+
+<mode name="BoseEinstein:compensationVersion" default="0" min="0" max="3"> 
+How to perform compensation:
+0 - default compensation; no global translation or rescaling
+1 - global translation with compensation, spread evenly among shifted particles
+2 - global translation with compensation, spread proportionately among shifted particles
+3 - global rescaling with compensation of shifted particles
+</mode>
+
+
  
 </chapter> 
  

@@ -228,7 +228,8 @@ int main(int argc, char *argv[])
 	std::unordered_map<int, int> HBT_particle_IDs;
 	HBT_particle_IDs.insert ( { { chosen_HBT_particle_ID, 0 } } );
 
-	// Some Bose-Einstein options (add to *.cmnd file eventually)
+	/*
+	// Some Bose-Einstein options
 	bool useInvariantSourceSize             = false;     // Lorentz-invariant size vs. spatial size only
 	bool useDistribution                    = false;     // Estimate QRef vs. take as input parameter
 	bool useRelativeDistance                = true;     // Use relative distances or absolute sizes
@@ -237,9 +238,11 @@ int main(int argc, char *argv[])
 	bool linearInterpolateCDF				= false;     // Estimate pair density via linear interpolation
 	bool computeBEEnhancementExactly		= false;     // Whether to evaluate BE enhancement approximately or exactly
 
-	int shiftingSet      = 1;
-	int compensationSet  = 0;
-	int compensationMode = 1;
+	int shiftingSet         = 1;
+	int compensationSet     = 0;
+	int compensationMode    = 1;
+	int compensationVersion = 0;
+	*/
 
 	//if ( momentum_space_modifications )
 	//	cout << "Using momentum space modifications!" << endl;
@@ -404,7 +407,8 @@ int main(int argc, char *argv[])
  			pythia.readString("Random:seed = -1");
 		}*/
 
-
+		// SET DEFAULTS ONLY FROM DEFAULTS.SH NOW
+		/*
 		//----------------------------------------------
 		// N.B.: THESE OPTIONS MAY BE OVERWRITTEN BY
 		//       OPTIONS PASSED IN THROUGH *.CMND FILES.
@@ -416,9 +420,11 @@ int main(int argc, char *argv[])
 		pythia.readString("BoseEinstein:linearInterpolateCDF = "        + boolean_toggle[linearInterpolateCDF]);
 		pythia.readString("BoseEinstein:computeBEEnhancementExactly = " + boolean_toggle[computeBEEnhancementExactly]);
 
-		pythia.readString("BoseEinstein:shiftingSet = "      + std::to_string(shiftingSet));
-		pythia.readString("BoseEinstein:compensationSet = "  + std::to_string(compensationSet));
-		pythia.readString("BoseEinstein:compensationMode = " + std::to_string(compensationMode));
+		pythia.readString("BoseEinstein:shiftingSet = "         + std::to_string(shiftingSet));
+		pythia.readString("BoseEinstein:compensationSet = "     + std::to_string(compensationSet));
+		pythia.readString("BoseEinstein:compensationMode = "    + std::to_string(compensationMode));
+		pythia.readString("BoseEinstein:compensationVersion = " + std::to_string(compensationVersion));
+		*/
 
 
 		// For now.
@@ -610,6 +616,7 @@ int main(int argc, char *argv[])
 
 	// Loop over events and OpenMP threads.
 	int iEvent = 0;
+	int n_attempted_events = 0;
 	#pragma omp parallel for
 	for (int iThread = 0; iThread < omp_get_max_threads(); iThread++)
 	{
@@ -629,7 +636,7 @@ int main(int argc, char *argv[])
 			// Generate next Pythia event in this thread.
 			if ( not pythia.next() )
 			{
-				cout << "Event generation failed for some reason!  Continuing!" << endl;
+				//cout << "Event generation failed for some reason!  Continuing!" << endl;
 				continue;
 			}
 			//else
@@ -641,7 +648,12 @@ int main(int argc, char *argv[])
 			if ( momentum_space_modifications
 					and not pythia.info.hasBECShifts() )
 			{
-				//cout << "WARNING: event not shifted correctly!  Trying again..." << endl;
+				#pragma omp critical (shiftFail)
+				{
+					cout << "WARNING: " << ++n_attempted_events << "th "
+                            "attempted event not shifted correctly!  "
+                            "Trying again..." << endl;
+				}
 				//cout << "WARNING: momentum_space_modifications = " << momentum_space_modifications << endl;
 				//cout << "WARNING: pythia.info.hasBECShifts() = " << pythia.info.hasBECShifts() << endl;
 //if (1) exit(8);
@@ -788,7 +800,7 @@ if (false)
 			if ( pion_multiplicity_absEta_lt_1_2 < 2 ) continue;
 
 
-			#pragma omp critical
+			#pragma omp critical (outputRegion)
 			{
 				need_to_continue = ( iEvent < total_number_of_events );
 

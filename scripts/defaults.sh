@@ -42,6 +42,7 @@ export computeBEEnhancementExactly='on'         # Whether to evaluate BE enhance
 export shiftingSet='1'							# Which pairs to shift
 export compensationSet='0'						# Which pairs to use in compensation
 export compensationMode='1'						# How to compute compensation
+export compensationVersion='0'					# Version for implementing compensation
 
 # other flags
 export UseColorReconnection='on'

@@ -84,6 +84,7 @@ private:
 		 include_posDelQ_in_compensation,
 		 rescale_pair_momenta,
 		 compute_BE_enhancement_exactly;
+  int compensationVersion;
   ///===CJP(begin)===
   int sourceDimension;
   double lambda, QRef, RRef;
