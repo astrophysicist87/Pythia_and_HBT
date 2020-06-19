@@ -37,7 +37,7 @@ export useRelativeDistance='on'                 # Use relative distances or abso
 export useRestFrame='on'                        # Use rest frame vs. lab frame
 export includePhaseSpace='on'                   # Include phase-space factor
 export linearInterpolateCDF='on'                # Estimate pair density via linear interpolation
-export computeBEEnhancementExactly='on'         # Whether to evaluate BE enhancement approximately or exactly
+export computeBEEnhancementExactly='off'        # Whether to evaluate BE enhancement approximately or exactly
 
 export shiftingSet='1'							# Which pairs to shift
 export compensationSet='0'						# Which pairs to use in compensation

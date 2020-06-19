@@ -128,10 +128,12 @@ echo '| Number of events  :' $Nevents
 printf "| ${eventClassSelectionMode^} classes:"
 for eventClassCutString in "${class_ranges[@]}"
 do
-    printf " $eventClassCutString"
-	if [ "$eventClassCutString" == "centrality" ]
+	if [ "$eventClassSelectionMode" == "centrality" ]
 	then
-		printf '%%'
+	    printf " $eventClassCutString""%"
+		#printf '%%'
+	else
+	    printf " $eventClassCutString"
 	fi
 done
 printf "\n"
@@ -175,6 +177,7 @@ echo '|          - compute shift integral exactly :' $computeBEEnhancementExactl
 echo '|          - shifting set definition        :' $shiftingSet
 echo '|          - compensation set definition    :' $compensationSet
 echo '|          - compensation mode              :' $compensationMode
+echo '|          - compensation version           :' $compensationVersion
 echo '|'
 echo '| -------------------------------------------'
 echo '| Chosen HBT analysis settings              :'
