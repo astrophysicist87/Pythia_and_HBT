@@ -2,9 +2,9 @@
 
 (
 	# info for this run
-	NTHREADS=64
-	DIRECTORY=results_lema_PbPb2760GeV_BEmodeScan_betterStats
-	NICENESS=19
+	NTHREADS=12
+	DIRECTORY=results_blixen_PbPb2760GeV_BEmodeScan_denseGrid
+	NICENESS=0
 
 	# Set job specifications here
 	#declare -a class_ranges=("1-11" "12-16" "17-22" "23-28" "29-34" "35-41" "42-51" "52-151" "152-1000000")
