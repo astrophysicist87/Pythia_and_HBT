@@ -34,18 +34,18 @@
 		##############
 		#lema
 		##############
-		'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=1000'
-		'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=1000 BEeffects="on" BEEnhancementMode="0"'
-		'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=1000 BEeffects="on" BEEnhancementMode="0" useDistribution="on"'
-		'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=1000 BEeffects="on" shiftingSet="1" compensationSet="1" compensationMode="1" compensationVersion="1"'
-		'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=1000 BEeffects="on" shiftingSet="1" compensationSet="2" compensationMode="1" compensationVersion="1"'
-		'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=1000 BEeffects="on" shiftingSet="0" compensationSet="1" compensationMode="1" compensationVersion="1"'
-		'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=1000 BEeffects="on" shiftingSet="1" compensationSet="1" compensationMode="1" compensationVersion="2"'
-		'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=1000 BEeffects="on" shiftingSet="1" compensationSet="2" compensationMode="1" compensationVersion="2"'
-		'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=1000 BEeffects="on" shiftingSet="0" compensationSet="1" compensationMode="1" compensationVersion="2"'
-		'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=1000 BEeffects="on" shiftingSet="1" compensationSet="1" compensationMode="1" compensationVersion="3"'
-		'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=1000 BEeffects="on" shiftingSet="1" compensationSet="2" compensationMode="1" compensationVersion="3"'
-		'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=1000 BEeffects="on" shiftingSet="0" compensationSet="1" compensationMode="1" compensationVersion="3"'
+		#'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=1000'
+		'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=10000 BEeffects="on" BEEnhancementMode="0"'
+		'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=10000 BEeffects="on" BEEnhancementMode="0" useDistribution="on"'
+		'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=10000 BEeffects="on" shiftingSet="1" compensationSet="1" compensationMode="1" compensationVersion="1"'
+		'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=10000 BEeffects="on" shiftingSet="1" compensationSet="2" compensationMode="1" compensationVersion="1"'
+		'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=10000 BEeffects="on" shiftingSet="0" compensationSet="1" compensationMode="1" compensationVersion="1"'
+		'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=10000 BEeffects="on" shiftingSet="1" compensationSet="1" compensationMode="1" compensationVersion="2"'
+		'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=10000 BEeffects="on" shiftingSet="1" compensationSet="2" compensationMode="1" compensationVersion="2"'
+		'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=10000 BEeffects="on" shiftingSet="0" compensationSet="1" compensationMode="1" compensationVersion="2"'
+		'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=10000 BEeffects="on" shiftingSet="1" compensationSet="1" compensationMode="1" compensationVersion="3"'
+		'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=10000 BEeffects="on" shiftingSet="1" compensationSet="2" compensationMode="1" compensationVersion="3"'
+		'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=10000 BEeffects="on" shiftingSet="0" compensationSet="1" compensationMode="1" compensationVersion="3"'
 	)
 
 	#-----------------------------------------------------
