@@ -22,6 +22,10 @@
 		#'projectile="p" target="p" beamEnergy="7000" Nevents=10000000 BEeffects="on" BEEnhancementMode="0" useDistribution="on"'
 		#'projectile="p" target="p" beamEnergy="7000" Nevents=10000000 BEeffects="on" shiftingSet="0" compensationSet="1" compensationMode="0"'
 		#'projectile="p" target="p" beamEnergy="7000" Nevents=10000000 BEeffects="on" shiftingSet="0" compensationSet="1" compensationMode="1"'
+		#'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=10000 BEeffects="on" BEEnhancementMode="0"'
+		#'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=10000 BEeffects="on" BEEnhancementMode="0" compensationVersion="3"'
+		'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=10000 BEeffects="on" BEEnhancementMode="0" useDistribution="on"'
+		'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=10000 BEeffects="on" BEEnhancementMode="0" useDistribution="on" compensationVersion="3"'
 		##############
 		#egan
 		##############
