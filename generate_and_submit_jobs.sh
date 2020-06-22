@@ -3,7 +3,7 @@
 (
 	# info for this run
 	NTHREADS=64
-	DIRECTORY=results_lema_PbPb2760GeV_BEmodeScan
+	DIRECTORY=results_lema_PbPb2760GeV_BEmodeScan_betterStats
 	NICENESS=19
 
 	# Set job specifications here
