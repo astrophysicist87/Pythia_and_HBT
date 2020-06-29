@@ -2,9 +2,9 @@
 
 (
 	# info for this run
-	NTHREADS=64
-	DIRECTORY=results_egan_PbPb2760GeV_BEmodeScan_denseGrid
-	NICENESS=19
+	NTHREADS=1
+	DIRECTORY=results_blixen_PbPb2760GeV_test_GEHW
+	NICENESS=0
 
 	# Set job specifications here
 	#declare -a class_ranges=("1-11" "12-16" "17-22" "23-28" "29-34" "35-41" "42-51" "52-151" "152-1000000")
@@ -24,8 +24,9 @@
 		#'projectile="p" target="p" beamEnergy="7000" Nevents=10000000 BEeffects="on" shiftingSet="0" compensationSet="1" compensationMode="1"'
 		#'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=10000 BEeffects="on" BEEnhancementMode="0"'
 		#'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=10000 BEeffects="on" BEEnhancementMode="0" compensationVersion="3"'
-		'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=10000 BEeffects="on" BEEnhancementMode="0" useDistribution="on"'
-		'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=10000 BEeffects="on" BEEnhancementMode="0" useDistribution="on" compensationVersion="3"'
+		#'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=10000 BEeffects="on" BEEnhancementMode="0" useDistribution="on"'
+		#'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=10000 BEeffects="on" BEEnhancementMode="0" useDistribution="on" compensationVersion="3"'
+		'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=10'
 		##############
 		#egan
 		##############
