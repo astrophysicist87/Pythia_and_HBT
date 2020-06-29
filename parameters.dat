@@ -55,9 +55,9 @@ KT_grid_mode 									= 0
 	#     (for integrating corr. function)
 
 # KT points
-n_KT_pts 										= 2
+n_KT_pts 										= 9
 KTmin 											= 0.0
-KTmax 											= 0.1
+KTmax 											= 0.8
 
 # --
 # Kphi grid
