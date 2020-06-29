@@ -210,7 +210,7 @@ void HBT_event_generator::Compute_numerator_and_denominator_methodMode2_q_mode_3
 										overall_factor * num_term / ( Ei * Ej ) :
 										overall_factor * num_term;
 
-cout << "CHECK(num): " << index6D << "   " << iParticle << "   " << jParticle << endl;
+//cout << "CHECK(num): " << index6D << "   " << iParticle << "   " << jParticle << endl;
 				//						/ ( K0*K0 - 0.25*q0*q0 );	// this factor is 1/(E1 E2)
 				//						/ num_pairs_this_event;
 
@@ -371,7 +371,7 @@ cout << "CHECK(num): " << index6D << "   " << iParticle << "   " << jParticle <<
 				//						overall_factor * energy_factors :
 				//						overall_factor;
 
-cout << "CHECK(den): " << index6D << "   " << index6D_rev << "   " << iParticle << "   " << jParticle << endl;
+//cout << "CHECK(den): " << index6D << "   " << index6D_rev << "   " << iParticle << "   " << jParticle << endl;
 
 
 			}
