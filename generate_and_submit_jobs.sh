@@ -3,7 +3,7 @@
 (
 	# info for this run
 	NTHREADS=1
-	DIRECTORY=results_blixen_PbPb2760GeV_test_GEHW
+	DIRECTORY=results_blixen_PbPb2760GeV_test_GEHW_2
 	NICENESS=0
 
 	# Set job specifications here

@@ -70,6 +70,47 @@ void HBT_event_generator::Compute_numerator_and_denominator_methodMode2_q_mode_3
 			double Ei = pi.E, pix = pi.px, piy = pi.py, piz = pi.pz;
 			double Ej = pj.E, pjx = pj.px, pjy = pj.py, pjz = pj.pz;
 
+			double ti = pi.t, xi = pi.x, yi = pi.y, zi = pi.z;
+			double tj = pj.t, xj = pj.x, yj = pj.y, zj = pj.z;
+
+			// New method of binning
+			double K0 = 0.5*(Ei+Ej), Kx = 0.5*(pix+pjx), Ky = 0.5*(piy+pjy), Kz = 0.5*(piz+pjz);
+
+			// boost pair if necessary (boost both p and x!)
+			if ( use_LCMS )
+			{
+				double betaL   = Kz / K0;
+				double betaL2  = betaL*betaL;
+				if (betaL2 >= 1.0) continue;
+				double gamma   = 1.0/sqrt(1.0-betaL2);
+				double piz_new = gamma*(piz - betaL*Ei);
+				double Ei_new  = gamma*(Ei - betaL*piz);
+				double pjz_new = gamma*(pjz - betaL*Ej);
+				double Ej_new  = gamma*(Ej - betaL*pjz);
+				double zi_new  = gamma*(zi - betaL*ti);
+				double ti_new  = gamma*(ti - betaL*zi);
+				double zj_new  = gamma*(zj - betaL*tj);
+				double tj_new  = gamma*(tj - betaL*zj);
+
+				piz            = piz_new;
+				Ei             = Ei_new;
+				pjz            = pjz_new;
+				Ej             = Ej_new;
+				zi             = zi_new;
+				ti             = ti_new;
+				zj             = zj_new;
+				tj             = tj_new;
+
+				K0 = 0.5*(Ei+Ej);
+				Kz = 0.5*(piz+pjz);
+				if ( abs(Kz) > 1e-4 )
+				{
+					#pragma omp critical
+						err << "Something went wrong!!! Kz = " << Kz << endl;
+					exit(8);
+				}
+			}
+
 			// check which cell we're in
 			double cx = pix - pjx;
 			double cy = piy - pjy;
@@ -82,69 +123,37 @@ void HBT_event_generator::Compute_numerator_and_denominator_methodMode2_q_mode_3
 			if ( num_bin_false )
 				continue;
 
-			double ti = pi.t, xi = pi.x, yi = pi.y, zi = pi.z;
-			double tj = pj.t, xj = pj.x, yj = pj.y, zj = pj.z;
-
-			// New method of binning
-			double K0 = 0.5*(Ei+Ej), Kx = 0.5*(pix+pjx), Ky = 0.5*(piy+pjy), Kz = 0.5*(piz+pjz);
-
-			// boost pair if necessary
-			if ( use_LCMS )
-			{
-				double betaL   = Kz / K0;
-				double betaL2  = betaL*betaL;
-				if (betaL2 >= 1.0) continue;
-				double gamma   = 1.0/sqrt(1.0-betaL2);
-				double piz_new = gamma*(piz - betaL*Ei);
-				double Ei_new  = gamma*(Ei - betaL*piz);
-				double pjz_new = gamma*(pjz - betaL*Ej);
-				double Ej_new  = gamma*(Ej - betaL*pjz);
-
-				piz            = piz_new;
-				Ei             = Ei_new;
-				pjz            = pjz_new;
-				Ej             = Ej_new;
-
-				K0 = 0.5*(Ei+Ej);
-				Kz = 0.5*(piz+pjz);
-				if ( abs(Kz) > 1e-4 )
-				{
-					#pragma omp critical
-						err << "Something went wrong!!! Kz = " << Kz << endl;
-					exit(8);
-				}
-			}
-
 			double KT = sqrt(Kx*Kx+Ky*Ky);
-			double Kphi = atan2(Ky, Kx);
-			double cKphi = cos(Kphi), sKphi = sin(Kphi);
+			//double Kphi = atan2(Ky, Kx);
+			//double cKphi = cos(Kphi), sKphi = sin(Kphi);
+			double cKphi = Kx/(KT+1e-100), sKphi = Ky/(KT+1e-100);
 			double KL = Kz;
 
-			// Get indices
-			int KT_idx 	= floor((KT - KT_min)/KT_bin_width);
-			int Kphi_idx = floor((Kphi - Kphi_min)/Kphi_bin_width);
-			int KL_idx 	= floor((KL - KL_min)/KL_bin_width);
-
 			// Momentum-space cuts
+			int KT_idx 	= floor((KT - KT_min)/KT_bin_width);
 			if ( KT_idx < 0 or KT_idx >= n_KT_bins )
 			{
 				//err << "KT; shouldn't have made it here!" << endl;
 				continue;
 			}
 
-			if ( Kphi_idx < 0 or Kphi_idx >= n_Kphi_bins )
-			{
-				//err << "Kphi; shouldn't have made it here!" << endl;
-				continue;
-			}
-
+			int KL_idx 	= floor((KL - KL_min)/KL_bin_width);
 			if ( KL_idx < 0 or KL_idx >= n_KL_bins )
 			{
 				//err << "KL; shouldn't have made it here!" << endl;
 				continue;
 			}
 
+			double Kphi = atan2(Ky, Kx);
+			int Kphi_idx = floor((Kphi - Kphi_min)/Kphi_bin_width);
+			if ( Kphi_idx < 0 or Kphi_idx >= n_Kphi_bins )
+			{
+				//err << "Kphi; shouldn't have made it here!" << endl;
+				continue;
+			}
+
 			int index3D = indexerK(KT_idx, Kphi_idx, KL_idx);
+
 			for (int iqo = 0; iqo < n_qo_bins; iqo++)
 			for (int iqs = 0; iqs < n_qs_bins; iqs++)
 			for (int iql = 0; iql < n_ql_bins; iql++)
@@ -200,6 +209,8 @@ void HBT_event_generator::Compute_numerator_and_denominator_methodMode2_q_mode_3
 				private_num[index6D] += ( include_energy_factors ) ?
 										overall_factor * num_term / ( Ei * Ej ) :
 										overall_factor * num_term;
+
+cout << "CHECK(num): " << index6D << "   " << iParticle << "   " << jParticle << endl;
 				//						/ ( K0*K0 - 0.25*q0*q0 );	// this factor is 1/(E1 E2)
 				//						/ num_pairs_this_event;
 
@@ -238,11 +249,19 @@ void HBT_event_generator::Compute_numerator_and_denominator_methodMode2_q_mode_3
 				double Ei_new  = gamma*(Ei - betaL*piz);
 				double pjz_new = gamma*(pjz - betaL*Ej);
 				double Ej_new  = gamma*(Ej - betaL*pjz);
+				//double zi_new  = gamma*(zi - betaL*ti);
+				//double ti_new  = gamma*(ti - betaL*zi);
+				//double zj_new  = gamma*(zj - betaL*tj);
+				//double tj_new  = gamma*(tj - betaL*zj);
 
 				piz            = piz_new;
 				Ei             = Ei_new;
 				pjz            = pjz_new;
 				Ej             = Ej_new;
+				//zi             = zi_new;
+				//ti             = ti_new;
+				//zj             = zj_new;
+				//tj             = tj_new;
 
 				K0 = 0.5*(Ei+Ej);
 				Kz = 0.5*(piz+pjz);
@@ -255,23 +274,23 @@ void HBT_event_generator::Compute_numerator_and_denominator_methodMode2_q_mode_3
 			}
 
 			double KT = sqrt(Kx*Kx+Ky*Ky);
-			double Kphi = atan2(Ky, Kx);
-			double cKphi = cos(Kphi), sKphi = sin(Kphi);
+			//double Kphi = atan2(Ky, Kx);
+			//double cKphi = cos(Kphi), sKphi = sin(Kphi);
+			double cKphi = Kx/(KT+1e-100), sKphi = Ky/(KT+1e-100);
 			double KL = Kz;
 
-			// If pair survived cuts, get indices
-			int KT_idx 	= floor((KT - KT_min)/KT_bin_width);
-			int Kphi_idx = floor((Kphi - Kphi_min)/Kphi_bin_width);
-			int KL_idx 	= floor((Kz - KL_min)/KL_bin_width);
-
 			// Momentum-space cuts
+			int KT_idx 	= floor((KT - KT_min)/KT_bin_width);
 			if ( KT_idx < 0 or KT_idx >= n_KT_bins )
 				continue;
 
-			if ( Kphi_idx < 0 or Kphi_idx >= n_Kphi_bins )
+			int KL_idx 	= floor((Kz - KL_min)/KL_bin_width);
+			if ( KL_idx < 0 or KL_idx >= n_KL_bins )
 				continue;
 
-			if ( KL_idx < 0 or KL_idx >= n_KL_bins )
+			double Kphi = atan2(Ky, Kx);
+			int Kphi_idx = floor((Kphi - Kphi_min)/Kphi_bin_width);
+			if ( Kphi_idx < 0 or Kphi_idx >= n_Kphi_bins )
 				continue;
 
 			int index3D = indexerK(KT_idx, Kphi_idx, KL_idx);
@@ -351,6 +370,9 @@ void HBT_event_generator::Compute_numerator_and_denominator_methodMode2_q_mode_3
 				//private_den[index6D] += ( include_energy_factors ) ?
 				//						overall_factor * energy_factors :
 				//						overall_factor;
+
+cout << "CHECK(den): " << index6D << "   " << index6D_rev << "   " << iParticle << "   " << jParticle << endl;
+
 
 			}
 		}
