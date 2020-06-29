@@ -2,8 +2,8 @@
 
 (
 	# info for this run
-	NTHREADS=1
-	DIRECTORY=results_blixen_PbPb2760GeV_test_GEHW_3
+	NTHREADS=12
+	DIRECTORY=results_blixen_PbPb2760GeV
 	NICENESS=0
 
 	# Set job specifications here
@@ -26,7 +26,7 @@
 		#'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=10000 BEeffects="on" BEEnhancementMode="0" compensationVersion="3"'
 		#'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=10000 BEeffects="on" BEEnhancementMode="0" useDistribution="on"'
 		#'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=10000 BEeffects="on" BEEnhancementMode="0" useDistribution="on" compensationVersion="3"'
-		'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=10'
+		'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=1000'
 		##############
 		#egan
 		##############
@@ -52,7 +52,6 @@
 		#'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=10000 BEeffects="on" shiftingSet="1" compensationSet="2" compensationMode="1" compensationVersion="3"'
 		#'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=10000 BEeffects="on" shiftingSet="0" compensationSet="1" compensationMode="1" compensationVersion="3"'
 	)
-
 
 	#-----------------------------------------------------
 	# Shouldn't have to change anything below this point
