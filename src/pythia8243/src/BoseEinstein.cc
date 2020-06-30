@@ -1906,6 +1906,15 @@ void BoseEinstein::shiftPairs_mode1(
 				had1.pComp += pDiff;
 				had2.pComp -= pDiff;
 			}
+			/*
+			else
+			{
+				Vec4 pDiff  = factor * cross3(had1.p, had2.p);
+		
+				had1.pComp += pDiff;
+				had2.pComp -= pDiff;
+			}
+			*/
 		}
 
 		pairIndex++;
