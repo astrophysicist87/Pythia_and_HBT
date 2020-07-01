@@ -23,6 +23,13 @@ const double hbarC = 0.19733;	//GeV*fm
 
 constexpr bool ignore_central_point = true;
 
+struct correlationfunction_data
+{
+	size_t datalength;
+	vector<double> qo, qs, ql;
+	vector<double> A, B;	//numerator, denominator
+};
+
 class Correlation_function
 {
 	private:
@@ -80,9 +87,10 @@ class Correlation_function
 		vector<double> lambda_Correl_FRerr, R2_FRerr, R2_out_FRerr, R2_side_FRerr, R2_long_FRerr,
 						R2_outside_FRerr, R2_outlong_FRerr, R2_sidelong_FRerr;
 
-		vector<double> numerator, denominator, correlation_function, correlation_function_error;
+		vector<double> denominator, correlation_function, correlation_function_error;
 		vector<bool> denominator_cell_was_filled;
 		vector<complex<double> > numerator;
+		vector<double> numCount, denCount;
 
 
 	public:

@@ -6,7 +6,8 @@
 #include<vector>
 #include<stdio.h>
 
-#include <gsl/gsl_blas.h>           // gsl linear algebra stuff
+#include <gsl/gsl_blas.h>
+#include <gsl/gsl_vector.h>
 #include <gsl/gsl_multimin.h>
 #include <gsl/gsl_linalg.h>
 #include <gsl/gsl_errno.h>
@@ -16,13 +17,6 @@
 //#include "Arsenal.h"
 
 using namespace std;
-
-struct correlationfunction_data
-{
-	size_t datalength;
-	vector<double> qo, qs, ql;
-	vector<double> A, B;	//numerator, denominator
-};
 
 //https://github.com/astrophysicist87/iEBE-Plumberg/blob/fbec616f897940d49e6774b04c0b16252edaf42b/EBE-Node/HoTCoffeeh/cfwr/src/cfwr_GFroutines.cpp
 
@@ -184,14 +178,11 @@ void Correlation_function::set_CFdata(correlationfunction_data & CFdata, int iKT
         double q_side_local = 0.5*(qs_pts[j]+qs_pts[j+1]);
         double q_long_local = 0.5*(ql_pts[k]+ql_pts[k+1]);
 
-		double num          = numerator[idx];
-		double den          = denominator[idx];
-
 		CFdata.qo.push_back( q_out_local );
 		CFdata.qs.push_back( q_side_local );
 		CFdata.ql.push_back( q_long_local );
-		CFdata.A.push_back(  numerator[idx] );
-		CFdata.B.push_back(  denominator[idx] );
+		CFdata.A.push_back(  numCount[idx] );
+		CFdata.B.push_back(  denCount[idx] );
 
 		// count this bin
 		n_usable_bins++;
