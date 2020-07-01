@@ -203,9 +203,9 @@ void Correlation_function::fit_correlationfunction_minimum_log_likelihood(int iK
 	gsl_multimin_function_fdf LogL_PM_func;
 	
 	LogL_PM_func.n      = dim;
-	LogL_PM_func.f      = &LogL_PML_f;
-	LogL_PM_func.df     = &LogL_PML_df;
-	LogL_PM_func.fdf    = &LogL_PML_fdf;
+	LogL_PM_func.f      = &Correlation_function::LogL_PML_f;
+	LogL_PM_func.df     = &Correlation_function::LogL_PML_df;
+	LogL_PM_func.fdf    = &Correlation_function::LogL_PML_fdf;
 	LogL_PM_func.params = &CFdata;
 
 	/* Starting point */
