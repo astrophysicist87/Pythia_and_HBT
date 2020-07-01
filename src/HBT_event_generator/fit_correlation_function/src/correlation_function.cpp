@@ -39,6 +39,8 @@ void Correlation_function::initialize_all(
 		= static_cast<bool>( paraRdr->getVal("include_cross_terms") );
 	use_slices_only
 		= static_cast<bool>( paraRdr->getVal("use_slices_only") );
+	format_with_pairs
+		= static_cast<bool>( paraRdr->getVal("format_with_pairs") );
 	// - pair momenta points at which to interpolate HBT results
 	n_KT_pts 		= paraRdr->getVal("n_KT_pts");
 	KT_min 			= paraRdr->getVal("KTmin");

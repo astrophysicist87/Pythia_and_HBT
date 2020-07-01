@@ -46,7 +46,7 @@ class Correlation_function
 		double particle_mass;
 
 		int BE_mode, bin_mode, q_mode, fit_mode;
-		bool include_cross_terms, use_slices_only;
+		bool include_cross_terms, use_slices_only, format_with_pairs;
 
 		int n_Q_pts;
 		int n_KT_pts, n_Kphi_pts, n_KL_pts;

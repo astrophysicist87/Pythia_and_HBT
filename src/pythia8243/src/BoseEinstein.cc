@@ -1910,7 +1910,7 @@ void BoseEinstein::shiftPairs_mode1(
 			else
 			{
 				Vec4 pairK  = 0.5 * (had1.p + had2.p);
-				Vec4 pDiff  = factor * cross3(had1.p, had2.p) / pairK.pabs();
+				Vec4 pDiff  = factor * cross3(had1.p, had2.p) / pairK.pAbs();
 		
 				had1.pComp += pDiff;
 				had2.pComp -= pDiff;

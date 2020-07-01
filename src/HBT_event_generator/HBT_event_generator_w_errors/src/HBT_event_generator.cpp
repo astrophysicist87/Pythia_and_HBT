@@ -195,7 +195,7 @@ void HBT_event_generator::initialize_all(
 	numerator_denominator        = vector<double> (K_space_size*q_space_size);
 
 	denominator_cell_was_filled  = vector<bool> (K_space_size*q_space_size, false);
-	numerator_bin_coun           = vector<int> (K_space_size*q_space_size);
+	numerator_bin_count          = vector<int> (K_space_size*q_space_size);
 	denominator_bin_count        = vector<int> (K_space_size*q_space_size);
 
 	numPair                      = vector<double> (K_space_size);
