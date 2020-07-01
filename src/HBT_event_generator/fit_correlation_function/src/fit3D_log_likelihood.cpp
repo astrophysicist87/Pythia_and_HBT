@@ -6,12 +6,6 @@
 #include<vector>
 #include<stdio.h>
 
-#include <gsl/gsl_blas.h>
-#include <gsl/gsl_vector.h>
-#include <gsl/gsl_multimin.h>
-#include <gsl/gsl_linalg.h>
-#include <gsl/gsl_errno.h>
-
 #include "correlation_function.h"
 //#include "Stopwatch.h"
 //#include "Arsenal.h"

@@ -11,6 +11,12 @@
 #include <cstdlib>
 #include <complex>
 
+#include <gsl/gsl_blas.h>
+#include <gsl/gsl_vector.h>
+#include <gsl/gsl_multimin.h>
+#include <gsl/gsl_linalg.h>
+#include <gsl/gsl_errno.h>
+
 #include "ParameterReader.h"
 #include "Arsenal.h"
 #include "EventRecord.h"
