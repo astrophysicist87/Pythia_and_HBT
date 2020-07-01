@@ -197,20 +197,37 @@ void Correlation_function::Load_correlation_function( string filepath )
 	double dummy = 0.0;
 	if ( q_mode == 0 )
 	{
-		for (int iKT = 0; iKT < n_KT_bins; iKT++)
-		for (int iKphi = 0; iKphi < n_Kphi_bins; iKphi++)
-		for (int iKL = 0; iKL < n_KL_bins; iKL++)
-		for (int iqo = 0; iqo < n_qo_bins; iqo++)
-		for (int iqs = 0; iqs < n_qs_bins; iqs++)
-		for (int iql = 0; iql < n_ql_bins; iql++)
-		{
-			infile >> dummy >> dummy >> dummy >> dummy >> dummy >> dummy
-					>> dummy >> dummy >> dummy >> dummy
-					>> correlation_function[idx]
-					>> correlation_function_error[idx];
-
-			++idx;
-		}
+		if ( BE_mode > 0 and format_with_pairs )
+			for (int iKT = 0; iKT < n_KT_bins; iKT++)
+			for (int iKphi = 0; iKphi < n_Kphi_bins; iKphi++)
+			for (int iKL = 0; iKL < n_KL_bins; iKL++)
+			for (int iqo = 0; iqo < n_qo_bins; iqo++)
+			for (int iqs = 0; iqs < n_qs_bins; iqs++)
+			for (int iql = 0; iql < n_ql_bins; iql++)
+			{
+				infile >> dummy >> dummy >> dummy >> dummy >> dummy >> dummy
+						>> numCount[idx] >> dummy
+						>> denCount[idx] >> dummy
+						>> correlation_function[idx]
+						>> correlation_function_error[idx];
+	
+				++idx;
+			}
+		else
+			for (int iKT = 0; iKT < n_KT_bins; iKT++)
+			for (int iKphi = 0; iKphi < n_Kphi_bins; iKphi++)
+			for (int iKL = 0; iKL < n_KL_bins; iKL++)
+			for (int iqo = 0; iqo < n_qo_bins; iqo++)
+			for (int iqs = 0; iqs < n_qs_bins; iqs++)
+			for (int iql = 0; iql < n_ql_bins; iql++)
+			{
+				infile >> dummy >> dummy >> dummy >> dummy >> dummy >> dummy
+						>> dummy >> dummy >> dummy >> dummy
+						>> correlation_function[idx]
+						>> correlation_function_error[idx];
+	
+				++idx;
+			}
 	}
 	else if ( q_mode == 1 )
 	{

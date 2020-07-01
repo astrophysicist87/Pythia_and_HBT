@@ -41,114 +41,111 @@ void HBT_event_generator::initialize_all(
 	const vector<EventRecord> & allEvents_in )
 {
 	// Load parameters
-	paraRdr			= paraRdr_in;
+	paraRdr                      = paraRdr_in;
 
 	// Copy in records of all events
-	allEvents		= allEvents_in;
-	total_N_events	= allEvents.size();
-	number_of_completed_events
-					= 0;
+	allEvents                    = allEvents_in;
+	total_N_events               = allEvents.size();
+	number_of_completed_events   = 0;
 
 	//Set header info
 	// - particle information
-	particle_mass 	= paraRdr->getVal("mass");
+	particle_mass                = paraRdr->getVal("mass");
 	// - some mode options
-	bin_mode 		= paraRdr->getVal("bin_mode");
-	q_mode 			= paraRdr->getVal("q_mode");
-	scalar_mode 	= paraRdr->getVal("scalar_mode");
-	method_mode 	= paraRdr->getVal("method_mode");
-	BE_mode 		= paraRdr->getVal("BE_mode");
-	use_smoothness_approximation
-					= (bool)paraRdr->getVal("use_smoothness_approximation");
-	oneDim_slices	= (bool)paraRdr->getVal("use_slices_only");
-	use_LCMS		= (bool)paraRdr->getVal("use_LCMS");
+	bin_mode                     = paraRdr->getVal("bin_mode");
+	q_mode                       = paraRdr->getVal("q_mode");
+	scalar_mode                  = paraRdr->getVal("scalar_mode");
+	method_mode                  = paraRdr->getVal("method_mode");
+	BE_mode                      = paraRdr->getVal("BE_mode");
+	use_smoothness_approximation = (bool)paraRdr->getVal("use_smoothness_approximation");
+	oneDim_slices                = (bool)paraRdr->getVal("use_slices_only");
+	use_LCMS                     = (bool)paraRdr->getVal("use_LCMS");
+	format_with_pairs            = (bool)paraRdr->getVal("format_with_pairs");
 
 	// - bin parameters
-	bin_epsilon		= paraRdr->getVal("bin_epsilon");
-	use_pz_bin_asymmetry
-					= (bool)paraRdr->getVal("use_pz_bin_asymmetry");
-	pz_bin_factor	= ( use_pz_bin_asymmetry ) ?
-						paraRdr->getVal("pz_bin_factor")
-						: 1.0;
+	bin_epsilon                  = paraRdr->getVal("bin_epsilon");
+	use_pz_bin_asymmetry         = (bool)paraRdr->getVal("use_pz_bin_asymmetry");
+	pz_bin_factor                = ( use_pz_bin_asymmetry ) ?
+                                   paraRdr->getVal("pz_bin_factor")
+                                   : 1.0;
 	// - bin parameters
-	n_mix_minimum	= paraRdr->getVal("n_mix_minimum");
+	n_mix_minimum                = paraRdr->getVal("n_mix_minimum");
 	//Define various grid sizes
 	// - pair momenta points at which to evaluate correlation function
-	n_KT_pts 		= paraRdr->getVal("n_KT_pts");
-	KT_min 			= paraRdr->getVal("KTmin");
-	KT_max 			= paraRdr->getVal("KTmax");
-	n_Kphi_pts 		= paraRdr->getVal("n_Kphi_pts");
-	Kphi_min 		= -M_PI;
-	Kphi_max 		= M_PI;
-	n_KL_pts 		= paraRdr->getVal("n_KL_pts");
-	KL_min 			= paraRdr->getVal("KLmin");
-	KL_max 			= paraRdr->getVal("KLmax");
+	n_KT_pts                     = paraRdr->getVal("n_KT_pts");
+	KT_min                       = paraRdr->getVal("KTmin");
+	KT_max                       = paraRdr->getVal("KTmax");
+	n_Kphi_pts                   = paraRdr->getVal("n_Kphi_pts");
+	Kphi_min                     = -M_PI;
+	Kphi_max                     = M_PI;
+	n_KL_pts                     = paraRdr->getVal("n_KL_pts");
+	KL_min                       = paraRdr->getVal("KLmin");
+	KL_max                       = paraRdr->getVal("KLmax");
 	// - relative momentum points at which to evaluate
 	//   correlation function
-	n_qo_pts 		= paraRdr->getVal("n_qo_pts");
-	n_qs_pts 		= paraRdr->getVal("n_qs_pts");
-	n_ql_pts 		= paraRdr->getVal("n_ql_pts");
-	n_Q_pts 		= paraRdr->getVal("n_Q_pts");
-	n_qRP_pts		= paraRdr->getVal("n_qRP_pts");
-	n_thq_pts		= paraRdr->getVal("n_thq_pts");
+	n_qo_pts                     = paraRdr->getVal("n_qo_pts");
+	n_qs_pts                     = paraRdr->getVal("n_qs_pts");
+	n_ql_pts                     = paraRdr->getVal("n_ql_pts");
+	n_Q_pts                      = paraRdr->getVal("n_Q_pts");
+	n_qRP_pts                    = paraRdr->getVal("n_qRP_pts");
+	n_thq_pts                    = paraRdr->getVal("n_thq_pts");
 	// - step size in q directions
-	delta_qo 		= paraRdr->getVal("delta_qo");
-	delta_qs 		= paraRdr->getVal("delta_qs");
-	delta_ql 		= paraRdr->getVal("delta_ql");
-	delta_Q 		= paraRdr->getVal("delta_Q");
+	delta_qo                     = paraRdr->getVal("delta_qo");
+	delta_qs                     = paraRdr->getVal("delta_qs");
+	delta_ql                     = paraRdr->getVal("delta_ql");
+	delta_Q                      = paraRdr->getVal("delta_Q");
 	// - minimum value in each q direction
-	qo_min 			= -0.5*double(n_qo_pts-1)*delta_qo;
-	qs_min 			= -0.5*double(n_qs_pts-1)*delta_qs;
-	ql_min 			= -0.5*double(n_ql_pts-1)*delta_ql;
-	Q_min 			= -0.5*double(n_Q_pts-1)*delta_Q;
-	qo_max 			= -qo_min;
-	qs_max 			= -qs_min;
-	ql_max 			= -ql_min;
-	Q_max 			= -Q_min;
+	qo_min                       = -0.5*double(n_qo_pts-1)*delta_qo;
+	qs_min                       = -0.5*double(n_qs_pts-1)*delta_qs;
+	ql_min                       = -0.5*double(n_ql_pts-1)*delta_ql;
+	Q_min                        = -0.5*double(n_Q_pts-1)*delta_Q;
+	qo_max                       = -qo_min;
+	qs_max                       = -qs_min;
+	ql_max                       = -ql_min;
+	Q_max                        = -Q_min;
 	// - miscellaneous
-	number_of_expected_events
-					= paraRdr->getVal("number_of_expected_events");
+	number_of_expected_events    = paraRdr->getVal("number_of_expected_events");
 
 	// - number of points to use when fleshing out correlation
 	//   function in each direction
-	//new_nqopts 		= ( n_qo_pts > 1 ) ? new_nqpts : 1;
-	//new_nqspts 		= ( n_qs_pts > 1 ) ? new_nqpts : 1;
-	//new_nqlpts 		= ( n_ql_pts > 1 ) ? new_nqpts : 1;
+	//new_nqopts                   = ( n_qo_pts > 1 ) ? new_nqpts : 1;
+	//new_nqspts                   = ( n_qs_pts > 1 ) ? new_nqpts : 1;
+	//new_nqlpts                   = ( n_ql_pts > 1 ) ? new_nqpts : 1;
 
-	n_qo_bins 		= n_qo_pts - 1;
-	n_qs_bins 		= n_qs_pts - 1;
-	n_ql_bins 		= n_ql_pts - 1;
-	n_Q_bins 		= n_Q_pts - 1;
+	n_qo_bins                    = n_qo_pts - 1;
+	n_qs_bins                    = n_qs_pts - 1;
+	n_ql_bins                    = n_ql_pts - 1;
+	n_Q_bins                     = n_Q_pts - 1;
 
-	n_KT_bins 		= n_KT_pts - 1;
-	n_Kphi_bins 	= n_Kphi_pts - 1;
-	n_KL_bins 		= n_KL_pts - 1;
+	n_KT_bins                    = n_KT_pts - 1;
+	n_Kphi_bins                  = n_Kphi_pts - 1;
+	n_KL_bins                    = n_KL_pts - 1;
 
-	KT_pts 			= vector<double> (n_KT_pts);
-	Kphi_pts 		= vector<double> (n_Kphi_pts);
-	KL_pts 			= vector<double> (n_KL_pts);
+	KT_pts                       = vector<double> (n_KT_pts);
+	Kphi_pts                     = vector<double> (n_Kphi_pts);
+	KL_pts                       = vector<double> (n_KL_pts);
 
-	qo_pts 			= vector<double> (n_qo_pts);
-	qs_pts 			= vector<double> (n_qs_pts);
-	ql_pts 			= vector<double> (n_ql_pts);
-	Q_pts 			= vector<double> (n_Q_pts);
+	qo_pts                       = vector<double> (n_qo_pts);
+	qs_pts                       = vector<double> (n_qs_pts);
+	ql_pts                       = vector<double> (n_ql_pts);
+	Q_pts                        = vector<double> (n_Q_pts);
 
-	x_pts			= vector<double> (n_qRP_pts);
-	x_wts			= vector<double> (n_qRP_pts);
-	ttheta_q_pts	= vector<double> (n_thq_pts);
-	ttheta_q_wts	= vector<double> (n_thq_pts);
+	x_pts                        = vector<double> (n_qRP_pts);
+	x_wts                        = vector<double> (n_qRP_pts);
+	ttheta_q_pts                 = vector<double> (n_thq_pts);
+	ttheta_q_wts                 = vector<double> (n_thq_pts);
 
 	// just fix them here for now
-	/*n_KT_pts_per_bin = 5;
-	n_Kphi_pts_per_bin = 5;
-	n_KL_pts_per_bin = 5;
+	/*n_KT_pts_per_bin             = 5;
+	n_Kphi_pts_per_bin           = 5;
+	n_KL_pts_per_bin             = 5;
 
-	xKT_pts 		= vector<double> (n_KT_pts_per_bin);
-	xKT_wts 		= vector<double> (n_KT_pts_per_bin);
-	xKphi_pts 		= vector<double> (n_Kphi_pts_per_bin);
-	xKphi_wts 		= vector<double> (n_Kphi_pts_per_bin);
-	xKL_pts 		= vector<double> (n_KL_pts_per_bin);
-	xKL_wts 		= vector<double> (n_KL_pts_per_bin);*/
+	xKT_pts                      = vector<double> (n_KT_pts_per_bin);
+	xKT_wts                      = vector<double> (n_KT_pts_per_bin);
+	xKphi_pts                    = vector<double> (n_Kphi_pts_per_bin);
+	xKphi_wts                    = vector<double> (n_Kphi_pts_per_bin);
+	xKL_pts                      = vector<double> (n_KL_pts_per_bin);
+	xKL_wts                      = vector<double> (n_KL_pts_per_bin);*/
 
 	linspace(KT_pts, KT_min, KT_max);
 	linspace(Kphi_pts, Kphi_min, Kphi_max);
@@ -168,48 +165,46 @@ void HBT_event_generator::initialize_all(
 	//gauss_quadrature(n_Kphi_pts_per_bin, 1, 0.0, 0.0, -1.0, 1.0, xKphi_pts, xKphi_wts);
 	//gauss_quadrature(n_KL_pts_per_bin, 1, 0.0, 0.0, -1.0, 1.0, xKL_pts, xKL_wts);
 
-	px_bin_width 	= bin_epsilon;
-	py_bin_width 	= bin_epsilon;
-	pz_bin_width 	= pz_bin_factor*bin_epsilon;
+	px_bin_width                 = bin_epsilon;
+	py_bin_width                 = bin_epsilon;
+	pz_bin_width                 = pz_bin_factor*bin_epsilon;
 
 	// need to know these for binning particle pairs efficiently
-	KT_bin_width 	= KT_pts[1]-KT_pts[0];
-	Kphi_bin_width 	= Kphi_pts[1]-Kphi_pts[0];
-	KL_bin_width 	= KL_pts[1]-KL_pts[0];
+	KT_bin_width                 = KT_pts[1]-KT_pts[0];
+	Kphi_bin_width               = Kphi_pts[1]-Kphi_pts[0];
+	KL_bin_width                 = KL_pts[1]-KL_pts[0];
 
-	const int q_space_size = ( q_mode == 0 ) ?
-								n_qo_bins*n_qs_bins*n_ql_bins :
-								n_Q_bins;
-	const int K_space_size = n_KT_bins*n_Kphi_bins*n_KL_bins;
+	const int q_space_size       = ( q_mode == 0 ) ?
+                                   n_qo_bins*n_qs_bins*n_ql_bins :
+                                   n_Q_bins;
+	const int K_space_size       = n_KT_bins*n_Kphi_bins*n_KL_bins;
 
-	n_pair_numerator 		= 0.0;
-	n_pair_denominator 		= 0.0;
+	n_pair_numerator             = 0.0;
+	n_pair_denominator           = 0.0;
 
 	// For the correlation function itself
-	numerator 				= vector<double> (K_space_size*q_space_size);
-	denominator 			= vector<double> (K_space_size*q_space_size);
-	correlation_function 	= vector<double> (K_space_size*q_space_size);
-	numerator_error			= vector<double> (K_space_size*q_space_size);
-	denominator_error 		= vector<double> (K_space_size*q_space_size);
-	correlation_function_error 
-							= vector<double> (K_space_size*q_space_size);
+	numerator                    = vector<double> (K_space_size*q_space_size);
+	denominator                  = vector<double> (K_space_size*q_space_size);
+	correlation_function         = vector<double> (K_space_size*q_space_size);
+	numerator_error              = vector<double> (K_space_size*q_space_size);
+	denominator_error            = vector<double> (K_space_size*q_space_size);
+	correlation_function_error   = vector<double> (K_space_size*q_space_size);
 
-	numerator2 				= vector<double> (K_space_size*q_space_size);
-	denominator2 			= vector<double> (K_space_size*q_space_size);
-	numerator_denominator 	= vector<double> (K_space_size*q_space_size);
+	numerator2                   = vector<double> (K_space_size*q_space_size);
+	denominator2                 = vector<double> (K_space_size*q_space_size);
+	numerator_denominator        = vector<double> (K_space_size*q_space_size);
 
-	denominator_cell_was_filled
-							= vector<bool> (K_space_size*q_space_size, false);
-	numerator_bin_count		= vector<int> (K_space_size*q_space_size);
-	denominator_bin_count	= vector<int> (K_space_size*q_space_size);
+	denominator_cell_was_filled  = vector<bool> (K_space_size*q_space_size, false);
+	numerator_bin_coun           = vector<int> (K_space_size*q_space_size);
+	denominator_bin_count        = vector<int> (K_space_size*q_space_size);
 
-	numPair 				= vector<double> (K_space_size);
-	numPair2 				= vector<double> (K_space_size);
-	denPair 				= vector<double> (K_space_size);
-	denPair2 				= vector<double> (K_space_size);
+	numPair                      = vector<double> (K_space_size);
+	numPair2                     = vector<double> (K_space_size);
+	denPair                      = vector<double> (K_space_size);
+	denPair2                     = vector<double> (K_space_size);
 
-	numerator_numPair 		= vector<double> (K_space_size*q_space_size);
-	denominator_denPair 	= vector<double> (K_space_size*q_space_size);
+	numerator_numPair            = vector<double> (K_space_size*q_space_size);
+	denominator_denPair          = vector<double> (K_space_size*q_space_size);
 
 	// Initializations finished
 	// Check number of events and proceed if non-zero
@@ -487,43 +482,58 @@ void HBT_event_generator::Output_correlation_function_q_mode_3D( string filename
 		<< left << "q_o" << setw(prec+extrawidth)
 		<< left << "q_s" << setw(prec+extrawidth)
 		<< left << "q_l" << setw(prec+16)
-		<< left << "N" << setw(prec+16)
-		<< left << "N(err)" << setw(prec+16)
-		<< left << "D" << setw(prec+16)
-		<< left << "D(err)" << setw(prec+32)
-		<< left << "C"  << setw(prec+32)
+		<< left << "N" << setw(prec+16);
+	if (BE_mode > 0 and format_with_pairs)
+		ofs << left << "N(pairs)" << setw(prec+16);
+	else
+		ofs	<< left << "N(err)" << setw(prec+16);
+	ofs	<< left << "D" << setw(prec+16);
+	if (BE_mode > 0 and format_with_pairs)
+		ofs	<< left << "D(pairs)" << setw(prec+32);
+	else
+		ofs	<< left << "D(err)" << setw(prec+32);
+	ofs	<< left << "C"  << setw(prec+32)
 		<< left << "C(err)" << endl;
 
 	ofs << "# " << setfill('-') << setw(150) << " " << endl;
 
 	ofs.copyfmt(oldState);
 
-	int idx = 0;
-	for (int iKT = 0; iKT < n_KT_bins; iKT++)
+	int idx3D = 0, idx6D = 0;
+	for (int iKT   = 0; iKT   < n_KT_bins;   iKT++)
 	for (int iKphi = 0; iKphi < n_Kphi_bins; iKphi++)
-	for (int iKL = 0; iKL < n_KL_bins; iKL++)
-	for (int iqo = 0; iqo < n_qo_bins; iqo++)
-	for (int iqs = 0; iqs < n_qs_bins; iqs++)
-	for (int iql = 0; iql < n_ql_bins; iql++)
+	for (int iKL   = 0; iKL   < n_KL_bins;   iKL++)
 	{
-
-		ofs /*<< setfill('X') */<< fixed << setprecision(prec) << "  "
-			<< 0.5*(KT_pts[iKT]+KT_pts[iKT+1]) << setw(prec+extrawidth)
-			<< 0.5*(Kphi_pts[iKphi]+Kphi_pts[iKphi+1]) << setw(prec+extrawidth)
-			<< 0.5*(KL_pts[iKL]+KL_pts[iKL+1]) << setw(prec+extrawidth)
-			<< 0.5*(qo_pts[iqo]+qo_pts[iqo+1]) << setw(prec+extrawidth)
-			<< 0.5*(qs_pts[iqs]+qs_pts[iqs+1]) << setw(prec+extrawidth)
-			<< 0.5*(ql_pts[iql]+ql_pts[iql+1]) << setw(prec+16)
-			<< scientific
-			<< numerator[idx] / static_cast<double>(total_N_events) << setw(prec+16)
-			<< numerator_error[idx] / sqrt(static_cast<double>(total_N_events)) << setw(prec+16)
-			<< denominator[idx] / static_cast<double>(total_N_events) << setw(prec+16)
-			<< denominator_error[idx] / sqrt(static_cast<double>(total_N_events)) << setw(prec+36)
-			<< fixed
-			<< setprecision(16) << correlation_function[idx] << setw(prec+36)
-			<< setprecision(16) << correlation_function_error[idx] << endl;
-
-		++idx;
+		for (int iqo = 0; iqo < n_qo_bins; iqo++)
+		for (int iqs = 0; iqs < n_qs_bins; iqs++)
+		for (int iql = 0; iql < n_ql_bins; iql++)
+		{
+	
+			ofs /*<< setfill('X') */<< fixed << setprecision(prec) << "  "
+				<< 0.5*(KT_pts[iKT]+KT_pts[iKT+1])         << setw(prec+extrawidth)
+				<< 0.5*(Kphi_pts[iKphi]+Kphi_pts[iKphi+1]) << setw(prec+extrawidth)
+				<< 0.5*(KL_pts[iKL]+KL_pts[iKL+1])         << setw(prec+extrawidth)
+				<< 0.5*(qo_pts[iqo]+qo_pts[iqo+1])         << setw(prec+extrawidth)
+				<< 0.5*(qs_pts[iqs]+qs_pts[iqs+1])         << setw(prec+extrawidth)
+				<< 0.5*(ql_pts[iql]+ql_pts[iql+1])         << setw(prec+16)
+				<< scientific;
+			if (BE_mode > 0 and format_with_pairs)
+				ofs	<< numerator[idx6D]   << setw(prec+16)
+					<< numPair[idx3D]     << setw(prec+16)
+					<< denominator[idx6D] << setw(prec+16)
+					<< denPair[idx3D]     << setw(prec+36);
+			else
+				ofs	<< numerator[idx6D]         / static_cast<double>(total_N_events)         << setw(prec+16)
+					<< numerator_error[idx6D]   / sqrt(static_cast<double>(total_N_events))   << setw(prec+16)
+					<< denominator[idx6D]       / static_cast<double>(total_N_events)         << setw(prec+16)
+					<< denominator_error[idx6D] / sqrt(static_cast<double>(total_N_events))   << setw(prec+36);
+			ofs	<< fixed
+				<< setprecision(16) << correlation_function[idx6D] << setw(prec+36)
+				<< setprecision(16) << correlation_function_error[idx6D] << endl;
+	
+			++idx6D;
+		}
+		++idx3D;
 	}
 
 	ofs.close();

@@ -37,7 +37,7 @@ class HBT_event_generator
 		bool use_pz_bin_asymmetry;
 		double bin_epsilon, pz_bin_factor;
 
-		bool use_smoothness_approximation, oneDim_slices, use_LCMS;
+		bool use_smoothness_approximation, oneDim_slices, use_LCMS, format_with_pairs;
 		int bin_mode, q_mode, scalar_mode, method_mode, BE_mode;
 		int total_N_events, number_of_expected_events, number_of_completed_events;
 		

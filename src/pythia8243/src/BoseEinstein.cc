@@ -107,8 +107,8 @@ bool BoseEinstein::init(Info* infoPtrIn, Settings& settings,
   int compensationMode            = settings.mode("BoseEinstein:compensationMode");
   compensationVersion             = settings.mode("BoseEinstein:compensationVersion");
 
-  rescale_pair_momenta            =  ( compensationMode == 1 );
   undo_shifts                     =  ( compensationMode == 0 );
+  rescale_pair_momenta            =  ( compensationMode == 1 );
 
   include_negDelQ_in_compensation =  ( compensationSet  == 0
                                     or compensationSet  == 2 );
@@ -1907,7 +1907,6 @@ void BoseEinstein::shiftPairs_mode1(
 				had1.pComp += pDiff;
 				had2.pComp -= pDiff;
 			}
-			
 			else
 			{
 				Vec4 pairK  = 0.5 * (had1.p + had2.p);

@@ -199,6 +199,11 @@ use_slices_only 								= 0
 use_LCMS 										= 1
 
 # --
+# for BE_mode > 0, how to format output
+format_with_pairs								= 1
+
+
+# --
 # source_variances parameters
 # maximum invariant tau to consider
 # for source variances (in fm)
