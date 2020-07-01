@@ -165,9 +165,9 @@ class Correlation_function
 
 		// For the minimum log-likelihood approach
 		void Fit_correlation_function_min_logL();
-		double LogL_PML_f(const gsl_vector *v, void *params);
-		void LogL_PML_df (const gsl_vector *v, void *params, gsl_vector *df);
-		void LogL_PML_fdf (const gsl_vector *x, void *params, double *f, gsl_vector *df);
+		//double LogL_PML_f(const gsl_vector *v, void *params);
+		//void LogL_PML_df (const gsl_vector *v, void *params, gsl_vector *df);
+		//void LogL_PML_fdf (const gsl_vector *x, void *params, double *f, gsl_vector *df);
 		void set_CFdata(correlationfunction_data & CFdata, int iKT, int iKphi, int iKL);
 		void fit_correlationfunction_minimum_log_likelihood(int iKT, int iKphi, int iKL);
 

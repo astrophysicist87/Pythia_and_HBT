@@ -23,7 +23,7 @@ using namespace std;
 //https://indico.cern.ch/category/6015/attachments/192/631/Statistics_Fitting_II.pdf
 
 // Minimize log-likelihood function
-double Correlation_function::LogL_PML_f(const gsl_vector *v, void *params)
+double LogL_PML_f(const gsl_vector *v, void *params)
 {
 	double norm, lambda, R2o, R2s, R2l, R2os, R2ol, R2sl;
 	correlationfunction_data * p = (correlationfunction_data *)params;
@@ -63,7 +63,7 @@ double Correlation_function::LogL_PML_f(const gsl_vector *v, void *params)
 
 
 /* The gradient of f, df = (df/dx, df/dy). */
-void Correlation_function::LogL_PML_df (const gsl_vector *v, void *params, gsl_vector *df)
+void LogL_PML_df (const gsl_vector *v, void *params, gsl_vector *df)
 {
 	double norm, lambda, R2o, R2s, R2l, R2os, R2ol, R2sl;
 	correlationfunction_data * p = (correlationfunction_data *)params;
@@ -136,7 +136,7 @@ void Correlation_function::LogL_PML_df (const gsl_vector *v, void *params, gsl_v
 }
 
 /* Compute both f and df together. */
-void Correlation_function::LogL_PML_fdf (const gsl_vector *x, void *params, double *f, gsl_vector *df)
+void LogL_PML_fdf (const gsl_vector *x, void *params, double *f, gsl_vector *df)
 {
 	*f = LogL_PML_f(x, params);
 	LogL_PML_df(x, params, df);
@@ -203,9 +203,9 @@ void Correlation_function::fit_correlationfunction_minimum_log_likelihood(int iK
 	gsl_multimin_function_fdf LogL_PM_func;
 	
 	LogL_PM_func.n      = dim;
-	LogL_PM_func.f      = &Correlation_function::LogL_PML_f;
-	LogL_PM_func.df     = &Correlation_function::LogL_PML_df;
-	LogL_PM_func.fdf    = &Correlation_function::LogL_PML_fdf;
+	LogL_PM_func.f      = &LogL_PML_f;
+	LogL_PM_func.df     = &LogL_PML_df;
+	LogL_PM_func.fdf    = &LogL_PML_fdf;
 	LogL_PM_func.params = &CFdata;
 
 	/* Starting point */
