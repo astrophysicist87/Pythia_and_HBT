@@ -134,8 +134,8 @@ void Correlation_function::initialize_all(
 	R2_sidelong_FRerr	= vector<double> (K_space_size);
 
 	// For the correlation function (and related error) itself
-	numerator 					= vector<double> (K_space_size*q_space_size);
-	denominator			 		= vector<double> (K_space_size*q_space_size);
+	numCount 					= vector<double> (K_space_size*q_space_size);
+	denCount			 		= vector<double> (K_space_size*q_space_size);
 	correlation_function 		= vector<double> (K_space_size*q_space_size);
 	correlation_function_error 	= vector<double> (K_space_size*q_space_size);
 
