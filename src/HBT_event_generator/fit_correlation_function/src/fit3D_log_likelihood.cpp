@@ -138,8 +138,8 @@ void Correlation_function::LogL_PML_df (const gsl_vector *v, void *params, gsl_v
 /* Compute both f and df together. */
 void Correlation_function::LogL_PML_fdf (const gsl_vector *x, void *params, double *f, gsl_vector *df)
 {
-	*f = LogL_PM_f(x, params);
-	LogL_PM_df(x, params, df);
+	*f = LogL_PML_f(x, params);
+	LogL_PML_df(x, params, df);
 	return;
 }
 
@@ -206,7 +206,7 @@ void Correlation_function::fit_correlationfunction_minimum_log_likelihood(int iK
 	LogL_PM_func.f      = LogL_PM_f;
 	LogL_PM_func.df     = LogL_PM_df;
 	LogL_PM_func.fdf    = LogL_PM_fdf;
-	LogL_PM_func.params = CFdata;
+	LogL_PM_func.params = &CFdata;
 
 	/* Starting point */
 	x = gsl_vector_alloc (dim);
