@@ -32,7 +32,7 @@ class Correlation_function
 		string particle_name;
 		double particle_mass;
 
-		int bin_mode, q_mode, fit_mode;
+		int BE_mode, bin_mode, q_mode, fit_mode;
 		bool include_cross_terms, use_slices_only;
 
 		int n_Q_pts;
@@ -80,7 +80,7 @@ class Correlation_function
 		vector<double> lambda_Correl_FRerr, R2_FRerr, R2_out_FRerr, R2_side_FRerr, R2_long_FRerr,
 						R2_outside_FRerr, R2_outlong_FRerr, R2_sidelong_FRerr;
 
-		vector<double> denominator, correlation_function, correlation_function_error;
+		vector<double> numerator, denominator, correlation_function, correlation_function_error;
 		vector<bool> denominator_cell_was_filled;
 		vector<complex<double> > numerator;
 
@@ -148,6 +148,15 @@ class Correlation_function
 		void find_minimum_chisq_correlationfunction_Q( int iKT, int iKphi, int iKL );
 		void find_minimum_chisq_correlationfunction_Q_FR( int iKT, int iKphi, int iKL, double Qmin, double Qmax, int nstep );
 		void find_minimum_chisq_CFerr_Q_FR( int iKT, int iKphi, int iKL, double Qmax );
+
+		// For the minimum log-likelihood approach
+		void Fit_correlation_function_min_logL();
+		double LogL_PML_f(const gsl_vector *v, void *params);
+		void LogL_PML_df (const gsl_vector *v, void *params, gsl_vector *df);
+		void LogL_PML_fdf (const gsl_vector *x, void *params, double *f, gsl_vector *df);
+		void set_CFdata(correlationfunction_data & CFdata, int iKT, int iKphi, int iKL);
+		void fit_correlationfunction_minimum_log_likelihood(int iKT, int iKphi, int iKL);
+
 
 };
 

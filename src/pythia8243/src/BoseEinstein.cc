@@ -108,6 +108,7 @@ bool BoseEinstein::init(Info* infoPtrIn, Settings& settings,
   compensationVersion             = settings.mode("BoseEinstein:compensationVersion");
 
   rescale_pair_momenta            =  ( compensationMode == 1 );
+  undo_shifts                     =  ( compensationMode == 0 );
 
   include_negDelQ_in_compensation =  ( compensationSet  == 0
                                     or compensationSet  == 2 );
@@ -1896,7 +1897,7 @@ void BoseEinstein::shiftPairs_mode1(
 				had1.pComp += pDiff;
 				had2.pComp += pDiff;
 			}
-			else
+			else if ( undo_shifts )
 			{
 				// compensation momentum is pDiff
 				// --> undo shift to conserve total energy
@@ -1906,15 +1907,16 @@ void BoseEinstein::shiftPairs_mode1(
 				had1.pComp += pDiff;
 				had2.pComp -= pDiff;
 			}
-			/*
+			
 			else
 			{
-				Vec4 pDiff  = factor * cross3(had1.p, had2.p);
+				Vec4 pairK  = 0.5 * (had1.p + had2.p);
+				Vec4 pDiff  = factor * cross3(had1.p, had2.p) / pairK.pabs();
 		
 				had1.pComp += pDiff;
 				had2.pComp -= pDiff;
 			}
-			*/
+			
 		}
 
 		pairIndex++;

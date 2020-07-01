@@ -31,6 +31,7 @@ void Correlation_function::initialize_all(
 	// - particle information
 	particle_mass 	= paraRdr->getVal("mass");
 	// - some parameters
+	BE_mode 		= paraRdr->getVal("BE_mode");
 	bin_mode 		= paraRdr->getVal("bin_mode");
 	q_mode 			= paraRdr->getVal("q_mode");
 	fit_mode		= paraRdr->getVal("fit_mode");
@@ -133,6 +134,8 @@ void Correlation_function::initialize_all(
 	R2_sidelong_FRerr	= vector<double> (K_space_size);
 
 	// For the correlation function (and related error) itself
+	numerator 					= vector<double> (K_space_size*q_space_size);
+	denominator			 		= vector<double> (K_space_size*q_space_size);
 	correlation_function 		= vector<double> (K_space_size*q_space_size);
 	correlation_function_error 	= vector<double> (K_space_size*q_space_size);
 
@@ -142,14 +145,22 @@ void Correlation_function::initialize_all(
 	Load_correlation_function( filepath_in );
 
 	// Read in correlation function
-	if ( q_mode == 0 )
-		Fit_correlation_function();
-	else if ( q_mode == 1 )
-		Fit_correlation_function_Q();
+	if ( BE_mode > 0 )
+	{
+		// assume q_mode == 0 for now here
+		Fit_correlation_function_min_logL();
+	}
 	else
 	{
-		err << "fit_correlation_function(): q_mode = " << q_mode << " not supported!" << endl;
-		exit(8);
+		if ( q_mode == 0 )
+			Fit_correlation_function();
+		else if ( q_mode == 1 )
+			Fit_correlation_function_Q();
+		else
+		{
+			err << "fit_correlation_function(): q_mode = " << q_mode << " not supported!" << endl;
+			exit(8);
+		}
 	}
 
 	return;
