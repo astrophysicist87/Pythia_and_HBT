@@ -733,8 +733,8 @@ bool BoseEinstein::getSortedPairs(
 			continue;
 		}
 
-		constexpr bool impose_Q2_limits = false;
-		constexpr bool impose_xDiff_limits = false;
+		constexpr bool impose_Q2_limits = true;
+		constexpr bool impose_xDiff_limits = true;
 
 		// Limit Q2 values to shift
 		if ( impose_Q2_limits and Q2_thisPair > 1.0 ) continue;
