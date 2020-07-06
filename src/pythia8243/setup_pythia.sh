@@ -2,6 +2,6 @@
 
 gmake distclean
 
-./configure
+./configure --with-hepmc2=../HepMC/build
 
 gmake -j4

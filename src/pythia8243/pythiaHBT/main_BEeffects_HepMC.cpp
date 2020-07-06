@@ -271,7 +271,8 @@ int main(int argc, char *argv[])
 
 
 	// Set-up HepMC output
-	HepMC::IO_GenEvent ascii_io(path + systemSpecs + ".hepmc", std::ios::out);
+	string hepmc_outfilename = path + systemSpecs + ".hepmc";
+	HepMC::IO_GenEvent ascii_io( hepmc_outfilename, std::ios::out );
 
 
 	// Centrality/multiplicity class stuff
