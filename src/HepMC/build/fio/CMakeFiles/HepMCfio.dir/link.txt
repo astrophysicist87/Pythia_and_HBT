@@ -1,1 +1,0 @@
-/usr/bin/c++  -fPIC  -O -ansi -pedantic -Wall -D_GNU_SOURCE -O2 -g -DNDEBUG  -shared -Wl,-soname,libHepMCfio.so.4 -o ../lib/libHepMCfio.so.4.0.0 CMakeFiles/HepMCfio.dir/HEPEVT_Wrapper.cc.o CMakeFiles/HepMCfio.dir/HerwigWrapper.cc.o CMakeFiles/HepMCfio.dir/IO_HEPEVT.cc.o CMakeFiles/HepMCfio.dir/IO_HERWIG.cc.o 

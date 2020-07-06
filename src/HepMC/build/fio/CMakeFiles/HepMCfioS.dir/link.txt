@@ -1,2 +1,0 @@
-/usr/bin/ar qc ../lib/libHepMCfio.a  CMakeFiles/HepMCfioS.dir/HEPEVT_Wrapper.cc.o CMakeFiles/HepMCfioS.dir/HerwigWrapper.cc.o CMakeFiles/HepMCfioS.dir/IO_HEPEVT.cc.o CMakeFiles/HepMCfioS.dir/IO_HERWIG.cc.o
-/usr/bin/ranlib ../lib/libHepMCfio.a

@@ -1,1 +1,0 @@
-/usr/bin/c++    -O -ansi -pedantic -Wall -D_GNU_SOURCE -O2 -g -DNDEBUG   CMakeFiles/testStreamIO.dir/testStreamIO.cc.o CMakeFiles/testStreamIO.dir/testHepMCMethods.cc.o  -o testStreamIO -rdynamic ../lib/libHepMC.so.4.0.0 -Wl,-rpath,/scratch/blixen/plumberg/Pythia_and_HBT/src/HepMC/build/lib 
