@@ -23,7 +23,12 @@ ifeq "$(MAIN)" ""
 MAIN		=	main_BEeffects_OpenMP
 endif
 
+ifeq "$(MAIN2)" ""
+MAIN2		=	main_BEeffects_HepMC
+endif
+
 MAINSRC		=	main_BEeffects_OpenMP.cpp
+MAIN2SRC	=	main_BEeffects_HepMC.cpp
 
 SRC			=	$(SRCDIR)/Arsenal.cpp \
 				$(SRCDIR)/ParameterReader.cpp
@@ -51,11 +56,13 @@ $(OBJDIR)/%.o: $(SRCDIR)/%.cpp
 
 # -------------------------------------------------
 
-.PHONY:		all mkobjdir clean distclean install target
+.PHONY:		all mkobjdir clean distclean install target target2
 
-all:		mkobjdir $(TARGET)
+all:		mkobjdir $(TARGET) $(TARGET2)
 
 target:		mkobjdir $(TARGET)
+
+target2:	mkobjdir $(TARGET2)
 
 help:
 		@grep '^##' GNUmakefile
@@ -69,19 +76,26 @@ $(TARGET): $(MAINSRC) $(OBJECTS) $(PREFIX_LIB)/libpythia8.a
 	$(CXX) $< $(OBJECTS) -o $@ -std=c++11 -fopenmp -g $(CXX_COMMON)
 #	@echo 'Inside new GNUmakefile'
 
+$(TARGET2): $(MAIN2SRC) $(OBJECTS) $(PREFIX_LIB)/libpythia8.a
+	$(CXX) $< $(OBJECTS) -o $@ -std=c++11 -fopenmp -g $(CXX_COMMON)
+
 clean:		
 		-rm -f $(OBJECTS)
 
 distclean:	
 		-rm -f $(TARGET)
+		-rm -f $(TARGET2)
 		-rm -f $(OBJECTS)
 
-install:	$(TARGET)
+install:	$(TARGET) $(TARGET2)
 		cp $(TARGET) $(INSTPATH)
+		cp $(TARGET2) $(INSTPATH)
 
 # --------------- Dependencies -------------------
 $(SRCDIR)/Arsenal.cpp: 				$(INCDIR)/Arsenal.h
 $(SRCDIR)/ParameterReader.cpp: 		$(INCDIR)/ParameterReader.h \
 									$(INCDIR)/Arsenal.h
 main_BEeffects_OpenMP.cpp: 			$(INCDIR)/ParameterReader.h \
+									$(INCDIR)/Arsenal.h
+main_BEeffects_HepMC.cpp: 			$(INCDIR)/ParameterReader.h \
 									$(INCDIR)/Arsenal.h
