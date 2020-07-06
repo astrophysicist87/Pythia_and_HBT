@@ -44,6 +44,7 @@ OBJECTS				=	$(addprefix $(OBJDIR)/, $(addsuffix $O, \
 						$(notdir $(basename $(SRC)))))
 
 TARGET			=	$(MAIN)
+TARGET2			=	$(MAIN2)
 INSTPATH		=	..
 
 # --------------- Pattern rules -------------------
