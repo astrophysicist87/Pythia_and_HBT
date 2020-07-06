@@ -1,0 +1,23 @@
+Processing Event Number 1 its # 1
+Event 9 is good 
+photons in event 9:
+GenParticle: 7 ID:22 (P,E)=-35.8473,-6.12284,-383.843,385.562 Stat:3 PV:-5 EV:-6 Pol:(0,0) F:0
+GenParticle: 9 ID:22 (P,E)=-35.8473,-6.12284,-383.843,385.562 Stat:1 PV:-6 EV:0 Pol:(0,0) F:0
+photons in event 9:
+GenParticle: 7 ID:22 (P,E)=-35.8473,-6.12284,-383.843,385.562 Stat:3 PV:-5 EV:-6 Pol:(0,0) F:0
+GenParticle: 9 ID:22 (P,E)=-35.8473,-6.12284,-383.843,385.562 Stat:1 PV:-6 EV:0 Pol:(0,0) F:0
+Event 18 is good 
+photons in event 18:
+GenParticle: 7 ID:22 (P,E)=23.7859,34.5098,42.0174,59.3478 Stat:3 PV:-5 EV:-6 Pol:(0,0) F:0
+GenParticle: 9 ID:22 (P,E)=23.7859,34.5098,42.0174,59.3478 Stat:1 PV:-6 EV:0 Pol:(0,0) F:0
+photons in event 18:
+GenParticle: 7 ID:22 (P,E)=23.7859,34.5098,42.0174,59.3478 Stat:3 PV:-5 EV:-6 Pol:(0,0) F:0
+GenParticle: 9 ID:22 (P,E)=23.7859,34.5098,42.0174,59.3478 Stat:1 PV:-6 EV:0 Pol:(0,0) F:0
+Event 56 is good 
+photons in event 56:
+GenParticle: 7 ID:22 (P,E)=7.92316,-57.3898,-530.978,534.129 Stat:3 PV:-5 EV:-6 Pol:(0,0) F:0
+GenParticle: 9 ID:22 (P,E)=7.92316,-57.3898,-530.978,534.129 Stat:1 PV:-6 EV:0 Pol:(0,0) F:0
+photons in event 56:
+GenParticle: 7 ID:22 (P,E)=7.92316,-57.3898,-530.978,534.129 Stat:3 PV:-5 EV:-6 Pol:(0,0) F:0
+GenParticle: 9 ID:22 (P,E)=7.92316,-57.3898,-530.978,534.129 Stat:1 PV:-6 EV:0 Pol:(0,0) F:0
+3 out of 34 processed events passed the cuts. Finished.

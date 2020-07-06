@@ -78,7 +78,9 @@ $(TARGET): $(MAINSRC) $(OBJECTS) $(PREFIX_LIB)/libpythia8.a
 #	@echo 'Inside new GNUmakefile'
 
 $(TARGET2): $(MAIN2SRC) $(OBJECTS) $(PREFIX_LIB)/libpythia8.a
-	$(CXX) $< $(OBJECTS) -o $@ -std=c++11 -fopenmp -g $(CXX_COMMON)
+	$(CXX) $< $(OBJECTS) -o $@ -std=c++11 -fopenmp -g \
+				-I../../HepMC/build/include  -L../../HepMC/build/lib \
+				-Wl,-rpath,../../HepMC/build/lib -lHepMC $(CXX_COMMON)
 
 clean:		
 		-rm -f $(OBJECTS)

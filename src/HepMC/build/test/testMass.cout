@@ -1,0 +1,19 @@
+ --------------- HepMC Version 2.06.09 --------------- 
+Processing Event Number 1 its # 1
+saving Event 9
+Weights: (0,0.23) (1,0.34) (2,0.11) (3,0.065) 
+saving Event 18
+Weights: (0,0.23) (3,0.014) (4,3.54) (p 2,1.34) (p1,0.12) 
+saving Event 56
+3 out of 34 processed events passed the cuts. Finished.
+reading Event 9
+Weights: (0,0.23) (1,0.34) (2,0.11) (3,0.065) 
+Event 9 Particle 4 1 generated mass 0 mass from momentum 2.15792e-05 difference 2.15792e-05
+reading Event 18
+Weights: (0,0.23) (3,0.014) (4,3.54) (p 2,1.34) (p1,0.12) 
+Event 18 Particle 3 2 generated mass 0 mass from momentum -1.32145e-05 difference 1.32145e-05
+Event 18 Particle 52 21 generated mass 0 mass from momentum -1.07896e-05 difference 1.07896e-05
+Event 18 Particle 74 21 generated mass 0 mass from momentum -1.07896e-05 difference 1.07896e-05
+reading Event 56
+Event 56 Particle 4 1 generated mass 0 mass from momentum 4.31584e-05 difference 4.31584e-05
+3 events in the second pass. Finished.
