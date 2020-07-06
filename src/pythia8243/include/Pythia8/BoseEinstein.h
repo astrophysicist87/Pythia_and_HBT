@@ -83,7 +83,7 @@ private:
 		 include_posDelQ_in_shifting,
 		 include_posDelQ_in_compensation,
 		 rescale_pair_momenta,
-         undo_shifts,
+         undo_shifts, comp_w_cross_product,
 		 compute_BE_enhancement_exactly;
   int compensationVersion;
   ///===CJP(begin)===

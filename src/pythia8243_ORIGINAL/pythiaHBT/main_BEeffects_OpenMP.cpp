@@ -100,7 +100,7 @@ class MyHIUserHooks : public HIUserHooks
 		// Destructor deletes impact parameter generator.
 		~MyHIUserHooks() { delete myImpactParameterGeneratorPtr; }
 
-		virtual bool hasImpactParameterGenerator() const { /*cout << "Evaluated this function" << endl;*/ return true; }
+		virtual bool hasImpactParameterGenerator() const { cout << "Evaluated this function" << endl; return true; }
 
 		virtual ImpactParameterGenerator * impactParameterGenerator() const { return myImpactParameterGeneratorPtr; }
 

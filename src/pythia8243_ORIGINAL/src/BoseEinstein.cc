@@ -244,12 +244,15 @@ vector<Vec4> unshifted_momenta, shifted_momenta;
   // Error if no convergence, and then return without doing BE shift.
   // However, not grave enough to kill event, so return true.
   if ( abs(eSumShifted - eSumOriginal) > COMPRELERR * eSumOriginal ) {
-    infoPtr->errorMsg("Warning in BoseEinstein::shiftEvent: "
-      "no consistent BE shift topology found, so skip BE");
+    //infoPtr->errorMsg("Warning in BoseEinstein::shiftEvent: "
+    //  "no consistent BE shift topology found, so skip BE");
 cout << "Warning in BoseEinstein::shiftEvent: "
       "no consistent BE shift topology found, so skip BE" << endl;
     return true;
   }
+
+cout << "Warning in BoseEinstein::shiftEvent: "
+      "consistent BE shift topology found! include BE" << endl;
 
 	///*
 	// Boost back to lab frame

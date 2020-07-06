@@ -8,10 +8,10 @@ GeVToMeV = 1000.0
 columnLabels = ['dNdeta','KT',\
                 'lambda','R2o','R2s','R2l',\
                 'err(lambda)','err(R2o)','err(R2s)','err(R2l)']
-multLabels = [r'$N_{ch}=1-11$', r'$N_{ch}=12-16$', r'$N_{ch}=17-22$', \
-              r'$N_{ch}=23-28$', r'$N_{ch}=29-34$', r'$N_{ch}=35-41$', \
-              r'$N_{ch}=42-51$', r'$N_{ch}=52-151$', r'$N_{ch}=152-\infty$']
-#multLabels = [r'$0-100\%$']
+#multLabels = [r'$N_{ch}=1-11$', r'$N_{ch}=12-16$', r'$N_{ch}=17-22$', \
+#              r'$N_{ch}=23-28$', r'$N_{ch}=29-34$', r'$N_{ch}=35-41$', \
+#              r'$N_{ch}=42-51$', r'$N_{ch}=52-151$', r'$N_{ch}=152-\infty$']
+multLabels = [r'$0-100\%$']
 #KTLabels = [r'$K_T=0-100$ MeV', r'$K_T=100-200$ MeV', r'$K_T=200-300$ MeV', \
 #            r'$K_T=300-400$ MeV', r'$K_T=400-500$ MeV', r'$K_T=500-600$ MeV', \
 #            r'$K_T=600-700$ MeV', r'$K_T=700-800$ MeV']
@@ -167,7 +167,7 @@ def plot_CF_vs_KT(data, direction):
     ax.set_xlabel(r'$q_{\mathrm{%(direction)s}}$ (GeV)' % {'direction': direction},
                     fontsize=16)
     ax.set_ylabel(r'$C$', fontsize=16)
-    ax.set_xlim(left=-0.6, right=0.6)
+    ax.set_xlim(left=-0.25, right=0.25)
     ax.tick_params(axis='both', which='major', labelsize=14)
     plt.tight_layout()
     #plt.show()
@@ -194,7 +194,7 @@ def plot_CF_vs_dNdeta(data, direction):
     ax.set_xlabel(r'$q_{\mathrm{%(direction)s}}$ (GeV)' % {'direction': direction},
                     fontsize=16)
     ax.set_ylabel(r'$C$', fontsize=16)
-    ax.set_xlim(left=-0.6, right=0.6)
+    ax.set_xlim(left=-0.25, right=0.25)
     ax.set_ylim(top=1.4)
     ax.tick_params(axis='both', which='major', labelsize=14)
     plt.tight_layout()
