@@ -102,18 +102,34 @@ PYTHIA_RESULTS_DIRECTORY=$CURRENT_RESULTS_DIRECTORY/Pythia_results/dataset${data
 		upperLimit=100
 
 		# time and run
-		./run_BEeffects_OpenMP.sh \
-			$projectile $target \
-			$PYTHIA_RESULTS_DIRECTORY \
-			pythiaHBT::beam_energy=$beamEnergy \
-			pythiaHBT::number_of_events=$Nevents \
-			pythiaHBT::chosenParticleID=$chosenHBTparticle \
-			pythiaHBT::lowerLimit=$lowerLimit \
-			pythiaHBT::upperLimit=$upperLimit \
-			pythiaHBT::bmin=$bMin \
-			pythiaHBT::bmax=$bMax \
-			pythiaHBT::seed=$datasetSeed \
-			pythiaHBT::output_Bjorken_variables="${boolVal[$storeBjorkenCoordinates]}"
+		if [ "$useHepMCOutputFormat" = true ]
+		then
+			./run_BEeffects_HepMC.sh \
+				$projectile $target \
+				$PYTHIA_RESULTS_DIRECTORY \
+				pythiaHBT::beam_energy=$beamEnergy \
+				pythiaHBT::number_of_events=$Nevents \
+				pythiaHBT::chosenParticleID=$chosenHBTparticle \
+				pythiaHBT::lowerLimit=$lowerLimit \
+				pythiaHBT::upperLimit=$upperLimit \
+				pythiaHBT::bmin=$bMin \
+				pythiaHBT::bmax=$bMax \
+				pythiaHBT::seed=$datasetSeed \
+				pythiaHBT::output_Bjorken_variables="${boolVal[$storeBjorkenCoordinates]}"
+		else
+			./run_BEeffects_OpenMP.sh \
+				$projectile $target \
+				$PYTHIA_RESULTS_DIRECTORY \
+				pythiaHBT::beam_energy=$beamEnergy \
+				pythiaHBT::number_of_events=$Nevents \
+				pythiaHBT::chosenParticleID=$chosenHBTparticle \
+				pythiaHBT::lowerLimit=$lowerLimit \
+				pythiaHBT::upperLimit=$upperLimit \
+				pythiaHBT::bmin=$bMin \
+				pythiaHBT::bmax=$bMax \
+				pythiaHBT::seed=$datasetSeed \
+				pythiaHBT::output_Bjorken_variables="${boolVal[$storeBjorkenCoordinates]}"
+		fi
 
 		# check and report whether run was successful
 		runSuccess=`echo $?`

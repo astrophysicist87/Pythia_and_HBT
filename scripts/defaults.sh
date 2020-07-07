@@ -50,4 +50,5 @@ export UseRopeHadronization='off'
 export IncludeStringShoving='off'
 export IncludeFlavourRopesMechanism='off'
 export storeBjorkenCoordinates='false'
+export useHepMCOutputFormat='false'
 #=====================================

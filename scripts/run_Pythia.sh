@@ -104,18 +104,34 @@ collisionSystemStem=$projectile$target"_"`echo $beamEnergy`"GeV_Nev"$Nevents
 		echo '| - '`basename "$0"`': Submitting Pythia job with niceness' $niceness
 
 		# time and run
-		nice -n $niceness ./run_BEeffects_OpenMP.sh \
-			$projectile $target \
-			$PYTHIA_RESULTS_DIRECTORY \
-			pythiaHBT::beam_energy=$beamEnergy \
-			pythiaHBT::number_of_events=$Nevents \
-			pythiaHBT::chosenParticleID=$chosenHBTparticle \
-			pythiaHBT::lowerLimit=$lowerLimit \
-			pythiaHBT::upperLimit=$upperLimit \
-			pythiaHBT::bmin=$bMin \
-			pythiaHBT::bmax=$bMax \
-			pythiaHBT::seed=$datasetSeed \
-			pythiaHBT::output_Bjorken_variables="${boolVal[$storeBjorkenCoordinates]}"
+		if [ "$useHepMCOutputFormat" = true ]
+		then
+			nice -n $niceness ./run_BEeffects_HepMC.sh \
+				$projectile $target \
+				$PYTHIA_RESULTS_DIRECTORY \
+				pythiaHBT::beam_energy=$beamEnergy \
+				pythiaHBT::number_of_events=$Nevents \
+				pythiaHBT::chosenParticleID=$chosenHBTparticle \
+				pythiaHBT::lowerLimit=$lowerLimit \
+				pythiaHBT::upperLimit=$upperLimit \
+				pythiaHBT::bmin=$bMin \
+				pythiaHBT::bmax=$bMax \
+				pythiaHBT::seed=$datasetSeed \
+				pythiaHBT::output_Bjorken_variables="${boolVal[$storeBjorkenCoordinates]}"
+		else
+			nice -n $niceness ./run_BEeffects_OpenMP.sh \
+				$projectile $target \
+				$PYTHIA_RESULTS_DIRECTORY \
+				pythiaHBT::beam_energy=$beamEnergy \
+				pythiaHBT::number_of_events=$Nevents \
+				pythiaHBT::chosenParticleID=$chosenHBTparticle \
+				pythiaHBT::lowerLimit=$lowerLimit \
+				pythiaHBT::upperLimit=$upperLimit \
+				pythiaHBT::bmin=$bMin \
+				pythiaHBT::bmax=$bMax \
+				pythiaHBT::seed=$datasetSeed \
+				pythiaHBT::output_Bjorken_variables="${boolVal[$storeBjorkenCoordinates]}"
+		fi
 
 		# check and report whether run was successful
 		runSuccess=`echo $?`
