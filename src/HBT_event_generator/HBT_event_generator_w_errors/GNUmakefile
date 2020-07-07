@@ -10,7 +10,17 @@
 ##			distclean	remove all objectsfiles and binaries
 ##  
 
-CC := g++-7
+#CC := g++-7
+#ifeq ($(CC),gcc)
+#        $(CC) -o foo $(objects) $(libs_for_gcc)
+#else
+#        $(CC) -o foo $(objects) $(normal_libs)
+#endif
+ifeq (, $(shell which g++-7))
+	CC := g++-7
+else
+	CC := g++
+endif
 #running with icpc
 #CFLAGS= $(shell ../../crank/configure_compiler_C++_Flags.sh)
 #running with g++
