@@ -16,7 +16,7 @@
 #else
 #        $(CC) -o foo $(objects) $(normal_libs)
 #endif
-ifeq (, $(shell which g++-7))
+ifeq (, $(shell command -v g++-7 2> /dev/null))
 	CC := g++-7
 else
 	CC := g++
