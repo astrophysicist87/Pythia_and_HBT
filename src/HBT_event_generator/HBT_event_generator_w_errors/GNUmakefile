@@ -17,9 +17,9 @@
 #        $(CC) -o foo $(objects) $(normal_libs)
 #endif
 ifeq (, $(shell command -v g++-7 2> /dev/null))
-	CC := g++-7
-else
 	CC := g++
+else
+	CC := g++-7
 endif
 #running with icpc
 #CFLAGS= $(shell ../../crank/configure_compiler_C++_Flags.sh)
