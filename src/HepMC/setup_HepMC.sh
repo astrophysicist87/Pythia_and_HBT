@@ -7,7 +7,7 @@ rm -rf build && mkdir build
 cd build
 
 cmake -DCMAKE_INSTALL_PREFIX=. \
-      -DCMAKE_CXX_COMPILER=/usr/bin/g++ \
+      -DCMAKE_CXX_COMPILER=`which g++` \
       -Dmomentum:STRING=GEV \
       -Dlength:STRING=MM \
       ../HepMC-2.06.09
