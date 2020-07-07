@@ -22,6 +22,7 @@ echo '#====================================='
 #rm main_BEeffects_OpenMP
 gmake distclean
 gmake main_BEeffects_OpenMP
+gmake main_BEeffects_HepMC
 success=$[success+`echo $?`]
 
 #=====================================

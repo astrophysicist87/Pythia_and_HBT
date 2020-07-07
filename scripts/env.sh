@@ -8,6 +8,8 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 export HOME_DIRECTORY=`readlink -f $DIR/..`
 export SCRIPTS_DIRECTORY=$HOME_DIRECTORY/scripts
 export SOURCE_DIRECTORY=$HOME_DIRECTORY/src
+# HepMC
+export HEPMC_DIRECTORY=$SOURCE_DIRECTORY/HepMC
 # Pythia
 export versionNumber=8243
 export PYTHIA_DIRECTORY=$SOURCE_DIRECTORY/pythia${versionNumber}/pythiaHBT
