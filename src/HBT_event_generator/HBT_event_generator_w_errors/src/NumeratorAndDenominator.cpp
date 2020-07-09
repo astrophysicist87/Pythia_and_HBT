@@ -619,6 +619,8 @@ void HBT_event_generator::Compute_numerator_and_denominator_momentum_space_only_
 		if ( n_mixing_events < (int)allEvents.size()-1 )
 			std::sample(indices.begin(), indices.end(), std::back_inserter(mixedEvents),
                 n_mixing_events + 1, std::mt19937{std::random_device{}()});
+		else
+			mixedEvents = indices;	// need to have SOME events to mix with!
 
 		//--------------------------------
 		// Randomly rotate sampled events.

@@ -6,7 +6,7 @@
 	#DIRECTORY=results_lema_PbPb2760GeV_Q_and_Dx_limits_part2
 	#NICENESS=19
 	NTHREADS=12
-	DIRECTORY=results_blixen_PbPb2760GeV_Nev10000
+	DIRECTORY=results_blixen_PbPb2760GeV_Nev100
 	NICENESS=0
 
 	# Set job specifications here
@@ -17,7 +17,7 @@
 		##############
 		#blixen
 		##############
-		'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=10000 BEeffects="on" BEEnhancementMode="0" useDistribution="on"'
+		'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=100 BEeffects="on" BEEnhancementMode="0" useDistribution="on"'
 		##############
 		#egan
 		##############
