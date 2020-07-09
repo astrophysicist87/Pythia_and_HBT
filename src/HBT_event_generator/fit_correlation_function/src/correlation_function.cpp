@@ -147,7 +147,7 @@ void Correlation_function::initialize_all(
 	Load_correlation_function( filepath_in );
 
 	// Read in correlation function
-	if ( BE_mode > 0 )
+	if ( BE_mode > 0 and format_with_pairs )
 	{
 		// assume q_mode == 0 for now here
 		Fit_correlation_function_min_logL();

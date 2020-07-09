@@ -175,12 +175,19 @@ then
 	#cp ../parameters.dat .
 	cp ../parameters.dat ./*catalogue.dat $FIT_RESULTS_DIRECTORY
 
+	#default: assume BE effects are turned off in Pythia
+	chosen_BE_mode=0
+	if [ "$BEeffects" == "on" ]; then
+			chosen_BE_mode=1
+	fi
+
 	# time and run
 	nohup time ./run_fit_correlation_function.e \
 			$FIT_RESULTS_DIRECTORY \
 			$FIT_RESULTS_DIRECTORY/parameters.dat \
 			$FIT_RESULTS_DIRECTORY/particle_catalogue.dat \
 			$FIT_RESULTS_DIRECTORY/catalogue.dat \
+			BE_mode=$chosen_BE_mode \
 			1> $FIT_RESULTS_DIRECTORY/fit_correlation_function.out \
 			2> $FIT_RESULTS_DIRECTORY/fit_correlation_function.err
 
