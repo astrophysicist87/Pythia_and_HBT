@@ -7,3 +7,5 @@
 RESULTS*/*
 *.err
 src/HBT_event_generator/fit_correlation_function/results*/*
+src/HepMC/build/*
+src/HepMC/HepMC-2.06.09/*
