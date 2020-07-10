@@ -22,20 +22,35 @@ using namespace std;
 
 //https://indico.cern.ch/category/6015/attachments/192/631/Statistics_Fitting_II.pdf
 
+inline double sigmoid( double x )
+{
+	return ( 2.0/(1.0+exp(-x)) );
+}
+
+inline double dsigmoid_dx( double x )
+{
+	return ( 1.0/(1.0+cosh(x)) );
+}
+
 // Minimize log-likelihood function
 double LogL_PML_f(const gsl_vector *v, void *params)
 {
 	double norm, lambda, R2o, R2s, R2l, R2os, R2ol, R2sl;
 	correlationfunction_data * p = (correlationfunction_data *)params;
 	
-	norm   = gsl_vector_get(v, 0);
-	lambda = gsl_vector_get(v, 1);
+	//norm   = gsl_vector_get(v, 0);
+	//lambda = gsl_vector_get(v, 1);
+	norm   = sigmoid( gsl_vector_get(v, 0) );
+	lambda = 0.5 * sigmoid( gsl_vector_get(v, 1) );
 	R2o    = gsl_vector_get(v, 2);
 	R2s    = gsl_vector_get(v, 3);
 	R2l    = gsl_vector_get(v, 4);
 	R2os   = gsl_vector_get(v, 5);
 	R2ol   = gsl_vector_get(v, 6);
 	R2sl   = gsl_vector_get(v, 7);
+
+	// Use this to handle bins with Ak=0 or Bk=0
+	const double eps = 1e-3;
 
 	double chi2PML    = 0.0;
 	size_t datalength = p->datalength;
@@ -51,8 +66,8 @@ double LogL_PML_f(const gsl_vector *v, void *params)
                             +2.0*qo*qs*R2os+2.0*qo*ql*R2ol+2.0*qs*ql*R2sl;
 		double exp_arg    = exp( -qi_qj_R2ij / (hbarC*hbarC) );
 		double Ck         = norm * ( 1.0 + lambda * exp_arg );
-		double arg1       = Ck*(Ak+Bk)/(Ak*(Ck+1.0));
-		double arg2       = (Ak+Bk)/(Bk*(Ck+1.0));
+		double arg1       = ( Ak < eps ) ? 1.0 : Ck*(Ak+Bk)/(Ak*(Ck+1.0));
+		double arg2       = ( Bk < eps ) ? 1.0 : (Ak+Bk)/(Bk*(Ck+1.0));
 
 		chi2PML          += Ak*log(arg1) + Bk*log(arg2);
 	}
@@ -68,8 +83,10 @@ void LogL_PML_df (const gsl_vector *v, void *params, gsl_vector *df)
 	double norm, lambda, R2o, R2s, R2l, R2os, R2ol, R2sl;
 	correlationfunction_data * p = (correlationfunction_data *)params;
 	
-	norm   = gsl_vector_get(v, 0);
-	lambda = gsl_vector_get(v, 1);
+	//norm   = gsl_vector_get(v, 0);
+	//lambda = gsl_vector_get(v, 1);
+	norm   = sigmoid( gsl_vector_get(v, 0) );
+	lambda = 0.5 * sigmoid( gsl_vector_get(v, 1) );
 	R2o    = gsl_vector_get(v, 2);
 	R2s    = gsl_vector_get(v, 3);
 	R2l    = gsl_vector_get(v, 4);
@@ -77,8 +94,13 @@ void LogL_PML_df (const gsl_vector *v, void *params, gsl_vector *df)
 	R2ol   = gsl_vector_get(v, 6);
 	R2sl   = gsl_vector_get(v, 7);
 
+	double dnormdx   = dsigmoid_dx( gsl_vector_get(v, 0) );
+	double dlambdady = 0.5 * dsigmoid_dx( gsl_vector_get(v, 1) );
+
 	double dchi2PML_dnorm   = 0.0;
 	double dchi2PML_dlambda = 0.0;
+	double dchi2PML_dx      = 0.0;	// for minimization
+	double dchi2PML_dy      = 0.0;  // for minimization
 	double dchi2PML_dR2o    = 0.0;
 	double dchi2PML_dR2s    = 0.0;
 	double dchi2PML_dR2l    = 0.0;
@@ -113,6 +135,8 @@ void LogL_PML_df (const gsl_vector *v, void *params, gsl_vector *df)
 
 		dchi2PML_dnorm   += prefactor*dCdnorm;
 		dchi2PML_dlambda += prefactor*dCdlambda;
+		dchi2PML_dx      += prefactor*dCdnorm*dnormdx;
+		dchi2PML_dy      += prefactor*dCdlambda*dlambdady;
 		dchi2PML_dR2o    += prefactor*dCdR2o;
 		dchi2PML_dR2s    += prefactor*dCdR2s;
 		dchi2PML_dR2l    += prefactor*dCdR2l;
@@ -238,9 +262,9 @@ void Correlation_function::fit_correlationfunction_minimum_log_likelihood(int iK
 		if (status == GSL_SUCCESS)
 		printf ("Minimum found at:\n");
 		
-		printf ("%5d %.5f %.5f %10.5f\n", iter,
-				gsl_vector_get (s->x, 0),
-				gsl_vector_get (s->x, 1),
+		printf ("%5d %10.8f %10.8f %10.8f %10.8f %10.8f %10.8f %10.8f %10.8f\n", iter,
+				sigmoid( gsl_vector_get (s->x, 0) ),
+				0.5 * sigmoid( gsl_vector_get (s->x, 1) ),
 				gsl_vector_get (s->x, 2),
 				gsl_vector_get (s->x, 3),
 				gsl_vector_get (s->x, 4),
