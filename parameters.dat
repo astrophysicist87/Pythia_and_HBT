@@ -200,7 +200,7 @@ use_LCMS 										= 1
 
 # --
 # for BE_mode > 0, how to format output
-format_with_pairs								= 1
+format_with_pairs								= 0
 
 
 # --

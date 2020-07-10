@@ -2,12 +2,12 @@
 
 (
 	# info for this run
-	#NTHREADS=64
-	#DIRECTORY=results_lema_PbPb2760GeV_Q_and_Dx_limits_part2
-	#NICENESS=19
-	NTHREADS=12
-	DIRECTORY=results_blixen_PbPb2760GeV_Nev100
-	NICENESS=0
+	NTHREADS=64
+	DIRECTORY=results_lema_PbPb2760GeV_Q_and_Dx_limits_part2
+	NICENESS=19
+	#NTHREADS=12
+	#DIRECTORY=results_blixen_PbPb2760GeV_Nev100
+	#NICENESS=0
 
 	# Set job specifications here
 	#declare -a class_ranges=("1-11" "12-16" "17-22" "23-28" "29-34" "35-41" "42-51" "52-151" "152-1000000")
@@ -17,7 +17,7 @@
 		##############
 		#blixen
 		##############
-		'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=100 BEeffects="on" BEEnhancementMode="0" useDistribution="on"'
+		#'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=100 BEeffects="on" BEEnhancementMode="0" useDistribution="on"'
 		##############
 		#egan
 		##############
@@ -36,13 +36,13 @@
 		#'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=10000 BEeffects="on" shiftingSet="1" compensationSet="1" compensationMode="1" compensationVersion="3"'
 		#'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=10000 BEeffects="on" shiftingSet="1" compensationSet="2" compensationMode="1" compensationVersion="3"'
 		#'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=10000 BEeffects="on" shiftingSet="0" compensationSet="1" compensationMode="1" compensationVersion="3"'
-		#'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=10000'
-		#'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=10000 BEeffects="on" shiftingSet="1" compensationSet="1" compensationMode="2" compensationVersion="0"'
-		#'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=10000 BEeffects="on" shiftingSet="1" compensationSet="2" compensationMode="2" compensationVersion="0"'
-		#'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=10000 BEeffects="on" shiftingSet="0" compensationSet="1" compensationMode="2" compensationVersion="0"'
-		#'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=10000 BEeffects="on" shiftingSet="1" compensationSet="1" compensationMode="2" compensationVersion="3"'
-		#'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=10000 BEeffects="on" shiftingSet="1" compensationSet="2" compensationMode="2" compensationVersion="3"'
-		#'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=10000 BEeffects="on" shiftingSet="0" compensationSet="1" compensationMode="2" compensationVersion="3"'
+		'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=10000'
+		'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=10000 BEeffects="on" shiftingSet="1" compensationSet="1" compensationMode="2" compensationVersion="0"'
+		'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=10000 BEeffects="on" shiftingSet="1" compensationSet="2" compensationMode="2" compensationVersion="0"'
+		'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=10000 BEeffects="on" shiftingSet="0" compensationSet="1" compensationMode="2" compensationVersion="0"'
+		'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=10000 BEeffects="on" shiftingSet="1" compensationSet="1" compensationMode="2" compensationVersion="3"'
+		'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=10000 BEeffects="on" shiftingSet="1" compensationSet="2" compensationMode="2" compensationVersion="3"'
+		'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=10000 BEeffects="on" shiftingSet="0" compensationSet="1" compensationMode="2" compensationVersion="3"'
 	)
 
 	#-----------------------------------------------------
