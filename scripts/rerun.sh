@@ -7,8 +7,8 @@ source scripts/env.sh
 mv settings.sh scripts/defaults.sh
 
 export niceness=0
-cp parameters $PYTHIA_DIRECTORY
-cp parameters $HBT_DIRECTORY
+cp parameters.dat $PYTHIA_DIRECTORY
+cp parameters.dat $HBT_DIRECTORY
 
 # Width is 80 spaces
 echo '<<<==========================================================================>>>' >> driver.out
