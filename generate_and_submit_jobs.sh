@@ -2,9 +2,9 @@
 
 (
 	# info for this run
-	NTHREADS=64
+	NTHREADS=1
 	DIRECTORY=results_pp_7TeV_N60000000_wRescattering
-	NICENESS=19
+	NICENESS=0
 	#NTHREADS=12
 	#DIRECTORY=results_blixen_PbPb2760GeV_Nev1000
 	#NICENESS=0
