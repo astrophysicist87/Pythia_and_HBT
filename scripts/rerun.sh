@@ -1,7 +1,14 @@
 #! /usr/bin/env bash
+#-------------------
+
+source scripts/env.sh
 
 # Overwrite current defaults file with settings of previous run
 mv settings.sh scripts/defaults.sh
+
+export niceness=0
+cp parameters $PYTHIA_DIRECTORY
+cp parameters $HBT_DIRECTORY
 
 # Width is 80 spaces
 echo '<<<==========================================================================>>>' >> driver.out

@@ -84,18 +84,21 @@ collisionSystemStem=$projectile$target"_"`echo $beamEnergy`"GeV_Nev"$Nevents
 		# New Pythia options, flags, parameters, etc.
 		# which I've added myself (not generally compatible yet)
 		# Comment out lines below this one if running on unmodified Pythia
-		echo 'BoseEinstein:enhanceMode ='                 $BEEnhancementMode            >> $PYTHIA_CMND_FILE
-		echo 'BoseEinstein:useInvariantSourceSize ='      $useInvariantSourceSize       >> $PYTHIA_CMND_FILE
-		echo 'BoseEinstein:useDistribution ='             $useDistribution              >> $PYTHIA_CMND_FILE
-		echo 'BoseEinstein:useRelativeDistance ='         $useRelativeDistance          >> $PYTHIA_CMND_FILE
-		echo 'BoseEinstein:useRestFrame ='                $useRestFrame                 >> $PYTHIA_CMND_FILE
-		echo 'BoseEinstein:includePhaseSpace ='           $includePhaseSpace            >> $PYTHIA_CMND_FILE
-		echo 'BoseEinstein:linearInterpolateCDF ='        $linearInterpolateCDF         >> $PYTHIA_CMND_FILE
-		echo 'BoseEinstein:computeBEEnhancementExactly =' $computeBEEnhancementExactly  >> $PYTHIA_CMND_FILE
-		echo 'BoseEinstein:shiftingSet ='                 $shiftingSet                  >> $PYTHIA_CMND_FILE
-		echo 'BoseEinstein:compensationSet ='             $compensationSet              >> $PYTHIA_CMND_FILE
-		echo 'BoseEinstein:compensationMode ='            $compensationMode             >> $PYTHIA_CMND_FILE
-		echo 'BoseEinstein:compensationVersion ='         $compensationVersion          >> $PYTHIA_CMND_FILE
+		if [ $PYTHIAVersionNumber -eq 8243 ]
+		then
+			echo 'BoseEinstein:enhanceMode ='                 $BEEnhancementMode            >> $PYTHIA_CMND_FILE
+			echo 'BoseEinstein:useInvariantSourceSize ='      $useInvariantSourceSize       >> $PYTHIA_CMND_FILE
+			echo 'BoseEinstein:useDistribution ='             $useDistribution              >> $PYTHIA_CMND_FILE
+			echo 'BoseEinstein:useRelativeDistance ='         $useRelativeDistance          >> $PYTHIA_CMND_FILE
+			echo 'BoseEinstein:useRestFrame ='                $useRestFrame                 >> $PYTHIA_CMND_FILE
+			echo 'BoseEinstein:includePhaseSpace ='           $includePhaseSpace            >> $PYTHIA_CMND_FILE
+			echo 'BoseEinstein:linearInterpolateCDF ='        $linearInterpolateCDF         >> $PYTHIA_CMND_FILE
+			echo 'BoseEinstein:computeBEEnhancementExactly =' $computeBEEnhancementExactly  >> $PYTHIA_CMND_FILE
+			echo 'BoseEinstein:shiftingSet ='                 $shiftingSet                  >> $PYTHIA_CMND_FILE
+			echo 'BoseEinstein:compensationSet ='             $compensationSet              >> $PYTHIA_CMND_FILE
+			echo 'BoseEinstein:compensationMode ='            $compensationMode             >> $PYTHIA_CMND_FILE
+			echo 'BoseEinstein:compensationVersion ='         $compensationVersion          >> $PYTHIA_CMND_FILE
+		fi
 
 		# Default is now to compute all events in Pythia from the get-go
 		lowerLimit=0
