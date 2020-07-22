@@ -11,7 +11,7 @@ export SOURCE_DIRECTORY=$HOME_DIRECTORY/src
 # HepMC
 export HEPMC_DIRECTORY=$SOURCE_DIRECTORY/HepMC
 # Pythia
-export PYTHIAVersionNumber=8303
+export PYTHIAVersionNumber=8243
 export PYTHIA_DIRECTORY=$SOURCE_DIRECTORY/pythia${PYTHIAVersionNumber}/pythiaHBT
 # HBT event generator
 export HBT_DIRECTORY=$SOURCE_DIRECTORY/HBT_event_generator
