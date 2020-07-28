@@ -673,6 +673,7 @@ if (false)
 			int charged_hadron_multiplicity = 0;    // N_{ch}
 			int Nch_absEta_lt_0_5 = 0;              // N_{ch}|_{|\eta|<=0.5}
 			int Nch_absEta_lt_1_2 = 0;              // N_{ch}|_{|\eta|<=1.2}
+			int Nch_V0A = 0;              			// N_{ch}|_{2.8<=\eta<=5.1}
 
 			// vector to hold number of each HBT particle species
 			vector<int> HBT_particle_multiplicities(HBT_particle_IDs.size(), 0);
@@ -705,6 +706,8 @@ if (false)
 								if ( abs_p_eta < 0.5 )
 									Nch_absEta_lt_0_5++;
 							}
+							if ( 2.8 <= p.eta() and p.eta() <= 5.1 )
+								Nch_V0A++;
 						}
 
 						// i.e., is pion(+) or another HBT particle in the HBT_particle_IDs map
@@ -866,7 +869,8 @@ if (false)
 
 					outMultiplicities
 								<< "   " << Nch_absEta_lt_1_2
-								<< "   " << dNch_deta_absEta_lt_0_5;
+								<< "   " << dNch_deta_absEta_lt_0_5
+								<< "   " << Nch_V0A;
 
 					// output particle multiplicities with |eta|<=1.2
 					for ( int iHBTParticle = 0; iHBTParticle < (int)HBT_particle_IDs.size(); ++iHBTParticle )

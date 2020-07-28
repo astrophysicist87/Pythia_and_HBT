@@ -2,9 +2,9 @@
 
 (
 	# info for this run
-	NTHREADS=64
-	DIRECTORY=results_PbPb_2.76TeV_Nev10000
-	#DIRECTORY=results_lema_test
+	NTHREADS=32
+	#DIRECTORY=results_PbPb_2.76TeV_Nev10000
+	DIRECTORY=results_egan_test
 	NICENESS=19
 	#NTHREADS=12
 	#DIRECTORY=results_blixen_PbPb2760GeV_Nev1000
@@ -23,6 +23,7 @@
 		#egan
 		##############
 		#'projectile="p" target="p" beamEnergy="7000" Nevents=60000000 eventClassSelectionMode="multiplicity" SetPartonVertices="on"'
+		'projectile="p" target="p" beamEnergy="7000" Nevents=1000000'
 		##############
 		#lema
 		##############
@@ -32,7 +33,7 @@
 		#'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=10000 BEeffects="on" shiftingSet="1" compensationSet="1" compensationMode="1" compensationVersion="3"'
 		#'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=10000 BEeffects="on" shiftingSet="1" compensationSet="2" compensationMode="1" compensationVersion="3"'
 		#'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=10000 BEeffects="on" shiftingSet="0" compensationSet="1" compensationMode="1" compensationVersion="3"'
-		'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=10000'
+		#'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=10000'
 		#'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=10000 BEeffects="on" shiftingSet="1" compensationSet="1" compensationMode="2" compensationVersion="0"'
 		#'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=10000 BEeffects="on" shiftingSet="1" compensationSet="2" compensationMode="2" compensationVersion="0"'
 		#'projectile="Pb" target="Pb" beamEnergy="2760" Nevents=10000 BEeffects="on" shiftingSet="0" compensationSet="1" compensationMode="2" compensationVersion="0"'
