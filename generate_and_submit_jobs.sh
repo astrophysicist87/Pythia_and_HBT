@@ -4,7 +4,7 @@
 	# info for this run
 	NTHREADS=32
 	#DIRECTORY=results_PbPb_2.76TeV_Nev10000
-	DIRECTORY=results_egan_test
+	DIRECTORY=results_egan_test2
 	NICENESS=19
 	#NTHREADS=12
 	#DIRECTORY=results_blixen_PbPb2760GeV_Nev1000
