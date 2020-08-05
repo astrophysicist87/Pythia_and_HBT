@@ -36,6 +36,21 @@ struct correlationfunction_data
 	vector<double> A, B;	//numerator, denominator
 };
 
+struct Correlationfunction3D_data
+{
+	size_t data_length;
+	vector<double> q_o;
+	vector<double> q_s;
+	vector<double> q_l;
+	vector<double> y;
+	vector<double> sigma;
+};
+
+int Fittarget_correlfun3D_f_withlambda (const gsl_vector *xvec_ptr, void *params_ptr, gsl_vector *f_ptr);
+int Fittarget_correlfun3D_df_withlambda (const gsl_vector *xvec_ptr, void *params_ptr,	gsl_matrix *Jacobian_ptr);
+int Fittarget_correlfun3D_fdf_withlambda (const gsl_vector* xvec_ptr, void *params_ptr, gsl_vector* f_ptr, gsl_matrix* Jacobian_ptr);
+
+
 class Correlation_function
 {
 	private:
