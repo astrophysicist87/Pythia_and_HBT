@@ -47,10 +47,15 @@ int print_fit_state_3D_withlambda (size_t iteration, gsl_multifit_fdfsolver * so
 		<< "  x = {" << setw (width) << gsl_vector_get (solver_ptr->x, 0)
 		<< setw (width) << gsl_vector_get (solver_ptr->x, 1)
 		<< setw (width) << gsl_vector_get (solver_ptr->x, 2)
-		<< setw (width) << gsl_vector_get (solver_ptr->x, 3)
+		<< setw (width) << gsl_vector_get (solver_ptr->x, 3);
+	if ( include_cross_terms )
+	{
+		cout
 		<< setw (width) << gsl_vector_get (solver_ptr->x, 4)
 		<< setw (width) << gsl_vector_get (solver_ptr->x, 5)
-		<< setw (width) << gsl_vector_get (solver_ptr->x, 6)
+		<< setw (width) << gsl_vector_get (solver_ptr->x, 6);
+	}
+	cout
 		<< "}, |f(x)| = " << scientific << gsl_blas_dnrm2 (solver_ptr->f) 
 		<< endl << endl;
 
@@ -72,16 +77,24 @@ int Fittarget_correlfun3D_f_withlambda (const gsl_vector *xvec_ptr, void *params
 	double R2_o = gsl_vector_get (xvec_ptr, 1);
 	double R2_s = gsl_vector_get (xvec_ptr, 2);
 	double R2_l = gsl_vector_get (xvec_ptr, 3);
-	double R2_os = gsl_vector_get (xvec_ptr, 4);
-	double R2_ol = gsl_vector_get (xvec_ptr, 5);
-	double R2_sl = gsl_vector_get (xvec_ptr, 6);
+	//double R2_os = gsl_vector_get (xvec_ptr, 4);
+	//double R2_ol = gsl_vector_get (xvec_ptr, 5);
+	//double R2_sl = gsl_vector_get (xvec_ptr, 6);
+	double R2_os, R2_ol, R2_sl;
+	if ( include_cross_terms )
+	{
+		R2_os = gsl_vector_get (xvec_ptr, 4);
+		R2_ol = gsl_vector_get (xvec_ptr, 5);
+		R2_sl = gsl_vector_get (xvec_ptr, 6);
+	}
 
 	size_t i;
+	const double cross_terms_factor = ( include_cross_terms ) ? 1.0 : 0.0;
 
 	for (i = 0; i < n; i++)
 	{
 		double Yi = lambda*exp( -q_l[i]*q_l[i]*R2_l - q_s[i]*q_s[i]*R2_s - q_o[i]*q_o[i]*R2_o
-                                - 2.*q_o[i]*q_s[i]*R2_os - 2.*q_o[i]*q_l[i]*R2_ol - 2.*q_s[i]*q_l[i]*R2_sl);
+                    - cross_terms_factor * ( 2.*q_o[i]*q_s[i]*R2_os + 2.*q_o[i]*q_l[i]*R2_ol + 2.*q_s[i]*q_l[i]*R2_sl) );
 		gsl_vector_set (f_ptr, i, (Yi - y[i]) / sigma[i]);
 	}
 
@@ -102,11 +115,19 @@ int Fittarget_correlfun3D_df_withlambda (const gsl_vector *xvec_ptr, void *param
 	double R2_o = gsl_vector_get (xvec_ptr, 1);
 	double R2_s = gsl_vector_get (xvec_ptr, 2);
 	double R2_l = gsl_vector_get (xvec_ptr, 3);
-	double R2_os = gsl_vector_get (xvec_ptr, 4);
-	double R2_ol = gsl_vector_get (xvec_ptr, 5);
-	double R2_sl = gsl_vector_get (xvec_ptr, 6);
+	//double R2_os = gsl_vector_get (xvec_ptr, 4);
+	//double R2_ol = gsl_vector_get (xvec_ptr, 5);
+	//double R2_sl = gsl_vector_get (xvec_ptr, 6);
+	double R2_os, R2_ol, R2_sl;
+	if ( include_cross_terms )
+	{
+		R2_os = gsl_vector_get (xvec_ptr, 4);
+		R2_ol = gsl_vector_get (xvec_ptr, 5);
+		R2_sl = gsl_vector_get (xvec_ptr, 6);
+	}
 
 	size_t i;
+	const double cross_terms_factor = ( include_cross_terms ) ? 1.0 : 0.0;
 
 	for (i = 0; i < n; i++)
 	{
@@ -114,15 +135,18 @@ int Fittarget_correlfun3D_df_withlambda (const gsl_vector *xvec_ptr, void *param
 
 		//derivatives
 		double common_elemt = exp( -q_l[i]*q_l[i]*R2_l - q_s[i]*q_s[i]*R2_s - q_o[i]*q_o[i]*R2_o
-                                   - 2.*q_o[i]*q_s[i]*R2_os - 2.*q_o[i]*q_l[i]*R2_ol - 2.*q_s[i]*q_l[i]*R2_sl);
+                    - cross_terms_factor * ( 2.*q_o[i]*q_s[i]*R2_os + 2.*q_o[i]*q_l[i]*R2_ol + 2.*q_s[i]*q_l[i]*R2_sl) );
       
 		gsl_matrix_set (Jacobian_ptr, i, 0, common_elemt/sig);
 		gsl_matrix_set (Jacobian_ptr, i, 1, - lambda*q_o[i]*q_o[i]*common_elemt/sig);
 		gsl_matrix_set (Jacobian_ptr, i, 2, - lambda*q_s[i]*q_s[i]*common_elemt/sig);
 		gsl_matrix_set (Jacobian_ptr, i, 3, - lambda*q_l[i]*q_l[i]*common_elemt/sig);
-		gsl_matrix_set (Jacobian_ptr, i, 4, - 2.*lambda*q_o[i]*q_s[i]*common_elemt/sig);
-		gsl_matrix_set (Jacobian_ptr, i, 5, - 2.*lambda*q_o[i]*q_l[i]*common_elemt/sig);
-		gsl_matrix_set (Jacobian_ptr, i, 6, - 2.*lambda*q_s[i]*q_l[i]*common_elemt/sig);
+		if ( include_cross_terms )
+		{
+			gsl_matrix_set (Jacobian_ptr, i, 4, - 2.*lambda*q_o[i]*q_s[i]*common_elemt/sig);
+			gsl_matrix_set (Jacobian_ptr, i, 5, - 2.*lambda*q_o[i]*q_l[i]*common_elemt/sig);
+			gsl_matrix_set (Jacobian_ptr, i, 6, - 2.*lambda*q_s[i]*q_l[i]*common_elemt/sig);
+		}
 	}
 
 	return GSL_SUCCESS;
@@ -141,7 +165,7 @@ int Fittarget_correlfun3D_fdf_withlambda (const gsl_vector* xvec_ptr, void *para
 void Correlation_function::fit_correlationfunction_GF_lsq( int iKT, int iKphi, int iKL )
 {
 	const int VERBOSE = 10;
-	const size_t n_para = 7;  // # of parameters
+	const size_t n_para = ( include_cross_terms ) ? 7 : 4;  // # of parameters
 
 	// allocate space for a covariance matrix of size p by p
 	gsl_matrix *covariance_ptr = gsl_matrix_alloc (n_para, n_para);
@@ -277,16 +301,20 @@ void Correlation_function::fit_correlationfunction_GF_lsq( int iKT, int iKphi, i
 	R2_out[iKT_iKphi_idx] 				= fabs(get_fit_results(1, solver_ptr))*hbarC*hbarC;
 	R2_side[iKT_iKphi_idx] 				= fabs(get_fit_results(2, solver_ptr))*hbarC*hbarC;
 	R2_long[iKT_iKphi_idx] 				= fabs(get_fit_results(3, solver_ptr))*hbarC*hbarC;
-	R2_outside[iKT_iKphi_idx] 			= get_fit_results(4, solver_ptr)*hbarC*hbarC;
-	R2_outlong[iKT_iKphi_idx] 			= get_fit_results(5, solver_ptr)*hbarC*hbarC;
-	R2_sidelong[iKT_iKphi_idx] 			= get_fit_results(6, solver_ptr)*hbarC*hbarC;
 	R2_out_err[iKT_iKphi_idx] 			= c*get_fit_err(1, covariance_ptr)*hbarC*hbarC;
 	R2_side_err[iKT_iKphi_idx] 			= c*get_fit_err(2, covariance_ptr)*hbarC*hbarC;
 	R2_long_err[iKT_iKphi_idx] 			= c*get_fit_err(3, covariance_ptr)*hbarC*hbarC;
-	R2_outside_err[iKT_iKphi_idx] 		= c*get_fit_err(4, covariance_ptr)*hbarC*hbarC;
-	R2_outlong_err[iKT_iKphi_idx] 		= c*get_fit_err(5, covariance_ptr)*hbarC*hbarC;
-	R2_sidelong_err[iKT_iKphi_idx] 		= c*get_fit_err(6, covariance_ptr)*hbarC*hbarC;
 
+
+	if ( include_cross_terms )
+	{
+		R2_outside[iKT_iKphi_idx] 			= get_fit_results(4, solver_ptr)*hbarC*hbarC;
+		R2_outlong[iKT_iKphi_idx] 			= get_fit_results(5, solver_ptr)*hbarC*hbarC;
+		R2_sidelong[iKT_iKphi_idx] 			= get_fit_results(6, solver_ptr)*hbarC*hbarC;
+		R2_outside_err[iKT_iKphi_idx] 		= c*get_fit_err(4, covariance_ptr)*hbarC*hbarC;
+		R2_outlong_err[iKT_iKphi_idx] 		= c*get_fit_err(5, covariance_ptr)*hbarC*hbarC;
+		R2_sidelong_err[iKT_iKphi_idx] 		= c*get_fit_err(6, covariance_ptr)*hbarC*hbarC;
+	}
 
 
 	//clean up
