@@ -243,7 +243,8 @@ void Correlation_function::fit_correlationfunction_GF_lsq( int iKT, int iKphi, i
 				<< Correlfun3D_data.q_l.size() << "   "
 				<< Correlfun3D_data.y.size() << "   "
 				<< Correlfun3D_data.sigma.size() << endl;
-		exit(8);
+		//exit(8);
+		return;
 	}
 
 	// initial guesses of parameters
