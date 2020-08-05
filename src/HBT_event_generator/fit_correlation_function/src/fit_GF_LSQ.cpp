@@ -13,6 +13,8 @@
 
 using namespace std;
 
+bool including_cross_terms;
+
 void Correlation_function::Fit_correlation_function_GF_LSQ()
 {
 
@@ -48,7 +50,7 @@ int print_fit_state_3D_withlambda (size_t iteration, gsl_multifit_fdfsolver * so
 		<< setw (width) << gsl_vector_get (solver_ptr->x, 1)
 		<< setw (width) << gsl_vector_get (solver_ptr->x, 2)
 		<< setw (width) << gsl_vector_get (solver_ptr->x, 3);
-	if ( include_cross_terms )
+	if ( including_cross_terms )
 	{
 		cout
 		<< setw (width) << gsl_vector_get (solver_ptr->x, 4)
@@ -81,7 +83,7 @@ int Fittarget_correlfun3D_f_withlambda (const gsl_vector *xvec_ptr, void *params
 	//double R2_ol = gsl_vector_get (xvec_ptr, 5);
 	//double R2_sl = gsl_vector_get (xvec_ptr, 6);
 	double R2_os, R2_ol, R2_sl;
-	if ( include_cross_terms )
+	if ( including_cross_terms )
 	{
 		R2_os = gsl_vector_get (xvec_ptr, 4);
 		R2_ol = gsl_vector_get (xvec_ptr, 5);
@@ -89,7 +91,7 @@ int Fittarget_correlfun3D_f_withlambda (const gsl_vector *xvec_ptr, void *params
 	}
 
 	size_t i;
-	const double cross_terms_factor = ( include_cross_terms ) ? 1.0 : 0.0;
+	const double cross_terms_factor = ( including_cross_terms ) ? 1.0 : 0.0;
 
 	for (i = 0; i < n; i++)
 	{
@@ -119,7 +121,7 @@ int Fittarget_correlfun3D_df_withlambda (const gsl_vector *xvec_ptr, void *param
 	//double R2_ol = gsl_vector_get (xvec_ptr, 5);
 	//double R2_sl = gsl_vector_get (xvec_ptr, 6);
 	double R2_os, R2_ol, R2_sl;
-	if ( include_cross_terms )
+	if ( including_cross_terms )
 	{
 		R2_os = gsl_vector_get (xvec_ptr, 4);
 		R2_ol = gsl_vector_get (xvec_ptr, 5);
@@ -127,7 +129,7 @@ int Fittarget_correlfun3D_df_withlambda (const gsl_vector *xvec_ptr, void *param
 	}
 
 	size_t i;
-	const double cross_terms_factor = ( include_cross_terms ) ? 1.0 : 0.0;
+	const double cross_terms_factor = ( including_cross_terms ) ? 1.0 : 0.0;
 
 	for (i = 0; i < n; i++)
 	{
@@ -141,7 +143,7 @@ int Fittarget_correlfun3D_df_withlambda (const gsl_vector *xvec_ptr, void *param
 		gsl_matrix_set (Jacobian_ptr, i, 1, - lambda*q_o[i]*q_o[i]*common_elemt/sig);
 		gsl_matrix_set (Jacobian_ptr, i, 2, - lambda*q_s[i]*q_s[i]*common_elemt/sig);
 		gsl_matrix_set (Jacobian_ptr, i, 3, - lambda*q_l[i]*q_l[i]*common_elemt/sig);
-		if ( include_cross_terms )
+		if ( including_cross_terms )
 		{
 			gsl_matrix_set (Jacobian_ptr, i, 4, - 2.*lambda*q_o[i]*q_s[i]*common_elemt/sig);
 			gsl_matrix_set (Jacobian_ptr, i, 5, - 2.*lambda*q_o[i]*q_l[i]*common_elemt/sig);
@@ -166,6 +168,7 @@ void Correlation_function::fit_correlationfunction_GF_lsq( int iKT, int iKphi, i
 {
 	const int VERBOSE = 10;
 	const size_t n_para = ( include_cross_terms ) ? 7 : 4;  // # of parameters
+	including_cross_terms = include_cross_terms;
 
 	// allocate space for a covariance matrix of size p by p
 	gsl_matrix *covariance_ptr = gsl_matrix_alloc (n_para, n_para);
@@ -236,9 +239,10 @@ void Correlation_function::fit_correlationfunction_GF_lsq( int iKT, int iKphi, i
 	}
 
 	// initial guesses of parameters
-	double para_init[n_para] = ( include_cross_terms ) ?
-                               { 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0 } :
-                               { 1.0, 1.0, 1.0, 1.0 };
+	double para_init7[7] = { 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0 };
+	double para_init4[4] = { 1.0, 1.0, 1.0, 1.0 };
+
+	double para_init[n_para] = ( include_cross_terms ) ? para_init7 : para_init4;
 
 	gsl_vector_view xvec_ptr = gsl_vector_view_array (para_init, n_para);
   
