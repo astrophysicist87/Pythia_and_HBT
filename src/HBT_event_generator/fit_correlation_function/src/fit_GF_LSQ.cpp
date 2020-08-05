@@ -235,8 +235,10 @@ void Correlation_function::fit_correlationfunction_GF_lsq( int iKT, int iKphi, i
 		exit(8);
 	}
 
-
-	double para_init[n_para] = { 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0 };  // initial guesses of parameters
+	// initial guesses of parameters
+	double para_init[n_para] = ( include_cross_terms ) ?
+                               { 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0 } :
+                               { 1.0, 1.0, 1.0, 1.0 };
 
 	gsl_vector_view xvec_ptr = gsl_vector_view_array (para_init, n_para);
   
