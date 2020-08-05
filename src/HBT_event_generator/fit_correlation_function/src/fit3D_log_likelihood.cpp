@@ -32,25 +32,36 @@ inline double dsigmoid_dx( double x )
 	return ( 1.0/(1.0+cosh(x)) );
 }
 
+bool INCLUDING_CROSS_TERMS;
+
 // Minimize log-likelihood function
 double LogL_PML_f(const gsl_vector *v, void *params)
 {
-	double norm, lambda, R2o, R2s, R2l, R2os, R2ol, R2sl;
+	double sqrt_norm, sqrt_lambda;
+	double norm, lambda, R2o, R2s, R2l;
+	double R2os = 0.0, R2ol = 0.0, R2sl = 0.0;
 	correlationfunction_data * p = (correlationfunction_data *)params;
 	
+	sqrt_norm = gsl_vector_get(v, 0);
+	sqrt_lambda = gsl_vector_get(v, 1);
+	norm   = sqrt_norm*sqrt_norm;
+	lambda = sqrt_lambda*sqrt_lambda;
 	//norm   = gsl_vector_get(v, 0);
 	//lambda = gsl_vector_get(v, 1);
-	norm   = sigmoid( gsl_vector_get(v, 0) );
-	lambda = 0.5 * sigmoid( gsl_vector_get(v, 1) );
+	////norm   = sigmoid( gsl_vector_get(v, 0) );
+	////lambda = sigmoid( gsl_vector_get(v, 1) );
 	R2o    = gsl_vector_get(v, 2);
 	R2s    = gsl_vector_get(v, 3);
 	R2l    = gsl_vector_get(v, 4);
-	R2os   = gsl_vector_get(v, 5);
-	R2ol   = gsl_vector_get(v, 6);
-	R2sl   = gsl_vector_get(v, 7);
+	if (INCLUDING_CROSS_TERMS)
+	{
+		R2os   = gsl_vector_get(v, 5);
+		R2ol   = gsl_vector_get(v, 6);
+		R2sl   = gsl_vector_get(v, 7);
+	}
 
 	// Use this to handle bins with Ak=0 or Bk=0
-	const double eps = 1e-3;
+	const double eps = 1e-10;
 
 	double chi2PML    = 0.0;
 	size_t datalength = p->datalength;
@@ -68,7 +79,7 @@ double LogL_PML_f(const gsl_vector *v, void *params)
 		double Ck         = norm * ( 1.0 + lambda * exp_arg );
 		double arg1       = ( Ak < eps ) ? 1.0 : Ck*(Ak+Bk)/(Ak*(Ck+1.0));
 		double arg2       = ( Bk < eps ) ? 1.0 : (Ak+Bk)/(Bk*(Ck+1.0));
-
+//cout << Ak << "   " << Bk << "   " << Ck << "   " << arg1 << "   " << arg2 << "   " << norm  << "   " << lambda << endl;
 		chi2PML          += Ak*log(arg1) + Bk*log(arg2);
 	}
 
@@ -80,23 +91,34 @@ double LogL_PML_f(const gsl_vector *v, void *params)
 /* The gradient of f, df = (df/dx, df/dy). */
 void LogL_PML_df (const gsl_vector *v, void *params, gsl_vector *df)
 {
-	double norm, lambda, R2o, R2s, R2l, R2os, R2ol, R2sl;
+	double sqrt_norm, sqrt_lambda;
+	double norm, lambda, R2o, R2s, R2l;
+	double R2os = 0.0, R2ol = 0.0, R2sl = 0.0;
 	correlationfunction_data * p = (correlationfunction_data *)params;
 	
+	sqrt_norm = gsl_vector_get(v, 0);
+	sqrt_lambda = gsl_vector_get(v, 1);
+	norm   = sqrt_norm*sqrt_norm;
+	lambda = sqrt_lambda*sqrt_lambda;
 	//norm   = gsl_vector_get(v, 0);
 	//lambda = gsl_vector_get(v, 1);
-	norm   = sigmoid( gsl_vector_get(v, 0) );
-	lambda = 0.5 * sigmoid( gsl_vector_get(v, 1) );
+	////norm   = sigmoid( gsl_vector_get(v, 0) );
+	////lambda = sigmoid( gsl_vector_get(v, 1) );
 	R2o    = gsl_vector_get(v, 2);
 	R2s    = gsl_vector_get(v, 3);
 	R2l    = gsl_vector_get(v, 4);
-	R2os   = gsl_vector_get(v, 5);
-	R2ol   = gsl_vector_get(v, 6);
-	R2sl   = gsl_vector_get(v, 7);
+	if (INCLUDING_CROSS_TERMS)
+	{
+		R2os   = gsl_vector_get(v, 5);
+		R2ol   = gsl_vector_get(v, 6);
+		R2sl   = gsl_vector_get(v, 7);
+	}
 
 	double dnormdx   = dsigmoid_dx( gsl_vector_get(v, 0) );
-	double dlambdady = 0.5 * dsigmoid_dx( gsl_vector_get(v, 1) );
+	double dlambdady = dsigmoid_dx( gsl_vector_get(v, 1) );
 
+	double dchi2PML_dsqrt_norm   = 0.0;
+	double dchi2PML_dsqrt_lambda = 0.0;
 	double dchi2PML_dnorm   = 0.0;
 	double dchi2PML_dlambda = 0.0;
 	double dchi2PML_dx      = 0.0;	// for minimization
@@ -108,6 +130,8 @@ void LogL_PML_df (const gsl_vector *v, void *params, gsl_vector *df)
 	double dchi2PML_dR2ol   = 0.0;
 	double dchi2PML_dR2sl   = 0.0;
 
+	const double eps = 1e-10;
+
 	size_t datalength = p->datalength;
 	for (int k = 0; k < datalength; k++)
 	{
@@ -117,6 +141,9 @@ void LogL_PML_df (const gsl_vector *v, void *params, gsl_vector *df)
 		double Ak = p->A[k];
 		double Bk = p->B[k];
 
+		if ( Ak < eps ) Ak = 0.0;
+		if ( Bk < eps ) Bk = 0.0;
+
 		double qi_qj_R2ij = qo*qo*R2o + qs*qs*R2s + ql*ql*R2l
                             +2.0*qo*qs*R2os+2.0*qo*ql*R2ol+2.0*qs*ql*R2sl;
 		double exp_arg    = exp( -qi_qj_R2ij / (hbarC*hbarC) );
@@ -124,6 +151,8 @@ void LogL_PML_df (const gsl_vector *v, void *params, gsl_vector *df)
 
 		double dCdnorm   = 1.0+lambda*exp_arg;
 		double dCdlambda = norm*exp_arg;
+		double dCdsqrt_norm   = 2.0*sqrt_norm*(1.0+lambda*exp_arg);
+		double dCdsqrt_lambda = 2.0*sqrt_lambda*norm*exp_arg;
 		double dCdR2o    = -norm*lambda*exp_arg*qo*qo/(hbarC*hbarC);
 		double dCdR2s    = -norm*lambda*exp_arg*qs*qs/(hbarC*hbarC);
 		double dCdR2l    = -norm*lambda*exp_arg*ql*ql/(hbarC*hbarC);
@@ -133,6 +162,8 @@ void LogL_PML_df (const gsl_vector *v, void *params, gsl_vector *df)
 
 		double prefactor = -2.0*(Ak - Bk*Ck)/(Ck*(Ck+1.0));
 
+		dchi2PML_dsqrt_norm   += prefactor*dCdsqrt_norm;
+		dchi2PML_dsqrt_lambda += prefactor*dCdsqrt_lambda;
 		dchi2PML_dnorm   += prefactor*dCdnorm;
 		dchi2PML_dlambda += prefactor*dCdlambda;
 		dchi2PML_dx      += prefactor*dCdnorm*dnormdx;
@@ -147,14 +178,21 @@ void LogL_PML_df (const gsl_vector *v, void *params, gsl_vector *df)
 	}
 
 	// Store results for gradient
-	gsl_vector_set(df, 0, dchi2PML_dnorm);
-	gsl_vector_set(df, 1, dchi2PML_dlambda);
+	gsl_vector_set(df, 0, dchi2PML_dsqrt_norm);
+	gsl_vector_set(df, 1, dchi2PML_dsqrt_lambda);
+	//gsl_vector_set(df, 0, dchi2PML_dnorm);
+	//gsl_vector_set(df, 1, dchi2PML_dlambda);
+	////gsl_vector_set(df, 0, dchi2PML_dx);
+	////gsl_vector_set(df, 1, dchi2PML_dy);
 	gsl_vector_set(df, 2, dchi2PML_dR2o);
 	gsl_vector_set(df, 3, dchi2PML_dR2s);
 	gsl_vector_set(df, 4, dchi2PML_dR2l);
-	gsl_vector_set(df, 5, dchi2PML_dR2os);
-	gsl_vector_set(df, 6, dchi2PML_dR2ol);
-	gsl_vector_set(df, 7, dchi2PML_dR2sl);
+	if (INCLUDING_CROSS_TERMS)
+	{
+		gsl_vector_set(df, 5, dchi2PML_dR2os);
+		gsl_vector_set(df, 6, dchi2PML_dR2ol);
+		gsl_vector_set(df, 7, dchi2PML_dR2sl);
+	}
 
 	return;
 }
@@ -202,6 +240,15 @@ void Correlation_function::set_CFdata(correlationfunction_data & CFdata, int iKT
 		CFdata.A.push_back(  numCount[idx] );
 		CFdata.B.push_back(  denCount[idx] );
 
+cout << "Set_CFdata() check: "
+	<< setprecision(12)
+	<< q_out_local << "   "
+	<< q_side_local << "   "
+	<< q_long_local << "   "
+	<< numCount[idx] << "   "
+	<< denCount[idx] << endl;
+cout << "B   " << iKT << "   " << iKphi << "   " << iKL << "   " << i << "   " << j << "   " << k << "   " << numCount[idx] << "   " << denCount[idx] << endl;
+
 		// count this bin
 		n_usable_bins++;
     }
@@ -214,7 +261,7 @@ void Correlation_function::fit_correlationfunction_minimum_log_likelihood(int iK
 {
 	size_t iter = 0;
 	int status;
-	int dim = 8;
+	int dim = (include_cross_terms ) ? 8 : 5;
 	
 	const gsl_multimin_fdfminimizer_type *T;
 	gsl_multimin_fdfminimizer *s;
@@ -236,19 +283,22 @@ void Correlation_function::fit_correlationfunction_minimum_log_likelihood(int iK
 	x = gsl_vector_alloc (dim);
 	gsl_vector_set (x, 0, 1.0);	// overall normalization
 	gsl_vector_set (x, 1, 1.0);	// lambda
-	gsl_vector_set (x, 2, 1.0);	// R2o  (fm)
-	gsl_vector_set (x, 3, 1.0);	// R2s  (fm)
-	gsl_vector_set (x, 4, 1.0);	// R2l  (fm)
-	gsl_vector_set (x, 5, 0.0);	// R2os (fm)
-	gsl_vector_set (x, 6, 0.0);	// R2ol (fm)
-	gsl_vector_set (x, 7, 0.0);	// R2sl (fm)
+	gsl_vector_set (x, 2, 10.0);	// R2o  (fm)
+	gsl_vector_set (x, 3, 10.0);	// R2s  (fm)
+	gsl_vector_set (x, 4, 10.0);	// R2l  (fm)
+	if (include_cross_terms)
+	{
+		gsl_vector_set (x, 5, 0.0);	// R2os (fm)
+		gsl_vector_set (x, 6, 0.0);	// R2ol (fm)
+		gsl_vector_set (x, 7, 0.0);	// R2sl (fm)
+	}
 	
 	
 	T = gsl_multimin_fdfminimizer_conjugate_fr;
 	s = gsl_multimin_fdfminimizer_alloc (T, dim);
 	
 	gsl_multimin_fdfminimizer_set (s, &LogL_PM_func, x, 0.01, 1e-4);
-	
+
 	do
 	{
 		iter++;
@@ -262,9 +312,15 @@ void Correlation_function::fit_correlationfunction_minimum_log_likelihood(int iK
 		if (status == GSL_SUCCESS)
 		printf ("Minimum found at:\n");
 		
+	if (include_cross_terms)
+	{
 		printf ("%5d %10.8f %10.8f %10.8f %10.8f %10.8f %10.8f %10.8f %10.8f\n", iter,
-				sigmoid( gsl_vector_get (s->x, 0) ),
-				0.5 * sigmoid( gsl_vector_get (s->x, 1) ),
+				//gsl_vector_get (s->x, 0),
+				//sigmoid( gsl_vector_get (s->x, 0) ),
+				gsl_vector_get (s->x, 0)*gsl_vector_get (s->x, 0),
+				//gsl_vector_get (s->x, 1),
+				//sigmoid( gsl_vector_get (s->x, 1) ),
+				gsl_vector_get (s->x, 1)*gsl_vector_get (s->x, 1),
 				gsl_vector_get (s->x, 2),
 				gsl_vector_get (s->x, 3),
 				gsl_vector_get (s->x, 4),
@@ -272,9 +328,24 @@ void Correlation_function::fit_correlationfunction_minimum_log_likelihood(int iK
 				gsl_vector_get (s->x, 6),
 				gsl_vector_get (s->x, 7),
 				s->f);
+	}
+	else
+	{
+		printf ("%5d %10.8f %10.8f %10.8f %10.8f %10.8f\n", iter,
+				//gsl_vector_get (s->x, 0),
+				//sigmoid( gsl_vector_get (s->x, 0) ),
+				gsl_vector_get (s->x, 0)*gsl_vector_get (s->x, 0),
+				//gsl_vector_get (s->x, 1),
+				//sigmoid( gsl_vector_get (s->x, 1) ),
+				gsl_vector_get (s->x, 1)*gsl_vector_get (s->x, 1),
+				gsl_vector_get (s->x, 2),
+				gsl_vector_get (s->x, 3),
+				gsl_vector_get (s->x, 4),
+				s->f);
+	}
 		
 	}
-	while (status == GSL_CONTINUE && iter < 100);
+	while (status == GSL_CONTINUE && iter < 10000);
 	
 	gsl_multimin_fdfminimizer_free (s);
 	gsl_vector_free (x);
@@ -284,6 +355,7 @@ void Correlation_function::fit_correlationfunction_minimum_log_likelihood(int iK
 
 void Correlation_function::Fit_correlation_function_min_logL()
 {
+	INCLUDING_CROSS_TERMS = include_cross_terms;
 	out << "--> Getting HBT radii by minimum log-likelihood method" << endl;
 
 	for (int iKT = 0; iKT < n_KT_bins; ++iKT)

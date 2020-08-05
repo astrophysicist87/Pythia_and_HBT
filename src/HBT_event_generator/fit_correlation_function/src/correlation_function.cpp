@@ -216,11 +216,29 @@ void Correlation_function::Load_correlation_function( string filepath )
 			for (int iqs = 0; iqs < n_qs_bins; iqs++)
 			for (int iql = 0; iql < n_ql_bins; iql++)
 			{
-				infile >> dummy >> dummy >> dummy >> dummy >> dummy >> dummy
-						>> numCount[idx] >> dummy
-						>> denCount[idx] >> dummy
+				double numNorm = 0.0;
+				double denNorm = 0.0;
+				double loc_qo, loc_qs, loc_ql;
+				infile >> dummy >> dummy >> dummy >> loc_qo >> loc_qs >> loc_ql
+						>> numCount[idx] >> numNorm
+						>> denCount[idx] >> denNorm
 						>> correlation_function[idx]
 						>> correlation_function_error[idx];
+
+				if (numNorm > 1e-3) numCount[idx] /= numNorm;
+				else numCount[idx] = 0.0;
+	
+				if (denNorm > 1e-3) denCount[idx] /= denNorm;
+				else denCount[idx] = 0.0;
+
+				// this is a cheat...
+				denCount[idx] = 1.0;
+				double loc_R2o = 1.0, loc_R2s = 2.0, loc_R2l = 3.0;
+				numCount[idx] = 1.0+exp(-(loc_qo*loc_qo*loc_R2o
+											+loc_qs*loc_qs*loc_R2s
+											+loc_ql*loc_ql*loc_R2l)
+										/(hbarC*hbarC));
+cout << "A   " << iKT << "   " << iKphi << "   " << iKL << "   " << iqo << "   " << iqs << "   " << iql << "   " << numCount[idx] << "   " << denCount[idx] << endl;
 	
 				++idx;
 			}

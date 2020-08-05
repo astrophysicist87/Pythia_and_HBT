@@ -1,152 +1,232 @@
-#===========
-# width of binning delta (GeV)
-bin_epsilon = 0.01
-use_pz_bin_asymmetry = 0
-pz_bin_factor = 100.0
+#------------------
+# PARAMETERS.DAT
+#------------------
+# Parameters for Pythia in this section
 
-#===========
+# --
+# Collision system parameters
+pythiaHBT::number_of_events 					= 10
+pythiaHBT::max_events_per_file					= 100000
+pythiaHBT::beam_energy 							= 13000 # in GeV
+
+# --
+# Particle for HBT analysis
+pythiaHBT::chosenParticleID 					= 211	# pion^+
+
+# --
+# Mode for selecting events in a given class
+# 0 - use centrality class (default for now)
+# 1 - use multiplicity range
+pythiaHBT::event_selection_mode 				= 0
+pythiaHBT::lowerLimit 							= 0
+pythiaHBT::upperLimit 							= 100
+
+# --
+# Impact parameter range in fm
+pythiaHBT::bmin 								= 0.0
+pythiaHBT::bmax 								= 20.0
+
+# --
+# Computation modes
+pythiaHBT::seed									= 0
+pythiaHBT::thermal_only							= 0
+pythiaHBT::track_unshifted_particles			= 0
+pythiaHBT::output_Bjorken_variables 			= 0
+pythiaHBT::printing_particle_records			= 1
+
+
+#-------------------------------------------
+# Post-processing parameters below this line
+# --
+# width of binning delta (GeV)
+bin_epsilon 									= 0.01
+use_pz_bin_asymmetry 							= 0
+pz_bin_factor 									= 100.0
+
+# --
 # pair momenta
-#=======
+# --
 # KT grid
 # how to set KT points
-KT_grid_mode = 0
-	#=======
+KT_grid_mode 									= 0
+	# --
 	# 0 - linear spacing
 	# 1 - Gaussian quadrature nodes
-	#     (for integrating correlation function)
+	#     (for integrating corr. function)
 
 # KT points
-n_KT_pts = 9
-KTmin = 0.0
-KTmax = 0.8
+n_KT_pts 										= 9
+KTmin 											= 0.0
+KTmax 											= 0.8
 
-#=======
+# --
 # Kphi grid
 # how to set Kphi points
-Kphi_grid_mode = 0
-	#=======
+Kphi_grid_mode 									= 0
+	# --
 	# 0 - linear spacing
 	# 1 - Gaussian quadrature nodes
-	#     (for integrating correlation function)
+	#     (for integrating corr. function)
 
+# --
 # Kphi points
-n_Kphi_pts = 2
+n_Kphi_pts 										= 2
 #Kphimax, Kphimin
 #determined automatically
 
+# --
 # KL grid
-n_KL_pts = 2
-KLmin = -1.0
-KLmax = 1.0
+n_KL_pts 										= 2
+KLmin 											= -1.0
+KLmax 											= 1.0
 
-#===========
+# --
 # relative momenta (3D)
-n_qo_pts = 52
-n_qs_pts = 52
-n_ql_pts = 52
-delta_qo = 0.005
-delta_qs = 0.005
-delta_ql = 0.005
+n_qo_pts 										= 52
+n_qs_pts 										= 52
+n_ql_pts 										= 52
+delta_qo 										= 0.005
+delta_qs 										= 0.005
+delta_ql 										= 0.005
 
+# --
 # relative momentum (1D)
-n_Q_pts = 22
-delta_Q = 0.05
+n_Q_pts 										= 22
+delta_Q 										= 0.05
 
+# --
 # for doing integrations for 1D calculation
-n_qRP_pts = 11
-n_thq_pts = 12
+n_qRP_pts 										= 11
+n_thq_pts 										= 12
 
-#===========
+# --
 # misc. and ensemble parameters
 
-#===========
-# minimum number of mixed events in denominator
-n_mix_minimum = 1000
+# --
+# minimum number of mixed events
+# in denominator
+n_mix_minimum 									= 1000
 
-#===========
+# --
+# number of events to generate
+# correlation function from
+number_of_expected_events						= 10
+
+# --
 # delta function or something else
-bin_mode = 0
+bin_mode 										= 0
 
-#===========
-# whether to use qo-qs-ql (0: 3D) or Q (1: 1D)
-q_mode = 0
+# --
+# whether to use qo-qs-ql;
+# (0: 3D) or Q (1: 1D)
+q_mode 											= 0
 
-#===========
-# if q_mode == 1, scalar_mode sets type of Q variable
+# --
+# if q_mode == 1, scalar_mode sets
+# type of Q variable
 # 0: Lorentz-invariant
 # 1: rotational-invariant
-scalar_mode = 0
+scalar_mode 									= 0
 
-#===========
-# whether to use GEHW method (0), Chun's method (1) or bin-averaging method (2)
-method_mode = 2
+# --
+# whether to use GEHW method (0),
+# Chun's method (1) or
+# bin-averaging method (2)
+method_mode 									= 2
 
-#===========
-# whether or not BE effects are pre-included from Pythia (or other particle/event generator)
-BE_mode = 0
+# --
+# whether or not BE effects are pre-included
+# from Pythia (or other event generator)
+BE_mode 										= 0
 
-#===========
+# --
 # whether to use smoothness approximation
 # (shouldn't matter for Pb-Pb collisions)
 use_smoothness_approximation = 0
 
-#===========
+# --
 # get particles randomly or from file
-file_mode = 1
-	#=======
-	# sub-model options ( if file_mode == 0 )
-	RNG_R = 5.0	#fm
-	RNG_a = 0.2		#GeV/fm
-	RNG_Nev = 10000
-	RNG_mult = 100
-	RNG_xDir = 0
-	RNG_yDir = 0
-	RNG_zDir = 1
-	RNG_seed = 1
-	RNG_nLoops = 1
-	#=======
+file_mode 										= 1
+	# --
+	# sub-model options
+	# ( if file_mode == 0 )
+	RNG_R 										= 5.0	#fm
+	RNG_a 										= 0.2	#GeV/fm
+	RNG_Nev 									= 10000
+	RNG_mult 									= 100
+	RNG_xDir 									= 1
+	RNG_yDir 									= 1
+	RNG_zDir 									= 1
+	RNG_seed 									= 1
+	RNG_nLoops 									= 1
+	# ( if file_mode == 2 )
+	dataset_to_use								= -1
+	# ( if file_mode == 3 )
+	nDatasets									= 1
+	# --
 
-#===========
-selection_mode = 0
-column_to_read = 3	# column in multiplicities file to select on
+# --
 # 0: use centrality ranges
 # 1: use multiplicity ranges
+selection_mode 									= 0
+# column in multiplicities file to select on
+# (ASSUME ZERO-INDEXED COUNTING)
+column_to_read 									= 5
 
+# --
 # minimum bias by default
-event_class_minimum = 0
-event_class_maximum = 100
+event_class_minimum 							= 0
+event_class_maximum 							= 100
 
-#===========
+# --
 # functional form for fitting correlation
 # function: Gaussian (0) or exponential (1)
-fit_mode = 0
-# whether to include R2os, R2ol, and R2sl in fit
-include_cross_terms = 0
-# whether to use full CF or axes only
-use_slices_only = 0
+fit_mode 										= 0
 
-#===========
+# --
+# whether to include R2os, R2ol,
+# and R2sl in fit
+include_cross_terms 							= 0
+
+# --
+# whether to include full CF
+# or only CF along axes in fit
+use_slices_only 								= 0
+
+# --
+# whether to include full CF
+# or only CF along axes in fit
+use_LCMS 										= 1
+
+# --
+# for BE_mode > 0, how to format output
+format_with_pairs								= 1
+
+
+# --
 # source_variances parameters
-# maximum invariant tau to consider for source variances (in fm)
-max_accepted_tau = 100000000000.0
+# maximum invariant tau to consider
+# for source variances (in fm)
+max_accepted_tau 								= 100000000000.0
 
-
+# --
 # HBT particle ID 
-chosen_MCID = 211
+chosen_MCID 									= 211
 
-# include thermal particles (0 - false, 1 - true)
-include_thermal = 1
+# --
+# include thermal particles
+include_thermal 								= 1
 
-# include decay particles (0 - false, 1 - true)
-include_decays = 1
+# --
+# include decay particles
+include_decays 									= 1
 
-#===========
+# --
 # Output specifications
-# output format (0 - false, 1 - true)
-use_OSCAR_format = 1
+use_OSCAR_format 								= 1
 
-# store Bjorken coordinates (0 - false, 1 - true)
-store_Bjorken_coordinates = 0
+# --
+store_Bjorken_coordinates 						= 0
 
 
 
