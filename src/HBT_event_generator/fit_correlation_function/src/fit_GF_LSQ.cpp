@@ -181,6 +181,8 @@ void Correlation_function::fit_correlationfunction_GF_lsq( int iKT, int iKphi, i
 	//set up test data
 	struct Correlationfunction3D_data Correlfun3D_data;
 
+	if ( ignore_central_point ) cout << "IGNORING CENTRAL POINT" << endl;
+
 	int n_usable_bins = 0;
 	for (int i = 0; i < n_qo_bins; i++)
 	for (int j = 0; j < n_qs_bins; j++)
@@ -235,6 +237,12 @@ void Correlation_function::fit_correlationfunction_GF_lsq( int iKT, int iKphi, i
          or Correlfun3D_data.sigma.size() != data_length )
 	{
 		cerr << "Error in fitting!  Exiting..." << endl;
+		cerr << n_para << "   " << data_length << "   "
+				<< Correlfun3D_data.q_o.size() << "   "
+				<< Correlfun3D_data.q_s.size() << "   "
+				<< Correlfun3D_data.q_l.size() << "   "
+				<< Correlfun3D_data.y.size() << "   "
+				<< Correlfun3D_data.sigma.size() << endl;
 		exit(8);
 	}
 
