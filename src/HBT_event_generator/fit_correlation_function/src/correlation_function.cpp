@@ -209,6 +209,9 @@ void Correlation_function::Load_correlation_function( string filepath )
 	if ( q_mode == 0 )
 	{
 		if ( BE_mode > 0 and format_with_pairs )
+		{
+			out << "WARNING: RESULTS PROBABLY NOT STABLE" << endl;
+			err << "WARNING: RESULTS PROBABLY NOT STABLE" << endl;
 			for (int iKT = 0; iKT < n_KT_bins; iKT++)
 			for (int iKphi = 0; iKphi < n_Kphi_bins; iKphi++)
 			for (int iKL = 0; iKL < n_KL_bins; iKL++)
@@ -242,6 +245,7 @@ cout << "A   " << iKT << "   " << iKphi << "   " << iKL << "   " << iqo << "   "
 	
 				++idx;
 			}
+		}
 		else
 			for (int iKT = 0; iKT < n_KT_bins; iKT++)
 			for (int iKphi = 0; iKphi < n_Kphi_bins; iKphi++)
