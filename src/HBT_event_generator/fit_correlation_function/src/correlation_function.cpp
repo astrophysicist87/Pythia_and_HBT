@@ -146,22 +146,31 @@ void Correlation_function::initialize_all(
 	// Read in correlation function
 	Load_correlation_function( filepath_in );
 
-	// Read in correlation function
-	if ( BE_mode > 0 and format_with_pairs )
+	bool use_Gaussian_fits = true;
+	if ( use_Gaussian_fits )
 	{
-		// assume q_mode == 0 for now here
-		Fit_correlation_function_min_logL();
+		out << "<<< USING NEW GAUSSIAN FITS >>>" << endl;
+		Fit_correlation_function_GF_LSQ();
 	}
 	else
 	{
-		if ( q_mode == 0 )
-			Fit_correlation_function();
-		else if ( q_mode == 1 )
-			Fit_correlation_function_Q();
+		// Read in correlation function
+		if ( BE_mode > 0 and format_with_pairs )
+		{
+			// assume q_mode == 0 for now here
+			Fit_correlation_function_min_logL();
+		}
 		else
 		{
-			err << "fit_correlation_function(): q_mode = " << q_mode << " not supported!" << endl;
-			exit(8);
+			if ( q_mode == 0 )
+				Fit_correlation_function();
+			else if ( q_mode == 1 )
+				Fit_correlation_function_Q();
+			else
+			{
+				err << "fit_correlation_function(): q_mode = " << q_mode << " not supported!" << endl;
+				exit(8);
+			}
 		}
 	}
 
