@@ -7,13 +7,6 @@
 #include<vector>
 #include<stdio.h>
 
-#include <gsl/gsl_blas.h>           // gsl linear algebra stuff
-#include <gsl/gsl_multifit_nlin.h>  // gsl multidimensional fitting
-#include <gsl/gsl_multifit.h>
-#include <gsl/gsl_linalg.h>
-#include <gsl/gsl_sf_gamma.h>
-#include <gsl/gsl_errno.h>
-
 #include "correlation_function.h"
 #include "Stopwatch.h"
 #include "Arsenal.h"
@@ -237,7 +230,7 @@ void Correlation_function::fit_correlationfunction_GF_lsq( int iKT, int iKphi, i
 	gsl_multifit_fdfsolver_set (solver_ptr, &target_func, &xvec_ptr.vector);
 
 	size_t iteration = 0;         // initialize iteration counter
-	if (VERBOSE > 2) print_fit_state_3D (iteration, solver_ptr);
+	if (VERBOSE > 2) print_fit_state_3D_withlambda (iteration, solver_ptr);
 	int status;  		// return value from gsl function calls (e.g., error)
 	do
 	{
@@ -250,7 +243,7 @@ void Correlation_function::fit_correlationfunction_GF_lsq( int iKT, int iKphi, i
 		if (VERBOSE > 2) cout << "status = " << gsl_strerror (status) << endl;
 
 		// customized routine to print out current parameters
-		if (VERBOSE > 2) print_fit_state_3D (iteration, solver_ptr);
+		if (VERBOSE > 2) print_fit_state_3D_withlambda (iteration, solver_ptr);
 
 		if (status)    // check for a nonzero status code
 		{

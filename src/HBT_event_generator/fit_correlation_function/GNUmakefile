@@ -94,6 +94,9 @@ $(SRCDIR)/ParameterReader.cpp: $(SRCDIR)/ParameterReader.h $(SRCDIR)/Arsenal.h
 $(SRCDIR)/correlation_function.cpp: $(SRCDIR)/correlation_function.h $(SRCDIR)/Arsenal.h \
 									$(SRCDIR)/Stopwatch.h $(SRCDIR)/EventRecord.h \
 									$(SRCDIR)/ParticleRecord.h
+$(SRCDIR)/fit_GF_LSQ.cpp: $(SRCDIR)/correlation_function.h $(SRCDIR)/Arsenal.h \
+									$(SRCDIR)/Stopwatch.h $(SRCDIR)/EventRecord.h \
+									$(SRCDIR)/ParticleRecord.h
 ./main.cpp: $(SRCDIR)/Stopwatch.h $(SRCDIR)/ParameterReader.h main.h $(SRCDIR)/EventRecord.h \
 			$(SRCDIR)/ParticleRecord.h
 

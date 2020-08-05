@@ -60,6 +60,16 @@ int Fittarget_correlfun3D_f_withlambda (const gsl_vector *xvec_ptr, void *params
 int Fittarget_correlfun3D_df_withlambda (const gsl_vector *xvec_ptr, void *params_ptr,	gsl_matrix *Jacobian_ptr);
 int Fittarget_correlfun3D_fdf_withlambda (const gsl_vector* xvec_ptr, void *params_ptr, gsl_vector* f_ptr, gsl_matrix* Jacobian_ptr);
 
+inline double get_fit_results(int i, gsl_multifit_fdfsolver * solver_ptr)
+{
+	return gsl_vector_get (solver_ptr->x, i);
+}
+
+inline double get_fit_err (int i, gsl_matrix * covariance_ptr)
+{
+	return sqrt (gsl_matrix_get (covariance_ptr, i, i));
+}
+
 
 class Correlation_function
 {
