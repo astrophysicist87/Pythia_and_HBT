@@ -1,31 +1,34 @@
 #ifndef CORRELATION_FUNCTION_H
 #define CORRELATION_FUNCTION_H
 
-#include <omp.h>
-#include <iostream>
 #include <cmath>
+#include <complex>
+#include <cstdlib>
 #include <iomanip>
-#include <vector>
+#include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
-#include <cstdlib>
-#include <complex>
+#include <vector>
+
+#include <omp.h>
 
 #include <gsl/gsl_blas.h>
-#include <gsl/gsl_vector.h>
-#include <gsl/gsl_multimin.h>
-#include <gsl/gsl_linalg.h>
 #include <gsl/gsl_errno.h>
+#include <gsl/gsl_linalg.h>
+#include <gsl/gsl_multimin.h>
+#include <gsl/gsl_randist.h>
+#include <gsl/gsl_rng.h>
+#include <gsl/gsl_vector.h>
 
-#include "ParameterReader.h"
 #include "Arsenal.h"
 #include "EventRecord.h"
+#include "ParameterReader.h"
 #include "ParticleRecord.h"
 
 using namespace std;
 
 const complex<double> i(0.0, 1.0);
-const double hbarC = 0.19733;	//GeV*fm
+const double hbarC = 0.197327053;	//GeV*fm
 
 constexpr bool ignore_central_point = true;
 
