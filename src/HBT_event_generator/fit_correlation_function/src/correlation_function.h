@@ -15,6 +15,9 @@
 #include <gsl/gsl_blas.h>
 #include <gsl/gsl_errno.h>
 #include <gsl/gsl_linalg.h>
+#include <gsl/gsl_math.h>
+#include <gsl/gsl_multifit.h>
+#include <gsl/gsl_multifit_nlin.h>
 #include <gsl/gsl_multimin.h>
 #include <gsl/gsl_randist.h>
 #include <gsl/gsl_rng.h>
@@ -31,6 +34,9 @@ const complex<double> i(0.0, 1.0);
 const double hbarC = 0.197327053;	//GeV*fm
 
 constexpr bool ignore_central_point = true;
+
+const double fit_tolerance = 1e-6;
+const int fit_max_iterations = 100;
 
 struct correlationfunction_data
 {
@@ -49,6 +55,7 @@ struct Correlationfunction3D_data
 	vector<double> sigma;
 };
 
+int print_fit_state_3D_withlambda (size_t iteration, gsl_multifit_fdfsolver * solver_ptr);
 int Fittarget_correlfun3D_f_withlambda (const gsl_vector *xvec_ptr, void *params_ptr, gsl_vector *f_ptr);
 int Fittarget_correlfun3D_df_withlambda (const gsl_vector *xvec_ptr, void *params_ptr,	gsl_matrix *Jacobian_ptr);
 int Fittarget_correlfun3D_fdf_withlambda (const gsl_vector* xvec_ptr, void *params_ptr, gsl_vector* f_ptr, gsl_matrix* Jacobian_ptr);

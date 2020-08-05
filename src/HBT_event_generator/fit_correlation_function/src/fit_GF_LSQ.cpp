@@ -147,6 +147,7 @@ int Fittarget_correlfun3D_fdf_withlambda (const gsl_vector* xvec_ptr, void *para
 
 void Correlation_function::fit_correlationfunction_GF_lsq( int iKT, int iKphi, int iKL )
 {
+	const int VERBOSE = 10;
 	const size_t n_para = 7;  // # of parameters
 
 	// allocate space for a covariance matrix of size p by p
