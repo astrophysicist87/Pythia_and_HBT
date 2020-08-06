@@ -191,6 +191,12 @@ void Correlation_function::Load_correlation_function( string filepath )
 	// For timebeing, just skip header lines
 	string line;
 	ifstream infile( filepath.c_str() );
+	if ( !infile.good() )
+	{
+		err << "Error loading file!" << endl
+			<< "Attempted to read in: " << filepath << endl;
+		exit(8);
+	}
 	/*while ( getline(infile, line) )
 	{
 		if ( line.front() == '#'

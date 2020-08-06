@@ -4,6 +4,7 @@ import numpy as np
 import sys, os
 
 GeVToMeV = 1000.0
+recycle = True
 
 columnLabels = ['dNdeta','KT',\
                 'lambda','R2o','R2s','R2l',\
@@ -31,12 +32,12 @@ def pause():
 #def get_event_class_mean_dNchdeta(filename):
 #    return np.mean(np.loadtxt(filename, usecols=4))
 def get_event_class_mean_dNchdeta(directory):
-    if os.path.exists(directory + '/CF_results/mean_dNchdeta.dat'):
+    if os.path.exists(directory + '/CF_results/mean_dNchdeta.dat') and recycle:
         return np.loadtxt(directory + '/CF_results/mean_dNchdeta.dat')
     else:
         result = np.mean(np.loadtxt(directory \
                                     + '/CF_results/event_class_multiplicities.dat',\
-                                    usecols=4))
+                                    usecols=6))
         np.savetxt(directory + '/CF_results/mean_dNchdeta.dat', np.array([result]))
         return result
 
