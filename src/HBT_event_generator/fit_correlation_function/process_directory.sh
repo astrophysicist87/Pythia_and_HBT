@@ -4,6 +4,7 @@
 directoryToProcess=$1
 directoryToStoreResults=$2
 
+rm -rf $directoryToStoreResults
 mkdir -p $directoryToStoreResults
 
 parametersFilepath=$directoryToProcess/parameters.dat
