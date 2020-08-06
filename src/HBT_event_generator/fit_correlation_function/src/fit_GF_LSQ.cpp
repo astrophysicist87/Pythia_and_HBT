@@ -254,6 +254,22 @@ void Correlation_function::fit_correlationfunction_GF_lsq( int iKT, int iKphi, i
 		return;
 	}
 
+	cout << "-----------------------------------------------------" << endl;
+	cout << "Check input:" << endl;
+	for ( int iCell = 0; iCell < data_length; iCell++ )
+		cout << iCell << "   "
+			<< KT_pts[iKT] << "   "
+			<< Correlfun3D_data.q_o[iCell] << "   "
+			<< Correlfun3D_data.q_s[iCell] << "   "
+			<< Correlfun3D_data.q_l[iCell] << "   "
+			<< Correlfun3D_data.y[iCell] << "   "
+			<< Correlfun3D_data.sigma[iCell] << endl;
+
+	cout << "-----------------------------------------------------" << endl << endl;;
+
+
+
+
 	// initial guesses of parameters
 	//double para_init7[7] = { 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0 };
 	//double para_init4[4] = { 1.0, 1.0, 1.0, 1.0 };
