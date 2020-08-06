@@ -139,11 +139,11 @@ int Fittarget_correlfun3D_df_withlambda (const gsl_vector *xvec_ptr, void *param
 		double common_elemt = exp( -q_l[i]*q_l[i]*R2_l - q_s[i]*q_s[i]*R2_s - q_o[i]*q_o[i]*R2_o
                     - cross_terms_factor * ( 2.*q_o[i]*q_s[i]*R2_os + 2.*q_o[i]*q_l[i]*R2_ol + 2.*q_s[i]*q_l[i]*R2_sl) );
 
-out << "Start check:" << endl;
-out << lambda << endl;
-out << q_s[i] << endl;
-out << common_elemt << endl;
-out << sig << endl << endl;
+cout << "Start check:" << endl;
+cout << lambda << endl;
+cout << q_s[i] << endl;
+cout << common_elemt << endl;
+cout << sig << endl << endl;
       
 		gsl_matrix_set (Jacobian_ptr, i, 0, common_elemt/sig);
 		gsl_matrix_set (Jacobian_ptr, i, 1, - lambda*q_o[i]*q_o[i]*common_elemt/sig);
