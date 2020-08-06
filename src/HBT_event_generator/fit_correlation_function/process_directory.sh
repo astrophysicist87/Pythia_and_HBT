@@ -10,9 +10,9 @@ parametersFilepath=$directoryToProcess/parameters.dat
 particleCatalogueFilepath=$directoryToProcess/particle_catalogue.dat
 catalogueFilepath=$directoryToProcess/catalogue.dat
 
-#./run.sh $directoryToStoreResults \
-#         $parametersFilepath \
-#         $particleCatalogueFilepath \
-#         $catalogueFilepath &
+./run.sh $directoryToStoreResults \
+         $parametersFilepath \
+         $particleCatalogueFilepath \
+         $catalogueFilepath &
 
-echo 'This is a test' > $directoryToStoreResults/test.out
+#echo 'This is a test' > $directoryToStoreResults/test.out
