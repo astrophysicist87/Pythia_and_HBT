@@ -13,6 +13,7 @@ catalogueFilepath=$directoryToProcess/catalogue.dat
 ./run.sh $directoryToStoreResults \
          $parametersFilepath \
          $particleCatalogueFilepath \
-         $catalogueFilepath &
+         $catalogueFilepath \
+         format_with_pairs=1 &
 
 #echo 'This is a test' > $directoryToStoreResults/test.out
