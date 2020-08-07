@@ -254,7 +254,7 @@ void Correlation_function::fit_correlationfunction_GF_lsq( int iKT, int iKphi, i
 		return;
 	}
 
-	cout << "-----------------------------------------------------" << endl;
+	/*cout << "-----------------------------------------------------" << endl;
 	cout << "Check input:" << endl;
 	for ( int iCell = 0; iCell < data_length; iCell++ )
 		cout << iCell << "   "
@@ -265,7 +265,7 @@ void Correlation_function::fit_correlationfunction_GF_lsq( int iKT, int iKphi, i
 			<< Correlfun3D_data.y[iCell] << "   "
 			<< Correlfun3D_data.sigma[iCell] << endl;
 
-	cout << "-----------------------------------------------------" << endl << endl;;
+	cout << "-----------------------------------------------------" << endl << endl;*/
 
 
 
