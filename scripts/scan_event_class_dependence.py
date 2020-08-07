@@ -5,6 +5,9 @@ import sys, os
 
 GeVToMeV = 1000.0
 recycle = True
+#fitResultsDirectory='fit_results'
+fitResultsDirectory='Gaussian_fit_results'
+outfileStem='_GF'
 
 columnLabels = ['dNdeta','KT',\
                 'lambda','R2o','R2s','R2l',\
@@ -44,7 +47,7 @@ def get_event_class_mean_dNchdeta(directory):
 def get_dNchdeta_and_R2i_data(directory):
     mean_dNchdeta = get_event_class_mean_dNchdeta(directory)
     #mean_dNchdeta = get_event_class_mean_dNchdeta(directory + '/CF_results/event_class_multiplicities.dat')
-    R2i_vs_KT = np.loadtxt(directory + '/fit_results/HBTradii.dat', \
+    R2i_vs_KT = np.loadtxt(directory + '/' + fitResultsDirectory + '/HBTradii.dat', \
                            usecols=(0,3,4,5,6,10,11,12,13))[0:6]
     return np.c_[ np.broadcast_to( mean_dNchdeta, len(R2i_vs_KT) ), R2i_vs_KT ]
     
@@ -85,7 +88,7 @@ def plot_R2i_vs_KT(data, R2i):
     plt.tight_layout()
     #plt.show(block=False)
     #plt.show()
-    fig.savefig("./"+R2i+"_vs_KT.pdf")
+    fig.savefig("./"+R2i+"_vs_KT"+outfileStem+".pdf")
     return None
 
 def plot_R2i_vs_KT_dummy(data):
@@ -102,7 +105,7 @@ def plot_R2i_vs_KT_dummy(data):
     ax.get_yaxis().set_ticks([])
     ax.legend(ncol=1, loc='center', fontsize=18)
     plt.tight_layout()
-    fig.savefig("./R2i_vs_KT_dummy.pdf")
+    fig.savefig("./R2i_vs_KT_dummy"+outfileStem+".pdf")
     #plt.show(block=False)
     #plt.show()
     return None
@@ -125,7 +128,7 @@ def plot_R2i_vs_mult(data, R2i):
     plt.tight_layout()
     #plt.show(block=False)
     #plt.show()
-    fig.savefig("./"+R2i+"_vs_dNdeta.pdf")
+    fig.savefig("./"+R2i+"_vs_dNdeta"+outfileStem+".pdf")
     return None
 
 def plot_R2i_vs_mult_dummy(data):
@@ -142,7 +145,7 @@ def plot_R2i_vs_mult_dummy(data):
     ax.get_yaxis().set_ticks([])
     ax.legend(ncol=1, loc='center', fontsize=18)
     plt.tight_layout()
-    fig.savefig("./R2i_vs_dNdeta_dummy.pdf")
+    fig.savefig("./R2i_vs_dNdeta_dummy"+outfileStem+".pdf")
     #plt.show(block=False)
     #plt.show()
     return None
@@ -172,7 +175,7 @@ def plot_CF_vs_KT(data, direction):
     ax.tick_params(axis='both', which='major', labelsize=14)
     plt.tight_layout()
     #plt.show()
-    fig.savefig("./CF_vs_q" + direction + "_vs_KT.pdf")
+    fig.savefig("./CF_vs_q" + direction + "_vs_KT"+outfileStem+".pdf")
     return None
     
 
@@ -200,7 +203,7 @@ def plot_CF_vs_dNdeta(data, direction):
     ax.tick_params(axis='both', which='major', labelsize=14)
     plt.tight_layout()
     #plt.show()
-    fig.savefig("./CF_vs_q" + direction + "_vs_dNdeta.pdf")
+    fig.savefig("./CF_vs_q" + direction + "_vs_dNdeta"+outfileStem+".pdf")
     return None
 
 
