@@ -40,10 +40,6 @@
      
        for (i = 0; i < n; i++)
          {
-           /* Jacobian matrix J(i,j) = dfi / dxj, */
-           /* where fi = (Yi - yi)/sigma[i],      */
-           /*       Yi = A * exp(-lambda * i) + b  */
-           /* and the xj are the parameters (A,lambda,b) */
            double t = i;
            double s = sigma[i];
            double e = exp(-lambda * t);
