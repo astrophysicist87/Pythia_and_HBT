@@ -147,10 +147,12 @@ void Correlation_function::initialize_all(
 	Load_correlation_function( filepath_in );
 
 	bool use_Gaussian_fits = true;
-	if ( use_Gaussian_fits and GSL_MAJOR_VERSION < 2 )
+	if ( use_Gaussian_fits )
 	{
-		out << "<<< USING NEW GAUSSIAN FITS >>>" << endl;
-		Fit_correlation_function_GF_LSQ();
+		#if GSL_MAJOR_VERSION < 2
+			out << "<<< USING NEW GAUSSIAN FITS >>>" << endl;
+			Fit_correlation_function_GF_LSQ();
+		#endif
 	}
 	else
 	{
