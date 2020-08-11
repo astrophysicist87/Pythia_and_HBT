@@ -31,9 +31,11 @@ SRC		=	main.cpp \
 			$(SRCDIR)/ParameterReader.cpp \
 			$(SRCDIR)/fit.cpp \
 			$(SRCDIR)/fit3D_log_likelihood.cpp \
-			$(SRCDIR)/fit_GF_LSQ.cpp \
 			$(SRCDIR)/fit1D.cpp \
 			$(SRCDIR)/correlation_function.cpp
+
+#$(SRCDIR)/fit_GF_LSQ.cpp \
+
 
 INC		= 	main.h \
 			$(SRCDIR)/EventRecord.h \

@@ -206,8 +206,8 @@ class Correlation_function
 		void set_CFdata(correlationfunction_data & CFdata, int iKT, int iKphi, int iKL);
 		void fit_correlationfunction_minimum_log_likelihood(int iKT, int iKphi, int iKL);
 
-		void Fit_correlation_function_GF_LSQ();
-		void fit_correlationfunction_GF_lsq( int iKT, int iKphi, int iKL );
+		//void Fit_correlation_function_GF_LSQ();
+		//void fit_correlationfunction_GF_lsq( int iKT, int iKphi, int iKL );
 
 };
 
