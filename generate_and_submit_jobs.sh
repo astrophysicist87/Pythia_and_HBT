@@ -3,7 +3,7 @@
 (
 	# info for this run
 	NTHREADS=32
-	DIRECTORY=results_pp_7TeV_Nev30000000_Nch
+	DIRECTORY=results_pp_7TeV_Nev30000000_V0A
 	NICENESS=19
 
 	# Set job specifications here
