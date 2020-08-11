@@ -80,7 +80,7 @@ printf ("iter: %3u x = % 15.8f % 15.8f % 15.8f "
 
 void fit_driver()
 {
-cout << "<<< RUNNING VERSION 1 >>>" << endl;
+std::cout << "<<< RUNNING VERSION 1 >>>" << std::endl;
 const gsl_multifit_fdfsolver_type *T;
 gsl_multifit_fdfsolver *s;
 

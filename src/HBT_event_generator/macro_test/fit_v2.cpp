@@ -75,7 +75,7 @@ callback(const size_t iter, void *params,
 
 void fit_driver()
 {
-cout << "<<< RUNNING VERSION 2 >>>" << endl;
+std::cout << "<<< RUNNING VERSION 2 >>>" << std::endl;
   const gsl_multifit_nlinear_type *T = gsl_multifit_nlinear_trust;
   gsl_multifit_nlinear_workspace *w;
   gsl_multifit_nlinear_fdf fdf;
