@@ -2,6 +2,8 @@
 #define FIT_V1_H
 
 #if GSL_MAJOR_VERSION < 2
+	#include <stdlib.h>
+	#include <stdio.h>
 	#include <gsl/gsl_rng.h>
 	#include <gsl/gsl_randist.h>
 	#include <gsl/gsl_vector.h>
