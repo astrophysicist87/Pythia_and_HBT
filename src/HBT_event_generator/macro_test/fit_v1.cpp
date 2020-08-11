@@ -2,7 +2,7 @@
 
 #if GSL_MAJOR_VERSION < 2
 
-     int
+/*     int
      expb_f (const gsl_vector * x, void *data, 
              gsl_vector * f)
      {
@@ -18,7 +18,6 @@
      
        for (i = 0; i < n; i++)
          {
-           /* Model Yi = A * exp(-lambda * i) + b */
            double t = i;
            double Yi = A * exp (-lambda * t) + b;
            gsl_vector_set (f, i, (Yi - y[i])/sigma[i]);
@@ -111,8 +110,6 @@ f.n = n;
 f.p = p;
 f.params = &d;
 
-/* This is the data to be fitted */
-
 for (i = 0; i < n; i++)
  {
    double t = i;
@@ -167,6 +164,6 @@ printf ("status = %s\n", gsl_strerror (status));
 gsl_multifit_fdfsolver_free (s);
 
 return;
-}
+}*/
 
 #endif
