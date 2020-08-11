@@ -146,8 +146,8 @@ void Correlation_function::initialize_all(
 	// Read in correlation function
 	Load_correlation_function( filepath_in );
 
-	bool use_Gaussian_fits = true;
-	if ( use_Gaussian_fits )
+	//bool use_Gaussian_fits = true;
+	if ( false )
 	{
 		out << "<<< USING NEW GAUSSIAN FITS >>>" << endl;
 		Fit_correlation_function_GF_LSQ();
