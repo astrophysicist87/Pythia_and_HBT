@@ -22,6 +22,7 @@
 #include <gsl/gsl_randist.h>
 #include <gsl/gsl_rng.h>
 #include <gsl/gsl_vector.h>
+#include <gsl/gsl_version.h>
 
 #include "Arsenal.h"
 #include "EventRecord.h"
@@ -55,21 +56,24 @@ struct Correlationfunction3D_data
 	vector<double> sigma;
 };
 
-int print_fit_state_3D_withlambda (size_t iteration, gsl_multifit_fdfsolver * solver_ptr);
-int Fittarget_correlfun3D_f_withlambda (const gsl_vector *xvec_ptr, void *params_ptr, gsl_vector *f_ptr);
-int Fittarget_correlfun3D_df_withlambda (const gsl_vector *xvec_ptr, void *params_ptr,	gsl_matrix *Jacobian_ptr);
-int Fittarget_correlfun3D_fdf_withlambda (const gsl_vector* xvec_ptr, void *params_ptr, gsl_vector* f_ptr, gsl_matrix* Jacobian_ptr);
+#if GSL_MAJOR_VERSION < 2
+	
+	int print_fit_state_3D_withlambda (size_t iteration, gsl_multifit_fdfsolver * solver_ptr);
+	int Fittarget_correlfun3D_f_withlambda (const gsl_vector *xvec_ptr, void *params_ptr, gsl_vector *f_ptr);
+	int Fittarget_correlfun3D_df_withlambda (const gsl_vector *xvec_ptr, void *params_ptr,	gsl_matrix *Jacobian_ptr);
+	int Fittarget_correlfun3D_fdf_withlambda (const gsl_vector* xvec_ptr, void *params_ptr, gsl_vector* f_ptr, gsl_matrix* Jacobian_ptr);
+	
+	inline double get_fit_results(int i, gsl_multifit_fdfsolver * solver_ptr)
+	{
+		return gsl_vector_get (solver_ptr->x, i);
+	}
+	
+	inline double get_fit_err (int i, gsl_matrix * covariance_ptr)
+	{
+		return sqrt (gsl_matrix_get (covariance_ptr, i, i));
+	}
 
-inline double get_fit_results(int i, gsl_multifit_fdfsolver * solver_ptr)
-{
-	return gsl_vector_get (solver_ptr->x, i);
-}
-
-inline double get_fit_err (int i, gsl_matrix * covariance_ptr)
-{
-	return sqrt (gsl_matrix_get (covariance_ptr, i, i));
-}
-
+#end if
 
 class Correlation_function
 {
@@ -206,9 +210,11 @@ class Correlation_function
 		void set_CFdata(correlationfunction_data & CFdata, int iKT, int iKphi, int iKL);
 		void fit_correlationfunction_minimum_log_likelihood(int iKT, int iKphi, int iKL);
 
-		void Fit_correlation_function_GF_LSQ();
-		void fit_correlationfunction_GF_lsq( int iKT, int iKphi, int iKL );
-
+		if ( GSL_MAJOR_VERSION < 2 )
+		{
+			void Fit_correlation_function_GF_LSQ();
+			void fit_correlationfunction_GF_lsq( int iKT, int iKphi, int iKL );
+		}
 };
 
 #endif
