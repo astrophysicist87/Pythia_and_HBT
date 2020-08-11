@@ -73,7 +73,7 @@ struct Correlationfunction3D_data
 		return sqrt (gsl_matrix_get (covariance_ptr, i, i));
 	}
 
-#end if
+#endif
 
 class Correlation_function
 {
