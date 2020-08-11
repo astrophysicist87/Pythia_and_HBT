@@ -3,7 +3,7 @@
 
 #include <gsl/gsl_version.h>
 
-//#include "fit_v1.h"
+#include "fit_v1.h"
 #include "fit_v2.h"
 
 int main (void)

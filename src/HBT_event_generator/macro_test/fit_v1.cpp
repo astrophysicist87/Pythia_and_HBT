@@ -1,8 +1,10 @@
+#include <gsl/gsl_version.h>
+
 #include "fit_v1.h"
 
 #if GSL_MAJOR_VERSION < 2
 
-/*     int
+     int
      expb_f (const gsl_vector * x, void *data, 
              gsl_vector * f)
      {
@@ -160,6 +162,6 @@ printf ("status = %s\n", gsl_strerror (status));
 gsl_multifit_fdfsolver_free (s);
 
 return;
-}*/
+}
 
 #endif

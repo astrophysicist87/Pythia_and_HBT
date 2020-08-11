@@ -1,8 +1,10 @@
 #ifndef FIT_V1_H
 #define FIT_V1_H
 
+#include <gsl/gsl_version.h>
+
 #if GSL_MAJOR_VERSION < 2
-/*	#include <stdlib.h>
+	#include <stdlib.h>
 	#include <stdio.h>
 	#include <iostream>
 	#include <gsl/gsl_rng.h>
@@ -31,7 +33,7 @@
 	
 	void print_state (size_t iter, gsl_multifit_fdfsolver * s);
 	
-	void fit_driver();*/
+	void fit_driver();
 #endif
 
 #endif
