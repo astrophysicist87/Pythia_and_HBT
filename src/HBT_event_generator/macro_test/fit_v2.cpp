@@ -1,6 +1,6 @@
 #include "fit_v2.h"
 
-#if GSL_MAJOR_VERSION > 1
+#if GSL_MAJOR_VERSION >= 2
 
 int
 expb_f (const gsl_vector * x, void *data,
