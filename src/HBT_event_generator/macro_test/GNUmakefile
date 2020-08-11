@@ -12,7 +12,7 @@
 
 
 CC := g++
-CFLAGS= -O3 -fopenmp -std=c++0x -lgsl -lgslcblas -g
+CFLAGS= -O3 -fopenmp -std=c++0x -lgsl -lgslcblas -lm -g
 
 RM		=	rm -f
 O               =       .o
