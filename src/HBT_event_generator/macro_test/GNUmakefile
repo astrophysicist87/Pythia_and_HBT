@@ -27,9 +27,11 @@ MAIN		=	run.e
 endif
 
 SRC		=	test.cpp \
-			fit_v1.cpp
+			fit_v1.cpp \
+			fit_v2.cpp
 
-INC		= 	fit_v1.h
+INC		= 	fit_v1.h \
+			fit_v2.h
 
 # -------------------------------------------------
 
@@ -80,4 +82,5 @@ install:	$(TARGET)
 # --------------- Dependencies -------------------
 
 fit_v1.cpp: fit_v1.h
-test.cpp: fit_v1.h
+fit_v2.cpp: fit_v2.h
+test.cpp: fit_v1.h fit_v2.h

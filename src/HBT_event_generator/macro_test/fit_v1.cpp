@@ -1,4 +1,7 @@
 #include "fit_v1.h"
+
+#if GSL_MAJOR_VERSION < 2
+
      int
      expb_f (const gsl_vector * x, void *data, 
              gsl_vector * f)
@@ -75,8 +78,9 @@ printf ("iter: %3u x = % 15.8f % 15.8f % 15.8f "
 }
 
 
-void fit_v1_driver()
+void fit_driver()
 {
+cout << "<<< RUNNING VERSION 1 >>>" << endl;
 const gsl_multifit_fdfsolver_type *T;
 gsl_multifit_fdfsolver *s;
 
@@ -161,4 +165,8 @@ gsl_multifit_covar (s->J, 0.0, covar);
 printf ("status = %s\n", gsl_strerror (status));
 
 gsl_multifit_fdfsolver_free (s);
+
+return;
 }
+
+#endif
