@@ -1,3 +1,5 @@
+#include <gsl/gsl_version.h>
+
 #include "fit_v2.h"
 
 #if GSL_MAJOR_VERSION >= 2

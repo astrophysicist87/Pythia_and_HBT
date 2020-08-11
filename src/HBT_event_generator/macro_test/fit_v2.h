@@ -1,6 +1,8 @@
 #ifndef FIT_V2_H
 #define FIT_V2_H
 
+#include <gsl/gsl_version.h>
+
 #if GSL_MAJOR_VERSION >= 2
 	
 	#include <stdlib.h>
