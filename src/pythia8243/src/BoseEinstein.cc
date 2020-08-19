@@ -290,8 +290,10 @@ double BoseEinstein::get_1D_source_size(int iSpecies)
 			size_estimate_sqsum += 1.0 / (xDiffval*xDiffval);
 		}
 
+		//return ( 2.0 * size_estimate_sqsum
+        //          / ( M_PI * size_estimate_sum + 1e-100 ) );
 		return ( 2.0 * size_estimate_sqsum
-                  / ( M_PI * size_estimate_sum + 1e-100 ) );
+                  / ( sqrt(M_PI) * size_estimate_sum + 1e-100 ) );
 	}
 
 }

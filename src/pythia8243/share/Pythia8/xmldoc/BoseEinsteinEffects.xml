@@ -194,7 +194,7 @@ Which pairs to use in compensation:
 </mode>
 
 <mode name="BoseEinstein:compensationMode" default="1" min="0" max="2"> 
-How to perform compensation:
+How to compute compensation:
 0 - take pComp from same pDiff as used for shifting (pComp prop. to q)
 1 - rescale pair momenta (pComp prop. to K)
 2 - compensation in direction orthogonal to q and K
