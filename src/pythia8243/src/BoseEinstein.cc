@@ -895,6 +895,9 @@ void BoseEinstein::shiftPair_fixedQRef( int i1, int i2, int iTab )
   double factor    = 0.5 * ( rootA + sqrtpos(rootA * rootA
     + Q2Diff * (sumQ2E - eDiff * eDiff) * rootB) ) / rootB;
 
+  cout << "Computed factor = " << get_dQ2_factor(hadronBE.at(i1), hadronBE.at(i2), Q2diff) << endl;
+  cout << "True factor = " << factor << endl;
+
   // Add shifts to sum. (Energy component dummy.)
   Vec4   pDiff     = factor * (hadronBE.at(i1).p - hadronBE.at(i2).p);
   hadronBE.at(i1).pShift += pDiff;
