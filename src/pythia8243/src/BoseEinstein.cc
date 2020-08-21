@@ -94,6 +94,7 @@ bool BoseEinstein::init(Info* infoPtrIn, Settings& settings,
   doPion 				          = settings.flag("BoseEinstein:Pion");
   doKaon 				          = settings.flag("BoseEinstein:Kaon");
   doEta 				          = settings.flag("BoseEinstein:Eta");
+
   useInvariantSize 		          = settings.flag("BoseEinstein:useInvariantSourceSize");
   useDistribution 		          = settings.flag("BoseEinstein:useDistribution");
   useRelativeDistance 	          = settings.flag("BoseEinstein:useRelativeDistance");
@@ -102,6 +103,7 @@ bool BoseEinstein::init(Info* infoPtrIn, Settings& settings,
   linear_interpolate_CDF          = settings.flag("BoseEinstein:linearInterpolateCDF");
   compute_BE_enhancement_exactly  = settings.flag("BoseEinstein:computeBEEnhancementExactly");
 
+  shiftDirection                  = settings.mode("BoseEinstein:shiftDirection");
   int shiftingSet                 = settings.mode("BoseEinstein:shiftingSet");
   int compensationSet             = settings.mode("BoseEinstein:compensationSet");
   int compensationMode            = settings.mode("BoseEinstein:compensationMode");
@@ -895,11 +897,19 @@ void BoseEinstein::shiftPair_fixedQRef( int i1, int i2, int iTab )
   double factor    = 0.5 * ( rootA + sqrtpos(rootA * rootA
     + Q2Diff * (sumQ2E - eDiff * eDiff) * rootB) ) / rootB;
 
-  cout << "Computed factor = " << get_dQ2_factor(hadronBE.at(i1), hadronBE.at(i2), Q2Diff) << endl;
-  cout << "True factor = " << factor << endl;
+  //cout << "Computed factor = " << get_dQ2_factor(hadronBE.at(i1), hadronBE.at(i2), Q2Diff) << endl;
+  //cout << "True factor = " << factor << endl;
 
   // Add shifts to sum. (Energy component dummy.)
   Vec4   pDiff     = factor * (hadronBE.at(i1).p - hadronBE.at(i2).p);
+  
+  // Use x-separation
+  if ( shiftDirection == 1 )
+  {
+	pDiff          = get_dQ2_factor(hadronBE.at(i1), hadronBE.at(i2), Q2Diff)
+                     	* (hadronBE.at(i1).x - hadronBE.at(i2).x);
+  }
+
   hadronBE.at(i1).pShift += pDiff;
   hadronBE.at(i2).pShift -= pDiff;
 
@@ -925,11 +935,21 @@ void BoseEinstein::shiftPair_fixedQRef( int i1, int i2, int iTab )
   factor    = 0.5 * ( rootA + sqrtpos(rootA * rootA
     + Q2Diff * (sumQ2E - eDiff * eDiff) * rootB) ) / rootB;
 
+  // Use x-separation
+  if ( shiftDirection == 1 )
+	factor = get_dQ2_factor(hadronBE.at(i1), hadronBE.at(i2), Q2Diff);
+
+
   // Extra dampening factor to go from BE_3 to BE_32.
   factor   *= 1. - exp(-Q2old * R2Ref2);
 
   // Add shifts to sum. (Energy component dummy.)
   pDiff     = factor * (hadronBE.at(i1).p - hadronBE.at(i2).p);
+
+  // Use x-separation
+  if ( shiftDirection == 1 )
+	pDiff     = factor * (hadronBE.at(i1).x - hadronBE.at(i2).x);
+
   hadronBE.at(i1).pComp += pDiff;
   hadronBE.at(i2).pComp -= pDiff;
 

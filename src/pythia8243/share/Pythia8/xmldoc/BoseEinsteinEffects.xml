@@ -179,6 +179,13 @@ The default has been picked such that both <ei>rho</ei> and
 </parm> 
 
 
+<mode name="BoseEinstein:shiftDirection" default="0" min="0" max="1"> 
+Switch to decide whether to shift particle pairs along the line connecting them
+in momentum-space or coordinate-space
+0 - shift is proportional to <ei>p_1 - p_2</ei>
+1 - shift is proportional to <ei>x_1 - x_2</ei>
+</mode>
+
 <mode name="BoseEinstein:shiftingSet" default="1" min="0" max="1"> 
 Which pairs to shift:
 0 - shift pairs with negative <ei>\delta Q</ei>, but not those with positive

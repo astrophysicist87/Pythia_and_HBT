@@ -88,6 +88,7 @@ private:
   int compensationVersion;
   ///===CJP(begin)===
   int sourceDimension;
+  int shiftDirection;
   double lambda, QRef, RRef;
   ///===CJP(end)===
 
