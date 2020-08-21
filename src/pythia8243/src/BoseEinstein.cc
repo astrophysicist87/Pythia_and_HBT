@@ -912,12 +912,12 @@ void BoseEinstein::shiftPair_fixedQRef( int i1, int i2, int iTab )
 
   // check that computed factor was correct solution
   {
-	//const double m1_2 = hadronBE.at(i1).m2;
-	//const double m2_2 = hadronBE.at(i2).m2;
+	const double m1_2 = hadronBE.at(i1).m2;
+	const double m2_2 = hadronBE.at(i2).m2;
 	Vec4 local_p1 = hadronBE.at(i1).p + pDiff;
 	Vec4 local_p2 = hadronBE.at(i2).p - pDiff;
-	//local_p1.e( sqrt( local_p1.pAbs2() + m1_2 ) );
-	//local_p2.e( sqrt( local_p2.pAbs2() + m2_2 ) );
+	local_p1.e( sqrt( local_p1.pAbs2() + m1_2 ) );
+	local_p2.e( sqrt( local_p2.pAbs2() + m2_2 ) );
 	double local_Q2old = m2(hadronBE.at(i1).p, hadronBE.at(i2).p) - m2Pair[iTab];
 	double local_Q2new = m2(local_p1, local_p2) - m2Pair[iTab];
 	cout << "check solution: " << local_Q2new << "   " << local_Q2old << "   "
