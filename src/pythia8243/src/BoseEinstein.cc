@@ -907,12 +907,11 @@ void BoseEinstein::shiftPair_fixedQRef( int i1, int i2, int iTab )
   if ( shiftDirection == 1 )
   {
 	pDiff          = get_dQ2_factor(hadronBE.at(i1), hadronBE.at(i2), Q2Diff)
-                     	* (hadronBE.at(i1).x - hadronBE.at(i2).x);
+                     	* (hadronBE.at(i1).x - hadronBE.at(i2).x) * MM2FM;
   }
 
   // check that computed factor was correct solution
   {
-	double local_factor = get_dQ2_factor(hadronBE.at(i1), hadronBE.at(i2), Q2Diff);
 	Vec4 local_p1 = hadronBE.at(i1).p + pDiff;
 	Vec4 local_p2 = hadronBE.at(i2).p - pDiff;
 	double local_Q2old = m2(hadronBE.at(i1).p, hadronBE.at(i2).p) - m2Pair[iTab];
@@ -959,7 +958,7 @@ void BoseEinstein::shiftPair_fixedQRef( int i1, int i2, int iTab )
 
   // Use x-separation
   if ( shiftDirection == 1 )
-	pDiff     = factor * (hadronBE.at(i1).x - hadronBE.at(i2).x);
+	pDiff     = factor * (hadronBE.at(i1).x - hadronBE.at(i2).x) * MM2FM;
 
   hadronBE.at(i1).pComp += pDiff;
   hadronBE.at(i2).pComp -= pDiff;
