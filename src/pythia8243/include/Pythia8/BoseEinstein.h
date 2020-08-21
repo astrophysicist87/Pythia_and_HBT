@@ -168,6 +168,12 @@ private:
   void Set_effective_source(
 			vector< pair< double, pair <int,int> > > & sortedPairs, int iTab );
 
+  // Compute factor from Q2diff
+  double BoseEinstein::get_dQ2_factor(
+	const BoseEinsteinHadron & had1,
+	const BoseEinsteinHadron & had2,
+	const double Q2diff);
+
   ///===CJP(end)===
 
 };

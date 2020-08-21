@@ -2049,6 +2049,31 @@ void BoseEinstein::Set_effective_source(
 }
 
 
+double BoseEinstein::get_dQ2_factor(
+	const BoseEinsteinHadron & had1,
+	const BoseEinsteinHadron & had2,
+	const double Q2diff)
+{
+	Vec4 pSum  = had1.p + had2.p;
+	Vec4 pDiff = had1.p - had2.p;
+	//Vec4 xDiff = had1.x - had2.x;
+	Vec4 xDiff = pDiff;	// sanity check
+
+	double pSumDotxDiff  = dot3(pSum, xDiff);
+	double xDiffAbs2     = xDiff.pAbs2();
+	double pDiffDotxDiff = dot3(pDiff, xDiff);
+
+	double eSum = pSum.e();
+	double eDiff = pDiff.e();
+	double sumQ2E = Q2diff+eSum*eSum;
+
+	double a = 4.0*( pSumDotxDiff*pSumDotxDiff - xDiffAbs2*sumQ2E );
+	double b = 4.0*( eSum*eDiff*pSumDotxDiff - sumQ2E*pDiffDotxDiff );
+	double c = Q2diff*(sumQ2E-eDiff*eDiff);
+
+	return ( (-b + sqrtpos(b*b - 4.0*a*c))/(2.0*a) );
+}
+
 
 //==========================================================================
 
