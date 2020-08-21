@@ -2074,7 +2074,7 @@ double BoseEinstein::get_dQ2_factor(
 	double b = 4.0*( eSum*eDiff*pSumDotxDiff - sumQ2E*pDiffDotxDiff );
 	double c = Q2diff*(sumQ2E-eDiff*eDiff);
 
-	return ( (-b + sqrtpos(b*b - 4.0*a*c))/(2.0*a) );
+	return ( (-b - sqrtpos(b*b - 4.0*a*c))/(2.0*a) );
 }
 
 
