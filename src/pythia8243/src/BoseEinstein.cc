@@ -910,6 +910,17 @@ void BoseEinstein::shiftPair_fixedQRef( int i1, int i2, int iTab )
                      	* (hadronBE.at(i1).x - hadronBE.at(i2).x);
   }
 
+  // check that computed factor was correct solution
+  {
+	double local_factor = get_dQ2_factor(hadronBE.at(i1), hadronBE.at(i2), Q2Diff);
+	Vec4 local_p1 = hadronBE.at(i1).p + pDiff;
+	Vec4 local_p2 = hadronBE.at(i2).p - pDiff;
+	double local_Q2old = m2(hadronBE.at(i1).p, hadronBE.at(i2).p) - m2Pair[iTab];
+	double local_Q2new = m2(local_p1, local_p2) - m2Pair[iTab];
+	cout << "check solution: " << local_Q2new << "   " << local_Q2old << "   "
+		<< local_Q2new - local_Q2old << "   " << Q2Diff << endl;
+  }
+
   hadronBE.at(i1).pShift += pDiff;
   hadronBE.at(i2).pShift -= pDiff;
 
