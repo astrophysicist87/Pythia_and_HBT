@@ -87,7 +87,7 @@ collisionSystemStem=$projectile$target"_"`echo $beamEnergy`"GeV_Nev"$Nevents
 		if [ $PYTHIAVersionNumber -eq 8243 ]
 		then
 			echo 'BoseEinstein:enhanceMode ='                 $BEEnhancementMode            >> $PYTHIA_CMND_FILE
-			echo 'BoseEinstein:shiftDirection ='              $BEShiftDirection             >> $PYTHIA_CMND_FILE
+			echo 'BoseEinstein:shiftDirection ='              $shiftDirection               >> $PYTHIA_CMND_FILE
 			echo 'BoseEinstein:useInvariantSourceSize ='      $useInvariantSourceSize       >> $PYTHIA_CMND_FILE
 			echo 'BoseEinstein:useDistribution ='             $useDistribution              >> $PYTHIA_CMND_FILE
 			echo 'BoseEinstein:useRelativeDistance ='         $useRelativeDistance          >> $PYTHIA_CMND_FILE
