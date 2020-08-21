@@ -2059,7 +2059,7 @@ double BoseEinstein::get_dQ2_factor(
 {
 	Vec4 pSum  = had1.p + had2.p;
 	Vec4 pDiff = had1.p - had2.p;
-	Vec4 xDiff = had1.x - had2.x;
+	Vec4 xDiff = MM2FM*(had1.x - had2.x);
 	//Vec4 xDiff = pDiff;	// sanity check
 
 	double pSumDotxDiff  = dot3(pSum, xDiff);
