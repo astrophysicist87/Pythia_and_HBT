@@ -171,7 +171,7 @@ file_mode 										= 1
 selection_mode 									= 0
 # column in multiplicities file to select on
 # (ASSUME ZERO-INDEXED COUNTING)
-column_to_read 									= 7
+column_to_read 									= 5
 
 # --
 # minimum bias by default

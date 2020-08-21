@@ -86,6 +86,7 @@ PYTHIA_RESULTS_DIRECTORY=$CURRENT_RESULTS_DIRECTORY/Pythia_results/dataset${data
 		# which I've added myself (not generally compatible yet)
 		# Comment out lines below this one if running on unmodified Pythia
 		echo 'BoseEinstein:enhanceMode ='                 $BEEnhancementMode            >> $CMND_FILENAME
+		echo 'BoseEinstein:shiftDirection ='              $BEShiftDirection             >> $CMND_FILENAME
 		echo 'BoseEinstein:useInvariantSourceSize ='      $useInvariantSourceSize       >> $CMND_FILENAME
 		echo 'BoseEinstein:useDistribution ='             $useDistribution              >> $CMND_FILENAME
 		echo 'BoseEinstein:useRelativeDistance ='         $useRelativeDistance          >> $CMND_FILENAME

@@ -94,6 +94,8 @@ echo 'export SetFragmentationVertices='$SetFragmentationVertices
 echo 'export SetPartonVertices='$SetPartonVertices
 echo 'export ThermalOnly='$ThermalOnly
 echo
+echo 'export shiftDirection='$shiftDirection
+echo
 echo 'export useInvariantSourceSize='$useInvariantSourceSize
 echo 'export useDistribution='$useDistribution
 echo 'export useRelativeDistance='$useRelativeDistance
@@ -172,6 +174,8 @@ echo '|            -- use relative separations'
 echo '|               instead of coordinates      :' $useRelativeDistance
 echo '|            -- evaluate distances in PRF'
 echo '|               instead of lab frame        :' $useRestFrame
+echo '|            -- shift proportional to'
+echo '|               p1-p2 (0) or x1-x2 (1)      :' $shiftDirection
 echo '|       if Bose-Einstein mode == 1          :'
 echo '|          - include phase space            :' $includePhaseSpace
 echo '|          - include estimated pair density :' $linearInterpolateCDF

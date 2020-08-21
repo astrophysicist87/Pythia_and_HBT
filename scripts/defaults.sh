@@ -31,6 +31,9 @@ export SetFragmentationVertices='on'
 export SetPartonVertices='off'
 export ThermalOnly='false'
 
+export shiftDirection='0'						# 0 - shift proportional to p1-p2
+												# 1 - shift proportional to x1-x2
+
 export useInvariantSourceSize='off'             # Lorentz-invariant size vs. spatial size only
 export useDistribution='off'                    # Estimate QRef vs. take as input parameter
 export useRelativeDistance='on'                 # Use relative distances or absolute sizes
