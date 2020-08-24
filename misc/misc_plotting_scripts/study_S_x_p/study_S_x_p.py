@@ -5,6 +5,9 @@ import matplotlib.pyplot as plt
 import matplotlib.colors as colors
 import sys
 
+#====================================================
+def pause():
+    programPause = raw_input()
 
 #====================================================
 def make_2D_density_plot( xDir, yDir, xLimits, yLimits, \
@@ -72,5 +75,6 @@ if __name__ == "__main__":
 	# Generate plots
 	generate_plot( data, False, 50, 1, [-5.0, 5.0], [-5.0, 5.0] )
 	
+	pause()
 
 # End of file
