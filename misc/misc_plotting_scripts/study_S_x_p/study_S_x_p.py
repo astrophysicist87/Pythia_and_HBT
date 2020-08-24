@@ -11,30 +11,20 @@ def pause():
 
 #====================================================
 def make_2D_density_plot( xDir, yDir, xLimits, yLimits, \
-    xLabel, yLabel, nbins, logDensity ):
+    xLabel, yLabel, nbins ):
     fig, ax = plt.subplots()
 
     H, xedges, yedges = np.histogram2d(xDir, yDir, bins=nbins, range=[xLimits, yLimits])
 
-    #xcenters = (xedges[:-1] + xedges[1:]) / 2
-    #ycenters = (yedges[:-1] + yedges[1:]) / 2
-
     cm = plt.cm.gnuplot
-    im = None
-    if logDensity:
-        im = plt.imshow(H.T, cmap=cm, extent=[xedges.min(), xedges.max(), yedges.min(), yedges.max()], \
-                        norm=colors.LogNorm(vmin=(H[np.where(H>0.0)]).min(), vmax=H.max()), \
-                        origin='lower', interpolation='bicubic')
-    else:
-        im = plt.imshow(H.T, cmap=cm, extent=[xedges.min(), xedges.max(), yedges.min(), yedges.max()], \
-                        origin='lower', interpolation='bicubic')
+    im = plt.imshow(H.T, cmap=cm, origin='lower', interpolation='bilinear',
+                    extent=[xedges.min(), xedges.max(), yedges.min(), yedges.max()])
 
     plt.colorbar(im,fraction=0.046, pad=0.04)
 
     plt.xlabel(xLabel)
     plt.ylabel(yLabel)
 
-    #plt.axes().set_aspect('equal')
     plt.xlim(xLimits)
     plt.ylim(yLimits)
 	
@@ -44,7 +34,7 @@ def make_2D_density_plot( xDir, yDir, xLimits, yLimits, \
 
 
 #====================================================
-def generate_plot( data, usingLogDensity, numberOfBins, \
+def generate_plot( data, numberOfBins, \
                     plotMode, xLimits, yLimits ):
     if plotMode == 0:
         xLabel = r'$z$ (fm)'
@@ -59,9 +49,9 @@ def generate_plot( data, usingLogDensity, numberOfBins, \
 	
     # Plot them
     if plotMode == 0:
-        make_2D_density_plot(z, t, xLimits, yLimits, xLabel, yLabel, numberOfBins, usingLogDensity)
+        make_2D_density_plot(z, t, xLimits, yLimits, xLabel, yLabel, numberOfBins)
     elif plotMode == 1:
-        make_2D_density_plot(x, y, xLimits, yLimits, xLabel, yLabel, numberOfBins, usingLogDensity)
+        make_2D_density_plot(x, y, xLimits, yLimits, xLabel, yLabel, numberOfBins)
 
 
 
@@ -74,8 +64,10 @@ if __name__ == "__main__":
     data = np.loadtxt(filename).T
 	
     # Generate plots
-    generate_plot( data, False, 50, 1, [-5.0, 5.0], [-5.0, 5.0] )
-	
+    generate_plot( data, 50, 0, [-10.0, 10.0], [0.0, 15.0] )
+    generate_plot( data, 50, 1, [-5.0, 5.0], [-5.0, 5.0] )
+
+
     pause()
 
 # End of file
