@@ -17,7 +17,8 @@ def make_2D_density_plot( xDir, yDir, xLimits, yLimits, \
     nybins = int((yLimits[1] - yLimits[0]) / ybinwidth)
     fig, ax = plt.subplots()
 
-    H, xedges, yedges = np.histogram2d(xDir, yDir, bins=[nxbins, nybins], range=[xLimits, yLimits])
+    H, xedges, yedges = np.histogram2d(xDir, yDir, bins=[nxbins, nybins],
+                                       range=[xLimits, yLimits], density=True)
 
     cm = plt.cm.gnuplot
     im = plt.imshow(H.T, cmap=cm, origin='lower', interpolation='bilinear',
