@@ -34,14 +34,20 @@ def make_2D_density_plot( xDir, yDir, xLimits, yLimits, \
 
 
 #====================================================
-def generate_plot( data, numberOfBins, \
+def generate_plot( data, polarMode, numberOfBins, \
                     plotMode, xLimits, yLimits ):
     if plotMode == 0:
         xLabel = r'$z$ (fm)'
         yLabel = r'$t$ (fm/$c$)'
+        if polarMode == 1:
+            xLabel = r'$\eta$'
+            yLabel = r'$\tau$ (fm/$c$)'
     elif plotMode == 1:
         xLabel = r'$x$ (fm)'
         yLabel = r'$y$ (fm)'
+        if polarMode == 1:
+            xLabel = r'$r$ (fm)'
+            yLabel = r'$\phi$'
     else:
         print 1/0
 
@@ -49,7 +55,15 @@ def generate_plot( data, numberOfBins, \
 	
     # Plot them
     if plotMode == 0:
-        make_2D_density_plot(z, t, xLimits, yLimits, xLabel, yLabel, numberOfBins)
+        if polarMode == 0:
+            make_2D_density_plot(z, t, xLimits, yLimits, xLabel, yLabel, numberOfBins)
+        else:
+            safeIndices = np.where(np.greater(t, z))
+            tsI = t[safeIndices]
+            zsI = z[safeIndices]
+            eta = 0.5*np.log( (tsI+zsI)/(tsI-zsI) )
+            tau = np.sqrt(tsI**2-zsI**2)
+            make_2D_density_plot(eta, tau, xLimits, yLimits, xLabel, yLabel, numberOfBins)
     elif plotMode == 1:
         make_2D_density_plot(x, y, xLimits, yLimits, xLabel, yLabel, numberOfBins)
 
@@ -64,8 +78,9 @@ if __name__ == "__main__":
     data = np.loadtxt(filename).T
 	
     # Generate plots
-    generate_plot( data, 50, 0, [-10.0, 10.0], [0.0, 15.0] )
-    generate_plot( data, 50, 1, [-5.0, 5.0], [-5.0, 5.0] )
+    generate_plot( data, 0, 50, 0, [-10.0, 10.0], [0.0, 15.0] )
+    generate_plot( data, 1, 50, 0, [-10.0, 10.0], [0.0, 15.0] )
+    generate_plot( data, 0, 50, 1, [-5.0, 5.0], [-5.0, 5.0] )
 
 
     pause()
