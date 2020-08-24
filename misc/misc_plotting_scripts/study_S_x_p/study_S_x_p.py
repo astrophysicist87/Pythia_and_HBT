@@ -11,7 +11,7 @@ def pause():
 
 #====================================================
 def make_2D_density_plot( xDir, yDir, xLimits, yLimits, \
-    xLabel, yLabel, nbins ):
+                            xLabel, yLabel, nbins ):
     fig, ax = plt.subplots()
 
     H, xedges, yedges = np.histogram2d(xDir, yDir, bins=nbins, range=[xLimits, yLimits])
@@ -58,7 +58,7 @@ def generate_plot( data, polarMode, numberOfBins, \
         if polarMode == 0:
             make_2D_density_plot(z, t, xLimits, yLimits, xLabel, yLabel, numberOfBins)
         else:
-            safeIndices = np.where(np.greater(t, z))
+            safeIndices = np.where(np.greater(t**2, z**2))
             tsI = t[safeIndices]
             zsI = z[safeIndices]
             eta = 0.5*np.log( (tsI+zsI)/(tsI-zsI) )
@@ -79,7 +79,7 @@ if __name__ == "__main__":
 	
     # Generate plots
     generate_plot( data, 0, 50, 0, [-10.0, 10.0], [0.0, 15.0] )
-    generate_plot( data, 1, 50, 0, [-10.0, 10.0], [0.0, 15.0] )
+    generate_plot( data, 1, 50, 0, [-5.0, 5.0], [0.0, 5.0] )
     generate_plot( data, 0, 50, 1, [-5.0, 5.0], [-5.0, 5.0] )
 
 
