@@ -11,10 +11,13 @@ def pause():
 
 #====================================================
 def make_2D_density_plot( xDir, yDir, xLimits, yLimits, \
-                            xLabel, yLabel, nbins ):
+                            xLabel, yLabel, bws ):
+    [xbinwidth, ybinwidth] = bws
+    nxbins = int((xLimits[1] - xLimits[0]) / xbinwidth)
+    nybins = int((yLimits[1] - yLimits[0]) / ybinwidth)
     fig, ax = plt.subplots()
 
-    H, xedges, yedges = np.histogram2d(xDir, yDir, bins=nbins, range=[xLimits, yLimits])
+    H, xedges, yedges = np.histogram2d(xDir, yDir, bins=[nxbins, nybins], range=[xLimits, yLimits])
 
     cm = plt.cm.gnuplot
     im = plt.imshow(H.T, cmap=cm, origin='lower', interpolation='bilinear',
@@ -34,7 +37,7 @@ def make_2D_density_plot( xDir, yDir, xLimits, yLimits, \
 
 
 #====================================================
-def generate_plot( data, polarMode, numberOfBins, \
+def generate_plot( data, polarMode, bws, \
                     plotMode, xLimits, yLimits ):
     if plotMode == 0:
         xLabel = r'$z$ (fm)'
@@ -56,16 +59,16 @@ def generate_plot( data, polarMode, numberOfBins, \
     # Plot them
     if plotMode == 0:
         if polarMode == 0:
-            make_2D_density_plot(z, t, xLimits, yLimits, xLabel, yLabel, numberOfBins)
+            make_2D_density_plot(z, t, xLimits, yLimits, xLabel, yLabel, bws)
         else:
             safeIndices = np.where(np.greater(t**2, z**2))
             tsI = t[safeIndices]
             zsI = z[safeIndices]
             eta = 0.5*np.log( (tsI+zsI)/(tsI-zsI) )
             tau = np.sqrt(tsI**2-zsI**2)
-            make_2D_density_plot(eta, tau, xLimits, yLimits, xLabel, yLabel, numberOfBins)
+            make_2D_density_plot(eta, tau, xLimits, yLimits, xLabel, yLabel, bws)
     elif plotMode == 1:
-        make_2D_density_plot(x, y, xLimits, yLimits, xLabel, yLabel, numberOfBins)
+        make_2D_density_plot(x, y, xLimits, yLimits, xLabel, yLabel, bws)
 
 
 
@@ -78,9 +81,9 @@ if __name__ == "__main__":
     data = np.loadtxt(filename).T
 	
     # Generate plots
-    generate_plot( data, 0, 50, 0, [-10.0, 10.0], [0.0, 15.0] )
-    generate_plot( data, 1, 50, 0, [-5.0, 5.0], [0.0, 5.0] )
-    generate_plot( data, 0, 50, 1, [-5.0, 5.0], [-5.0, 5.0] )
+    generate_plot( data, 0, [0.2, 0.2], 0, [-10.0, 10.0], [0.0, 15.0] )
+    generate_plot( data, 1, [0.2, 0.2], 0, [-5.0, 5.0], [0.0, 5.0] )
+    generate_plot( data, 0, [0.2, 0.2], 1, [-5.0, 5.0], [-5.0, 5.0] )
 
 
     pause()
