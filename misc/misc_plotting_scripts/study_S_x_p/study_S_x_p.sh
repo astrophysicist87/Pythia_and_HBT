@@ -15,7 +15,7 @@ do
     eventClassCut=(`echo $eventClassCutString | sed 's/-/ /g' | sed 's/%//g'`)
     classMin=${eventClassCut[0]}
     classMax=${eventClassCut[1]}
-    for KTmin in $(seq 0 0.1 0.8)
+    for KTmin in $(seq 0 0.1 0.7)
     do
         KTmax=`echo "$KTmin+0.1" | bc`
         resultsFilename=S_x_p_N${classMin}_${classMax}_${KTmin}_${KTmax}.dat
@@ -26,5 +26,5 @@ do
                       1> $study_S_x_p_results_directory/$resultsFilename \
                       2> $study_S_x_p_results_directory/$outputFilename &
     done
-    wait
+    #wait
 done

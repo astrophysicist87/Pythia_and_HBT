@@ -13,7 +13,7 @@ int main(int argc, char ** argv)
 
 	//int mult_min = 1, mult_max = 11;
 	//double KTmin = 0.0, KTmax = 0.2;
-	double Kphimin = 0.0, Kphimax = 2.0*M_PI;
+	double Kphimin = -M_PI, Kphimax = M_PI;
 	double KZmin = -1.0, KZmax = 1.0;
 
 	int mult_min = std::stoi( argv[1] );
@@ -82,7 +82,8 @@ int main(int argc, char ** argv)
 				if ( px*px+py*py > KTmax*KTmax or px*px+py*py < KTmin*KTmin ) continue;
 				if ( pz > KZmax or pz < KZmin ) continue;
 				double this_Kphi = atan2(py, px);
-				if ( this_Kphi < Kphimin or this_Kphi > Kphimax ) continue;
+				//if ( this_Kphi < Kphimin or this_Kphi > Kphimax ) continue;
+				if ( this_Kphi < 0.0 ) this_Kphi += 2.0*M_PI;
 
 				t *= 1.0e12;
 				x *= 1.0e12;
@@ -90,7 +91,8 @@ int main(int argc, char ** argv)
 				z *= 1.0e12;
 
 				// if we made it here, output particle (space-time) info
-				std::cout << t << "   " << x << "   " << y << "   " << z << std::endl;
+				//std::cout << t << "   " << x << "   " << y << "   " << z << std::endl;
+				printf("%f   %f   %f   %f   %f\n", this_Kphi, t, x, y, z);
 			}
 		}
 
