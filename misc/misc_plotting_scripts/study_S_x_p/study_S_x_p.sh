@@ -19,10 +19,12 @@ do
     do
         KTmax=`echo "$KTmin+0.1" | bc`
         resultsFilename=S_x_p_N${classMin}_${classMax}_${KTmin}_${KTmax}.dat
+        outputFilename=S_x_p_N${classMin}_${classMax}_${KTmin}_${KTmax}.out
         ./study_S_x_p $classMin $classMax $KTmin $KTmax \
                       $workingDirectory/pp_7000GeV_Nev60000000_mult.dat \
                       $workingDirectory/pp_7000GeV_Nev60000000_{0..599}.dat \
-                      > $study_S_x_p_results_directory/$resultsFilename &
+                      1> $study_S_x_p_results_directory/$resultsFilename \
+                      2> $study_S_x_p_results_directory/$outputFilename &
     done
     wait
 done
