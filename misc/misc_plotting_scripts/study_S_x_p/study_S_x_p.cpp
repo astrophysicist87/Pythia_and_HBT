@@ -21,11 +21,11 @@ int main(int argc, char ** argv)
 	double KTmin = std::stod( argv[3] );
 	double KTmax = std::stod( argv[4] );
 
-	ifstream inMultiplicities( argv[5] );
+	std::ifstream inMultiplicities( argv[5] );
 	int nEvents = 60000000;
 	int nCols = 8;
 	int columnToUse = 5;	//zero-indexed
-	vector<int> multiplicities (nEvents);
+	std::vector<int> multiplicities (nEvents);
 	int count = 0;
 	//for (int iEvent = 0; iEvent < nEvents; iEvent++)
 	while (inMultiplicities.good())
@@ -45,7 +45,7 @@ int main(int argc, char ** argv)
 	for (int iFile = 6; iFile < argc; iFile++)
 	{
 		std::cerr << "Reading in " << argv[iFile] << "..." << std::endl;
-		ifstream infile( argv[iFile] );
+		std::ifstream infile( argv[iFile] );
 		count = 0;
 		//int nEventsPerFile = 100000;
 		//for (int iEvent = 0; iEvent < nEventsPerFile; iEvent++)
