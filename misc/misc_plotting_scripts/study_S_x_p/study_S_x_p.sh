@@ -17,7 +17,8 @@ do
     classMax=${eventClassCut[1]}
     for KTmin in $(seq 0 0.1 0.7)
     do
-        KTmax=`echo "$KTmin+0.1" | bc`
+        #KTmax=`echo "$KTmin+0.1" | bc`
+        KTmax=`echo | awk -v ktmin=$KTmin '{print ktmin+0.1}'`
         resultsFilename=S_x_p_N${classMin}_${classMax}_${KTmin}_${KTmax}.dat
         outputFilename=S_x_p_N${classMin}_${classMax}_${KTmin}_${KTmax}.out
         ./study_S_x_p $classMin $classMax $KTmin $KTmax \
