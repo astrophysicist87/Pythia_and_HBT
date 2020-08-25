@@ -62,7 +62,7 @@ def generate_plot( data, polarMode, bws, \
     else:
         print 1/0
 
-    [t,x,y,z]=data
+    [Kphi,t,x,y,z]=data
 	
     # Plot them
     if plotMode == 0:
