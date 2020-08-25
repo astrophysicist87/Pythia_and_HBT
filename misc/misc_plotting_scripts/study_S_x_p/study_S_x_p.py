@@ -112,7 +112,7 @@ if __name__ == "__main__":
         KphiStem = '_xPos'
     elif ySector:
         data=data.T
-        data = data[np.where((np.abs(data[:,0])-0.5*np.pi)<0.125*np.pi)]
+        data = data[np.where(np.abs(data[:,0]-0.5*np.pi)<0.125*np.pi)]
         data=data.T
         KphiStem = '_yPos'
     
