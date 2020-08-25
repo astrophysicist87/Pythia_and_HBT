@@ -101,13 +101,24 @@ if __name__ == "__main__":
     # Load file
     data = np.loadtxt(filename).T
     
+    KphiStem=''
+    xSector=(sys.argv[2]=="True")
+    ySector=(sys.argv[3]=="True")
+    if xSector:
+        data[np.where(data[:,0] > np.pi),0] -= 2.0*np.pi
+        data = data[np.where(np.abs(data[:,0])<0.125*np.pi)]
+        KphiStem = '_xPos'
+    elif ySector:
+        data = data[np.where((np.abs(data[:,0])-0.5*np.pi)<0.125*np.pi)]
+        KphiStem = '_yPos'
+    
     filenameStem = os.path.splitext(filename)[0]
 	
     # Generate plots
-    generate_plot( data, 0, [0.1, 0.1], 0, [-10.0, 10.0], [0.0, 15.0], filenameStem+'_z_t.pdf' )
-    generate_plot( data, 1, [0.1, 0.1], 0, [-5.0, 5.0], [0.0, 5.0], filenameStem+'_eta_tau.pdf' )
-    generate_plot( data, 0, [0.1, 0.1], 1, [-2.5, 2.5], [-2.5, 2.5], filenameStem+'_x_y.pdf' )
-    generate_plot( data, None, [0.1, 0.1], 2, [0.0, 5.0], [0.0, 5.0], filenameStem+'_r_tau.pdf' )
+    generate_plot( data, 0, [0.1, 0.1], 0, [-10.0, 10.0], [0.0, 15.0], filenameStem+KphiStem+'_z_t.pdf' )
+    generate_plot( data, 1, [0.1, 0.1], 0, [-5.0, 5.0], [0.0, 5.0], filenameStem+KphiStem+'_eta_tau.pdf' )
+    generate_plot( data, 0, [0.1, 0.1], 1, [-2.5, 2.5], [-2.5, 2.5], filenameStem+KphiStem+'_x_y.pdf' )
+    generate_plot( data, None, [0.1, 0.1], 2, [0.0, 5.0], [0.0, 5.0], filenameStem+KphiStem+'_r_tau.pdf' )
 
     #pause()
 
