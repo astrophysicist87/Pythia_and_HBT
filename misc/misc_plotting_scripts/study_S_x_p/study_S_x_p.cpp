@@ -2,34 +2,28 @@
 #include <fstream>
 #include <cmath>
 #include <vector>
+#include <string>
 
-using namespace std;
-
-/*typedef struct
-{
-	int eventID;		//which event did this particle come from
-	int pdgID;
-	int thermal_or_decay;
-
-	double t, x, y, z;
-	double E, px, py, pz;
-	
-} ParticleRecord;*/
+//using namespace std;
 
 int main(int argc, char ** argv)
 {
 	bool include_thermal = true;
 	bool include_decay = false;
 
-	int mult_min = 1, mult_max = 11;
-	double KTmin = 0.0, KTmax = 0.2;
+	//int mult_min = 1, mult_max = 11;
+	//double KTmin = 0.0, KTmax = 0.2;
 	double Kphimin = 0.0, Kphimax = 2.0*M_PI;
 	double KZmin = -1.0, KZmax = 1.0;
 
-	//vector<ParticleRecord> particles;
-	ifstream inMultiplicities( argv[1] );
-	int nEvents = 30000000;
-	int nCols = 9;
+	int mult_min = std::stoi( argv[1] );
+	int mult_max = std::stoi( argv[2] );
+	double KTmin = std::stod( argv[3] );
+	double KTmax = std::stod( argv[4] );
+
+	ifstream inMultiplicities( argv[5] );
+	int nEvents = 60000000;
+	int nCols = 8;
 	int columnToUse = 5;	//zero-indexed
 	vector<int> multiplicities (nEvents);
 	int count = 0;
@@ -45,12 +39,12 @@ int main(int argc, char ** argv)
 	}
 	inMultiplicities.close();
 
-	cerr << "Read in " << count << " events." << endl;
+	std::cerr << "Read in " << count << " events." << std::endl;
 
 	// read file(s)
-	for (int iFile = 2; iFile < argc; iFile++)
+	for (int iFile = 6; iFile < argc; iFile++)
 	{
-		cerr << "Reading in " << argv[iFile] << "..." << endl;
+		std::cerr << "Reading in " << argv[iFile] << "..." << std::endl;
 		ifstream infile( argv[iFile] );
 		count = 0;
 		//int nEventsPerFile = 100000;
@@ -69,22 +63,13 @@ int main(int argc, char ** argv)
 			}
 			if (count==0)
 			{
-				cerr << " --> " << argv[iFile] << " was good" << endl;
-				cerr << " --> " << eventID << "   " << multiplicity << "   "
-						<< multiplicities[eventID] << endl;
+				std::cerr << " --> " << argv[iFile] << " was good" << std::endl;
+				std::cerr << " --> " << eventID << "   " << multiplicity << "   "
+						<< multiplicities[eventID] << std::endl;
 			}
 			count++;
 			for (int iParticle = 0; iParticle < multiplicity; iParticle++)
 			{
-				/*ParticleRecord particle;
-				particle.eventID = eventID;
-				infile >> particle.pdgID >> particle.thermal_or_decay
-						>> particle.E >> particle.px >> particle.py >> particle.pz
-						>> particle.t >> particle.x >> particle.y >> particle.z;
-				particle.t *= 1.0e12;
-				particle.x *= 1.0e12;
-				particle.y *= 1.0e12;
-				particle.z *= 1.0e12;*/
 				double dummy;
 				int thermal_or_decay;
 				double E, px, py, pz;
@@ -105,7 +90,7 @@ int main(int argc, char ** argv)
 				z *= 1.0e12;
 
 				// if we made it here, output particle (space-time) info
-				cout << t << "   " << x << "   " << y << "   " << z << endl;
+				std::cout << t << "   " << x << "   " << y << "   " << z << std::endl;
 			}
 		}
 
