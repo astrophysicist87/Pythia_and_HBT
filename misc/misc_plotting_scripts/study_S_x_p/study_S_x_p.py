@@ -105,11 +105,15 @@ if __name__ == "__main__":
     xSector=(sys.argv[2]=="True")
     ySector=(sys.argv[3]=="True")
     if xSector:
-        data[0,np.where(data[0] > np.pi)] -= 2.0*np.pi
-        data = data[:,np.where(np.abs(data[0])<0.125*np.pi)]
+        data=data.T
+        data[np.where(data[:,0] > np.pi),0] -= 2.0*np.pi
+        data = data[np.where(np.abs(data[:,0])<0.125*np.pi)]
+        data=data.T
         KphiStem = '_xPos'
     elif ySector:
-        data = data[:,np.where((np.abs(data[0])-0.5*np.pi)<0.125*np.pi)]
+        data=data.T
+        data = data[np.where((np.abs(data[:,0])-0.5*np.pi)<0.125*np.pi)]
+        data=data.T
         KphiStem = '_yPos'
     
     filenameStem = os.path.splitext(filename)[0]
