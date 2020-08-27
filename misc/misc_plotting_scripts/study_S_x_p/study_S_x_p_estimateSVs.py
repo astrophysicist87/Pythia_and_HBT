@@ -23,7 +23,7 @@ if __name__ == "__main__":
     
     t=np.sort(t)
     
-    for i in range(len(t),2,-1):
+    for i in range(len(t),2,-100):
         print float(i)/float(len(t)), np.var(t[:i])
     
     '''print '-------------------------------------'
