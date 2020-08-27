@@ -21,6 +21,8 @@ if __name__ == "__main__":
     mpi = 0.13957
     betaT = KT / np.sqrt(mpi**2 + KT**2)
     
+    t=np.sort(t)
+    
     for i in range(2,len(t)):
         print 100.0*float(i)/float(len(t)), np.var(t[:i])
     
