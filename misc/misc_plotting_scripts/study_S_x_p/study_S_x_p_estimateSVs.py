@@ -24,7 +24,7 @@ if __name__ == "__main__":
     t=np.sort(t)
     
     for i in range(2,len(t)):
-        print 100.0*float(i)/float(len(t)), np.var(t[:i])
+        print float(i)/float(len(t)), np.var(t[:i])
     
     '''print '-------------------------------------'
     print 'Regular stats:'
