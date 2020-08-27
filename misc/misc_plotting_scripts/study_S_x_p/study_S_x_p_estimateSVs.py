@@ -26,7 +26,7 @@ if __name__ == "__main__":
     #print np.min(xo), np.max(xo)
     
     for i in range(len(xo),2,-100):
-        print float(i)/float(len(xo)), np.var(xo[:i])
+        print float(i)/float(len(xo)), np.var(xo[:i]), np.min(xo[:i]), np.max(xo[:i])
     
     '''print '-------------------------------------'
     print 'Regular stats:'
