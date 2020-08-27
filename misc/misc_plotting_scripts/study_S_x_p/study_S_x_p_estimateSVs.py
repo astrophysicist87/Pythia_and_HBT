@@ -21,7 +21,7 @@ if __name__ == "__main__":
     betaT = KT / np.sqrt(mpi**2 + KT**2)
     
     print '<x_o>, <x_s>, <x_l>, <t>:'
-    print np.mean(xo), np.mean(xo), np.mean(xo), np.mean(xo)
+    print np.mean(xo), np.mean(xs), np.mean(xl), np.mean(t)
     print '<(x_o-<x_o>)^2>, <(x_s-<x_s>)^2>, <(x_l-<x_l>)^2>, <(x_o-<x_o>)(t-<t>)>, <(t-<t>)^2>:'
     print np.var(xo), np.var(xs), np.var(xl), \
             np.mean(xo*t)-np.mean(xo)*np.mean(t), np.var(t)
