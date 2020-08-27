@@ -21,10 +21,10 @@ if __name__ == "__main__":
     mpi = 0.13957
     betaT = KT / np.sqrt(mpi**2 + KT**2)
     
-    t=np.sort(t)
+    xo=np.sort(xo)
     
-    for i in range(len(t),2,-100):
-        print float(i)/float(len(t)), np.var(t[:i])
+    for i in range(len(xo),2,-100):
+        print float(i)/float(len(xo)), np.var(xo[:i])
     
     '''print '-------------------------------------'
     print 'Regular stats:'
