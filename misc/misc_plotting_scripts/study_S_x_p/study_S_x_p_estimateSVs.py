@@ -21,7 +21,10 @@ if __name__ == "__main__":
     mpi = 0.13957
     betaT = KT / np.sqrt(mpi**2 + KT**2)
     
-    print '-------------------------------------'
+    for i in range(2,len(t)):
+        print 100.0*float(i)/float(len(t)), np.var(t[:i])
+    
+    '''print '-------------------------------------'
     print 'Regular stats:'
     print '<x_o>, <x_s>, <x_l>, <t>:'
     print np.mean(xo), np.mean(xs), np.mean(xl), np.mean(t)
@@ -39,10 +42,10 @@ if __name__ == "__main__":
     for ul in [10, 100, 1000, 10000, 100000]:
         print 'ul =', ul
         print '<x_o>, <x_s>, <x_l>, <t>:'
-        print stats.tmean(xo, (None, ul)), stats.tmean(xs, (None, ul)), \
+        print np.mean(xo), np.mean(xs), \
                stats.tmean(xl, (None, ul)), stats.tmean(t, (None, ul))
         print '<(x_o-<x_o>)^2>, <(x_s-<x_s>)^2>, <(x_l-<x_l>)^2>, <(t-<t>)^2>:'
-        print stats.tvar(xo, (None, ul)), stats.tvar(xs, (None, ul)), \
-               stats.tvar(xl, (None, ul)), stats.tvar(t, (None, ul))
+        print np.var(xo), np.var(xs), \
+               stats.tvar(xl, (None, ul)), stats.tvar(t, (None, ul))'''
 
 # End of file
