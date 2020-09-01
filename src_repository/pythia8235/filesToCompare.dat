@@ -1,0 +1,14 @@
+./include/Pythia8/HIUserHooks.h
+./include/Pythia8/PartonVertex.h
+./include/Pythia8/PythiaStdlib.h
+./include/Pythia8/Ropewalk.h
+./include/Pythia8/BoseEinstein.h
+./share/Pythia8/xmldoc/BoseEinsteinEffects.xml
+./src/Ropewalk.cc
+./src/StringFragmentation.cc
+./src/PartonVertex.cc
+./src/HIUserHooks.cc
+./src/HeavyIons.cc
+./src/BoseEinstein.cc
+./src/Pythia.cc
+./src/MiniStringFragmentation.cc
