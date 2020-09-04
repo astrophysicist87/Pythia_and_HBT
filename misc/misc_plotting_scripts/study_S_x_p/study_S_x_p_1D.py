@@ -94,7 +94,7 @@ if __name__ == "__main__":
     data = np.loadtxt(filename).T
     
     [Kphi,t,x,y,z]=data
-    safeIndices = np.where(np.greater(t**2, z**2))
+    safeIndices = np.where(np.greater(t**2, x**2+y**2+z**2))
     tsI = t[safeIndices]
     zsI = z[safeIndices]
     eta = 0.5*np.log( (tsI+zsI)/(tsI-zsI) )
