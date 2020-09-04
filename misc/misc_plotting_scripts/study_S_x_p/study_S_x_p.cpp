@@ -9,7 +9,7 @@
 int main(int argc, char ** argv)
 {
 	bool include_thermal = true;
-	bool include_decay = false;
+	bool include_decay = true;
 
 	//int mult_min = 1, mult_max = 11;
 	//double KTmin = 0.0, KTmax = 0.2;

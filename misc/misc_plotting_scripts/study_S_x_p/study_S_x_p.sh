@@ -6,7 +6,7 @@ declare -a class_ranges=("1-11" "12-16" "17-22" "23-28" "29-34" "35-41" "42-51" 
 study_S_x_p_results_directory=study_S_x_p_results
 mkdir -p $study_S_x_p_results_directory
 
-PythiaHBTDirectory=/scratch/blixen/plumberg/Pythia_and_HBT
+PythiaHBTDirectory=/home/kapustaj/cplumber/storage_from_blixen/scratch/blixen/plumberg/Pythia_and_HBT
 topResultsDirectory=results_pp_7TeV_Nev60000000/job-1/results
 workingDirectory=$PythiaHBTDirectory/$topResultsDirectory/Pythia_results/dataset_0
 
