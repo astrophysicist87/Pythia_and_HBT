@@ -2,6 +2,7 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
+import scipy.special as sp
 import os, sys
 
 #====================================================
@@ -37,10 +38,27 @@ def make_2D_density_plot( xDir, yDir, xLimits, yLimits, \
     plt.ylim(yLimits)
 	
     plt.tight_layout()
-    #plt.show(block = False)
-    fig.savefig(outputfilename)
+    plt.show()
+    #fig.savefig(outputfilename)
     print 'Saving to', outputfilename
+    
+    '''fig, ax = plt.subplots()
 
+    cm = plt.cm.gnuplot
+    xv, yv = np.meshgrid(xedges, yedges, indexing='xy')
+    im = plt.imshow(NormalDistribution(xv)*GammaDistribution(yv), cmap=cm, origin='lower', interpolation='bilinear',
+                    extent=[xedges.min(), xedges.max(), yedges.min(), yedges.max()])
+
+    plt.colorbar(im,fraction=0.046, pad=0.04)
+
+    plt.xlabel(xLabel)
+    plt.ylabel(yLabel)
+
+    plt.xlim(xLimits)
+    plt.ylim(yLimits)
+	
+    plt.tight_layout()
+    plt.show()'''
 
 
 
@@ -96,14 +114,19 @@ def generate_plot( data, polarMode, bws, \
 #====================================================
 if __name__ == "__main__":
     # Read in name of file from command line
-    filename = sys.argv[1]
+    #filename = sys.argv[1]
+    filename = "C:/Users/Christopher Plumberg/Desktop/Research/Lund"\
+                +"/Multiplicity_dependence_of_HBT_w_Pythia/Figures"\
+                +"/study_S_x_p_PDFs/S_x_p_N1_11_0.0_0.1.dat"
 	
     # Load file
     data = np.loadtxt(filename).T
     
     KphiStem=''
-    xSector=(sys.argv[2]=="True")
-    ySector=(sys.argv[3]=="True")
+    #xSector=(sys.argv[2]=="True")
+    #ySector=(sys.argv[3]=="True")
+    xSector=False
+    ySector=False
     if xSector:
         data=data.T
         data[np.where(data[:,0] > np.pi),0] -= 2.0*np.pi
@@ -119,10 +142,10 @@ if __name__ == "__main__":
     filenameStem = os.path.splitext(filename)[0]
 	
     # Generate plots
-    generate_plot( data, 0, [0.1, 0.1], 0, [-10.0, 10.0], [0.0, 15.0], filenameStem+KphiStem+'_z_t.pdf' )
+    #generate_plot( data, 0, [0.1, 0.1], 0, [-10.0, 10.0], [0.0, 15.0], filenameStem+KphiStem+'_z_t.pdf' )
     generate_plot( data, 1, [0.1, 0.1], 0, [-5.0, 5.0], [0.0, 5.0], filenameStem+KphiStem+'_eta_tau.pdf' )
-    generate_plot( data, 0, [0.1, 0.1], 1, [-2.5, 2.5], [-2.5, 2.5], filenameStem+KphiStem+'_x_y.pdf' )
-    generate_plot( data, None, [0.1, 0.1], 2, [0.0, 5.0], [0.0, 5.0], filenameStem+KphiStem+'_r_tau.pdf' )
+    #generate_plot( data, 0, [0.1, 0.1], 1, [-2.5, 2.5], [-2.5, 2.5], filenameStem+KphiStem+'_x_y.pdf' )
+    #generate_plot( data, None, [0.1, 0.1], 2, [0.0, 5.0], [0.0, 5.0], filenameStem+KphiStem+'_r_tau.pdf' )
 
     #pause()
 
