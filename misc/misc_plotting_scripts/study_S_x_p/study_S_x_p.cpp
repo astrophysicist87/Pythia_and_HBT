@@ -14,7 +14,7 @@ int main(int argc, char ** argv)
 	//int mult_min = 1, mult_max = 11;
 	//double KTmin = 0.0, KTmax = 0.2;
 	double Kphimin = -M_PI, Kphimax = M_PI;
-	double KZmin = -0.1, KZmax = 0.1;
+	double KZmin = -0.01, KZmax = 0.01;
 
 	int mult_min = std::stoi( argv[1] );
 	int mult_max = std::stoi( argv[2] );
