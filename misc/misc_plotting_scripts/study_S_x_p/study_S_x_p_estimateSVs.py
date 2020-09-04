@@ -46,10 +46,10 @@ if __name__ == "__main__":
     for ul in [10, 100, 1000, 10000, 100000]:
         print 'ul =', ul
         print '<x_o>, <x_s>, <x_l>, <t>:'
-        print np.mean(xo), np.mean(xs), \
+        print stats.tmean(xo, (None, ul)), stats.tmean(xs, (None, ul)), \
                stats.tmean(xl, (None, ul)), stats.tmean(t, (None, ul))
         print '<(x_o-<x_o>)^2>, <(x_s-<x_s>)^2>, <(x_l-<x_l>)^2>, <(t-<t>)^2>:'
-        print np.var(xo), np.var(xs), \
+        print stats.tvar(xo, (None, ul)), stats.tvar(xs, (None, ul)), \
                stats.tvar(xl, (None, ul)), stats.tvar(t, (None, ul))
 
 # End of file
