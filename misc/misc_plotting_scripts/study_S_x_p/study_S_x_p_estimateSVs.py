@@ -39,6 +39,7 @@ def estimate_SVs(data):
     xmin, xmax = -10, 10
     ymin, ymax = -10, 10
     
+    print data.shape
     xCondition = (xmin < data[2]) & (xmax > data[2])
     yCondition = (ymin < data[3]) & (ymax > data[3])
     causalCondition = (data[1]**2 > data[2]**2+data[3]**2+data[4]**2)
