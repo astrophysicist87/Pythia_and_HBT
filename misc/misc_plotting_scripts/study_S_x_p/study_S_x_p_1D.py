@@ -53,15 +53,20 @@ def make_1D_density_plot( data, limits, bw ):
 
     #bincenters = (lambda v: 0.5*(v[1:]+v[:-1]))(np.arange(limits[0], limits[1]+bw, bw))
     #print len(bincenters), nbins, data.shape
-    #n, bins, patches = plt.hist( data, nbins, range=limits, density=True, weights=1.0/bincenters, facecolor='g', alpha=0.75 )
-    counts, bins = np.histogram(data, bins=nbins, range=limits, density=True )
+    n, bins, patches = plt.hist( data, nbins, range=limits, density=True, \
+                                 facecolor='g', alpha=0.75 )
+    #print np.sum(0.1*n)
+    #print 1/0
+    #counts, bins = np.histogram(data, bins=nbins, range=limits, density=True )
     #print len(bins), len(counts)
     #print bins
-    bincenters = (lambda v: 0.5*(v[1:]+v[:-1]))(bins)
-    plt.hist(bins[:-1], bins, density=True, weights=counts/bincenters, \
-             facecolor='g', alpha=0.75)
+    #bincenters = (lambda v: 0.5*(v[1:]+v[:-1]))(bins)
+    #plt.hist(bins[:-1], bins, density=True, weights=counts/bincenters, \
+    #         facecolor='g', alpha=0.75)
+    #plt.hist(bins[:-1], bins, density=True, weights=counts, \
+    #         facecolor='g', alpha=0.75)
         
-    eps=0
+    '''eps=0
     x = np.linspace(0.0, 4.0, 1001)
     #plt.plot(x, GammaDistribution(do_MLE(data, eps, 3.0), x), 'r-')
     #plt.plot(x, GammaDistribution(do_MLE(data, eps, 4.0), x), 'b-')
@@ -73,8 +78,12 @@ def make_1D_density_plot( data, limits, bw ):
     plt.plot(x, GammaDistribution(do_MLE_withWeights(data, gamma, eps, 100000.0, 0.01), x), '-', color='magenta')
     plt.plot(x, NakagamiDistribution([1.76517, 1.96998], x), '-', color='orange')
     plt.plot(x, NakagamiDistribution([2.03196, 2.58968], x), '-', color='yellow')
-    plt.plot(x, NakagamiDistribution([1.50433, 2.10114], x), '-', color='cyan')
+    plt.plot(x, NakagamiDistribution([1.50433, 2.10114], x), '-', color='cyan')'''
 
+    x = np.linspace(limits[0], limits[1], 1001)
+    s = 1.15954
+    y = np.exp(-0.5*x**2/s**2)/(np.sqrt(2.0*np.pi)*s)
+    plt.plot(x, y, 'r-')
     
     #plt.xlim(limits)
     plt.tight_layout()
@@ -88,7 +97,7 @@ if __name__ == "__main__":
     #filename = sys.argv[1]
     filename = "C:/Users/Christopher Plumberg/Desktop/Research/Lund"\
                 +"/Multiplicity_dependence_of_HBT_w_Pythia/Figures"\
-                +"/study_S_x_p_PDFs/S_x_p_N1_11_0.0_0.1.dat"
+                +"/study_S_x_p_results_KLmax0.01/S_x_p_N1_11_0.0_0.1.dat"
 	
     # Load file
     data = np.loadtxt(filename).T
@@ -99,7 +108,7 @@ if __name__ == "__main__":
     zsI = z[safeIndices]
     eta = 0.5*np.log( (tsI+zsI)/(tsI-zsI) )
     tau = np.sqrt(tsI**2-zsI**2)
-    #make_1D_density_plot( eta, [-8.0, 8.0], 0.1 )
+    make_1D_density_plot( eta, [-8.0, 8.0], 0.1 )
     make_1D_density_plot( tau, [0.0, 4.0], 0.1 )
     
 #End of file

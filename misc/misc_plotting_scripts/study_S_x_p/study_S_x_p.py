@@ -117,7 +117,7 @@ if __name__ == "__main__":
     #filename = sys.argv[1]
     filename = "C:/Users/Christopher Plumberg/Desktop/Research/Lund"\
                 +"/Multiplicity_dependence_of_HBT_w_Pythia/Figures"\
-                +"/study_S_x_p_PDFs/S_x_p_N1_11_0.0_0.1.dat"
+                +"/study_S_x_p_results_KLmax0.01/S_x_p_N1_11_0.0_0.1.dat"
 	
     # Load file
     data = np.loadtxt(filename).T
@@ -144,7 +144,7 @@ if __name__ == "__main__":
     # Generate plots
     #generate_plot( data, 0, [0.1, 0.1], 0, [-10.0, 10.0], [0.0, 15.0], filenameStem+KphiStem+'_z_t.pdf' )
     generate_plot( data, 1, [0.1, 0.1], 0, [-5.0, 5.0], [0.0, 5.0], filenameStem+KphiStem+'_eta_tau.pdf' )
-    #generate_plot( data, 0, [0.1, 0.1], 1, [-2.5, 2.5], [-2.5, 2.5], filenameStem+KphiStem+'_x_y.pdf' )
+    generate_plot( data, 0, [0.1, 0.1], 1, [-2.5, 2.5], [-2.5, 2.5], filenameStem+KphiStem+'_x_y.pdf' )
     #generate_plot( data, None, [0.1, 0.1], 2, [0.0, 5.0], [0.0, 5.0], filenameStem+KphiStem+'_r_tau.pdf' )
 
     #pause()
