@@ -83,6 +83,13 @@ def estimate_SVs(data):
     print '  --> ', np.mean(zTrunc), np.mean(tTrunc), np.var(zTrunc), np.var(tTrunc)
     print '  --> ', np.mean(milne[:,4]), np.mean(milne[:,5]), np.var(milne[:,4]), np.var(milne[:,5])
     print '  --> ', np.cov(milne[:,2], milne[:,5], bias=True)[0][1]
+    print '-------------------------------------'
+    print '  --> truncated radii:'
+    truncR2o, truncR2s, truncR2l = var_xo \
+                                   - 2.0*betaT*np.cov(milne[:,2], milne[:,5], bias=True)[0][1]\
+                                   + betaT**2*np.var(tTrunc),\
+                                   np.var(xs), np.var(zTrunc)
+    print '  --> ', truncR2o, truncR2s, truncR2l 
     
     # Estimate t and z variances instead from fitting to Gamma distribution
     print '-------------------------------------'
