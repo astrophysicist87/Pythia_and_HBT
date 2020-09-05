@@ -25,7 +25,7 @@ def do_MLE_withWeights(data, dist, bw):
     bincenters = (lambda v: 0.5*(v[1:]+v[:-1]))(bins)
     sums, bins = np.histogram(bins[:-1], bins=nbins, range=[minimum, maximum], \
                               density=True, weights=sums/bincenters)
-    hist_dist = stats.rv_histogram((sums, bins))
+    hist_dist = scipy.stats.rv_histogram((sums, bins))
     #pars = gamma.fit(weightedData, floc=0.0)
     pars = dist.fit(hist_dist.rvs(size=10000000), floc=0.0)
     a1, loc1, scale1 = pars
