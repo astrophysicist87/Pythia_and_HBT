@@ -32,11 +32,14 @@ def do_MLE_withWeights(data, dist, bw):
     #print minimum, maximum, a1, loc1, scale1
     return a1, scale1
 
-def estimate_SVs(data):
+def estimate_SVs(data, Nmin, Nmax, KTmin, KTmax, verbose=False):
     # parse data and impose limits (in fm)
-    print 'Loading and parsing data...'
+    if verbose:
+        print 'Loading and parsing data...'
     xmin, xmax = -10, 10
     ymin, ymax = -10, 10
+    
+    KT = 0.5*(float(KTmin)+float(KTmax))
     
     data = data.T
     xCondition = (xmin < data[:,2]) & (xmax > data[:,2])
@@ -53,23 +56,26 @@ def estimate_SVs(data):
     betaT = KT / np.sqrt(mpi**2 + KT**2)
 
     # compute moments, etc. directly
-    print '-------------------------------------'
-    print 'Computing variances and radii...'
-    print '-------------------------------------'
-    print '  --> means:'
     mean_xo, mean_xs, mean_xl, mean_t = np.mean(xo), np.mean(xs), np.mean(xl), np.mean(t)
-    print '  --> ', mean_xo, mean_xs, mean_xl, mean_t
     var_xo, var_xs, var_xl, var_t = np.var(xo), np.var(xs), np.var(xl), np.var(t)
     cov_xo_t = np.mean(xo*t)-np.mean(xo)*np.mean(t)
-    print '-------------------------------------'
-    print '  --> (co)variances:'
-    print '  --> ', var_xo, var_xs, var_xl, var_t
-    print '  --> ', cov_xo_t, np.cov(xo, t, bias=True)[0][1], np.cov(xo, t, bias=False)[0][1]
-    print '-------------------------------------'
-    print '  --> radii:'
-    R2o, R2s, R2l = var_xo - 2.0*betaT*(np.mean(xo*t)-np.mean(xo)*np.mean(t))+betaT**2*np.var(t),\
-          np.var(xs), np.var(xl)
-    print '  --> ', R2o, R2s, R2l 
+    R2o, R2s, R2l = var_xo \
+                    - 2.0*betaT*(np.mean(xo*t) - np.mean(xo)*np.mean(t)) \
+                    + betaT**2*np.var(t),\
+                    np.var(xs), np.var(xl)
+    if verbose:
+        print '-------------------------------------'
+        print 'Computing variances and radii...'
+        print '-------------------------------------'
+        print '  --> means:'
+        print '  --> ', mean_xo, mean_xs, mean_xl, mean_t
+        print '-------------------------------------'
+        print '  --> (co)variances:'
+        print '  --> ', var_xo, var_xs, var_xl, var_t
+        print '  --> ', cov_xo_t, np.cov(xo, t, bias=True)[0][1], np.cov(xo, t, bias=False)[0][1]
+        print '-------------------------------------'
+        print '  --> radii:'
+        print '  --> ', R2o, R2s, R2l 
           
     # Estimate t and z variances by imposing cut on tau
     tauMax = 5.0
@@ -78,80 +84,39 @@ def estimate_SVs(data):
     milne = milne[np.where(milne[:,0]<tauMax)]
     tTrunc = milne[:,0]*np.cosh(milne[:,1])
     zTrunc = milne[:,0]*np.sinh(milne[:,1])
-    print '-------------------------------------'
-    print '  --> truncated t/z means/variances:'
-    print '  --> ', np.mean(zTrunc), np.mean(tTrunc), np.var(zTrunc), np.var(tTrunc)
-    print '  --> ', np.mean(milne[:,4]), np.mean(milne[:,5]), np.var(milne[:,4]), np.var(milne[:,5])
-    print '  --> ', np.cov(milne[:,2], milne[:,5], bias=True)[0][1]
-    print '-------------------------------------'
-    print '  --> truncated radii:'
     truncR2o, truncR2s, truncR2l = var_xo \
                                    - 2.0*betaT*np.cov(milne[:,2], milne[:,5], bias=True)[0][1]\
                                    + betaT**2*np.var(tTrunc),\
                                    np.var(xs), np.var(zTrunc)
-    print '  --> ', truncR2o, truncR2s, truncR2l 
+    if verbose:
+        print '-------------------------------------'
+        print '  --> truncated t/z means/variances:'
+        print '  --> ', np.mean(zTrunc), np.mean(tTrunc), np.var(zTrunc), np.var(tTrunc)
+        print '  --> ', np.mean(milne[:,4]), np.mean(milne[:,5]), np.var(milne[:,4]), np.var(milne[:,5])
+        print '  --> ', np.cov(milne[:,2], milne[:,5], bias=True)[0][1]
+        print '-------------------------------------'
+        print '  --> truncated radii:'
+        print '  --> ', truncR2o, truncR2s, truncR2l 
     
-    # Estimate t and z variances instead from fitting to Gamma distribution
-    print '-------------------------------------'
-    print '  --> MLE t/z means/variances:'
-    tau, eta = np.sqrt(t**2-z**2), 0.5*np.log((t+z)/(t-z))
-    # N.B. - extra factor of tau pulled out!
-    alpha, beta = do_MLE_withWeights(tau, gamma, 0.01)
-    tau3mom = gamma.expect(lambda TAU: TAU**3, args=(alpha,), loc=0, scale=beta)
-    tau2mom = gamma.expect(lambda TAU: TAU**2, args=(alpha,), loc=0, scale=beta)
-    tau1mom = gamma.expect(lambda TAU: TAU, args=(alpha,), loc=0, scale=beta)
-    cosh_eta_mom = np.mean(np.cosh(eta))
-    sinh_eta_mom = np.mean(np.sinh(eta))
-    cosh2_eta_mom = np.mean(np.cosh(eta)**2)
-    sinh2_eta_mom = np.mean(np.sinh(eta)**2)
-    t2_expect = tau3mom * cosh2_eta_mom / tau1mom
-    z2_expect = tau3mom * sinh2_eta_mom / tau1mom
-    t_expect = tau2mom * cosh_eta_mom / tau1mom
-    z_expect = tau2mom * sinh_eta_mom / tau1mom
-    print '  --> ', z_expect, t_expect, z2_expect - z_expect**2, t2_expect - t_expect**2
-        
+
                 
 #====================================================
 if __name__ == "__main__":
-    # Read in name of file from command line
-    filename = sys.argv[1]
-    KT = float(sys.argv[2])
-	
+    # Read in name of file from command line    
+    Nmin, Nmax = '1', '11'
+    KTmin, KTmax = '0.0', '0.1'
+    #multmins = ['1','12','17','23','29','35','42','52']
+    #multmaxs = ['11','16','22','28','34','41','51','151']
+    #KTmins = ['0.0', '0.1', '0.2', '0.3', '0.4', '0.5', '0.6', '0.7']
+    #KTmaxs = ['0.1', '0.2', '0.3', '0.4', '0.5', '0.6', '0.7', '0.8']
+    path = sys.argv[1]    
+    filename = path + '/' + 'S_x_p_N' + Nmin + '_' + Nmax + '_' + KTmin + '_' + KTmax + '.dat'
+    print 'Processing', filename
+
     # Load file
     data = np.loadtxt(filename).T
     
-    estimate_SVs(data)
+    estimate_SVs(data, Nmin, Nmax, KTmin, KTmax, True)
     
-    # Scratch and backup below this line
-    '''xo=xo[np.argsort(np.abs(xo))]
-    
-    #print np.min(xo), np.max(xo)
-    
-    for i in range(len(xo),2,-1):
-        print float(i)/float(len(xo)), np.var(xo[:i]), np.min(xo[:i]), np.max(xo[:i])'''
-    
-    '''print '-------------------------------------'
-    print 'Regular stats:'
-    print '<x_o>, <x_s>, <x_l>, <t>:'
-    print np.mean(xo), np.mean(xs), np.mean(xl), np.mean(t)
-    print
-    print '<(x_o-<x_o>)^2>, <(x_s-<x_s>)^2>, <(x_l-<x_l>)^2>, <(x_o-<x_o>)(t-<t>)>, <(t-<t>)^2>:'
-    print np.var(xo), np.var(xs), np.var(xl), \
-            np.mean(xo*t)-np.mean(xo)*np.mean(t), np.var(t)
-    print
-    print 'R^2_o, R^2_s, R^2_l:'
-    print np.var(xo) - 2.0*betaT*(np.mean(xo*t)-np.mean(xo)*np.mean(t))+betaT**2*np.var(t),\
-          np.var(xs), np.var(xl)
-
-    print '-------------------------------------'
-    print 'Trimmed stats:'
-    for ul in [10, 100, 1000, 10000, 100000]:
-        print 'ul =', ul
-        print '<x_o>, <x_s>, <x_l>, <t>:'
-        print stats.tmean(xo, (-ul, ul)), stats.tmean(xs, (-ul, ul)), \
-               stats.tmean(xl, (-ul, ul)), stats.tmean(t, (None, ul))
-        print '<(x_o-<x_o>)^2>, <(x_s-<x_s>)^2>, <(x_l-<x_l>)^2>, <(t-<t>)^2>:'
-        print stats.tvar(xo, (-ul, ul)), stats.tvar(xs, (-ul, ul)), \
-               stats.tvar(xl, (-ul, ul)), stats.tvar(t, (None, ul))'''
 
 # End of file
