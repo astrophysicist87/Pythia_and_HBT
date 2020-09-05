@@ -113,8 +113,8 @@ if __name__ == "__main__":
     KTmaxs = ['0.1', '0.2', '0.3', '0.4', '0.5', '0.6', '0.7', '0.8']
     
     allResults = []
-    for iMult, Nmin in multmins:
-        for iKT, KTmin in KTmins:
+    for iMult, Nmin in enumerate(multmins):
+        for iKT, KTmin in enumerate(KTmins):
             Nmax, KTmax = multmaxs[iMult], KTmaxs[iKT]
             path = sys.argv[1]
             filename = path + '/' + 'S_x_p_N' + Nmin + '_' + Nmax + '_' + KTmin + '_' + KTmax + '.dat'
