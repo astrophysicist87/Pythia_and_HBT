@@ -127,10 +127,10 @@ if __name__ == "__main__":
             resultsForThisFile = [Nmin, Nmax, KTmin, KTmax] + list(SvsAndTruncRadii)
             allResults.append(resultsForThisFile)
             outfilename = path + '/' + 'SVsAndRadii_N' + Nmin + '_' + Nmax + '_' + KTmin + '_' + KTmax + '.dat'
-            np.savetxt(outfilename, np.array(resultsForThisFile))
+            np.savetxt(outfilename, np.array(resultsForThisFile), fmt='%s')
             
 
     outfilename = path + '/' + 'SVsAndRadii_all.dat'
-    np.savetxt(outfilename, np.array(allResults))
+    np.savetxt(outfilename, np.array(allResults), fmt='%s')
 
 # End of file
