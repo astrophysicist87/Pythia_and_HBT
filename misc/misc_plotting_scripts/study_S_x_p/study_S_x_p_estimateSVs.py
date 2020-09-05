@@ -41,7 +41,7 @@ def estimate_SVs(data):
     
     xCondition = (xmin < data[2]) & (xmax > data[2])
     yCondition = (ymin < data[3]) & (ymax > data[3])
-    causalCondition = data[1]**2 > data[2]**2+data[3]**2+data[4]**2
+    causalCondition = (data[1]**2 > data[2]**2+data[3]**2+data[4]**2)
     data = data[np.where(xCondition & yCondition & causalCondition)]
     
     xo = x*np.cos(Kphi) + y*np.sin(Kphi)
