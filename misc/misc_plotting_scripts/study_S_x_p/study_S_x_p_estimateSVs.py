@@ -74,13 +74,15 @@ def estimate_SVs(data):
     # Estimate t and z variances by imposing cut on tau
     tauMax = 5.0
     tau, eta = np.sqrt(t**2-z**2), 0.5*np.log((t+z)/(t-z))
-    milne = np.c_[ tau, eta ]
+    milne = np.c_[ tau, eta, xo, xs, z, t ]
     milne = milne[np.where(milne[:,0]<tauMax)]
     tTrunc = milne[:,0]*np.cosh(milne[:,1])
     zTrunc = milne[:,0]*np.sinh(milne[:,1])
     print '-------------------------------------'
     print '  --> truncated t/z means/variances:'
     print '  --> ', np.mean(zTrunc), np.mean(tTrunc), np.var(zTrunc), np.var(tTrunc)
+    print '  --> ', np.mean(milne[:,4]), np.mean(milne[:,5]), np.var(milne[:,4]), np.var(milne[:,5])
+    print '  --> ', np.cov(milne[:,2], milne[:,5], bias=True)[0][1]
     
     # Estimate t and z variances instead from fitting to Gamma distribution
     print '-------------------------------------'
