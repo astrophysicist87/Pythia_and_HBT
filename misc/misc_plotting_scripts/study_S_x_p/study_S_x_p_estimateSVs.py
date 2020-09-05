@@ -2,8 +2,7 @@
 #====================
 
 import scipy.special as sp
-from scipy.stats import rv_histogram
-from scipy.stats import gamma as statgamma
+from scipy.stats import gamma as statgamma, rv_histogram
 import numpy as np
 import sys
 
