@@ -96,27 +96,41 @@ def estimate_SVs(data, Nmin, Nmax, KTmin, KTmax, verbose=False):
         print '  --> ', np.cov(milne[:,2], milne[:,5], bias=True)[0][1]
         print '-------------------------------------'
         print '  --> truncated radii:'
-        print '  --> ', truncR2o, truncR2s, truncR2l 
+        print '  --> ', truncR2o, truncR2s, truncR2l
+        
+    return var_xo, np.cov(milne[:,2], milne[:,5], bias=True)[0][1], np.var(tTrunc),\
+           np.var(xs), np.var(zTrunc), truncR2o, truncR2s, truncR2l
     
 
                 
 #====================================================
 if __name__ == "__main__":
-    # Read in name of file from command line    
-    Nmin, Nmax = '1', '11'
-    KTmin, KTmax = '0.0', '0.1'
-    #multmins = ['1','12','17','23','29','35','42','52']
-    #multmaxs = ['11','16','22','28','34','41','51','151']
-    #KTmins = ['0.0', '0.1', '0.2', '0.3', '0.4', '0.5', '0.6', '0.7']
-    #KTmaxs = ['0.1', '0.2', '0.3', '0.4', '0.5', '0.6', '0.7', '0.8']
-    path = sys.argv[1]    
-    filename = path + '/' + 'S_x_p_N' + Nmin + '_' + Nmax + '_' + KTmin + '_' + KTmax + '.dat'
-    print 'Processing', filename
+    # Read in name of file from command line
+    # multiplicites and KT values
+    multmins = ['1','12','17','23','29','35','42','52']
+    multmaxs = ['11','16','22','28','34','41','51','151']
+    KTmins = ['0.0', '0.1', '0.2', '0.3', '0.4', '0.5', '0.6', '0.7']
+    KTmaxs = ['0.1', '0.2', '0.3', '0.4', '0.5', '0.6', '0.7', '0.8']
+    
+    allResults = []
+    for iMult, Nmin in multmins:
+        for iKT, KTmin in KTmins:
+            Nmax, KTmax = multmaxs[iMult], KTmaxs[iKT]
+            path = sys.argv[1]
+            filename = path + '/' + 'S_x_p_N' + Nmin + '_' + Nmax + '_' + KTmin + '_' + KTmax + '.dat'
+            print 'Processing', filename
+        
+            # Load file
+            data = np.loadtxt(filename).T
+            
+            SvsAndTruncRadii = estimate_SVs(data, Nmin, Nmax, KTmin, KTmax)
+            resultsForThisFile = [Nmin, Nmax, KTmin, KTmax] + SvsAndTruncRadii
+            allResults.append(resultsForThisFile)
+            outfilename = path + '/' + 'SVsAndRadii_N' + Nmin + '_' + Nmax + '_' + KTmin + '_' + KTmax + '.dat'
+            np.savetxt(outfilename, resultsForThisFile)
+            
 
-    # Load file
-    data = np.loadtxt(filename).T
-    
-    estimate_SVs(data, Nmin, Nmax, KTmin, KTmax, True)
-    
+    outfilename = path + '/' + 'SVsAndRadii_all.dat'
+    np.savetxt(outfilename, allResults)
 
 # End of file
