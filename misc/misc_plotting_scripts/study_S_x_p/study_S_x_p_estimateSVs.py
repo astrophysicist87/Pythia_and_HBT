@@ -124,7 +124,7 @@ if __name__ == "__main__":
             data = np.loadtxt(filename).T
             
             SvsAndTruncRadii = estimate_SVs(data, Nmin, Nmax, KTmin, KTmax)
-            resultsForThisFile = [Nmin, Nmax, KTmin, KTmax] + SvsAndTruncRadii
+            resultsForThisFile = [Nmin, Nmax, KTmin, KTmax] + list(SvsAndTruncRadii)
             allResults.append(resultsForThisFile)
             outfilename = path + '/' + 'SVsAndRadii_N' + Nmin + '_' + Nmax + '_' + KTmin + '_' + KTmax + '.dat'
             np.savetxt(outfilename, resultsForThisFile)
