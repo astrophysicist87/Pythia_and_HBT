@@ -2,7 +2,7 @@
 #====================
 
 #from scipy import stats
-import scipy.special as sp, scipy.stats.gamma as statgamma
+import scipy.special as sp, scipy.stats
 import numpy as np
 import sys
 
@@ -87,10 +87,10 @@ def estimate_SVs(data):
     print '  --> MLE t/z means/variances:'
     tau, eta = np.sqrt(t**2-z**2), 0.5*np.log((t+z)/(t-z))
     # N.B. - extra factor of tau pulled out!
-    alpha, beta = do_MLE_withWeights(tau, statgamma, 0.01)
-    tau3mom = statgamma.expect(lambda TAU: TAU**3, args=(alpha,), loc=0, scale=beta)
-    tau2mom = statgamma.expect(lambda TAU: TAU**2, args=(alpha,), loc=0, scale=beta)
-    tau1mom = statgamma.expect(lambda TAU: TAU, args=(alpha,), loc=0, scale=beta)
+    alpha, beta = do_MLE_withWeights(tau, scipy.stats.gamma, 0.01)
+    tau3mom = scipy.stats.gamma.expect(lambda TAU: TAU**3, args=(alpha,), loc=0, scale=beta)
+    tau2mom = scipy.stats.gamma.expect(lambda TAU: TAU**2, args=(alpha,), loc=0, scale=beta)
+    tau1mom = scipy.stats.gamma.expect(lambda TAU: TAU, args=(alpha,), loc=0, scale=beta)
     cosh_eta_mom = np.mean(np.cosh(eta))
     sinh_eta_mom = np.mean(np.sinh(eta))
     cosh2_eta_mom = np.mean(np.cosh(eta)**2)
