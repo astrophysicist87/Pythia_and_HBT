@@ -35,15 +35,15 @@ def do_MLE_withWeights(data, dist, bw):
 def estimate_SVs(data):
     # parse data and impose limits (in fm)
     print 'Loading and parsing data...'
-    [Kphi,t,x,y,z]=data
     xmin, xmax = -10, 10
     ymin, ymax = -10, 10
     
-    print data.shape
-    xCondition = (xmin < data[2]) & (xmax > data[2])
-    yCondition = (ymin < data[3]) & (ymax > data[3])
-    causalCondition = (data[1]**2 > data[2]**2+data[3]**2+data[4]**2)
-    data = data[np.where((xCondition) & (yCondition) & (causalCondition))]
+    data = data.T
+    xCondition = (xmin < data[:,2]) & (xmax > data[:,2])
+    yCondition = (ymin < data[:,3]) & (ymax > data[:,3])
+    causalCondition = (data[:,1]**2 > data[:,2]**2+data[:,3]**2+data[:,4]**2)
+    data = data[np.where((xCondition) & (yCondition) & (causalCondition))].T
+    [Kphi,t,x,y,z]=data
     
     xo = x*np.cos(Kphi) + y*np.sin(Kphi)
     xs = -x*np.sin(Kphi) + y*np.cos(Kphi)
