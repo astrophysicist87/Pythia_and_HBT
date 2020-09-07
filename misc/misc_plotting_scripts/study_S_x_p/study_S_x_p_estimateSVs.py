@@ -105,7 +105,8 @@ def estimate_SVs(data, Nmin, Nmax, KTmin, KTmax, verbose=False):
     # Estimate t and z variances instead from fitting to Gamma distribution
     # N.B. - extra factor of tau pulled out!
     tau, eta = np.sqrt(t**2-z**2), 0.5*np.log((t+z)/(t-z))
-    alpha, beta = do_MLE_withWeights(tau, gamma, 0.01)
+    #alpha, beta = do_MLE_withWeights(tau, gamma, 0.01)
+    alpha, beta = do_MLE_withWeights(tau[np.where(tau<tauMax)], gamma, 0.01)
     tau3mom = gamma.expect(lambda TAU: TAU**3, args=(alpha,), loc=0, scale=beta)
     tau2mom = gamma.expect(lambda TAU: TAU**2, args=(alpha,), loc=0, scale=beta)
     tau1mom = gamma.expect(lambda TAU: TAU, args=(alpha,), loc=0, scale=beta)
