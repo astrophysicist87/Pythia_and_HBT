@@ -78,7 +78,7 @@ def estimate_SVs(data, Nmin, Nmax, KTmin, KTmax, verbose=False):
         print '  --> ', R2o, R2s, R2l 
           
     # Estimate t and z variances by imposing cut on tau
-    tauMax = 10.0
+    tauMax = 3.0
     tau, eta = np.sqrt(t**2-z**2), 0.5*np.log((t+z)/(t-z))
     milne = np.c_[ tau, eta, xo, xs, z, t ]
     milne = milne[np.where(milne[:,0]<tauMax)]
