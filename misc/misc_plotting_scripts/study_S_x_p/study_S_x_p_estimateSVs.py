@@ -1,10 +1,14 @@
 #!/usr/bin/env python
 #====================
 
+#--------------------
 import scipy.special as sp
 from scipy.stats import gamma, rv_histogram
 import numpy as np
 import sys
+#--------------------
+
+useTruncated = False
 
 # PDF of Gamma distribution
 def GammaDistribution(pars, x):
@@ -98,8 +102,40 @@ def estimate_SVs(data, Nmin, Nmax, KTmin, KTmax, verbose=False):
         print '  --> truncated radii:'
         print '  --> ', truncR2o, truncR2s, truncR2l
         
-    return var_xo, np.cov(milne[:,2], milne[:,5], bias=True)[0][1], np.var(tTrunc),\
-           np.var(xs), np.var(zTrunc), truncR2o, truncR2s, truncR2l
+    # Estimate t and z variances instead from fitting to Gamma distribution
+    # N.B. - extra factor of tau pulled out!
+    tau, eta = np.sqrt(t**2-z**2), 0.5*np.log((t+z)/(t-z))
+    alpha, beta = do_MLE_withWeights(tau, gamma, 0.01)
+    tau3mom = gamma.expect(lambda TAU: TAU**3, args=(alpha,), loc=0, scale=beta)
+    tau2mom = gamma.expect(lambda TAU: TAU**2, args=(alpha,), loc=0, scale=beta)
+    tau1mom = gamma.expect(lambda TAU: TAU, args=(alpha,), loc=0, scale=beta)
+    cosh_eta_mom = np.mean(np.cosh(eta))
+    sinh_eta_mom = np.mean(np.sinh(eta))
+    cosh2_eta_mom = np.mean(np.cosh(eta)**2)
+    sinh2_eta_mom = np.mean(np.sinh(eta)**2)
+    t2_expect = tau3mom * cosh2_eta_mom / tau1mom
+    z2_expect = tau3mom * sinh2_eta_mom / tau1mom
+    t_expect = tau2mom * cosh_eta_mom / tau1mom
+    z_expect = tau2mom * sinh_eta_mom / tau1mom
+
+    if verbose:
+        print '-------------------------------------'
+        print '  --> MLE t/z means/variances:'
+        print '  --> ', z_expect, t_expect, z2_expect - z_expect**2, t2_expect - t_expect**2
+        
+    # assumes <xo t> - <xo><t> unaffected by large fluctuations
+    MLER2o, MLER2s, MLER2l = var_xo \
+                             - 2.0*betaT*np.cov(milne[:,2], milne[:,5], bias=True)[0][1]\
+                             + betaT**2*(t2_expect - t_expect**2),\
+                             np.var(xs), z2_expect - z_expect**2
+    
+    if useTruncated:
+        return var_xo, np.cov(milne[:,2], milne[:,5], bias=True)[0][1], np.var(tTrunc),\
+            np.var(xs), np.var(zTrunc), truncR2o, truncR2s, truncR2l
+    else:
+        return var_xo, np.cov(milne[:,2], milne[:,5], bias=True)[0][1],\
+            t2_expect - t_expect**2, np.var(xs),\
+            z2_expect - z_expect**2, MLER2o, MLER2s, MLER2l
     
 
                 
