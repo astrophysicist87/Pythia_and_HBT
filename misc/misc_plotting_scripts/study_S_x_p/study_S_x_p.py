@@ -2,8 +2,7 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
-import scipy.special as sp
-import os, sys
+import os, glob
 
 #====================================================
 #def pause():
@@ -27,9 +26,10 @@ def make_2D_density_plot( xDir, yDir, xLimits, yLimits, \
 
     cm = plt.cm.gnuplot
     im = plt.imshow(H.T, cmap=cm, origin='lower', interpolation='bilinear',
+                    vmin = 0.0, vmax = 1.0,
                     extent=[xedges.min(), xedges.max(), yedges.min(), yedges.max()])
 
-    plt.colorbar(im,fraction=0.046, pad=0.04)
+    plt.colorbar(im,fraction=0.026, pad=0.04)
 
     plt.xlabel(xLabel)
     plt.ylabel(yLabel)
@@ -38,27 +38,9 @@ def make_2D_density_plot( xDir, yDir, xLimits, yLimits, \
     plt.ylim(yLimits)
 	
     plt.tight_layout()
-    plt.show()
-    #fig.savefig(outputfilename)
+    #plt.show()
+    fig.savefig(outputfilename)
     print 'Saving to', outputfilename
-    
-    '''fig, ax = plt.subplots()
-
-    cm = plt.cm.gnuplot
-    xv, yv = np.meshgrid(xedges, yedges, indexing='xy')
-    im = plt.imshow(NormalDistribution(xv)*GammaDistribution(yv), cmap=cm, origin='lower', interpolation='bilinear',
-                    extent=[xedges.min(), xedges.max(), yedges.min(), yedges.max()])
-
-    plt.colorbar(im,fraction=0.046, pad=0.04)
-
-    plt.xlabel(xLabel)
-    plt.ylabel(yLabel)
-
-    plt.xlim(xLimits)
-    plt.ylim(yLimits)
-	
-    plt.tight_layout()
-    plt.show()'''
 
 
 
@@ -81,6 +63,18 @@ def generate_plot( data, polarMode, bws, \
     elif plotMode == 2:
         xLabel = r'$r$ (fm)'
         yLabel = r'$\tau$ (fm)'
+    elif plotMode == 3:
+        xLabel = r'$x_o$ (fm)'
+        yLabel = r'$\tau$ (fm)'
+    elif plotMode == 4:
+        xLabel = r'$x_s$ (fm)'
+        yLabel = r'$\tau$ (fm)'
+    elif plotMode == 5:
+        xLabel = r'$x_o$ (fm)'
+        yLabel = r'$t$ (fm$/c$)'
+    elif plotMode == 6:
+        xLabel = r'$x_s$ (fm)'
+        yLabel = r'$t$ (fm$/c$)'
     else:
         print 1/0
 
@@ -91,7 +85,7 @@ def generate_plot( data, polarMode, bws, \
         if polarMode == 0:
             make_2D_density_plot(z, t, xLimits, yLimits, xLabel, yLabel, bws, outputfilename)
         else:
-            safeIndices = np.where(np.greater(t**2, z**2))
+            safeIndices = np.where(np.greater(t**2, x**2+y**2+z**2))
             tsI = t[safeIndices]
             zsI = z[safeIndices]
             eta = 0.5*np.log( (tsI+zsI)/(tsI-zsI) )
@@ -100,7 +94,7 @@ def generate_plot( data, polarMode, bws, \
     elif plotMode == 1:
         make_2D_density_plot(x, y, xLimits, yLimits, xLabel, yLabel, bws, outputfilename)
     elif plotMode == 2:
-        safeIndices = np.where(np.greater(t**2, z**2))
+        safeIndices = np.where(np.greater(t**2, x**2+y**2+z**2))
         tsI = t[safeIndices]
         xsI = x[safeIndices]
         ysI = y[safeIndices]
@@ -108,17 +102,37 @@ def generate_plot( data, polarMode, bws, \
         r = np.sqrt(xsI**2+ysI**2)
         tau = np.sqrt(tsI**2-zsI**2)
         make_2D_density_plot(r, tau, xLimits, yLimits, xLabel, yLabel, bws, outputfilename)
-
+    elif plotMode >= 3 and plotMode <= 6:
+        safeIndices = np.where(np.greater(t**2, x**2+y**2+z**2))
+        tsI = t[safeIndices]
+        xsI = x[safeIndices]
+        ysI = y[safeIndices]
+        zsI = z[safeIndices]
+        KphisI = Kphi[safeIndices]
+        tau = np.sqrt(tsI**2-zsI**2)
+        eta = 0.5*np.log((tsI+zsI)/(tsI-zsI))
+        if plotMode == 3:
+            xo = xsI * np.cos(KphisI) + ysI * np.sin(KphisI)
+            make_2D_density_plot(xo, tau, xLimits, yLimits, xLabel, yLabel, bws, outputfilename)
+        elif plotMode == 4:
+            xs = -xsI * np.sin(KphisI) + ysI * np.cos(KphisI)
+            make_2D_density_plot(xs, tau, xLimits, yLimits, xLabel, yLabel, bws, outputfilename)
+        elif plotMode == 5:
+            xo = xsI * np.cos(KphisI) + ysI * np.sin(KphisI)
+            make_2D_density_plot(xo, tsI, xLimits, yLimits, xLabel, yLabel, bws, outputfilename)
+        elif plotMode == 6:
+            xs = -xsI * np.sin(KphisI) + ysI * np.cos(KphisI)
+            make_2D_density_plot(xs, tsI, xLimits, yLimits, xLabel, yLabel, bws, outputfilename)
 
 
 #====================================================
-if __name__ == "__main__":
+def generate_plots(filename):
     # Read in name of file from command line
     #filename = sys.argv[1]
-    filename = "C:/Users/Christopher Plumberg/Desktop/Research/Lund"\
-                +"/Multiplicity_dependence_of_HBT_w_Pythia/Figures"\
-                +"/study_S_x_p_results_KLmax0.01/S_x_p_N1_11_0.0_0.1.dat"
-	
+    #filename = "C:/Users/Christopher Plumberg/Desktop/Research/Lund"\
+    #            +"/Multiplicity_dependence_of_HBT_w_Pythia"\
+    #            +"/study_S_x_p_results_KLmax0.01/S_x_p_N1_11_0.0_0.1.dat"
+
     # Load file
     data = np.loadtxt(filename).T
     
@@ -139,14 +153,26 @@ if __name__ == "__main__":
         data=data.T
         KphiStem = '_yPos'
     
-    filenameStem = os.path.splitext(filename)[0]
+    filenameStem = (os.path.splitext(filename)[0]).replace(".","")
 	
     # Generate plots
-    #generate_plot( data, 0, [0.1, 0.1], 0, [-10.0, 10.0], [0.0, 15.0], filenameStem+KphiStem+'_z_t.pdf' )
+    generate_plot( data, 0, [0.1, 0.1], 0, [-10.0, 10.0], [0.0, 15.0], filenameStem+KphiStem+'_z_t.pdf' )
     generate_plot( data, 1, [0.1, 0.1], 0, [-5.0, 5.0], [0.0, 5.0], filenameStem+KphiStem+'_eta_tau.pdf' )
     generate_plot( data, 0, [0.1, 0.1], 1, [-2.5, 2.5], [-2.5, 2.5], filenameStem+KphiStem+'_x_y.pdf' )
-    #generate_plot( data, None, [0.1, 0.1], 2, [0.0, 5.0], [0.0, 5.0], filenameStem+KphiStem+'_r_tau.pdf' )
+    generate_plot( data, None, [0.1, 0.1], 2, [0.0, 5.0], [0.0, 5.0], filenameStem+KphiStem+'_r_tau.pdf' )
+    generate_plot( data, None, [0.1, 0.1], 3, [-5.0, 5.0], [0.0, 5.0], filenameStem+KphiStem+'_xo_tau.pdf' )
+    generate_plot( data, None, [0.1, 0.1], 4, [-5.0, 5.0], [0.0, 5.0], filenameStem+KphiStem+'_xs_tau.pdf' )
+    generate_plot( data, None, [0.1, 0.1], 5, [-5.0, 5.0], [0.0, 5.0], filenameStem+KphiStem+'_xo_t.pdf' )
+    generate_plot( data, None, [0.1, 0.1], 6, [-5.0, 5.0], [0.0, 5.0], filenameStem+KphiStem+'_xs_t.pdf' )
 
-    #pause()
+
+
+#====================================================
+if __name__ == "__main__":
+    
+    for filename in glob.glob("C:/Users/Christopher Plumberg/Desktop/Research/Lund" \
+                                + "/Multiplicity_dependence_of_HBT_w_Pythia" \
+                                + "/study_S_x_p_results_KLmax0_01/S_x_p_N*.dat"):
+        generate_plots(filename)
 
 # End of file
